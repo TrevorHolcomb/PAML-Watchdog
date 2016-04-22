@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace Alerter
+namespace AdministrationPortal
 {
     public class RouteConfig
     {
