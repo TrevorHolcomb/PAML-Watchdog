@@ -3,15 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogDatabaseAccessLayer", "WatchdogDatabaseAccessLayer\WatchdogDatabaseAccessLayer.csproj", "{B46AB31A-997A-4786-9966-43FFE91B1909}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alerter", "Alerter\Alerter.csproj", "{B6F0C677-718E-44A8-84E3-1A8440D5A0BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdministrationPortal", "AdministrationPortal\AdministrationPortal.csproj", "{733C4714-656A-4BFE-9126-D1580DA9BDD7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdministrationPortal.Tests", "AdministrationPortal.Tests\AdministrationPortal.Tests.csproj", "{F3A55EC5-1921-4F13-AA9C-79DB877EE60D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogMessageGenerator", "WatchdogMessageGenerator\WatchdogMessageGenerator.csproj", "{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogMessageGenerator.Tests", "WatchdogMessageGenerator.Tests\WatchdogMessageGenerator.Tests.csproj", "{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alerter.Tests", "Alerter.Tests\Alerter.Tests.csproj", "{E293FBC3-81A9-41C2-872D-98725DDE073B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,26 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B46AB31A-997A-4786-9966-43FFE91B1909}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B46AB31A-997A-4786-9966-43FFE91B1909}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B46AB31A-997A-4786-9966-43FFE91B1909}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B46AB31A-997A-4786-9966-43FFE91B1909}.Release|Any CPU.Build.0 = Release|Any CPU
-		{733C4714-656A-4BFE-9126-D1580DA9BDD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{733C4714-656A-4BFE-9126-D1580DA9BDD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{733C4714-656A-4BFE-9126-D1580DA9BDD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{733C4714-656A-4BFE-9126-D1580DA9BDD7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F3A55EC5-1921-4F13-AA9C-79DB877EE60D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F3A55EC5-1921-4F13-AA9C-79DB877EE60D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F3A55EC5-1921-4F13-AA9C-79DB877EE60D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F3A55EC5-1921-4F13-AA9C-79DB877EE60D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6F0C677-718E-44A8-84E3-1A8440D5A0BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6F0C677-718E-44A8-84E3-1A8440D5A0BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6F0C677-718E-44A8-84E3-1A8440D5A0BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6F0C677-718E-44A8-84E3-1A8440D5A0BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E293FBC3-81A9-41C2-872D-98725DDE073B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E293FBC3-81A9-41C2-872D-98725DDE073B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E293FBC3-81A9-41C2-872D-98725DDE073B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E293FBC3-81A9-41C2-872D-98725DDE073B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
