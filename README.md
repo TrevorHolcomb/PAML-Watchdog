@@ -14,6 +14,9 @@ Contains the classes required for interfacing with the database. It is used by a
 ###AdministrationPortal
 The AdministrationPortal is an ASP.NET MVC 5 application that allows for the creation and management of rules, message-types, alert-types, groups, escalationchains, etc etc.
 
+###UserPortal
+Allows for users to acknowledge alerts which prevents alert escalation from occuring, write notes based on an alert, and for them to do this all from a mobile friendly site.
+
 ###WatchdogMessageGenerator
 Creates messages and places them in the database. Used for testing.
 
