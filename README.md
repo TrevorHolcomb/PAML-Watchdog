@@ -1,3 +1,3 @@
-[![Build Status](http://drone.johnrowley.co/api/badges/robbert229/paml-alerter/status.svg)](http://drone.johnrowley.co/robbert229/paml-alerter)
+![Build Status](https://teamcity.johnrowley.co/app/rest/builds/buildType:(id:PamlAlerter_Build)/statusIcon)
 
-#PAML Alerter Frontend
+#PAML Watchdog
