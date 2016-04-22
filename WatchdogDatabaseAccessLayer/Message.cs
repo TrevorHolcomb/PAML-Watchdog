@@ -24,5 +24,9 @@ namespace WatchdogDatabaseAccessLayer
         public bool Processed { get; set; }
 
         public virtual MessageType MessageType { get; set; }
+
+        [Required]
+        [StringLength(1024)]
+        public string Params { get; set; }
     }
 }

@@ -5,10 +5,10 @@ namespace WatchdogDatabaseAccessLayer
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
 
-    public partial class Watchdog : DbContext
+    public partial class WatchdogDatabaseContext : DbContext
     {
-        public Watchdog()
-            : base("name=Watchdog")
+        public WatchdogDatabaseContext()
+            : base(@"Data Source=(localdb)\v11.0;Initial Catalog=watchdog;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False")
         {
         }
 
@@ -30,6 +30,10 @@ namespace WatchdogDatabaseAccessLayer
 
             modelBuilder.Entity<Message>()
                 .Property(e => e.Origin)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Message>()
+                .Property(e => e.Params)
                 .IsUnicode(false);
 
             modelBuilder.Entity<MessageType>()

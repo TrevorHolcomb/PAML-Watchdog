@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdministrationPortal", "Adm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdministrationPortal.Tests", "AdministrationPortal.Tests\AdministrationPortal.Tests.csproj", "{F3A55EC5-1921-4F13-AA9C-79DB877EE60D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogMessageGenerator", "WatchdogMessageGenerator\WatchdogMessageGenerator.csproj", "{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogMessageGenerator.Tests", "WatchdogMessageGenerator.Tests\WatchdogMessageGenerator.Tests.csproj", "{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{F3A55EC5-1921-4F13-AA9C-79DB877EE60D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3A55EC5-1921-4F13-AA9C-79DB877EE60D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3A55EC5-1921-4F13-AA9C-79DB877EE60D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,14 +5,14 @@ namespace WatchdogDatabaseAccessLayer.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<WatchdogDatabaseAccessLayer.Watchdog>
+    internal sealed class Configuration : DbMigrationsConfiguration<WatchdogDatabaseAccessLayer.WatchdogDatabaseContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(Watchdog context)
+        protected override void Seed(WatchdogDatabaseAccessLayer.WatchdogDatabaseContext context)
         {
             context.MessageTypes.AddOrUpdate(new MessageType { Description = "a regular update from a JMS queue containing the size of the queue.", Name = "QueueSizeUpdate", Id = 0, RequiredParams = "size" });
             context.SaveChanges();
