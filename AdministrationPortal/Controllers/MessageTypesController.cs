@@ -11,9 +11,9 @@ using WatchdogDatabaseAccessLayer;
 
 namespace AdministrationPortal.Controllers
 {
-    public class MessageTypeController : Controller
+    public class MessageTypesController : Controller
     {
-        private readonly Watchdog _db = new Watchdog();
+        private readonly WatchdogDatabaseContext _db = new WatchdogDatabaseContext();
 
         // GET: MessageTypes
         public async Task<ActionResult> Index()
