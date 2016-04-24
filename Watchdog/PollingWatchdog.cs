@@ -6,7 +6,7 @@ using WatchdogDatabaseAccessLayer;
 
 namespace Watchdog
 {
-    class PollingWatchdog : AbstractWatchdog
+    public class PollingWatchdog : AbstractWatchdog
     {
         private static PollingWatchdog sWatchdog;
         private static Timer PollingTimer;
@@ -23,6 +23,14 @@ namespace Watchdog
         {
             if (PollingTimer == null)
                 PollingTimer = new Timer(ConsumeNewMessages, null, 0, POLLING_RATE);
+            else
+                PollingTimer.Change(0, POLLING_RATE);
+        }
+
+        public override void StopWatching()
+        {
+            if (PollingTimer != null)
+                PollingTimer.Change(0, Timeout.Infinite);
         }
 
         protected override void ConsumeNewMessages(Object state)

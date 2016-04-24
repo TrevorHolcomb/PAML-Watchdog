@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Watchdog
 {
-    abstract class AbstractWatchdog
+    public abstract class AbstractWatchdog
     {
         public abstract AbstractWatchdog GetInstance();
         public abstract void Watch();
+        public abstract void StopWatching();
         protected abstract void ConsumeNewMessages(object state);
         
     }
