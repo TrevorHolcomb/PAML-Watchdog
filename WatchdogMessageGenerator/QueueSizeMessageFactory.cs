@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WatchdogDatabaseAccessLayer;
-using WatchdogMessageGenerator.MessageTypes;
 
 namespace WatchdogMessageGenerator
 {
     public class QueueSizeMessageFactory : AbstractMessageFactory
     {
         public const int MaxSize = 100000;
-        public QueueSizeMessageFactory(string[] servers, string[] origins) : base(servers, origins, new QueueSizeMessageType())
+        public QueueSizeMessageFactory(string[] servers, string[] origins, int messageTypeId) : base(servers, origins, messageTypeId)
         {
             
         }
@@ -27,7 +26,7 @@ namespace WatchdogMessageGenerator
             return new Message
             {
                 Id = GetRandomId(),
-                MessageTypeId = MessageType.Id,
+                MessageTypeId = MessageTypeId,
                 Origin = GetRandomOrigin(),
                 Params = GetParams(),
                 Processed = false,

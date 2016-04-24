@@ -7,8 +7,11 @@ namespace WatchdogDatabaseAccessLayer
 
     public partial class WatchdogDatabaseContext : DbContext
     {
-        public WatchdogDatabaseContext()
+        public WatchdogDatabaseContext() 
+            //JRR connection string
             : base(@"Data Source=(localdb)\v11.0;Initial Catalog=watchdog;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False")
+            //TGB connection string 
+            /*: base(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=watchdog;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False")*/
         {
         }
 
