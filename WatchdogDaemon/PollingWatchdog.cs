@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using WatchdogDatabaseAccessLayer;
 
-namespace Watchdog
+namespace WatchdogDaemon
 {
     class PollingWatchdog : AbstractWatchdog
     {
