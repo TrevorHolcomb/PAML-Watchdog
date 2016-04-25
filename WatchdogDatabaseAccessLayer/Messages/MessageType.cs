@@ -15,7 +15,7 @@ namespace WatchdogDatabaseAccessLayer
             Messages = new HashSet<Message>();
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]

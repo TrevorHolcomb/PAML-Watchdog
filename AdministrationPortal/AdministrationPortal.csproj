@@ -157,8 +157,12 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\EscalationChainLinksController.cs" />
+    <Compile Include="Controllers\EscalationChainsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MessageTypesController.cs" />
+    <Compile Include="Controllers\NotifyeeGroupsController.cs" />
+    <Compile Include="Controllers\NotifyeesController.cs" />
     <Compile Include="Controllers\RuleCategoriesController.cs" />
     <Compile Include="Controllers\RulesController.cs" />
     <Compile Include="Global.asax.cs">
@@ -222,6 +226,26 @@
     <Content Include="Views\RuleCategories\Details.cshtml" />
     <Content Include="Views\RuleCategories\Edit.cshtml" />
     <Content Include="Views\RuleCategories\Index.cshtml" />
+    <Content Include="Views\NotifyeeGroups\Create.cshtml" />
+    <Content Include="Views\NotifyeeGroups\Delete.cshtml" />
+    <Content Include="Views\NotifyeeGroups\Details.cshtml" />
+    <Content Include="Views\NotifyeeGroups\Edit.cshtml" />
+    <Content Include="Views\NotifyeeGroups\Index.cshtml" />
+    <Content Include="Views\Notifyees\Create.cshtml" />
+    <Content Include="Views\Notifyees\Delete.cshtml" />
+    <Content Include="Views\Notifyees\Details.cshtml" />
+    <Content Include="Views\Notifyees\Edit.cshtml" />
+    <Content Include="Views\Notifyees\Index.cshtml" />
+    <Content Include="Views\EscalationChainLinks\Create.cshtml" />
+    <Content Include="Views\EscalationChainLinks\Delete.cshtml" />
+    <Content Include="Views\EscalationChainLinks\Details.cshtml" />
+    <Content Include="Views\EscalationChainLinks\Edit.cshtml" />
+    <Content Include="Views\EscalationChainLinks\Index.cshtml" />
+    <Content Include="Views\EscalationChains\Create.cshtml" />
+    <Content Include="Views\EscalationChains\Delete.cshtml" />
+    <Content Include="Views\EscalationChains\Details.cshtml" />
+    <Content Include="Views\EscalationChains\Edit.cshtml" />
+    <Content Include="Views\EscalationChains\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

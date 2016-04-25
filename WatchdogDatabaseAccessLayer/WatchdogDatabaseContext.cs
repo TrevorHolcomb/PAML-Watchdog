@@ -20,13 +20,24 @@ namespace WatchdogDatabaseAccessLayer
         public virtual DbSet<MessageType> MessageTypes { get; set; }
         public virtual DbSet<RuleCategory> RuleCategories { get; set; }
         public virtual DbSet<Rule> Rules { get; set; }
+        public virtual DbSet<Notifyee> Notifyees { get; set; }
+        public virtual DbSet<NotifyeeGroup> NotifyeeGroups { get; set; }
+
+        public virtual DbSet<EscalationChainLink> EscalationChainLinks { get; set; }
+        public virtual DbSet<EscalationChain> EscalationChains { get; set; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            // Alert
             modelBuilder.Entity<Alert>()
                 .Property(e => e.Payload)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<Alert>()
+                .HasKey(t => t.Id);
+
+            // Message
             modelBuilder.Entity<Message>()
                 .Property(e => e.Server)
                 .IsUnicode(false);
@@ -39,6 +50,7 @@ namespace WatchdogDatabaseAccessLayer
                 .Property(e => e.Params)
                 .IsUnicode(false);
 
+            // Message Type
             modelBuilder.Entity<MessageType>()
                 .Property(e => e.Name)
                 .IsUnicode(false);
@@ -60,6 +72,7 @@ namespace WatchdogDatabaseAccessLayer
                 .WithRequired(e => e.MessageType)
                 .WillCascadeOnDelete(false);
 
+            // Rule Category
             modelBuilder.Entity<RuleCategory>()
                 .Property(e => e.Name)
                 .IsUnicode(false);
@@ -68,6 +81,7 @@ namespace WatchdogDatabaseAccessLayer
                 .Property(e => e.Description)
                 .IsUnicode(false);
 
+            // Rule
             modelBuilder.Entity<Rule>()
                 .Property(e => e.Name)
                 .IsUnicode(false);
@@ -80,6 +94,44 @@ namespace WatchdogDatabaseAccessLayer
                 .HasMany(e => e.Alerts)
                 .WithRequired(e => e.Rule)
                 .WillCascadeOnDelete(false);
+
+            // Notifyee
+            modelBuilder.Entity<Notifyee>()
+                .Property(e => e.Name)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Notifyee>()
+                .Property(e => e.Email)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Notifyee>()
+                .HasRequired(e => e.NotifyeeGroup)
+                .WithMany(e => e.Notifyees)
+                .WillCascadeOnDelete(false);
+
+            // NotifyeeGroup
+            modelBuilder.Entity<NotifyeeGroup>()
+                .Property(e => e.Name)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<NotifyeeGroup>()
+                .Property(e => e.Decsription)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<NotifyeeGroup>()
+                .HasMany(e => e.Notifyees)
+                .WithRequired(e => e.NotifyeeGroup)
+                .WillCascadeOnDelete(false);
+
+            // EscalationChainLink
+            modelBuilder.Entity<EscalationChainLink>()
+                .HasOptional(e => e.NextEscalationChainLink);
+
+            modelBuilder.Entity<EscalationChainLink>()
+                .HasRequired(e => e.NotifyeeGroup)
+                .WithOptional();
+
+            // EscalationChain
         }
     }
 }
