@@ -29,11 +29,14 @@ namespace WatchdogDatabaseAccessLayer
 
         public int EscalationChainId { get; set; }
 
+        public virtual EscalationChain EscalationChain { get; set; }
+
         public int AlertTypeId { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Alert> Alerts { get; set; }
 
         public virtual RuleCategory RuleCategory { get; set; }
+
     }
 }

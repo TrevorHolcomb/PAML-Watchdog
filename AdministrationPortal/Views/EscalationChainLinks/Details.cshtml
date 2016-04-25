@@ -1,0 +1,42 @@
+﻿@model WatchdogDatabaseAccessLayer.EscalationChainLink
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>EscalationChainLink</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NextEscalationChainLink.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NextEscalationChainLink.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NotifyeeGroup.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NotifyeeGroup.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NotifyeeGroupId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NotifyeeGroupId)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

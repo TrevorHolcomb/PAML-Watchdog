@@ -21,6 +21,11 @@ namespace WatchdogDatabaseAccessLayer
         public virtual DbSet<RuleCategory> RuleCategories { get; set; }
         public virtual DbSet<Rule> Rules { get; set; }
         public virtual DbSet<Notifyee> Notifyees { get; set; }
+        public virtual DbSet<NotifyeeGroup> NotifyeeGroups { get; set; }
+
+        public virtual DbSet<EscalationChainLink> EscalationChainLinks { get; set; }
+        public virtual DbSet<EscalationChain> EscalationChains { get; set; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -117,8 +122,16 @@ namespace WatchdogDatabaseAccessLayer
                 .HasMany(e => e.Notifyees)
                 .WithRequired(e => e.NotifyeeGroup)
                 .WillCascadeOnDelete(false);
-        }
 
-        public System.Data.Entity.DbSet<WatchdogDatabaseAccessLayer.NotifyeeGroup> NotifyeeGroups { get; set; }
+            // EscalationChainLink
+            modelBuilder.Entity<EscalationChainLink>()
+                .HasOptional(e => e.NextEscalationChainLink);
+
+            modelBuilder.Entity<EscalationChainLink>()
+                .HasRequired(e => e.NotifyeeGroup)
+                .WithOptional();
+
+            // EscalationChain
+        }
     }
 }

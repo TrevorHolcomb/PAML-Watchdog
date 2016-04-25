@@ -55,6 +55,8 @@
   <ItemGroup>
     <Compile Include="Alert.cs" />
     <Compile Include="EntityBase.cs" />
+    <Compile Include="EscalationChain.cs" />
+    <Compile Include="EscalationChainLink.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\MessageType.cs" />
     <Compile Include="Migrations\Configuration.cs" />
