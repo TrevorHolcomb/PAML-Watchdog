@@ -1,16 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using WatchdogDatabaseAccessLayer;
 
 namespace WatchdogDaemon
 {
-    abstract class AbstractWatchdog
+    public abstract class AbstractWatchdog : IDisposable
     {
-        public abstract AbstractWatchdog GetInstance();
+        protected AbstractWatchdog(WatchdogDatabaseContext dbContext, IRuleEngine ruleEngine)
+        {
+            DbContext = dbContext;
+            RuleEngine = ruleEngine;
+        }
+
+        public WatchdogDatabaseContext DbContext { get; set; }
+        protected readonly IRuleEngine RuleEngine;
+
+        public void Dispose()
+        {
+            DbContext.Dispose();
+        }
+
         public abstract void Watch();
-        protected abstract void ConsumeNewMessages(object state);
-        
+        public abstract void StopWatching();
+        protected abstract void Run(object state);
     }
 }

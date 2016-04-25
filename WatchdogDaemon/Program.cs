@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Data.Entity;
 using WatchdogDatabaseAccessLayer;
-using WatchdogMessageGenerator;
 using System.Threading;
 
 namespace WatchdogDaemon
@@ -13,7 +12,7 @@ namespace WatchdogDaemon
         {
             Console.WriteLine("Watchdog simulator started");
             //start consumer
-            AbstractWatchdog rex = new PollingWatchdog().GetInstance();
+            AbstractWatchdog rex = new PollingWatchdog(new WatchdogDatabaseContext(), new RuleEngine());
             rex.Watch();
 
             while (true) { }

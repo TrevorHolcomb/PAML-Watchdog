@@ -6,61 +6,43 @@ using WatchdogDatabaseAccessLayer;
 
 namespace WatchdogDaemon
 {
-    class PollingWatchdog : AbstractWatchdog
+    public class PollingWatchdog : AbstractWatchdog
     {
-        private static PollingWatchdog sWatchdog;
-        private static Timer PollingTimer;
-        private const int POLLING_RATE = 5*1000;        //5 seconds for now
 
-        public override AbstractWatchdog GetInstance()
+        private Timer _pollingTimer;
+        
+        private const int PollingRate = 5*1000;        //5 seconds for now
+
+        public PollingWatchdog(WatchdogDatabaseContext dbContext, IRuleEngine ruleEngine) : base(dbContext, ruleEngine)
         {
-            if (sWatchdog == null)
-                sWatchdog = new PollingWatchdog();
-            return sWatchdog;
         }
 
         public override void Watch()
         {
-            if (PollingTimer == null)
-                PollingTimer = new Timer(ConsumeNewMessages, null, 0, POLLING_RATE);
+            if (_pollingTimer == null)
+                _pollingTimer = new Timer(Run, null, 0, PollingRate);
+            else
+                _pollingTimer.Change(0, PollingRate);
         }
 
-        protected override void ConsumeNewMessages(Object state)
+        public override void StopWatching()
         {
-            WatchdogDatabaseContext dbContext = new WatchdogDatabaseContext();
+            _pollingTimer?.Change(0, Timeout.Infinite);
+        }
 
-            List<Message> totalMessages = dbContext.Messages.ToList<Message>();
+        protected override void Run(object state)
+        {
+            var totalMessages = DbContext.Messages.ToList<Message>();
             Console.WriteLine("watchdog sees " + totalMessages.Count + " total messages");
 
             //ToList() forces .net to do the query and store in memory, otherwise, or with LINQ, the expression is lazy-evaluated and causes an error in the second loop
-            List<Message> messages = dbContext.Messages.Where<Message>(msg => !msg.Processed).ToList<Message>();
-            var rules = dbContext.Rules.Select<Rule, Rule>(e=>e).ToList<Rule>();
+            var messages = DbContext.Messages.Where<Message>(msg => !msg.Processed).ToList<Message>();
+            var rules = DbContext.Rules.Select<Rule, Rule>(e=>e).ToList<Rule>();
 
-            foreach (Message message in messages)
-            {
-                foreach (Rule rule in rules)
-                {
-                    //TODO: use fancy JSON comparator John mentioned
-                    //if (rule.RuleTrigger == /*triggered*/)
-                        //create a corresponding alert
-                        //foreach (Alert alert in rule.Alerts)
-                            //alert.Triggered = true;                   
+            RuleEngine.ConsumeMessages(rules, messages);
 
-                    /*TODO: discuss implementation of alert activation. 
-                        We should find out what the Notifier expects as input. 
-                        But if we were to redesign that too, I'd propose adding a 
-                        boolean field, Alerts.Active, analogous to Messages.Processed
-                    */
-                }
-                message.Processed = true;
-
-                //for debugging/simulation
-                Console.WriteLine("Consumed: " + message.Id);
-            }
-
-            dbContext.Messages.RemoveRange(messages);       //delete messages after processing
-            dbContext.SaveChanges();
-            dbContext.Dispose();
+            // DbContext.Messages.RemoveRange(messages);       //delete messages after processing
+            DbContext.SaveChanges();
         }
     }
 }
