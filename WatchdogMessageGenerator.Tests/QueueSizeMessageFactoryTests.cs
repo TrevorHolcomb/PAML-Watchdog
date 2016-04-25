@@ -11,7 +11,7 @@ namespace WatchdogMessageGenerator.Tests
         [Theory, ClassData(typeof(TestBuildData))]
         public void TestBuild(string[] origins, string[] servers)
         {
-            var factory = new QueueSizeMessageFactory(servers, origins);
+            var factory = new QueueSizeMessageFactory(servers, origins, 0);
             var message = factory.Build();
 
             Assert.Contains(message.Origin, origins);

@@ -30,7 +30,7 @@ namespace Watchdog
             WatchdogDatabaseContext db = new WatchdogDatabaseContext();
 
             var factory = new QueueSizeMessageFactory(new[] { "socrates", "plato", "aristotle" },
-                    new[] { "webapi", "cli" });
+                    new[] { "webapi", "cli" }, 0);
 
             for (var i = 0; i < 3; i++)
             {
