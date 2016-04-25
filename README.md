@@ -22,3 +22,6 @@ Creates messages and places them in the database. Used for testing.
 
 ###WatchdogDaemon
 Polls the database and creates alerts based on the rules.
+
+###WatchdogWebApi
+Acts as a RESTful interface for adding messages to the database. Makes sure that the messages are valid based on the message types declared in the database.
