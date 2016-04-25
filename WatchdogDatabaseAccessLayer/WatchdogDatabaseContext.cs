@@ -26,7 +26,7 @@ namespace WatchdogDatabaseAccessLayer
         public virtual DbSet<EscalationChainLink> EscalationChainLinks { get; set; }
         public virtual DbSet<EscalationChain> EscalationChains { get; set; }
 
-
+        public virtual DbSet<AlertType> AlertTypes { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             // Alert
@@ -36,6 +36,21 @@ namespace WatchdogDatabaseAccessLayer
 
             modelBuilder.Entity<Alert>()
                 .HasKey(t => t.Id);
+
+            modelBuilder.Entity<Alert>()
+                .HasRequired(e => e.AlertType)
+                .WithOptional()
+                .WillCascadeOnDelete(false);
+
+            // Alert Type
+            modelBuilder.Entity<AlertType>()
+                .Property(e => e.Name)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<AlertType>()
+                .Property(e => e.Description)
+                .IsUnicode(false);
+
 
             // Message
             modelBuilder.Entity<Message>()
@@ -95,6 +110,12 @@ namespace WatchdogDatabaseAccessLayer
                 .WithRequired(e => e.Rule)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Rule>()
+                .HasRequired(e => e.AlertType)
+                .WithMany()
+                .HasForeignKey(e => e.AlertTypeId)
+                .WillCascadeOnDelete(false);
+
             // Notifyee
             modelBuilder.Entity<Notifyee>()
                 .Property(e => e.Name)
@@ -122,16 +143,6 @@ namespace WatchdogDatabaseAccessLayer
                 .HasMany(e => e.Notifyees)
                 .WithRequired(e => e.NotifyeeGroup)
                 .WillCascadeOnDelete(false);
-
-            // EscalationChainLink
-            modelBuilder.Entity<EscalationChainLink>()
-                .HasOptional(e => e.NextEscalationChainLink);
-
-            modelBuilder.Entity<EscalationChainLink>()
-                .HasRequired(e => e.NotifyeeGroup)
-                .WithOptional();
-
-            // EscalationChain
         }
     }
 }

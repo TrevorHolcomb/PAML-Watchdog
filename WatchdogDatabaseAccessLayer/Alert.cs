@@ -14,6 +14,7 @@ namespace WatchdogDatabaseAccessLayer
 
         [Column("AlertTypeId")]
         public int AlertTypeId { get; set; }
+        public virtual AlertType AlertType { get; set; }
 
         [Column("RuleId")]
         public int RuleId { get; set; }

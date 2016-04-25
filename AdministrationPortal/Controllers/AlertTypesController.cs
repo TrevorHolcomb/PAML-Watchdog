@@ -1,123 +1,117 @@
-﻿using System.Data.Entity;
-using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Net;
+using System.Web;
 using System.Web.Mvc;
 using WatchdogDatabaseAccessLayer;
 
 namespace AdministrationPortal.Controllers
 {
-    public class RulesController : Controller
+    public class AlertTypesController : Controller
     {
         private WatchdogDatabaseContext db = new WatchdogDatabaseContext();
 
-        // GET: Rules
+        // GET: AlertTypes
         public async Task<ActionResult> Index()
         {
-            var rules = db.Rules.Include(r => r.RuleCategory);
-            return View(await rules.ToListAsync());
+            return View(await db.AlertTypes.ToListAsync());
         }
 
-        // GET: Rules/Details/5
+        // GET: AlertTypes/Details/5
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Rule rule = await db.Rules.FindAsync(id);
-            if (rule == null)
+            AlertType alertType = await db.AlertTypes.FindAsync(id);
+            if (alertType == null)
             {
                 return HttpNotFound();
             }
-            return View(rule);
+            return View(alertType);
         }
 
-        // GET: Rules/Create
+        // GET: AlertTypes/Create
         public ActionResult Create()
         {
-            ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name");
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name");
             return View();
         }
 
-        // POST: Rules/Create
+        // POST: AlertTypes/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Name,RuleCategoryId,RuleTrigger,EscalationChainId,AlertTypeId")] Rule rule)
+        public async Task<ActionResult> Create([Bind(Include = "Id,Name,Description")] AlertType alertType)
         {
             if (ModelState.IsValid)
             {
-                db.Rules.Add(rule);
+                db.AlertTypes.Add(alertType);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategoryId);
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
-            return View(rule);
+            return View(alertType);
         }
 
-        // GET: Rules/Edit/5
+        // GET: AlertTypes/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Rule rule = await db.Rules.FindAsync(id);
-            if (rule == null)
+            AlertType alertType = await db.AlertTypes.FindAsync(id);
+            if (alertType == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategoryId);
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
-            return View(rule);
+            return View(alertType);
         }
 
-        // POST: Rules/Edit/5
+        // POST: AlertTypes/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,RuleCategoryId,RuleTrigger,EscalationChainId,AlertTypeId")] Rule rule)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Description")] AlertType alertType)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(rule).State = EntityState.Modified;
+                db.Entry(alertType).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-
-            ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategoryId);
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
-
-            return View(rule);
+            return View(alertType);
         }
 
-        // GET: Rules/Delete/5
+        // GET: AlertTypes/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Rule rule = await db.Rules.FindAsync(id);
-            if (rule == null)
+            AlertType alertType = await db.AlertTypes.FindAsync(id);
+            if (alertType == null)
             {
                 return HttpNotFound();
             }
-            return View(rule);
+            return View(alertType);
         }
 
-        // POST: Rules/Delete/5
+        // POST: AlertTypes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Rule rule = await db.Rules.FindAsync(id);
-            db.Rules.Remove(rule);
+            AlertType alertType = await db.AlertTypes.FindAsync(id);
+            db.AlertTypes.Remove(alertType);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

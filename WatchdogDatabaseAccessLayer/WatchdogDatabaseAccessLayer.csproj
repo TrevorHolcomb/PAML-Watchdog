@@ -58,14 +58,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Alert.cs" />
+    <Compile Include="AlertType.cs" />
     <Compile Include="EntityBase.cs" />
     <Compile Include="EscalationChain.cs" />
     <Compile Include="EscalationChainLink.cs" />
-    <Compile Include="Messages\Message.cs" />
-    <Compile Include="Messages\MessageType.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="MessageType.cs" />
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Notifyees\Notifyee.cs" />
-    <Compile Include="Notifyees\NotifyeeGroup.cs" />
+    <Compile Include="Notifyee.cs" />
+    <Compile Include="NotifyeeGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rule.cs" />
     <Compile Include="RuleCategory.cs" />

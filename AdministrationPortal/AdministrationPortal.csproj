@@ -157,6 +157,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AlertTypesController.cs" />
     <Compile Include="Controllers\EscalationChainLinksController.cs" />
     <Compile Include="Controllers\EscalationChainsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -236,16 +237,21 @@
     <Content Include="Views\Notifyees\Details.cshtml" />
     <Content Include="Views\Notifyees\Edit.cshtml" />
     <Content Include="Views\Notifyees\Index.cshtml" />
-    <Content Include="Views\EscalationChainLinks\Create.cshtml" />
-    <Content Include="Views\EscalationChainLinks\Delete.cshtml" />
-    <Content Include="Views\EscalationChainLinks\Details.cshtml" />
-    <Content Include="Views\EscalationChainLinks\Edit.cshtml" />
-    <Content Include="Views\EscalationChainLinks\Index.cshtml" />
     <Content Include="Views\EscalationChains\Create.cshtml" />
     <Content Include="Views\EscalationChains\Delete.cshtml" />
     <Content Include="Views\EscalationChains\Details.cshtml" />
     <Content Include="Views\EscalationChains\Edit.cshtml" />
     <Content Include="Views\EscalationChains\Index.cshtml" />
+    <Content Include="Views\AlertTypes\Create.cshtml" />
+    <Content Include="Views\AlertTypes\Delete.cshtml" />
+    <Content Include="Views\AlertTypes\Details.cshtml" />
+    <Content Include="Views\AlertTypes\Edit.cshtml" />
+    <Content Include="Views\AlertTypes\Index.cshtml" />
+    <Content Include="Views\EscalationChainLinks\Create.cshtml" />
+    <Content Include="Views\EscalationChainLinks\Delete.cshtml" />
+    <Content Include="Views\EscalationChainLinks\Details.cshtml" />
+    <Content Include="Views\EscalationChainLinks\Edit.cshtml" />
+    <Content Include="Views\EscalationChainLinks\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
