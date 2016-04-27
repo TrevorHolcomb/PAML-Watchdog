@@ -116,7 +116,7 @@ namespace WatchdogDaemon
                 AlertStatusId = 0
             };
             
-            dbContext.Alerts.Add(newAlert); //TODO: figure out how to make this change persist when using Moq
+            dbContext.Alerts.Add(newAlert);
             dbContext.SaveChanges();
         }
     }

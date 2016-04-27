@@ -7,8 +7,8 @@ namespace WatchdogDatabaseAccessLayer
 {
     public class WatchdogDatabaseContextMocker
     {
-        public static WatchdogDatabaseContext Mock(IEnumerable<Rule> rules,
-            IEnumerable<Message> messages)
+        public static WatchdogDatabaseContext Mock(ICollection<Rule> rules,
+            ICollection<Message> messages)
         {
 
             var mockRules = DbSetMocker.Mock<Rule>(rules);
@@ -23,12 +23,10 @@ namespace WatchdogDatabaseAccessLayer
 
             return mockedDbContext.Object;
         }
-
-
-
+       
         private static class DbSetMocker
         {
-            public static Mock<DbSet<T>> Mock<T>(IEnumerable<T> collection) where T : class
+            public static Mock<DbSet<T>> Mock<T>(ICollection<T> collection) where T : class
             {
                 var data = collection.AsQueryable();
 
@@ -38,9 +36,7 @@ namespace WatchdogDatabaseAccessLayer
                 mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(data.ElementType);
                 mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => data.GetEnumerator());
 
-                mockSet.Setup(e => e.Add(It.IsAny<T>())).Callback<T>(collection.ToList().Add);
-                mockSet.Setup(e => e.Add(It.IsAny<T>())).Returns<T>(e=>e);
-                
+                mockSet.Setup(e => e.Add(It.IsAny<T>())).Returns<T>(e=>e).Callback<T>(e => collection.Add(e));
                 
                 return mockSet;
             }

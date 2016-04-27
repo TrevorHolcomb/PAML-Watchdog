@@ -10,7 +10,7 @@ namespace WatchdogDaemon
 
         private Timer _pollingTimer;
         
-        private const int PollingRate = 5*1000;        //5 seconds for now
+        private const int PollingRate = 5*1000;        //5 seconds, for now
 
         public PollingWatchdog(WatchdogDatabaseContext dbContext, IRuleEngine ruleEngine) : base(dbContext, ruleEngine)
         {
