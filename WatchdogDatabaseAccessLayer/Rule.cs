@@ -27,12 +27,21 @@ namespace WatchdogDatabaseAccessLayer
         [StringLength(512)]
         public string RuleTrigger { get; set; }
 
+        [StringLength(128)]
+        public string Server { get; set; }
+
+        [StringLength(128)]
+        public string Origin { get; set; }
+
         public int EscalationChainId { get; set; }
         public virtual EscalationChain EscalationChain { get; set; }
 
         public int AlertTypeId { get; set; }
         public virtual AlertType AlertType { get; set; }
 
+        [Required]
+        public int MessageTypeId { get; set; }
+        public virtual MessageType MessageType { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Alert> Alerts { get; set; }

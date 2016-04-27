@@ -11,5 +11,7 @@ namespace WatchdogDaemon
     {
         public abstract void ConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages);
         public abstract void ConsumeMessage(Rule rule, Message message);
+
+        public WatchdogDatabaseContext dbContext { get; set; }  //so that the RuleEngine can create and insert alerts
     }
 }

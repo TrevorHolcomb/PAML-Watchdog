@@ -25,7 +25,13 @@ namespace WatchdogDaemon.Tests
                 {
                     Id = 0,
                     Name = "QueueTooSmall",
-                    RuleTrigger = "size < 100"
+                    RuleTrigger = @"{ ""lt"" : { ""size"" : ""1""}}"
+                },
+                new Rule
+                {
+                    Id = 1,
+                    Name = "QueueTooBig",
+                    RuleTrigger = @"{ ""gt"" : { ""size"" : ""3""}}"
                 }
             };
 
@@ -36,7 +42,7 @@ namespace WatchdogDaemon.Tests
                         Id = 1,
                         MessageTypeId = 0,
                         Origin = "Athens",
-                        Params = "size=1",
+                        Params = @"{""size"":""1""}",
                         Processed = false,
                         Server = "Homer"
                     },
@@ -46,7 +52,7 @@ namespace WatchdogDaemon.Tests
                         Id = 2,
                         MessageTypeId = 0,
                         Origin = "Delphi",
-                        Params = "size=3",
+                        Params = @"{""size"":""3""}",
                         Processed = false,
                         Server = "TheOracle"
                     },
@@ -56,7 +62,7 @@ namespace WatchdogDaemon.Tests
                         Id = 3,
                         MessageTypeId = 0,
                         Origin = "Macedonia",
-                        Params = "size=5",
+                        Params = @"{""size"":""5""}",
                         Processed = false,
                         Server = "Alexander"
                     }
@@ -67,9 +73,26 @@ namespace WatchdogDaemon.Tests
         [MemberData(nameof(TestData))]
         public void TestConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages)
         {
+            WatchdogDatabaseContext dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
+
             var ruleEngine = new RuleEngine();
+            ruleEngine.dbContext = dbContext;
             ruleEngine.ConsumeMessages(rules, messages);
             Assert.Empty(messages.Where(e => e.Processed == false));
+        }
+
+        [Theory]
+        [MemberData(nameof(TestData))]
+        public void TestProduceAlerts(ICollection<Rule> rules, ICollection<Message> messages)
+        {
+            WatchdogDatabaseContext dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
+            
+            var ruleEngine = new RuleEngine();
+            ruleEngine.dbContext = dbContext;
+            ruleEngine.ConsumeMessages(rules, messages);
+            int elements = dbContext.Alerts.Count();
+
+            Assert.NotEmpty(dbContext.Alerts);
         }
     }
 }
