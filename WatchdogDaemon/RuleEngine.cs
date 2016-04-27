@@ -109,14 +109,14 @@ namespace WatchdogDaemon
             Alert newAlert = new Alert
             {
                 Id = random.Next(),                             
-                AlertTypeId = 0,                                
+                AlertTypeId = rule.AlertTypeId,                                
                 RuleId = rule.Id,
                 Payload = "nuclear warhead",                    
                 Timestamp = DateTime.Now,
                 AlertStatusId = 0
             };
             
-            dbContext.Alerts.Add(newAlert); //TODO: figure out how to make this change persist when using Moq
+            dbContext.Alerts.Add(newAlert);
             dbContext.SaveChanges();
         }
     }

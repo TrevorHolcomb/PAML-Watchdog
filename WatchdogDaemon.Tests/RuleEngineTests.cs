@@ -10,8 +10,8 @@ namespace WatchdogDaemon.Tests
     {
         #region setup
 
-        public static TheoryData<ICollection<Rule>, ICollection<Message>> TestData => new TheoryData
-            <ICollection<Rule>, ICollection<Message>>
+        public static TheoryData<ICollection<Rule>, ICollection<Message>> TestData => 
+            new TheoryData <ICollection<Rule>, ICollection<Message>>
         {
             {
                 Rules1,
@@ -67,17 +67,24 @@ namespace WatchdogDaemon.Tests
                         Server = "Alexander"
                     }
             };
-#endregion 
+
+        public static ICollection<Alert> AlertsEmpty = new List<Alert>();
+
+        #endregion
 
         [Theory]
         [MemberData(nameof(TestData))]
         public void TestConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages)
         {
+            //Arrange
             WatchdogDatabaseContext dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
-
             var ruleEngine = new RuleEngine();
             ruleEngine.dbContext = dbContext;
+
+            //Act
             ruleEngine.ConsumeMessages(rules, messages);
+
+            //Assert
             Assert.Empty(messages.Where(e => e.Processed == false));
         }
 
@@ -85,14 +92,17 @@ namespace WatchdogDaemon.Tests
         [MemberData(nameof(TestData))]
         public void TestProduceAlerts(ICollection<Rule> rules, ICollection<Message> messages)
         {
+            //Arrange
             WatchdogDatabaseContext dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
-            
             var ruleEngine = new RuleEngine();
             ruleEngine.dbContext = dbContext;
-            ruleEngine.ConsumeMessages(rules, messages);
-            int elements = dbContext.Alerts.Count();
 
-            Assert.NotEmpty(dbContext.Alerts);
+            //Act
+            ruleEngine.ConsumeMessages(rules, messages);
+
+            //Assert
+            int numberOfAlerts = dbContext.Alerts.Count();
+            Assert.Equal(1, numberOfAlerts);
         }
     }
 }
