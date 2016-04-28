@@ -27,8 +27,38 @@ namespace AdministrationPortal.Controllers
             });
         }
 
+        // Get: Notifyees/EditNotifyee
+        public ActionResult EditNotifyee(int id)
+        {
+            ViewBag.NotifyeeGroupIds = new MultiSelectList(db.NotifyeeGroups, "Id", "Name");
+            return View("CreateNotifyee", db.Notifyees.Single(e => e.Id == id));
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditNotifyee(NotifyeesCreateNotifyeeViewModel vm)
+        {
+            // if no notifyee groups have been selected have an empty list to prevent null exception
+            if (vm.NotifyeeGroupIds == null)
+                vm.NotifyeeGroupIds = new int[] { };
 
+            var notifyee = db.Notifyees.Single(e => e.Id == vm.Id);
+            notifyee.Name = vm.Name;
+            notifyee.CellPhoneNumber = vm.CellPhoneNumber;
+            notifyee.Email = vm.Email;
+            notifyee.NotifyeeGroups.Clear();
+
+            db.NotifyeeGroups.ForEach(e => e.Notifyees.Remove(notifyee));
+
+            db.NotifyeeGroups
+                .Where(e => vm.NotifyeeGroupIds
+                .Contains(e.Id))
+                .ForEach(e => notifyee.NotifyeeGroups.Add(e));
+
+            db.SaveChanges();
+            ViewBag.NotifyeeGroupIds = new MultiSelectList(db.NotifyeeGroups, "Id", "Name");
+            return View("CreateNotifyee", notifyee);
+        }
         // GET: Notifyees/CreateNotifyee
         public ActionResult CreateNotifyeeGroup()
         {
@@ -38,6 +68,7 @@ namespace AdministrationPortal.Controllers
 
         public class NotifyeesCreateNotifyeeGroupViewModel
         {
+            public int Id { get; set; }
             public int[] NotifyeeIds { get; set; }
             public string Name { get; set; }
             public string Description { get; set; }
@@ -77,6 +108,7 @@ namespace AdministrationPortal.Controllers
 
         public class NotifyeesCreateNotifyeeViewModel
         {
+            public int Id { get; set; }
             public int[] NotifyeeGroupIds { get; set; }
             public string Name { get; set; }
             public string CellPhoneNumber { get; set; }
@@ -133,6 +165,23 @@ namespace AdministrationPortal.Controllers
             notifyee.NotifyeeGroups.Clear();
             db.SaveChanges();
             db.Notifyees.Remove(notifyee);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult DeleteNotifyeeGroup(int id)
+        {
+            return View(db.NotifyeeGroups.Single(e => e.Id == id));
+        }
+
+        [HttpPost, ActionName("DeleteNotifyeeGroup")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteNotifyeeGroupConfirmed(int id)
+        {
+            var group = db.NotifyeeGroups.Single(e => e.Id == id);
+            group.Notifyees.Clear();
+            db.SaveChanges();
+            db.NotifyeeGroups.Remove(group);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

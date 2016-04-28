@@ -310,6 +310,7 @@
     <Content Include="Views\Alerts\Index.cshtml" />
     <Content Include="Views\EscalationChains\EditLink.cshtml" />
     <Content Include="Views\Notifyees\CreateNotifyeeGroup.cshtml" />
+    <Content Include="Views\Notifyees\DeleteNotifyeeGroup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

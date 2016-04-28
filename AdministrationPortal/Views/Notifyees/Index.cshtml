@@ -1,4 +1,5 @@
-﻿@model AdministrationPortal.ViewModels.NotifyeesIndexViewModel
+﻿@using Xunit.Abstractions
+@model AdministrationPortal.ViewModels.NotifyeesIndexViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -31,7 +32,7 @@
             </ul>
         </td>
         <td>
-            
+            @Html.ActionLink("Delete","DeleteNotifyeeGroup", new {id = item.Id})
         </td>
     </tr>
 }
@@ -52,7 +53,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id }) | @Html.ActionLink("Edit", "EditNotifyee", new { id = item.Id })
             </td>
         </tr>
     }
