@@ -12,7 +12,7 @@ namespace WatchdogDaemon
         
         private const int PollingRate = 5*1000;        //5 seconds, for now
 
-        public PollingWatchdog(WatchdogDatabaseContext dbContext, IRuleEngine ruleEngine) : base(dbContext, ruleEngine)
+        public PollingWatchdog(WatchdogDatabaseContainer dbContext, IRuleEngine ruleEngine) : base(dbContext, ruleEngine)
         {
         }
 
@@ -35,7 +35,7 @@ namespace WatchdogDaemon
             Console.WriteLine("watchdog sees " + totalMessages.Count + " total messages");
 
             //ToList() forces .net to do the query and store in memory, otherwise, or with LINQ, the expression is lazy-evaluated and causes an error in the second loop
-            var messages = DbContext.Messages.Where<Message>(msg => !msg.Processed).ToList<Message>();
+            var messages = DbContext.Messages.Where<Message>(msg => !msg.IsProcessed).ToList<Message>();
             var rules = DbContext.Rules.Select<Rule, Rule>(e=>e).ToList<Rule>();
 
             RuleEngine.ConsumeMessages(rules, messages);

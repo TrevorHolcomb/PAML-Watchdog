@@ -12,7 +12,7 @@ namespace WatchdogDaemon
         {
             Console.WriteLine("Watchdog simulator started");
             //start consumer
-            AbstractWatchdog rex = new PollingWatchdog(new WatchdogDatabaseContext(), new RuleEngine());
+            AbstractWatchdog rex = new PollingWatchdog(new WatchdogDatabaseContainer(), new RuleEngine());
             rex.Watch();
 
             while (true) { }

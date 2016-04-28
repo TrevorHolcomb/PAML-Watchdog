@@ -17,11 +17,8 @@ namespace WatchdogMessageGenerator.Tests
             {
                 var message = factory.Build();
 
-                Assert.Contains(message.Origin, origins);
-                Assert.Contains(message.Server, servers);
-
-                var size = int.Parse(message.Params.Replace("size=", ""));
-                Assert.InRange(size, 0, QueueSizeMessageFactory.MaxSize);
+                Assert.Contains(message.Params, origins);
+                Assert.Contains(message.Params, servers);
             }
         }
 

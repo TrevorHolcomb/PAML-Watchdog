@@ -15,7 +15,7 @@ namespace WatchdogMessageGenerator
         [Option('c', "count", Required = true, HelpText = "The number of messages to create")]
         public int QueueSizeMessageCount { get; set; }
 
-        [Option('r',"reset", Required = false, DefaultValue = false, HelpText = "Reset the database")]
+        [Option('r',"reset", Required = false, DefaultValue = false, HelpText = "ReInserts the QueueSizeUpdateMessage MessageType")]
         public bool Reset { get; set; }
 
         [HelpOption]
@@ -50,11 +50,22 @@ namespace WatchdogMessageGenerator
 
         private static void GenerateMessages(Options options)
         {
-            using (var db = new WatchdogDatabaseContext())
+            using (var db = new WatchdogDatabaseContainer())
             {
                 if (options.Reset)
-                    Database.SetInitializer(new EntityBase());
-                
+                {
+                    db.MessageTypes.Add(new MessageType
+                    {
+                        Name = "QueueSizeUpdate",
+                        Description = "A regular update from the JMS queue containing the number of elements enqueued.",
+                        RequiredParameters = "['size']",
+                        OptionalParameters = "[]",
+                        Id = options.QueueSizeMessageTypeId
+                    });
+
+                    db.SaveChanges();
+                }
+
                 var factory = new QueueSizeMessageFactory(new[] {"socrates", "plato", "aristotle"},
                     new[] {"webapi", "cli"}, options.QueueSizeMessageTypeId);
 
