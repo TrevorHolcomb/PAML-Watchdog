@@ -10,6 +10,7 @@ namespace WatchdogDatabaseAccessLayer
 {
     public class EscalationChain
     {
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
@@ -21,6 +22,8 @@ namespace WatchdogDatabaseAccessLayer
         [StringLength(256)]
         public string Description { get; set; }
 
+        [Required]
+        [ForeignKey("EscalationChainLink")]
         public int EscalationChainLinkId { get; set; }
         public virtual EscalationChainLink EscalationChainLink { get; set; }
     }

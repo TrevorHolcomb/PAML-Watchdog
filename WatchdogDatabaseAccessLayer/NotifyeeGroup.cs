@@ -6,6 +6,7 @@ namespace WatchdogDatabaseAccessLayer
 {
     public partial class NotifyeeGroup
     {
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 

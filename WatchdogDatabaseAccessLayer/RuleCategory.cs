@@ -14,6 +14,7 @@ namespace WatchdogDatabaseAccessLayer
             Rules = new HashSet<Rule>();
         }
 
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
