@@ -91,6 +91,7 @@
     <Compile Include="EscalationChainLink.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="EscalationChains.cs" />
     <Compile Include="Message.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>

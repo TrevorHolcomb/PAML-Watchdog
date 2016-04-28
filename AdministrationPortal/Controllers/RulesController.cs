@@ -77,9 +77,9 @@ namespace AdministrationPortal.Controllers
             return RedirectToAction("Index");
 
             //ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategories);
-            ViewBag.EscalationChainId = new SelectList(db.EscalationChains, "Id", "Name", rule.EscalationChainId);
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
-            return View(rule);
+//            ViewBag.EscalationChainId = new SelectList(db.EscalationChains, "Id", "Name", rule.EscalationChainId);
+  //          ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
+    //        return View(rule);
         }
 
         // GET: Rules/Edit/5

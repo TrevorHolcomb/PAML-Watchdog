@@ -102,7 +102,7 @@ namespace WatchdogDaemon
             return operationToDo(leftOperand, rightOperand);
         }
 
-        //TODO: CreateAlert: increment and set alert ID, set correct AlertTypeId, Payload and AlertStatusId
+        //TODO: CreateAlert: set correct Payload (JSON of the message params)
         private void CreateAlert(Rule rule, Message message)
         {
             Alert newAlert = new Alert

@@ -41,30 +41,30 @@ namespace WatchdogDaemon.Tests
                     {
                         Id = 1,
                         MessageTypeId = 0,
-                        Origin = "Athens",
+                        //Origin = "Athens",
                         Params = @"{""size"":""1""}",
-                        Processed = false,
-                        Server = "Homer"
+                        IsProcessed = false,
+                        //Server = "Homer"
                     },
 
                     new Message
                     {
                         Id = 2,
                         MessageTypeId = 0,
-                        Origin = "Delphi",
+                        //Origin = "Delphi",
                         Params = @"{""size"":""3""}",
-                        Processed = false,
-                        Server = "TheOracle"
+                        IsProcessed = false,
+                        //Server = "TheOracle"
                     },
 
                     new Message
                     {
                         Id = 3,
                         MessageTypeId = 0,
-                        Origin = "Macedonia",
+                        //Origin = "Macedonia",
                         Params = @"{""size"":""5""}",
-                        Processed = false,
-                        Server = "Alexander"
+                        IsProcessed = false,
+                        //Server = "Alexander"
                     }
             };
 
@@ -77,7 +77,7 @@ namespace WatchdogDaemon.Tests
         public void TestConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages)
         {
             //Arrange
-            WatchdogDatabaseContext dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
+            WatchdogDatabaseContainer dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
             var ruleEngine = new RuleEngine();
             ruleEngine.dbContext = dbContext;
 
@@ -85,7 +85,7 @@ namespace WatchdogDaemon.Tests
             ruleEngine.ConsumeMessages(rules, messages);
 
             //Assert
-            Assert.Empty(messages.Where(e => e.Processed == false));
+            Assert.Empty(messages.Where(e => e.IsProcessed == false));
         }
 
         [Theory]
@@ -93,7 +93,7 @@ namespace WatchdogDaemon.Tests
         public void TestProduceAlerts(ICollection<Rule> rules, ICollection<Message> messages)
         {
             //Arrange
-            WatchdogDatabaseContext dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
+            WatchdogDatabaseContainer dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
             var ruleEngine = new RuleEngine();
             ruleEngine.dbContext = dbContext;
 
