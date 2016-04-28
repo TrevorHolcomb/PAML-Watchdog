@@ -10,8 +10,7 @@ namespace WatchdogDatabaseAccessLayer
         {
             using (var db = new WatchdogDatabaseContainer())
             {
-                db.MessageTypes.RemoveRange(db.MessageTypes.ToList());
-                db.Messages.RemoveRange(db.Messages.ToList());
+                Reset(db);
 
                 var mt = db.MessageTypes.Add(new MessageType
                 {
@@ -29,7 +28,15 @@ namespace WatchdogDatabaseAccessLayer
                     Params = "{'size':0}"
                 });
                 db.SaveChanges();
+
+                Reset(db);
             }
+        }
+
+        private static void Reset(WatchdogDatabaseContainer db)
+        {
+            db.MessageTypes.RemoveRange(db.MessageTypes.ToList());
+            db.Messages.RemoveRange(db.Messages.ToList());
         }
     }
 }

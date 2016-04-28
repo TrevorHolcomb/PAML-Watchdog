@@ -28,8 +28,48 @@ namespace AdministrationPortal.Controllers
         }
 
 
-        // GET: Notifyees/Create
-        public ActionResult Create()
+
+        // GET: Notifyees/CreateNotifyee
+        public ActionResult CreateNotifyeeGroup()
+        {
+            ViewBag.NotifyeeIds = new MultiSelectList(db.Notifyees, "Id", "Name");
+            return View();
+        }
+
+        public class NotifyeesCreateNotifyeeGroupViewModel
+        {
+            public int[] NotifyeeIds { get; set; }
+            public string Name { get; set; }
+            public string Description { get; set; }
+        }
+
+
+        // POST: Notifyees/CreateNotifyee
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateNotifyeeGroup(NotifyeesCreateNotifyeeGroupViewModel vm)
+        {
+            // If no Notifyees have been selected have an empty list to prevent null exception
+            if (vm.NotifyeeIds == null)
+                vm.NotifyeeIds = new int[] {};
+
+            var notifyees = db.Notifyees.Where(e => vm.NotifyeeIds.Contains(e.Id)).ToList();
+            var notifyeeGroup = new NotifyeeGroup
+            {
+                Name = vm.Name,
+                Description = vm.Description,
+                Notifyees = notifyees,
+            };
+
+            db.NotifyeeGroups.Add(notifyeeGroup);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        // GET: Notifyees/CreateNotifyee
+        public ActionResult CreateNotifyee()
         {
             ViewBag.NotifyeeGroupIds = new MultiSelectList(db.NotifyeeGroups, "Id", "Name");
             return View();
@@ -43,13 +83,17 @@ namespace AdministrationPortal.Controllers
             public string Email { get; set; }
         }
 
-        // POST: Notifyees/Create
+        // POST: Notifyees/CreateNotifyee
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(NotifyeesCreateNotifyeeViewModel vm)
+        public ActionResult CreateNotifyee(NotifyeesCreateNotifyeeViewModel vm)
         {
+            // if no notifyee groups have been selected have an empty list to prevent null exception
+            if(vm.NotifyeeGroupIds == null)
+                vm.NotifyeeGroupIds = new int[] {};
+
             var notifyeeGroups = db.NotifyeeGroups.Where(e => vm.NotifyeeGroupIds.Contains(e.Id)).ToList();
             var notifyee = new Notifyee
             {
@@ -62,7 +106,6 @@ namespace AdministrationPortal.Controllers
             db.Notifyees.Add(notifyee);
             db.SaveChanges();
             return RedirectToAction("Index");
-
         }
         
         // GET: Notifyees/Delete/5

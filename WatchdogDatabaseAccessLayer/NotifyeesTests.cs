@@ -15,11 +15,7 @@ namespace WatchdogDatabaseAccessLayer
         {
             using (var db = new WatchdogDatabaseContainer())
             {
-                db.NotifyeeGroups.ToList().ForEach(e => e.Notifyees.Clear());
-                db.SaveChanges();
-                db.NotifyeeGroups.RemoveRange(db.NotifyeeGroups.ToList());
-                db.Notifyees.RemoveRange(db.Notifyees.ToList());
-                db.SaveChanges();
+                Reset(db);
 
                 var Person1 = new Notifyee
                 {
@@ -59,8 +55,19 @@ namespace WatchdogDatabaseAccessLayer
                 db.NotifyeeGroups.Add(GroupA);
                 db.NotifyeeGroups.Add(GroupB);
                 db.SaveChanges();
+
+                Reset(db);
             }
 
+        }
+
+        private static void Reset(WatchdogDatabaseContainer db)
+        {
+            db.NotifyeeGroups.ToList().ForEach(e => e.Notifyees.Clear());
+            db.SaveChanges();
+            db.NotifyeeGroups.RemoveRange(db.NotifyeeGroups.ToList());
+            db.Notifyees.RemoveRange(db.Notifyees.ToList());
+            db.SaveChanges();
         }
     }
 }
