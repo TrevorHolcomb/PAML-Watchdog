@@ -13,6 +13,7 @@ namespace WatchdogDatabaseAccessLayer
             Messages = new HashSet<Message>();
         }
 
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 

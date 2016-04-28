@@ -8,14 +8,19 @@ namespace WatchdogDatabaseAccessLayer
 
     public partial class Alert
     {
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("Id")]
         public int Id { get; set; }
 
+        [Required]
+        [ForeignKey("AlertType")]
         [Column("AlertTypeId")]
         public int AlertTypeId { get; set; }
         public virtual AlertType AlertType { get; set; }
 
+        [Required]
+        [ForeignKey("Rule")]
         [Column("RuleId")]
         public int RuleId { get; set; }
 
@@ -24,8 +29,9 @@ namespace WatchdogDatabaseAccessLayer
         [Column("Payload")]
         public string Payload { get; set; }
 
+        [Timestamp]
         [Column("Timestamp")]
-        public DateTime Timestamp { get; set; }
+        public byte[] Timestamp { get; set; }
 
         [Column("AlertStatusId")]
         public int AlertStatusId { get; set; }
