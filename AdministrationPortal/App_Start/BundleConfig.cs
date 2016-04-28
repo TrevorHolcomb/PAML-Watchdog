@@ -24,8 +24,9 @@ namespace AdministrationPortal
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Styles/css/bootstrap.css",
+                      "~/Styles/css/site.css",
+                      "~/Content/font-awesome/css/font-awesome.css"));
         }
     }
 }
