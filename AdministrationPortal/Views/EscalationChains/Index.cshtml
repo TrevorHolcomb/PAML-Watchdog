@@ -18,8 +18,18 @@
         <ol>
             @for (var root = @chain.EscalationChainRootLink; root != null; root = root.NextLink)
             {
-                <li>@root.NotifyeeGroup.Name</li>
+                if (root.NotifyeeGroup != null)
+                {
+                    <li>@root.NotifyeeGroup.Name</li>
+                }
+                else
+                {
+                    <li>Null</li>
+                }
             }
         </ol>
+
+        @Html.ActionLink("Edit","Edit",new {id=chain.Id})
+        @Html.ActionLink("Delete", "Delete", new { id = chain.Id })
     </div>
 }

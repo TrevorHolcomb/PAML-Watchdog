@@ -104,7 +104,7 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="NotifyeeGroup_Id" Type="int" Nullable="false" />
+    <Property Name="NotifyeeGroup_Id" Type="int" Nullable="true" />
     <Property Name="PreviousLink_Id" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="Notifyees">
@@ -206,7 +206,7 @@
   </Association>
   <Association Name="EscalationChainLinkNotifyeeGroup">
     <End Role="EscalationChainLink" Type="WatchdogDatabase.Store.EscalationChainLinks" Multiplicity="*" />
-    <End Role="NotifyeeGroup" Type="WatchdogDatabase.Store.NotifyeeGroups" Multiplicity="1" />
+    <End Role="NotifyeeGroup" Type="WatchdogDatabase.Store.NotifyeeGroups" Multiplicity="0..1" />
     <ReferentialConstraint>
       <Principal Role="NotifyeeGroup">
         <PropertyRef Name="Id" />
@@ -480,7 +480,7 @@
         </Association>
         <Association Name="EscalationChainLinkNotifyeeGroup">
           <End Type="WatchdogDatabase.EscalationChainLink" Role="EscalationChainLink" Multiplicity="*" />
-          <End Type="WatchdogDatabase.NotifyeeGroup" Role="NotifyeeGroup" Multiplicity="1" />
+          <End Type="WatchdogDatabase.NotifyeeGroup" Role="NotifyeeGroup" Multiplicity="0..1" />
         </Association>
         <EntityType Name="Rule">
           <Key>
@@ -724,6 +724,7 @@
       <EndProperty Name="EscalationChainLink">
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
+      <Condition ColumnName="NotifyeeGroup_Id" IsNull="false" />
     </AssociationSetMapping>
     <AssociationSetMapping Name="EscalationChainLinkEscalationChainLink" TypeName="WatchdogDatabase.EscalationChainLinkEscalationChainLink" StoreEntitySet="EscalationChainLinks">
       <EndProperty Name="EscalationChainLink">

@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/28/2016 00:00:03
+-- Date Created: 04/28/2016 03:53:20
 -- Generated from EDMX file: C:\Users\RowleyJohn\Documents\Visual Studio 2015\Projects\paml-watchdog\WatchdogDatabaseAccessLayer\WatchdogDatabase.edmx
 -- --------------------------------------------------
 
@@ -133,7 +133,7 @@ GO
 -- Creating table 'EscalationChainLinks'
 CREATE TABLE [dbo].[EscalationChainLinks] (
     [Id] int IDENTITY(1,1) NOT NULL,
-    [NotifyeeGroup_Id] int  NOT NULL,
+    [NotifyeeGroup_Id] int  NULL,
     [PreviousLink_Id] int  NULL
 );
 GO

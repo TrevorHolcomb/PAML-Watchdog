@@ -44,8 +44,16 @@ namespace AdministrationPortal.Controllers
         // GET: Notifyees/Create
         public ActionResult Create()
         {
-            ViewBag.NotifyeeGroupId = new SelectList(db.NotifyeeGroups, "Id", "Name");
+            ViewBag.NotifyeeGroupIds = new MultiSelectList(db.NotifyeeGroups, "Id", "Name");
             return View();
+        }
+
+        public class NotifyeesCreateNotifyeeViewModel
+        {
+            public int[] NotifyeeGroupIds { get; set; }
+            public string Name { get; set; }
+            public string CellPhoneNumber { get; set; }
+            public string Email { get; set; }
         }
 
         // POST: Notifyees/Create
@@ -53,16 +61,21 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Name,Email,NotifyeeGroupId")] Notifyee notifyee)
+        public ActionResult Create(NotifyeesCreateNotifyeeViewModel vm)
         {
-            if (ModelState.IsValid)
+            var notifyeeGroups = db.NotifyeeGroups.Where(e => vm.NotifyeeGroupIds.Contains(e.Id)).ToList();
+            var notifyee = new Notifyee
             {
-                db.Notifyees.Add(notifyee);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
+                Name = vm.Name,
+                Email = vm.Email,
+                CellPhoneNumber = vm.CellPhoneNumber,
+                NotifyeeGroups = notifyeeGroups,
+            };
 
-            return View(notifyee);
+            db.Notifyees.Add(notifyee);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+
         }
 
         // GET: Notifyees/Edit/5
