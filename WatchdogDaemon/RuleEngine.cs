@@ -19,7 +19,7 @@ namespace WatchdogDaemon
                 {
                     ConsumeMessage(rule, message);
                 }
-                message.Processed = true;
+                message.IsProcessed = true;
 
                 //for debugging/simulation
                 Console.WriteLine("Consumed: " + message.Id);
@@ -105,15 +105,13 @@ namespace WatchdogDaemon
         //TODO: CreateAlert: increment and set alert ID, set correct AlertTypeId, Payload and AlertStatusId
         private void CreateAlert(Rule rule, Message message)
         {
-            Random random = new Random();
             Alert newAlert = new Alert
-            {
-                Id = random.Next(),                             
+            {                             
                 AlertTypeId = rule.AlertTypeId,                                
                 RuleId = rule.Id,
                 Payload = "nuclear warhead",                    
                 Timestamp = DateTime.Now,
-                AlertStatusId = 0
+                Status = (int) AlertStatus.UnAcknowledged,
             };
             
             dbContext.Alerts.Add(newAlert);

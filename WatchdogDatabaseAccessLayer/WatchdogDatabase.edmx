@@ -1,0 +1,776 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="WatchdogDatabase.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="WatchdogDatabaseStoreContainer">
+    <EntitySet Name="Messages" EntityType="WatchdogDatabase.Store.Messages" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="MessageTypes" EntityType="WatchdogDatabase.Store.MessageTypes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="EscalationChains" EntityType="WatchdogDatabase.Store.EscalationChains" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="EscalationChainLinks" EntityType="WatchdogDatabase.Store.EscalationChainLinks" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Notifyees" EntityType="WatchdogDatabase.Store.Notifyees" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="NotifyeeGroups" EntityType="WatchdogDatabase.Store.NotifyeeGroups" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Rules" EntityType="WatchdogDatabase.Store.Rules" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AlertTypes" EntityType="WatchdogDatabase.Store.AlertTypes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Alerts" EntityType="WatchdogDatabase.Store.Alerts" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RuleCategories" EntityType="WatchdogDatabase.Store.RuleCategories" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="NotifyeeNotifyeeGroup" EntityType="WatchdogDatabase.Store.NotifyeeNotifyeeGroup" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RuleRuleCategory" EntityType="WatchdogDatabase.Store.RuleRuleCategory" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="MessageMessageType" Association="WatchdogDatabase.Store.MessageMessageType">
+      <End Role="Message" EntitySet="Messages" />
+      <End Role="MessageType" EntitySet="MessageTypes" />
+    </AssociationSet>
+    <AssociationSet Name="EscalationChainEscalationChainLink" Association="WatchdogDatabase.Store.EscalationChainEscalationChainLink">
+      <End Role="EscalationChain" EntitySet="EscalationChains" />
+      <End Role="EscalationChainLink" EntitySet="EscalationChainLinks" />
+    </AssociationSet>
+    <AssociationSet Name="FK_NotifyeeNotifyeeGroup_Notifyee" Association="WatchdogDatabase.Store.FK_NotifyeeNotifyeeGroup_Notifyee">
+      <End Role="Notifyee" EntitySet="Notifyees" />
+      <End Role="NotifyeeNotifyeeGroup" EntitySet="NotifyeeNotifyeeGroup" />
+    </AssociationSet>
+    <AssociationSet Name="FK_NotifyeeNotifyeeGroup_NotifyeeGroup" Association="WatchdogDatabase.Store.FK_NotifyeeNotifyeeGroup_NotifyeeGroup">
+      <End Role="NotifyeeGroup" EntitySet="NotifyeeGroups" />
+      <End Role="NotifyeeNotifyeeGroup" EntitySet="NotifyeeNotifyeeGroup" />
+    </AssociationSet>
+    <AssociationSet Name="EscalationChainLinkNotifyeeGroup" Association="WatchdogDatabase.Store.EscalationChainLinkNotifyeeGroup">
+      <End Role="EscalationChainLink" EntitySet="EscalationChainLinks" />
+      <End Role="NotifyeeGroup" EntitySet="NotifyeeGroups" />
+    </AssociationSet>
+    <AssociationSet Name="EscalationChainRule" Association="WatchdogDatabase.Store.EscalationChainRule">
+      <End Role="Rule" EntitySet="Rules" />
+      <End Role="EscalationChain" EntitySet="EscalationChains" />
+    </AssociationSet>
+    <AssociationSet Name="EscalationChainLinkEscalationChainLink" Association="WatchdogDatabase.Store.EscalationChainLinkEscalationChainLink">
+      <End Role="EscalationChainLink" EntitySet="EscalationChainLinks" />
+      <End Role="EscalationChainLink1" EntitySet="EscalationChainLinks" />
+    </AssociationSet>
+    <AssociationSet Name="RuleMessageType" Association="WatchdogDatabase.Store.RuleMessageType">
+      <End Role="Rule" EntitySet="Rules" />
+      <End Role="MessageType" EntitySet="MessageTypes" />
+    </AssociationSet>
+    <AssociationSet Name="AlertAlertType" Association="WatchdogDatabase.Store.AlertAlertType">
+      <End Role="Alert" EntitySet="Alerts" />
+      <End Role="AlertType" EntitySet="AlertTypes" />
+    </AssociationSet>
+    <AssociationSet Name="AlertTypeRule" Association="WatchdogDatabase.Store.AlertTypeRule">
+      <End Role="AlertType" EntitySet="AlertTypes" />
+      <End Role="Rule" EntitySet="Rules" />
+    </AssociationSet>
+    <AssociationSet Name="AlertRule" Association="WatchdogDatabase.Store.AlertRule">
+      <End Role="Alert" EntitySet="Alerts" />
+      <End Role="Rule" EntitySet="Rules" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RuleRuleCategory_Rule" Association="WatchdogDatabase.Store.FK_RuleRuleCategory_Rule">
+      <End Role="Rule" EntitySet="Rules" />
+      <End Role="RuleRuleCategory" EntitySet="RuleRuleCategory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RuleRuleCategory_RuleCategory" Association="WatchdogDatabase.Store.FK_RuleRuleCategory_RuleCategory">
+      <End Role="RuleCategory" EntitySet="RuleCategories" />
+      <End Role="RuleRuleCategory" EntitySet="RuleRuleCategory" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Messages">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Params" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="MessageTypeId" Type="int" Nullable="false" />
+    <Property Name="IsProcessed" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="MessageTypes">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RequiredParameters" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="OptionalParameters" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="EscalationChains">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="EscalationChainRootLink_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="EscalationChainLinks">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NotifyeeGroup_Id" Type="int" Nullable="true" />
+    <Property Name="PreviousLink_Id" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Notifyees">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="CellPhoneNumber" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="NotifyeeGroups">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Rules">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RuleTrigger" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="EscalationChainId" Type="int" Nullable="false" />
+    <Property Name="AlertTypeId" Type="int" Nullable="false" />
+    <Property Name="MessageType_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AlertTypes">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Alerts">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Payload" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Timestamp" Type="datetime" Nullable="false" />
+    <Property Name="AlertTypeId" Type="int" Nullable="false" />
+    <Property Name="RuleId" Type="int" Nullable="false" />
+    <Property Name="Notes" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Status" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RuleCategories">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="NotifyeeNotifyeeGroup">
+    <Key>
+      <PropertyRef Name="Notifyees_Id" />
+      <PropertyRef Name="NotifyeeGroups_Id" />
+    </Key>
+    <Property Name="Notifyees_Id" Type="int" Nullable="false" />
+    <Property Name="NotifyeeGroups_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RuleRuleCategory">
+    <Key>
+      <PropertyRef Name="Rules_Id" />
+      <PropertyRef Name="RuleCategories_Id" />
+    </Key>
+    <Property Name="Rules_Id" Type="int" Nullable="false" />
+    <Property Name="RuleCategories_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="MessageMessageType">
+    <End Role="Message" Type="WatchdogDatabase.Store.Messages" Multiplicity="*" />
+    <End Role="MessageType" Type="WatchdogDatabase.Store.MessageTypes" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="MessageType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Message">
+        <PropertyRef Name="MessageTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="EscalationChainEscalationChainLink">
+    <End Role="EscalationChain" Type="WatchdogDatabase.Store.EscalationChains" Multiplicity="*" />
+    <End Role="EscalationChainLink" Type="WatchdogDatabase.Store.EscalationChainLinks" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="EscalationChainLink">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="EscalationChain">
+        <PropertyRef Name="EscalationChainRootLink_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="EscalationChainLinkNotifyeeGroup">
+    <End Role="EscalationChainLink" Type="WatchdogDatabase.Store.EscalationChainLinks" Multiplicity="*" />
+    <End Role="NotifyeeGroup" Type="WatchdogDatabase.Store.NotifyeeGroups" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="NotifyeeGroup">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="EscalationChainLink">
+        <PropertyRef Name="NotifyeeGroup_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="EscalationChainRule">
+    <End Role="Rule" Type="WatchdogDatabase.Store.Rules" Multiplicity="*" />
+    <End Role="EscalationChain" Type="WatchdogDatabase.Store.EscalationChains" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="EscalationChain">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Rule">
+        <PropertyRef Name="EscalationChainId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="EscalationChainLinkEscalationChainLink">
+    <End Role="EscalationChainLink" Type="WatchdogDatabase.Store.EscalationChainLinks" Multiplicity="0..1" />
+    <End Role="EscalationChainLink1" Type="WatchdogDatabase.Store.EscalationChainLinks" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EscalationChainLink">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="EscalationChainLink1">
+        <PropertyRef Name="PreviousLink_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="RuleMessageType">
+    <End Role="Rule" Type="WatchdogDatabase.Store.Rules" Multiplicity="*" />
+    <End Role="MessageType" Type="WatchdogDatabase.Store.MessageTypes" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="MessageType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Rule">
+        <PropertyRef Name="MessageType_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AlertAlertType">
+    <End Role="Alert" Type="WatchdogDatabase.Store.Alerts" Multiplicity="*" />
+    <End Role="AlertType" Type="WatchdogDatabase.Store.AlertTypes" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="AlertType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Alert">
+        <PropertyRef Name="AlertTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AlertTypeRule">
+    <End Role="AlertType" Type="WatchdogDatabase.Store.AlertTypes" Multiplicity="1" />
+    <End Role="Rule" Type="WatchdogDatabase.Store.Rules" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AlertType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Rule">
+        <PropertyRef Name="AlertTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AlertRule">
+    <End Role="Alert" Type="WatchdogDatabase.Store.Alerts" Multiplicity="*" />
+    <End Role="Rule" Type="WatchdogDatabase.Store.Rules" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Rule">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Alert">
+        <PropertyRef Name="RuleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_NotifyeeNotifyeeGroup_Notifyee">
+    <End Role="Notifyee" Type="WatchdogDatabase.Store.Notifyees" Multiplicity="1" />
+    <End Role="NotifyeeNotifyeeGroup" Type="WatchdogDatabase.Store.NotifyeeNotifyeeGroup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Notifyee">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="NotifyeeNotifyeeGroup">
+        <PropertyRef Name="Notifyees_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_NotifyeeNotifyeeGroup_NotifyeeGroup">
+    <End Role="NotifyeeNotifyeeGroup" Type="WatchdogDatabase.Store.NotifyeeNotifyeeGroup" Multiplicity="*" />
+    <End Role="NotifyeeGroup" Type="WatchdogDatabase.Store.NotifyeeGroups" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="NotifyeeGroup">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="NotifyeeNotifyeeGroup">
+        <PropertyRef Name="NotifyeeGroups_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_RuleRuleCategory_Rule">
+    <End Role="Rule" Type="WatchdogDatabase.Store.Rules" Multiplicity="1" />
+    <End Role="RuleRuleCategory" Type="WatchdogDatabase.Store.RuleRuleCategory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Rule">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RuleRuleCategory">
+        <PropertyRef Name="Rules_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_RuleRuleCategory_RuleCategory">
+    <End Role="RuleRuleCategory" Type="WatchdogDatabase.Store.RuleRuleCategory" Multiplicity="*" />
+    <End Role="RuleCategory" Type="WatchdogDatabase.Store.RuleCategories" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="RuleCategory">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RuleRuleCategory">
+        <PropertyRef Name="RuleCategories_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="WatchdogDatabase" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="WatchdogDatabaseContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Messages" EntityType="WatchdogDatabase.Message" />
+          <EntitySet Name="MessageTypes" EntityType="WatchdogDatabase.MessageType" />
+          <AssociationSet Name="MessageMessageType" Association="WatchdogDatabase.MessageMessageType">
+            <End Role="Message" EntitySet="Messages" />
+            <End Role="MessageType" EntitySet="MessageTypes" />
+          </AssociationSet>
+          <EntitySet Name="EscalationChains" EntityType="WatchdogDatabase.EscalationChain" />
+          <EntitySet Name="EscalationChainLinks" EntityType="WatchdogDatabase.EscalationChainLink" />
+          <AssociationSet Name="EscalationChainEscalationChainLink" Association="WatchdogDatabase.EscalationChainEscalationChainLink">
+            <End Role="EscalationChain" EntitySet="EscalationChains" />
+            <End Role="EscalationChainLink" EntitySet="EscalationChainLinks" />
+          </AssociationSet>
+          <EntitySet Name="Notifyees" EntityType="WatchdogDatabase.Notifyee" />
+          <EntitySet Name="NotifyeeGroups" EntityType="WatchdogDatabase.NotifyeeGroup" />
+          <AssociationSet Name="NotifyeeNotifyeeGroup" Association="WatchdogDatabase.NotifyeeNotifyeeGroup">
+            <End Role="Notifyee" EntitySet="Notifyees" />
+            <End Role="NotifyeeGroup" EntitySet="NotifyeeGroups" />
+          </AssociationSet>
+          <AssociationSet Name="EscalationChainLinkNotifyeeGroup" Association="WatchdogDatabase.EscalationChainLinkNotifyeeGroup">
+            <End Role="EscalationChainLink" EntitySet="EscalationChainLinks" />
+            <End Role="NotifyeeGroup" EntitySet="NotifyeeGroups" />
+          </AssociationSet>
+          <EntitySet Name="Rules" EntityType="WatchdogDatabase.Rule" />
+          <AssociationSet Name="EscalationChainRule" Association="WatchdogDatabase.EscalationChainRule">
+            <End Role="Rule" EntitySet="Rules" />
+            <End Role="EscalationChain" EntitySet="EscalationChains" />
+          </AssociationSet>
+          <EntitySet Name="AlertTypes" EntityType="WatchdogDatabase.AlertType" />
+          <AssociationSet Name="EscalationChainLinkEscalationChainLink" Association="WatchdogDatabase.EscalationChainLinkEscalationChainLink">
+            <End Role="EscalationChainLink" EntitySet="EscalationChainLinks" />
+            <End Role="EscalationChainLink1" EntitySet="EscalationChainLinks" />
+          </AssociationSet>
+          <AssociationSet Name="RuleMessageType" Association="WatchdogDatabase.RuleMessageType">
+            <End Role="Rule" EntitySet="Rules" />
+            <End Role="MessageType" EntitySet="MessageTypes" />
+          </AssociationSet>
+          <EntitySet Name="Alerts" EntityType="WatchdogDatabase.Alert" />
+          <AssociationSet Name="AlertAlertType" Association="WatchdogDatabase.AlertAlertType">
+            <End Role="Alert" EntitySet="Alerts" />
+            <End Role="AlertType" EntitySet="AlertTypes" />
+          </AssociationSet>
+          <AssociationSet Name="AlertTypeRule" Association="WatchdogDatabase.AlertTypeRule">
+            <End Role="AlertType" EntitySet="AlertTypes" />
+            <End Role="Rule" EntitySet="Rules" />
+          </AssociationSet>
+          <AssociationSet Name="AlertRule" Association="WatchdogDatabase.AlertRule">
+            <End Role="Alert" EntitySet="Alerts" />
+            <End Role="Rule" EntitySet="Rules" />
+          </AssociationSet>
+          <EntitySet Name="RuleCategories" EntityType="WatchdogDatabase.RuleCategory" />
+          <AssociationSet Name="RuleRuleCategory" Association="WatchdogDatabase.RuleRuleCategory">
+            <End Role="Rule" EntitySet="Rules" />
+            <End Role="RuleCategory" EntitySet="RuleCategories" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Params" Type="String" Nullable="false" />
+          <NavigationProperty Name="MessageType" Relationship="WatchdogDatabase.MessageMessageType" FromRole="Message" ToRole="MessageType" />
+          <Property Name="MessageTypeId" Type="Int32" Nullable="false" />
+          <Property Name="IsProcessed" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MessageType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" />
+          <Property Name="RequiredParameters" Type="String" Nullable="false" />
+          <Property Name="OptionalParameters" Type="String" Nullable="false" />
+          <NavigationProperty Name="Messages" Relationship="WatchdogDatabase.MessageMessageType" FromRole="MessageType" ToRole="Message" />
+          <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.RuleMessageType" FromRole="MessageType" ToRole="Rule" />
+        </EntityType>
+        <Association Name="MessageMessageType">
+          <End Type="WatchdogDatabase.Message" Role="Message" Multiplicity="*" />
+          <End Type="WatchdogDatabase.MessageType" Role="MessageType" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="MessageType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="MessageTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EscalationChain">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" />
+          <NavigationProperty Name="EscalationChainRootLink" Relationship="WatchdogDatabase.EscalationChainEscalationChainLink" FromRole="EscalationChain" ToRole="EscalationChainLink" />
+          <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.EscalationChainRule" FromRole="EscalationChain" ToRole="Rule" />
+        </EntityType>
+        <EntityType Name="EscalationChainLink">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="EscalationChain" Relationship="WatchdogDatabase.EscalationChainEscalationChainLink" FromRole="EscalationChainLink" ToRole="EscalationChain" />
+          <NavigationProperty Name="NotifyeeGroup" Relationship="WatchdogDatabase.EscalationChainLinkNotifyeeGroup" FromRole="EscalationChainLink" ToRole="NotifyeeGroup" />
+          <NavigationProperty Name="NextLink" Relationship="WatchdogDatabase.EscalationChainLinkEscalationChainLink" FromRole="EscalationChainLink" ToRole="EscalationChainLink1" />
+          <NavigationProperty Name="PreviousLink" Relationship="WatchdogDatabase.EscalationChainLinkEscalationChainLink" FromRole="EscalationChainLink1" ToRole="EscalationChainLink" />
+        </EntityType>
+        <Association Name="EscalationChainEscalationChainLink">
+          <End Type="WatchdogDatabase.EscalationChain" Role="EscalationChain" Multiplicity="0..1" />
+          <End Type="WatchdogDatabase.EscalationChainLink" Role="EscalationChainLink" Multiplicity="1" />
+        </Association>
+        <EntityType Name="Notifyee">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Email" Type="String" Nullable="false" />
+          <Property Name="CellPhoneNumber" Type="String" Nullable="false" />
+          <NavigationProperty Name="NotifyeeGroups" Relationship="WatchdogDatabase.NotifyeeNotifyeeGroup" FromRole="Notifyee" ToRole="NotifyeeGroup" />
+        </EntityType>
+        <EntityType Name="NotifyeeGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Notifyees" Relationship="WatchdogDatabase.NotifyeeNotifyeeGroup" FromRole="NotifyeeGroup" ToRole="Notifyee" />
+          <NavigationProperty Name="EscalationChainLinks" Relationship="WatchdogDatabase.EscalationChainLinkNotifyeeGroup" FromRole="NotifyeeGroup" ToRole="EscalationChainLink" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" />
+        </EntityType>
+        <Association Name="NotifyeeNotifyeeGroup">
+          <End Type="WatchdogDatabase.Notifyee" Role="Notifyee" Multiplicity="*" />
+          <End Type="WatchdogDatabase.NotifyeeGroup" Role="NotifyeeGroup" Multiplicity="*" />
+        </Association>
+        <Association Name="EscalationChainLinkNotifyeeGroup">
+          <End Type="WatchdogDatabase.EscalationChainLink" Role="EscalationChainLink" Multiplicity="*" />
+          <End Type="WatchdogDatabase.NotifyeeGroup" Role="NotifyeeGroup" Multiplicity="0..1" />
+        </Association>
+        <EntityType Name="Rule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" />
+          <Property Name="RuleTrigger" Type="String" Nullable="false" />
+          <NavigationProperty Name="EscalationChain" Relationship="WatchdogDatabase.EscalationChainRule" FromRole="Rule" ToRole="EscalationChain" />
+          <Property Name="EscalationChainId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="MessageType" Relationship="WatchdogDatabase.RuleMessageType" FromRole="Rule" ToRole="MessageType" />
+          <NavigationProperty Name="AlertType" Relationship="WatchdogDatabase.AlertTypeRule" FromRole="Rule" ToRole="AlertType" />
+          <Property Name="AlertTypeId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Alerts" Relationship="WatchdogDatabase.AlertRule" FromRole="Rule" ToRole="Alert" />
+          <NavigationProperty Name="RuleCategories" Relationship="WatchdogDatabase.RuleRuleCategory" FromRole="Rule" ToRole="RuleCategory" />
+        </EntityType>
+        <Association Name="EscalationChainRule">
+          <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="*" />
+          <End Type="WatchdogDatabase.EscalationChain" Role="EscalationChain" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="EscalationChain">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Rule">
+              <PropertyRef Name="EscalationChainId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AlertType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" />
+          <NavigationProperty Name="Alerts" Relationship="WatchdogDatabase.AlertAlertType" FromRole="AlertType" ToRole="Alert" />
+          <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.AlertTypeRule" FromRole="AlertType" ToRole="Rule" />
+        </EntityType>
+        <Association Name="EscalationChainLinkEscalationChainLink">
+          <End Type="WatchdogDatabase.EscalationChainLink" Role="EscalationChainLink" Multiplicity="0..1" />
+          <End Type="WatchdogDatabase.EscalationChainLink" Role="EscalationChainLink1" Multiplicity="0..1" />
+        </Association>
+        <Association Name="RuleMessageType">
+          <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="*" />
+          <End Type="WatchdogDatabase.MessageType" Role="MessageType" Multiplicity="1" />
+        </Association>
+        <EntityType Name="Alert">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Payload" Type="String" Nullable="false" />
+          <Property Name="Timestamp" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="AlertType" Relationship="WatchdogDatabase.AlertAlertType" FromRole="Alert" ToRole="AlertType" />
+          <Property Name="AlertTypeId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Rule" Relationship="WatchdogDatabase.AlertRule" FromRole="Alert" ToRole="Rule" />
+          <Property Name="RuleId" Type="Int32" Nullable="false" />
+          <Property Name="Notes" Type="String" Nullable="false" />
+          <Property Name="Status" Type="WatchdogDatabase.AlertStatus" Nullable="false" />
+        </EntityType>
+        <Association Name="AlertAlertType">
+          <End Type="WatchdogDatabase.Alert" Role="Alert" Multiplicity="*" />
+          <End Type="WatchdogDatabase.AlertType" Role="AlertType" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="AlertType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Alert">
+              <PropertyRef Name="AlertTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AlertTypeRule">
+          <End Type="WatchdogDatabase.AlertType" Role="AlertType" Multiplicity="1" />
+          <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AlertType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Rule">
+              <PropertyRef Name="AlertTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AlertRule">
+          <End Type="WatchdogDatabase.Alert" Role="Alert" Multiplicity="*" />
+          <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Rule">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Alert">
+              <PropertyRef Name="RuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="RuleCategory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" />
+          <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.RuleRuleCategory" FromRole="RuleCategory" ToRole="Rule" />
+        </EntityType>
+        <Association Name="RuleRuleCategory">
+          <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="*" />
+          <End Type="WatchdogDatabase.RuleCategory" Role="RuleCategory" Multiplicity="*" />
+        </Association>
+        <EnumType Name="AlertStatus">
+          <Member Name="UnAcknowledged" Value="0" />
+          <Member Name="Acknowledged" Value="1" />
+          <Member Name="Resolved" Value="2" />
+        </EnumType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="WatchdogDatabaseStoreContainer" CdmEntityContainer="WatchdogDatabaseContainer">
+    <EntitySetMapping Name="Messages">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.Message)">
+        <MappingFragment StoreEntitySet="Messages">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Params" ColumnName="Params" />
+          <ScalarProperty Name="MessageTypeId" ColumnName="MessageTypeId" />
+          <ScalarProperty Name="IsProcessed" ColumnName="IsProcessed" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MessageTypes">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.MessageType)">
+        <MappingFragment StoreEntitySet="MessageTypes">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="RequiredParameters" ColumnName="RequiredParameters" />
+          <ScalarProperty Name="OptionalParameters" ColumnName="OptionalParameters" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EscalationChains">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.EscalationChain)">
+        <MappingFragment StoreEntitySet="EscalationChains">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EscalationChainLinks">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.EscalationChainLink)">
+        <MappingFragment StoreEntitySet="EscalationChainLinks">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Notifyees">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.Notifyee)">
+        <MappingFragment StoreEntitySet="Notifyees">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="CellPhoneNumber" ColumnName="CellPhoneNumber" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="NotifyeeGroups">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.NotifyeeGroup)">
+        <MappingFragment StoreEntitySet="NotifyeeGroups">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Rules">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.Rule)">
+        <MappingFragment StoreEntitySet="Rules">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="RuleTrigger" ColumnName="RuleTrigger" />
+          <ScalarProperty Name="EscalationChainId" ColumnName="EscalationChainId" />
+          <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AlertTypes">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.AlertType)">
+        <MappingFragment StoreEntitySet="AlertTypes">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Alerts">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.Alert)">
+        <MappingFragment StoreEntitySet="Alerts">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Payload" ColumnName="Payload" />
+          <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+          <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />
+          <ScalarProperty Name="RuleId" ColumnName="RuleId" />
+          <ScalarProperty Name="Notes" ColumnName="Notes" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RuleCategories">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.RuleCategory)">
+        <MappingFragment StoreEntitySet="RuleCategories">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="EscalationChainEscalationChainLink" TypeName="WatchdogDatabase.EscalationChainEscalationChainLink" StoreEntitySet="EscalationChains">
+      <EndProperty Name="EscalationChainLink">
+        <ScalarProperty Name="Id" ColumnName="EscalationChainRootLink_Id" />
+      </EndProperty>
+      <EndProperty Name="EscalationChain">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="NotifyeeNotifyeeGroup" TypeName="WatchdogDatabase.NotifyeeNotifyeeGroup" StoreEntitySet="NotifyeeNotifyeeGroup">
+      <EndProperty Name="Notifyee">
+        <ScalarProperty Name="Id" ColumnName="Notifyees_Id" />
+      </EndProperty>
+      <EndProperty Name="NotifyeeGroup">
+        <ScalarProperty Name="Id" ColumnName="NotifyeeGroups_Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="EscalationChainLinkNotifyeeGroup" TypeName="WatchdogDatabase.EscalationChainLinkNotifyeeGroup" StoreEntitySet="EscalationChainLinks">
+      <EndProperty Name="NotifyeeGroup">
+        <ScalarProperty Name="Id" ColumnName="NotifyeeGroup_Id" />
+      </EndProperty>
+      <EndProperty Name="EscalationChainLink">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+      <Condition ColumnName="NotifyeeGroup_Id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="EscalationChainLinkEscalationChainLink" TypeName="WatchdogDatabase.EscalationChainLinkEscalationChainLink" StoreEntitySet="EscalationChainLinks">
+      <EndProperty Name="EscalationChainLink">
+        <ScalarProperty Name="Id" ColumnName="PreviousLink_Id" />
+      </EndProperty>
+      <EndProperty Name="EscalationChainLink1">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+      <Condition ColumnName="PreviousLink_Id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="RuleMessageType" TypeName="WatchdogDatabase.RuleMessageType" StoreEntitySet="Rules">
+      <EndProperty Name="MessageType">
+        <ScalarProperty Name="Id" ColumnName="MessageType_Id" />
+      </EndProperty>
+      <EndProperty Name="Rule">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="RuleRuleCategory" TypeName="WatchdogDatabase.RuleRuleCategory" StoreEntitySet="RuleRuleCategory">
+      <EndProperty Name="Rule">
+        <ScalarProperty Name="Id" ColumnName="Rules_Id" />
+      </EndProperty>
+      <EndProperty Name="RuleCategory">
+        <ScalarProperty Name="Id" ColumnName="RuleCategories_Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WatchdogDatabaseAccessLayer.Notifyee>
+﻿@model AdministrationPortal.ViewModels.NotifyeesIndexViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -12,35 +12,48 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            Groups
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Email)
-        </th>
-        <td>
-            @Html.DisplayNameFor(model => model.NotifyeeGroup.Name)
-        </td>
-
-        <th></th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model.NotifyeeGroups) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Name)
+            <ul>
+                @foreach (var notifyee in item.Notifyees)
+                {
+                    <li>
+                        @notifyee.Name
+                    </li>
+                }
+            </ul>
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.NotifyeeGroup.Name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            
         </td>
     </tr>
 }
+
+</table>
+
+<table class="table">
+    <tr>
+        <th>
+            All
+        </th>
+    </tr>
+
+    @foreach (var item in Model.Notifyees)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
 
 </table>

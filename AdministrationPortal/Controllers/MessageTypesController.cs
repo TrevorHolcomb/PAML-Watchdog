@@ -13,7 +13,7 @@ namespace AdministrationPortal.Controllers
 {
     public class MessageTypesController : Controller
     {
-        private readonly WatchdogDatabaseContext _db = new WatchdogDatabaseContext();
+        private readonly WatchdogDatabaseContainer _db = new WatchdogDatabaseContainer();
 
         // GET: MessageTypes
         public async Task<ActionResult> Index()
@@ -47,7 +47,7 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Name,Description,RequiredParams,OptionalParams")] MessageType messageType)
+        public async Task<ActionResult> Create([Bind(Include = "Name,Description,RequiredParameters,OptionalParameters")] MessageType messageType)
         {
             if (ModelState.IsValid)
             {

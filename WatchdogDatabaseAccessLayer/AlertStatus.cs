@@ -10,19 +10,11 @@
 namespace WatchdogDatabaseAccessLayer
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class Alert
+    public enum AlertStatus : int
     {
-        public int Id { get; set; }
-        public string Payload { get; set; }
-        public System.DateTime Timestamp { get; set; }
-        public int AlertTypeId { get; set; }
-        public int RuleId { get; set; }
-        public string Notes { get; set; }
-        public AlertStatus Status { get; set; }
-    
-        public virtual AlertType AlertType { get; set; }
-        public virtual Rule Rule { get; set; }
+        UnAcknowledged = 0,
+        Acknowledged = 1,
+        Resolved = 2
     }
 }

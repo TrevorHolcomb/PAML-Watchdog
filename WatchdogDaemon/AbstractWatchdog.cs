@@ -5,7 +5,7 @@ namespace WatchdogDaemon
 {
     public abstract class AbstractWatchdog : IDisposable
     {
-        protected AbstractWatchdog(WatchdogDatabaseContext dbContext, IRuleEngine ruleEngine)
+        protected AbstractWatchdog(WatchdogDatabaseContainer dbContext, IRuleEngine ruleEngine)
         {
             DbContext = dbContext;
             RuleEngine = ruleEngine;
@@ -13,7 +13,7 @@ namespace WatchdogDaemon
             RuleEngine.dbContext = dbContext;       //bleh
         }
 
-        public WatchdogDatabaseContext DbContext { get; set; }
+        public WatchdogDatabaseContainer DbContext { get; set; }
         protected readonly IRuleEngine RuleEngine;
 
         public void Dispose()
