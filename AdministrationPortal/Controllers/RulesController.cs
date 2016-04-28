@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -8,12 +9,12 @@ namespace AdministrationPortal.Controllers
 {
     public class RulesController : Controller
     {
-        private WatchdogDatabaseContext db = new WatchdogDatabaseContext();
+        private WatchdogDatabaseContainer db = new WatchdogDatabaseContainer();
 
         // GET: Rules
         public async Task<ActionResult> Index()
         {
-            var rules = db.Rules.Include(r => r.RuleCategory);
+            var rules = db.Rules.Include(r => r.RuleCategories);
             return View(await rules.ToListAsync());
         }
 
@@ -35,26 +36,48 @@ namespace AdministrationPortal.Controllers
         // GET: Rules/Create
         public ActionResult Create()
         {
-            ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name");
+            ViewBag.EscalationChainId = new SelectList(db.EscalationChains, "Id", "Name");
             ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name");
+            ViewBag.MessageTypeId = new SelectList(db.MessageTypes, "Id", "Name");
             return View();
         }
 
+        
+        
         // POST: Rules/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        public class RuleCreateViewModel
+        {
+            public int AlertTypeId { get; set; }
+            public int MessageTypeId { get; set; }
+            public string Name { get; set; }
+            public string Description { get; set; }
+            public int EscalationChainId { get; set; }
+            public string RuleTrigger { get; set; }
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Name,RuleCategoryId,RuleTrigger,EscalationChainId,AlertTypeId")] Rule rule)
+        public ActionResult Create(RuleCreateViewModel ruleCreateViewModel)
         {
-            if (ModelState.IsValid)
+            var rule = new Rule
             {
-                db.Rules.Add(rule);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
+                AlertType = db.AlertTypes.Single(e => e.Id == ruleCreateViewModel.AlertTypeId),
+                AlertTypeId = ruleCreateViewModel.AlertTypeId,
+                Name = ruleCreateViewModel.Name,
+                Description = ruleCreateViewModel.Description,
+                MessageType = db.MessageTypes.Single(e => e.Id == ruleCreateViewModel.MessageTypeId),
+                EscalationChain = db.EscalationChains.Single(e => e.Id == ruleCreateViewModel.EscalationChainId),
+                RuleTrigger = ruleCreateViewModel.RuleTrigger,
+            };
 
-            ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategoryId);
+            db.Rules.Add(rule);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+
+            //ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategories);
+            ViewBag.EscalationChainId = new SelectList(db.EscalationChains, "Id", "Name", rule.EscalationChainId);
             ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
             return View(rule);
         }
@@ -71,8 +94,8 @@ namespace AdministrationPortal.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategoryId);
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
+            //ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategoryId);
+            //ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
             return View(rule);
         }
 
@@ -90,8 +113,8 @@ namespace AdministrationPortal.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategoryId);
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
+            //ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategoryId);
+            //ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
 
             return View(rule);
         }

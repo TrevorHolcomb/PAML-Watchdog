@@ -6,18 +6,19 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using AdministrationPortal.ViewModels;
 using WatchdogDatabaseAccessLayer;
 
 namespace AdministrationPortal.Controllers
 {
     public class EscalationChainLinksController : Controller
     {
-        private WatchdogDatabaseContext db = new WatchdogDatabaseContext();
+        private WatchdogDatabaseContainer db = new WatchdogDatabaseContainer();
 
         // GET: EscalationChainLinks
         public ActionResult Index()
         {
-            var escalationChainLinks = db.EscalationChainLinks.Include(e => e.NextEscalationChainLink).Include(e => e.NotifyeeGroup);
+            var escalationChainLinks = db.EscalationChainLinks.Include(e => e.NextLink).Include(e => e.NotifyeeGroup);
             return View(escalationChainLinks.ToList());
         }
 
@@ -39,8 +40,9 @@ namespace AdministrationPortal.Controllers
         // GET: EscalationChainLinks/Create
         public ActionResult Create()
         {
-            ViewBag.NextEscalationChainLinkId = new SelectList(db.EscalationChainLinks, "Id", "Id");
+            ViewBag.PreviousEscalationChainLinkId = new SelectList(db.EscalationChainLinks, "Id", "Id");
             ViewBag.NotifyeeGroupId = new SelectList(db.NotifyeeGroups, "Id", "Name");
+
             return View();
         }
 
@@ -49,8 +51,17 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,NextEscalationChainLinkId,NotifyeeGroupId")] EscalationChainLink escalationChainLink)
+        public ActionResult Create(EscalationChainLinksCreateViewModel chainLinksCreateViewModel)
         {
+            var escalationChainLink = new EscalationChainLink
+            {
+                PreviousLink =
+                    db.EscalationChainLinks.SingleOrDefault(
+                        e => e.Id == chainLinksCreateViewModel.PreviousEscalationChainLinkId),
+                NotifyeeGroup =
+                    db.NotifyeeGroups.SingleOrDefault(e => e.Id == chainLinksCreateViewModel.NotifyeeGroupId)
+            };
+
             if (ModelState.IsValid)
             {
                 db.EscalationChainLinks.Add(escalationChainLink);
@@ -58,8 +69,9 @@ namespace AdministrationPortal.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.NextEscalationChainLinkId = new SelectList(db.EscalationChainLinks, "Id", "Id", escalationChainLink.NextEscalationChainLinkId);
-            ViewBag.NotifyeeGroupId = new SelectList(db.NotifyeeGroups, "Id", "Name", escalationChainLink.NotifyeeGroupId);
+            ViewBag.PreviousEscalationChainLinkId = new SelectList(db.EscalationChainLinks, "Id", "Id", escalationChainLink.NextLink);
+            ViewBag.NotifyeeGroupId = new SelectList(db.NotifyeeGroups, "Id", "Name", escalationChainLink.NotifyeeGroup);
+
             return View(escalationChainLink);
         }
 
@@ -75,8 +87,8 @@ namespace AdministrationPortal.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.NextEscalationChainLinkId = new SelectList(db.EscalationChainLinks, "Id", "Id", escalationChainLink.NextEscalationChainLinkId);
-            ViewBag.NotifyeeGroupId = new SelectList(db.NotifyeeGroups, "Id", "Name", escalationChainLink.NotifyeeGroupId);
+            //ViewBag.NextEscalationChainLinkId = new SelectList(db.EscalationChainLinks, "Id", "Id", escalationChainLink.NextEscalationChainLinkId);
+            //ViewBag.NotifyeeGroupId = new SelectList(db.NotifyeeGroups, "Id", "Name", escalationChainLink.NotifyeeGroupId);
             return View(escalationChainLink);
         }
 
@@ -93,8 +105,8 @@ namespace AdministrationPortal.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.NextEscalationChainLinkId = new SelectList(db.EscalationChainLinks, "Id", "Id", escalationChainLink.NextEscalationChainLinkId);
-            ViewBag.NotifyeeGroupId = new SelectList(db.NotifyeeGroups, "Id", "Name", escalationChainLink.NotifyeeGroupId);
+            //ViewBag.NextEscalationChainLinkId = new SelectList(db.EscalationChainLinks, "Id", "Id", escalationChainLink.NextEscalationChainLinkId);
+            //ViewBag.NotifyeeGroupId = new SelectList(db.NotifyeeGroups, "Id", "Name", escalationChainLink.NotifyeeGroupId);
             return View(escalationChainLink);
         }
 

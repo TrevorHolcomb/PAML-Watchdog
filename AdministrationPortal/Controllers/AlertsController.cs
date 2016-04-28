@@ -12,7 +12,7 @@ namespace AdministrationPortal.Controllers
 {
     public class AlertsController : Controller
     {
-        private WatchdogDatabaseContext db = new WatchdogDatabaseContext();
+        private WatchdogDatabaseContainer db = new WatchdogDatabaseContainer();
 
         // GET: Alerts
         public ActionResult Index()

@@ -13,7 +13,7 @@ namespace AdministrationPortal.Controllers
 {
     public class MessageTypesController : Controller
     {
-        private readonly WatchdogDatabaseContext _db = new WatchdogDatabaseContext();
+        private readonly WatchdogDatabaseContainer _db = new WatchdogDatabaseContainer();
 
         // GET: MessageTypes
         public async Task<ActionResult> Index()

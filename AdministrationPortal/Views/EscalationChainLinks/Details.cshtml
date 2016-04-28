@@ -11,11 +11,22 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.NextEscalationChainLink.Id)
+            Next Chain Link Id
         </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.NextEscalationChainLink.Id)
+            @Html.DisplayFor(model => model.NextLink.Id)
+        </dd>
+        <dt>
+            Chain Link Id
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt>
+            Previous Chain Link Id
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PreviousLink.Id)
         </dd>
 
         <dt>

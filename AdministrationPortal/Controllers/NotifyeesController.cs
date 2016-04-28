@@ -7,18 +7,23 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using AdministrationPortal.ViewModels;
 using WatchdogDatabaseAccessLayer;
 
 namespace AdministrationPortal.Controllers
 {
     public class NotifyeesController : Controller
     {
-        private WatchdogDatabaseContext db = new WatchdogDatabaseContext();
+        private WatchdogDatabaseContainer db = new WatchdogDatabaseContainer();
 
         // GET: Notifyees
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            return View(await db.Notifyees.ToListAsync());
+            return View(new NotifyeesIndexViewModel
+            {
+                NotifyeeGroups = db.NotifyeeGroups.ToList(),
+                Notifyees = db.Notifyees.ToList()
+            });
         }
 
         // GET: Notifyees/Details/5
@@ -62,6 +67,21 @@ namespace AdministrationPortal.Controllers
 
         // GET: Notifyees/Edit/5
         public async Task<ActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Notifyee notifyee = await db.Notifyees.FindAsync(id);
+            if (notifyee == null)
+            {
+                return HttpNotFound();
+            }
+            return View(notifyee);
+        }
+
+        // GET: Notifyees/Edit/5
+        public async Task<ActionResult> EditGroup(int? id)
         {
             if (id == null)
             {

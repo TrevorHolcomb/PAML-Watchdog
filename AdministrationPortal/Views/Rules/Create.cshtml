@@ -14,14 +14,6 @@
     <div class="form-horizontal">
         <h4>Rule</h4>
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -31,11 +23,12 @@
             </div>
         </div>
 
+
         <div class="form-group">
-            @Html.LabelFor(model => model.RuleCategoryId, "RuleCategoryId", htmlAttributes: new {@class = "control-label col-md-2"})
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("RuleCategoryId", null, htmlAttributes: new {@class = "form-control"})
-                @Html.ValidationMessageFor(model => model.RuleCategoryId, "", new {@class = "text-danger"})
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -50,8 +43,16 @@
         <div class="form-group">
             @Html.LabelFor(model => model.EscalationChainId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.EscalationChainId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownList("EscalationChainId", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.EscalationChainId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MessageType, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("MessageTypeId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.MessageType, "", new { @class = "text-danger" })
             </div>
         </div>
 

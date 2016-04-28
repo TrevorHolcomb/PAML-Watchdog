@@ -13,7 +13,7 @@ namespace AdministrationPortal.Controllers
 {
     public class NotifyeeGroupsController : Controller
     {
-        private WatchdogDatabaseContext db = new WatchdogDatabaseContext();
+        private WatchdogDatabaseContainer db = new WatchdogDatabaseContainer();
 
         // GET: NotifyeeGroups
         public async Task<ActionResult> Index()

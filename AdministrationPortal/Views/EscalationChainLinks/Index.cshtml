@@ -15,6 +15,9 @@
             @Html.DisplayNameFor(model => model.Id)
         </th>
         <th>
+            Previous Link Id
+        </th>
+        <th>
             Next Link Id
         </th>
         <th>
@@ -29,7 +32,10 @@
             @Html.DisplayFor(modelItem => item.Id)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.NextEscalationChainLink.Id)
+            @Html.DisplayFor(modelItem => item.PreviousLink.Id)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NextLink.Id)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.NotifyeeGroup.Name)
