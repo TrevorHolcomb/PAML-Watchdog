@@ -75,11 +75,6 @@ namespace AdministrationPortal.Controllers
             db.Rules.Add(rule);
             db.SaveChanges();
             return RedirectToAction("Index");
-
-            //ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategories);
-            ViewBag.EscalationChainId = new SelectList(db.EscalationChains, "Id", "Name", rule.EscalationChainId);
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
-            return View(rule);
         }
 
         // GET: Rules/Edit/5
@@ -94,8 +89,7 @@ namespace AdministrationPortal.Controllers
             {
                 return HttpNotFound();
             }
-            //ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategoryId);
-            //ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
+
             return View(rule);
         }
 
