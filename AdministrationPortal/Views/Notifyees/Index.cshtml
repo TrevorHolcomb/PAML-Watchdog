@@ -31,7 +31,7 @@
             </ul>
         </td>
         <td>
-            
+            @Html.ActionLink("Delete","DeleteNotifyeeGroup", new {id = item.Id}) | @Html.ActionLink("Edit", "EditNotifyeeGroup", new { id = item.Id })
         </td>
     </tr>
 }
@@ -45,14 +45,14 @@
         </th>
     </tr>
 
-    @foreach (var item in Model.Notifyees)
+    @foreach (var notifyee in Model.Notifyees)
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => notifyee.Name)
             </td>
             <td>
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                @Html.ActionLink("Delete", "DeleteNotifyee", new { id = notifyee.Id }) | @Html.ActionLink("Edit", "EditNotifyee", new { id = notifyee.Id })
             </td>
         </tr>
     }
