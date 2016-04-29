@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/28/2016 03:53:20
--- Generated from EDMX file: C:\Users\RowleyJohn\Documents\Visual Studio 2015\Projects\paml-watchdog\WatchdogDatabaseAccessLayer\WatchdogDatabase.edmx
+-- Date Created: 04/28/2016 22:42:56
+-- Generated from EDMX file: E:\Users\tgb\Documents\Visual Studio 2015\Projects\paml-watchdog\WatchdogDatabaseAccessLayer\WatchdogDatabase.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
