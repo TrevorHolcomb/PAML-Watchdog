@@ -8,12 +8,33 @@ namespace WatchdogDatabaseAccessLayer
 {
     public class SchemataTests
     {
+        public static TheoryData<string, bool> data = new TheoryData<string, bool>
+        {
+            {
+                @"{
+                    ""Server"":""testserver"",
+                    ""MessageTypeId"":0,
+                    ""Params"":""testParam""
+                }",
+                true
+            },
+            {
+                @"{
+                    ""asdfasdf"":""no bueno"",
+                    ""MessageTypeId"":0,
+                    ""Params"":""testParam""
+                }",
+                false
+            }
+
+        };
         //this test demonstrates two ways to create and use schema: programmatically, and through deserialization of a Json schema stored in a string
-        [Fact]
-        public void TestMessageSchema()
+        [Theory]
+        [MemberData(nameof(data))]
+        public void TestMessageSchema(string data, bool isValidData)
         {
             //Arrange
-            ObjectSchema ProgrammaticallyCreatedSchema = new ObjectSchema
+            ObjectSchema programmaticallyCreatedSchema = new ObjectSchema
             {
                 Properties = new JsonSchemaPropertyDefinitionCollection
                 {
@@ -34,40 +55,26 @@ namespace WatchdogDatabaseAccessLayer
                     }
                 }
             };
+            
 
-            string ValidTestMessage =
-                @"{
-                    ""Server"":""testserver"",
-                    ""MessageTypeId"":0,
-                    ""Params"":""testParam""
-                }";
-
-            string InvalidTestMessage =
-                @"{
-                    ""asdfasdf"":""no bueno"",
-                    ""MessageTypeId"":0,
-                    ""Params"":""testParam""
-                }";
-
-            JsonValue ValidTestMessageJson = JsonValue.Parse(ValidTestMessage);
-            JsonValue InvalidTestMessageJson = JsonValue.Parse(InvalidTestMessage);
-
-            IJsonSchema DeserializedFromJsonSchema = Schemata.MessageSchema;
+            JsonValue validTestMessageJson = JsonValue.Parse(data);
+            IJsonSchema deserializedFromJsonSchema = Schemata.MessageSchema;
 
 
             //Act
-            bool isValid = ProgrammaticallyCreatedSchema.Validate(ValidTestMessageJson).Valid;
-            bool isInvalid = ProgrammaticallyCreatedSchema.Validate(InvalidTestMessageJson).Valid;
+            bool isValid = programmaticallyCreatedSchema.Validate(validTestMessageJson).Valid;
+            bool isValid2 = deserializedFromJsonSchema.Validate(validTestMessageJson).Valid;
 
-            bool isValid2 = DeserializedFromJsonSchema.Validate(ValidTestMessageJson).Valid;
-            bool isInvalid2 = DeserializedFromJsonSchema.Validate(InvalidTestMessageJson).Valid;
-
-
-            //Assert
-            Assert.True(isValid);
-            Assert.False(isInvalid);
-            Assert.True(isValid2);
-            Assert.False(isInvalid2);
+            if (isValidData)
+            {
+                Assert.True(isValid);
+                Assert.True(isValid2);
+            }
+            else
+            {
+                Assert.False(isValid2);
+                Assert.False(isValid2);
+            }
         }
     }
 }
