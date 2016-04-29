@@ -20,9 +20,6 @@ namespace AdministrationPortal.Controllers
             });
         }
 
-<<<<<<< HEAD
-
-
         // GET: Notifyees/CreateNotifyee
         public ActionResult CreateNotifyeeGroup()
         {
@@ -69,11 +66,9 @@ namespace AdministrationPortal.Controllers
             return View();
         }
 
-        public class NotifyeesCreateNotifyeeViewModel
-=======
+        //public class NotifyeesCreateNotifyeeViewModel
         #region Notifyees
         public class NotifyeeViewModel
->>>>>>> 6bc08f2014ae9d85bd17fa92cbe65a101ae44e73
         {
             public int Id { get; set; }
             public int[] NotifyeeGroupIds { get; set; }
@@ -82,16 +77,14 @@ namespace AdministrationPortal.Controllers
             public string Email { get; set; }
         }
 
-<<<<<<< HEAD
         // POST: Notifyees/CreateNotifyee
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult CreateNotifyee(NotifyeesCreateNotifyeeViewModel vm)
-        {
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult CreateNotifyee(NotifyeesCreateNotifyeeViewModel vm)
+        //{
             // if no notifyee groups have been selected have an empty list to prevent null exception
-=======
         // GET: Notifyees/EditNotifyee/4
         public ActionResult EditNotifyee(int id)
         {
@@ -123,19 +116,12 @@ namespace AdministrationPortal.Controllers
         }
         
 
-        // GET: Notifyees/CreateNotifyee
-        public ActionResult CreateNotifyee()
-        {
-            ViewBag.NotifyeeGroupIds = new MultiSelectList(db.NotifyeeGroups, "Id", "Name");
-            return View();
-        }
         // POST: Notifyees/CreateNotifyee
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult CreateNotifyee(NotifyeeViewModel vm)
         {
             // if no notifyee groups have been selected have an empty list to prevent null exception
->>>>>>> 6bc08f2014ae9d85bd17fa92cbe65a101ae44e73
             if(vm.NotifyeeGroupIds == null)
                 vm.NotifyeeGroupIds = new int[] {};
 
@@ -221,13 +207,6 @@ namespace AdministrationPortal.Controllers
             return View("CreateNotifyeeGroup", notifyeeGroup);
         }
 
-
-        // GET: Notifyees/CreateNotifyeeGroup
-        public ActionResult CreateNotifyeeGroup()
-        {
-            ViewBag.NotifyeeIds = new MultiSelectList(db.Notifyees, "Id", "Name");
-            return View();
-        }
         // POST: Notifyees/CreateNotifyeeGroup
         [HttpPost]
         [ValidateAntiForgeryToken]
