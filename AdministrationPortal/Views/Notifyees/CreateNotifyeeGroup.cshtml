@@ -35,7 +35,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Notifyees, "NotifyeeGroupId", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.ListBox("NotifyeeIds", (MultiSelectList)ViewBag.NotifyeeIds, htmlAttributes: new { @class = "form-control" })
+                @Html.ListBox("NotifyeeIds", (MultiSelectList)ViewBag.NotifyeeIds, htmlAttributes: new { @class = "form-control",multiple = "multiple" })
                 @Html.ValidationMessageFor(model => model.Notifyees, "", new { @class = "text-danger" })
             </div>
         </div>

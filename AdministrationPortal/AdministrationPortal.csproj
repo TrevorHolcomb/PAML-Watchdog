@@ -272,7 +272,7 @@
     <Content Include="Views\RuleCategories\Edit.cshtml" />
     <Content Include="Views\RuleCategories\Index.cshtml" />
     <Content Include="Views\Notifyees\CreateNotifyee.cshtml" />
-    <Content Include="Views\Notifyees\Delete.cshtml" />
+    <Content Include="Views\Notifyees\DeleteNotifyee.cshtml" />
     <Content Include="Views\Notifyees\Index.cshtml" />
     <Content Include="Views\EscalationChains\Delete.cshtml" />
     <Content Include="Views\EscalationChains\Edit.cshtml" />
