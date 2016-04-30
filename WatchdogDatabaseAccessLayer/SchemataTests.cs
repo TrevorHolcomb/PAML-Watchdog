@@ -12,28 +12,43 @@ namespace WatchdogDatabaseAccessLayer
         {
             {
                 @"{
-                    ""server"": ""testserver"",
-                    ""origin"": ""testland"",
-                    ""messageTypeId"": 0,
+                    ""server"":""Some Server"",
+                    ""origin"":""Main System"",
+                    ""messageTypeId"":0,
                     ""params"":{
-                        ""testKey"": ""testValue""
+                        ""queueSize"":100
                     }
                 }",
                 true
             },
             {
                 @"{
-                    ""asdfasdf"": ""no bueno"",
-                    ""origin"": ""testland"",
+                    ""asdfasdf"":""Some Server"",
+                    ""origin"":""Main System"",
                     ""messageTypeId"":0,
-                    ""params"": {
-                        ""testKey"": ""testValue""
+                    ""params"":{
+                        ""queueSize"":100
                     }
                 }",
                 false
             }
-
         };
+
+        public static TheoryData<string, bool> queueSizeData = new TheoryData<string, bool>
+        {
+            {
+                @"{
+                    ""asdfasdf"":""Some Server"",
+                    ""origin"":""Main System"",
+                    ""messageTypeId"":2,
+                    ""params"":{
+                        ""queueSize"":100
+                    }
+                }",
+                false
+            }
+        };
+
         //this test demonstrates two ways to create and use schema: programmatically, and through deserialization of a Json schema stored in a string
         [Theory]
         [MemberData(nameof(data))]
@@ -86,43 +101,24 @@ namespace WatchdogDatabaseAccessLayer
             }
         }
 
-        [Fact]
-        public void TestQueueSizeMessageSchema()
+        [Theory]
+        [MemberData(nameof(data))]
+        [MemberData(nameof(queueSizeData))]
+        public void TestQueueSizeMessageSchema(string data, bool isValidData)
         {
             //Arrange
-            string ValidQueueSizeMessageJson = @"{
-                    ""server"":""Some Server"",
-                    ""origin"":""Main System"",
-                    ""messageTypeId"":0,
-                    ""params"":{
-                        ""queueSize"":100
-                    }
-                }";
 
-            string InvalidQueueSizeMessageJson = @"{
-                    ""server"":""Some Server"",
-                    ""origin"":""Main System"",
-                    ""messageTypeId"":2,
-                    ""params"":{
-                        ""queueSize"":100
-                    }
-                }";
-
-            JsonValue ValidQueueSizeMessage = JsonValue.Parse(ValidQueueSizeMessageJson);
-            JsonValue InvalidQueueSizeMessage = JsonValue.Parse(InvalidQueueSizeMessageJson);
+            JsonValue ValidQueueSizeMessage = JsonValue.Parse(data);
 
             //Act
             Boolean isValid = Schemata.MessageSchema.Validate(ValidQueueSizeMessage).Valid;
             isValid &= Schemata.QuerySizeMessageSchema.Validate(ValidQueueSizeMessage).Valid;
-
-            Boolean isInvalid = Schemata.MessageSchema.Validate(InvalidQueueSizeMessage).Valid;
-            isInvalid &= Schemata.QuerySizeMessageSchema.Validate(InvalidQueueSizeMessageJson).Valid;
-
-            double? messageType = JsonValue.Parse(ValidQueueSizeMessageJson).Object.TryGetNumber("messageTypeId");
-            
+           
             //Assert
-            Assert.True(isValid);
-            Assert.False(isInvalid);
+            if (isValidData)
+                Assert.True(isValid);
+            else
+                Assert.False(isValid);
         }
     }
 }
