@@ -3,18 +3,21 @@
   "title": "Queue Size Message Schema",
   "description": "schema for validating queue size messages",
   "type": "object",
+  "required": [ "messageTypeId", "params" ],
+  "properties": {
+    "messageTypeId": {
+      "type": "integer",
+      "maximum": 0
+    },
+    "params": {
+      "type": "object",
+      "required": [ "queueSize" ],
       "properties": {
-        "messageTypeId": {
+        "queueSize": {
           "type": "integer",
-          "maximum": 0
-        },
-        "params": {
-          "type": "object",
-          "queueSize": {
-            "type": "integer",
-            "minimum": 0
-          }
+          "minimum": 0
         }
-      },
-  "required": [ "messageTypeId", "params" ]
+      }
+    }
+  }
 }

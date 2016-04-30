@@ -12,10 +12,11 @@ namespace WatchdogDatabaseAccessLayer
         {
             {
                 @"{
-                    ""server"":""Some Server"",
-                    ""origin"":""Main System"",
+                    
                     ""messageTypeId"":0,
                     ""params"":{
+                        ""server"":""Some Server"",
+                        ""origin"":""Main System"",
                         ""queueSize"":100
                     }
                 }",
@@ -23,10 +24,10 @@ namespace WatchdogDatabaseAccessLayer
             },
             {
                 @"{
-                    ""asdfasdf"":""Some Server"",
-                    ""origin"":""Main System"",
                     ""messageTypeId"":0,
                     ""params"":{
+                        ""asdfasdf"":""Some Server"",
+                        ""origin"":""Main System"",
                         ""queueSize"":100
                     }
                 }",
@@ -38,10 +39,10 @@ namespace WatchdogDatabaseAccessLayer
         {
             {
                 @"{
-                    ""asdfasdf"":""Some Server"",
-                    ""origin"":""Main System"",
                     ""messageTypeId"":2,
                     ""params"":{
+                        ""server"":""Some Server"",
+                        ""origin"":""Main System"",
                         ""queueSize"":100
                     }
                 }",
@@ -59,16 +60,6 @@ namespace WatchdogDatabaseAccessLayer
             {
                 Properties = new JsonSchemaPropertyDefinitionCollection
                 {
-                    new JsonSchemaPropertyDefinition("server")
-                    {
-                        Type = new StringSchema { MaxLength = 128 },
-                        IsRequired = true
-                    },
-                    new JsonSchemaPropertyDefinition("origin")
-                    {
-                        Type = new StringSchema { MaxLength = 128 },
-                        IsRequired = true
-                    },
                     new JsonSchemaPropertyDefinition("messageTypeId")
                     {
                         Type = new IntegerSchema() { Minimum = 0 },
@@ -76,12 +67,25 @@ namespace WatchdogDatabaseAccessLayer
                     },
                     new JsonSchemaPropertyDefinition("params")
                     {
-                        Type = new ObjectSchema(),
-                        IsRequired = true
+                        Type = new ObjectSchema() {
+                            Properties = new JsonSchemaPropertyDefinitionCollection
+                            {
+                                new JsonSchemaPropertyDefinition("server")
+                                {
+                                    Type = new StringSchema { MaxLength = 128 },
+                                    IsRequired = true
+                                },
+                                new JsonSchemaPropertyDefinition("origin")
+                                {
+                                    Type = new StringSchema { MaxLength = 128 },
+                                    IsRequired = true
+                                }
+                            }
+                        }
                     }
                 }
             };
-            
+
             JsonValue validTestMessageJson = JsonValue.Parse(data);
             IJsonSchema deserializedFromJsonSchema = Schemata.MessageSchema;
 
@@ -113,7 +117,7 @@ namespace WatchdogDatabaseAccessLayer
             //Act
             Boolean isValid = Schemata.MessageSchema.Validate(ValidQueueSizeMessage).Valid;
             isValid &= Schemata.QuerySizeMessageSchema.Validate(ValidQueueSizeMessage).Valid;
-           
+
             //Assert
             if (isValidData)
                 Assert.True(isValid);

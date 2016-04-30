@@ -3,24 +3,27 @@
   "title": "Message Schema",
   "description": "the schema for validating message formats",
   "type": "object",
-  "required": [ "server", "origin", "messageTypeId", "params" ],
+  "required": [ "messageTypeId", "params" ],
 
   "properties": {
-    "server": {
-      "type": "string",
-      "maxLength": 128
-    },
-    "origin": {
-      "type": "string",
-      "maxLength": 128
-    },
     "messageTypeId": {
       "type": "integer",
       "minimum": 0
     },
     "params": {
       "type": "object",
-      "minProperties": 1
+      "minProperties": 2,
+      "properties": {
+        "server": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "origin": {
+          "type": "string",
+          "maxLength": 128
+        }
+      },
+      "required": [ "server", "origin" ]
     }
   }
 }
