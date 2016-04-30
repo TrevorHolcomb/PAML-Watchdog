@@ -48,16 +48,23 @@
 // ADMINISTRATION PORTAL SPECIFICS
 //----------------------------------*/
 
-
 $navbar-background: #373A64;
 $navbar-color: #FFF;
 $sidebar-background: #FFF;
 $sidebar-color: #333;
 $sidebar-active-background: #373A64;
 $sidebar-active-color: #FFF;
+$background: #111E4D;
+
+body, html {
+    overflow:scroll;
+    background: none;
+}
+
 body {
     margin-top: 100px;
-    background-color: #373A64;
+    background-color: $background;
+    overflow-y: auto;
 }
 
 @media(min-width:768px) {
@@ -189,11 +196,6 @@ li.message-footer {
 ul.alert-dropdown {
     width: 200px;
 }
-
-
-
-
-
 
 
 

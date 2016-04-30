@@ -455,9 +455,14 @@ th {
   h3 {
     page-break-after: avoid; } }
 
+body, html {
+  overflow: scroll;
+  background: none; }
+
 body {
   margin-top: 100px;
-  background-color: #373A64; }
+  background-color: #111E4D;
+  overflow-y: auto; }
 
 @media (min-width: 768px) {
   body {
