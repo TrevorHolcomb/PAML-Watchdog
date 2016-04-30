@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using WatchdogDatabaseAccessLayer;
 using Newtonsoft.Json;
-
+using Manatee.Json;
 
 namespace WatchdogDaemon
 {
@@ -26,20 +26,26 @@ namespace WatchdogDaemon
             }
         }
 
-        //assuming input is good since it should be validated by here, and validating here would be slow
         public override void ConsumeMessage(Rule rule, Message message)
         {
+            //if rule has origin, get message origin
+                //if rule origin != message origin
+                    //return
+            
+            //if rule has server, get message server
+                //if rule server != message server
+                    //return
+
+
+
             //convert the JSON into operator and operands
             String ruleJson = rule.RuleTrigger;
             Console.WriteLine("JSON rule: " + ruleJson);
             String theOperator, leftOperand, rightOperand;
             GetTriggerOperation(ruleJson, out theOperator, out leftOperand, out rightOperand);
-                //could validate the variables are filled out here
-
 
             //search for param matching left operand in message params
             string leftOperandValue = FindValueOfMatchingKey(message.Params, leftOperand);
-                //could verify that leftOperandValue != null
 
             //perform the operation
             Boolean ruleViolated = CheckForRuleViolation(theOperator, leftOperandValue, rightOperand);

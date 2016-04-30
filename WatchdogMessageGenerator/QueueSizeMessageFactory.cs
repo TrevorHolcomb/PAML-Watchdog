@@ -35,7 +35,7 @@ namespace WatchdogMessageGenerator
         public override string GetParams()
         {
             return "{" +
-                   $"'origin':'{GetRandomOrigin()}','server':'{GetRandomServer()}', 'size':'{GetRandomQueueSize()}'" + "}";
+                   $"'origin':'{GetRandomOrigin()}','server':'{GetRandomServer()}', 'queueSize':'{GetRandomQueueSize()}'" + "}";
         }
     }
 

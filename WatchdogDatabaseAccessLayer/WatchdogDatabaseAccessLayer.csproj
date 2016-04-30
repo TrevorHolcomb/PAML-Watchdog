@@ -157,6 +157,7 @@
     <None Include="MessageTypeSchemata\QueueSizeMessageSchema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="RuleSchemata\RuleTriggerSchema.json" />
     <None Include="WatchdogDatabase.edmx.diagram">
       <DependentUpon>WatchdogDatabase.edmx</DependentUpon>
     </None>

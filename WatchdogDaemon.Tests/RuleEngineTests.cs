@@ -25,13 +25,23 @@ namespace WatchdogDaemon.Tests
                 {
                     Id = 0,
                     Name = "QueueTooSmall",
-                    RuleTrigger = @"{ ""lt"" : { ""size"" : ""1""}}"
+                    RuleTrigger = @"{
+                        ""server"": ""cisco-1000"",
+                        ""orgin"": ""fell from the sky"",
+                        ""comparator"": ""lt"",
+                        ""variable"": ""queueSize"",
+                        ""constant"": 10        
+                    }"
                 },
                 new Rule
                 {
                     Id = 1,
                     Name = "QueueTooBig",
-                    RuleTrigger = @"{ ""gt"" : { ""size"" : ""3""}}"
+                    RuleTrigger = @"{
+                        ""comparator"": ""gt"",
+                        ""variable"": ""queueSize"",
+                        ""constant"": 1000
+                    }"
                 }
             };
 
@@ -41,30 +51,24 @@ namespace WatchdogDaemon.Tests
                     {
                         Id = 1,
                         MessageTypeId = 0,
-                        //Origin = "Athens",
                         Params = @"{""size"":""1""}",
                         IsProcessed = false,
-                        //Server = "Homer"
                     },
 
                     new Message
                     {
                         Id = 2,
                         MessageTypeId = 0,
-                        //Origin = "Delphi",
-                        Params = @"{""size"":""3""}",
+                        Params = @"{""size"":""10""}",
                         IsProcessed = false,
-                        //Server = "TheOracle"
                     },
 
                     new Message
                     {
                         Id = 3,
                         MessageTypeId = 0,
-                        //Origin = "Macedonia",
-                        Params = @"{""size"":""5""}",
+                        Params = @"{""size"":""1001""}",
                         IsProcessed = false,
-                        //Server = "Alexander"
                     }
             };
 
