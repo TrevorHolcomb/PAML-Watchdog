@@ -97,13 +97,15 @@
     <Compile Include="AlertType.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="ChainTool.cs" />
     <Compile Include="EscalationChain.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="EscalationChainLink.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="EscalationChains.cs" />
+    <Compile Include="ModelHelpers\EscalationChains.cs" />
+    <Compile Include="ModelHelpers\EscalationChainTests.cs" />
     <Compile Include="Schemata.cs" />
     <Compile Include="Message.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>

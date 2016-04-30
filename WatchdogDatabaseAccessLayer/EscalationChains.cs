@@ -43,6 +43,7 @@ namespace WatchdogDatabaseAccessLayer
 
         private static void Reset(WatchdogDatabaseContainer db)
         {
+            db.Rules.RemoveRange(db.Rules.ToList());
             List<NotifyeeGroup> groupsToRemove = new List<NotifyeeGroup>();
             db.EscalationChains.ToList().ForEach(e =>
             {
