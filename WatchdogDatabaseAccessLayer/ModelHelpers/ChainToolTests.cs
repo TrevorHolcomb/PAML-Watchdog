@@ -148,5 +148,26 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
             var actualLinks = ChainTool.GetLinks(chain);
             Assert.Equal(expectedLinks, actualLinks);
         }
+
+
+        public static TheoryData<EscalationChain, int> GetLengthTestData = new TheoryData<EscalationChain, int>
+        {
+            {
+                ChainTool.ConstructChainFromLinks(new EscalationChainLink(), new EscalationChainLink()), 2
+            },
+            {
+                ChainTool.ConstructChainFromLinks(),0
+            },
+            {
+                ChainTool.ConstructChainFromLinks(new EscalationChainLink(), new EscalationChainLink(), new EscalationChainLink(), new EscalationChainLink()), 4
+            }
+        };
+
+        [Theory]
+        [MemberData(nameof(GetLengthTestData))]
+        public void GetLengthTest(EscalationChain chain, int length)
+        {
+            Assert.Equal(chain.GetLength(), length);
+        }
     }
 }

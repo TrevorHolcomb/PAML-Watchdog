@@ -32,7 +32,7 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
 
             return new EscalationChain
             {
-                EscalationChainRootLink = linkList.First()
+                EscalationChainRootLink = linkList.FirstOrDefault()
             };
 
         }
@@ -118,6 +118,19 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
                 appendingChainLink.NextLink = next;
                 next.PreviousLink = appendingChainLink;
             }
+        }
+
+        public static int GetLength(this EscalationChain chain)
+        {
+            var node = chain.EscalationChainRootLink;
+            var i = 0;
+            while (node != null)
+            {
+                i++;
+                node = node.NextLink;
+            }
+
+            return i;
         }
     }
 }
