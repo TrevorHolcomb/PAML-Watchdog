@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace WatchdogDatabaseAccessLayer
+namespace WatchdogDatabaseAccessLayer.ModelHelpers
 {
     public static partial class ChainTool
     {

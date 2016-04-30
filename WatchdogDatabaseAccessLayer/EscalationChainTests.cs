@@ -7,7 +7,7 @@ using Xunit;
 
 namespace WatchdogDatabaseAccessLayer
 {
-    public class EscalationChains
+    public class EscalationChainTests
     {
         [Fact]
         public void TestAddChains()
