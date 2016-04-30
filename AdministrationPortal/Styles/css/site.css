@@ -634,3 +634,8 @@ ul.alert-dropdown {
 
 .panel-yellow > a:hover {
   color: #df8a13; }
+
+/* Help Pages */
+img.help {
+  height: auto;
+  width: 85%; }

@@ -8,7 +8,10 @@
 <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav side-nav">
         <li class="@Html.HighlightIfActive("Home")">
-            <a href="@Url.Action("Index","Home")"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+            <a href="@Url.Action("Index", "Home")"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+        </li>
+        <li class="@Html.HighlightIfActive("Help")">
+            <a href="@Url.Action("Index", "Help")"><i class="fa fa-fw fa-question"></i> Help!</a>
         </li>
         <li class="@Html.HighlightIfActive("Notifyees")">
             <a href="@Url.Action("Index","Notifyees")"><i class="fa fa-fw fa-users"></i> Notifyees</a>
@@ -20,7 +23,7 @@
             <a href="@Url.Action("Index","Alerts")"><i class="fa fa-fw fa-bell"></i> Alerts</a>
         </li>
         <li class="@Html.HighlightIfActive("Rules")">
-            <a href="@Url.Action("Index","Rules")"><i class="fa fa-fw fa-cogs"></i> Rules</a>
+            <a href="@Url.Action("Index", "Rules")"><i class="fa fa-fw fa-cogs"></i> Rules</a>
         </li>
         <li class="@Html.HighlightIfActive("MessageTypes") @Html.HighlightIfActive("AlertTypes")">
             <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-wrench"></i> Tweaks <i class="fa fa-fw fa-caret-down"></i></a>
