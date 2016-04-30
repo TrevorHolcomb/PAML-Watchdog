@@ -17,19 +17,19 @@ namespace WatchdogDatabaseAccessLayer
             {
                 Properties = new JsonSchemaPropertyDefinitionCollection
                 {
-                    new JsonSchemaPropertyDefinition("Server")
+                    new JsonSchemaPropertyDefinition("server")
                     {
                         Type = new StringSchema { MaxLength = 128 },
                         IsRequired = true
                     },
-                    new JsonSchemaPropertyDefinition("MessageTypeId")
+                    new JsonSchemaPropertyDefinition("messageTypeId")
                     {
                         Type = new IntegerSchema() { Minimum = 0 },
                         IsRequired = true
                     },
-                    new JsonSchemaPropertyDefinition("Params")
+                    new JsonSchemaPropertyDefinition("params")
                     {
-                        Type = new StringSchema() { MaxLength = 512 },
+                        Type = new ObjectSchema(),
                         IsRequired = true
                     }
                 }
@@ -37,23 +37,28 @@ namespace WatchdogDatabaseAccessLayer
 
             string ValidTestMessage =
                 @"{
-                    ""Server"":""testserver"",
-                    ""MessageTypeId"":0,
-                    ""Params"":""testParam""
+                    ""server"": ""testserver"",
+                    ""origin"": ""testland"",
+                    ""messageTypeId"": 0,
+                    ""params"": {
+                        ""testKey"": ""testValue""
+                    }
                 }";
 
             string InvalidTestMessage =
                 @"{
-                    ""asdfasdf"":""no bueno"",
-                    ""MessageTypeId"":0,
-                    ""Params"":""testParam""
+                    ""asdfasdf"": ""no bueno"",
+                    ""origin"": ""testland"",
+                    ""messageTypeId"": 0,
+                    ""params"": {
+                        ""testKey"": ""testValue""
+                    }
                 }";
 
             JsonValue ValidTestMessageJson = JsonValue.Parse(ValidTestMessage);
             JsonValue InvalidTestMessageJson = JsonValue.Parse(InvalidTestMessage);
 
             IJsonSchema DeserializedFromJsonSchema = Schemata.MessageSchema;
-
 
             //Act
             bool isValid = ProgrammaticallyCreatedSchema.Validate(ValidTestMessageJson).Valid;
@@ -68,6 +73,45 @@ namespace WatchdogDatabaseAccessLayer
             Assert.False(isInvalid);
             Assert.True(isValid2);
             Assert.False(isInvalid2);
+        }
+
+        [Fact]
+        public void TestQueueSizeMessageSchema()
+        {
+            //Arrange
+            string ValidQueueSizeMessageJson = @"{
+                    ""server"":""Some Server"",
+                    ""origin"":""Main System"",
+                    ""messageTypeId"":0,
+                    ""params"":{
+                        ""queueSize"":100
+                    }
+                }";
+
+            string InvalidQueueSizeMessageJson = @"{
+                    ""server"":""Some Server"",
+                    ""origin"":""Main System"",
+                    ""messageTypeId"":2,
+                    ""params"":{
+                        ""queueSize"":100
+                    }
+                }";
+
+            JsonValue ValidQueueSizeMessage = JsonValue.Parse(ValidQueueSizeMessageJson);
+            JsonValue InvalidQueueSizeMessage = JsonValue.Parse(InvalidQueueSizeMessageJson);
+
+            //Act
+            Boolean isValid = Schemata.MessageSchema.Validate(ValidQueueSizeMessage).Valid;
+            isValid &= Schemata.QuerySizeMessageSchema.Validate(ValidQueueSizeMessage).Valid;
+
+            Boolean isInvalid = Schemata.MessageSchema.Validate(InvalidQueueSizeMessage).Valid;
+            isInvalid &= Schemata.QuerySizeMessageSchema.Validate(InvalidQueueSizeMessageJson).Valid;
+
+            double? messageType = JsonValue.Parse(ValidQueueSizeMessageJson).Object.TryGetNumber("messageTypeId");
+            
+            //Assert
+            Assert.True(isValid);
+            Assert.False(isInvalid);
         }
     }
 }

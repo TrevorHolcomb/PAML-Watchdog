@@ -146,11 +146,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="MessageSchema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <EntityDeploy Include="WatchdogDatabase.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>WatchdogDatabase.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="MessageTypeSchemata\QueueSizeMessageSchema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="WatchdogDatabase.edmx.diagram">
       <DependentUpon>WatchdogDatabase.edmx</DependentUpon>
     </None>
