@@ -1,12 +1,20 @@
 ﻿{
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Queue Size Message Schema",
-  "description": "schema for validating queue size messages",
+  "description": "The schema for validating queue size messages",
   "type": "object",
-  "required": [ "messageTypeId", "params" ],
+
+  "required": [ "server", "origin", "messageTypeId", "params" ],
   "properties": {
+    "server": {
+      "type": "string"
+    },
+    "origin": {
+      "type": "string"
+    },
     "messageTypeId": {
       "type": "integer",
+      "minimum": 0,
       "maximum": 0
     },
     "params": {
