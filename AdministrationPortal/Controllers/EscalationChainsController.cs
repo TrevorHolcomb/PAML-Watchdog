@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using AdministrationPortal.ViewModels;
 using WatchdogDatabaseAccessLayer;
+using WatchdogDatabaseAccessLayer.ModelHelpers;
 
 namespace AdministrationPortal.Controllers
 {
@@ -71,40 +72,60 @@ namespace AdministrationPortal.Controllers
             return RedirectToAction("Edit", new {id = rootLink.EscalationChain.Id});
         }
 
-        //TODO make it so that you can move a chain link backwards in the list
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ShiftBack(int chainId, int linkId)
         {
             var chain = db.EscalationChains.Single(e => e.Id == chainId);
-            var link = db.EscalationChainLinks.Single(e => e.Id == chainId);
+            var link = db.EscalationChainLinks.Single(e => e.Id == linkId);
+            var linkIndex = chain.IndexOf(link);
 
-            if (chain.EscalationChainRootLink == link)
+            if (linkIndex == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             else
             {
+                chain.RemoveAt(linkIndex);
+                chain.InsertAt(link,linkIndex - 1);
+                db.SaveChanges();
                 return RedirectToAction("Edit", new { id = chainId });
             }
         }
 
-        //TODO make it so that you can move a chain link forwards in the list
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ShiftForward(int chainId, int linkId)
         {
             var chain = db.EscalationChains.Single(e => e.Id == chainId);
-            var link = db.EscalationChainLinks.Single(e => e.Id == chainId);
-
-            if (chain.EscalationChainRootLink == link)
+            var link = db.EscalationChainLinks.Single(e => e.Id == linkId);
+            var linkIndex = chain.IndexOf(link);
+            if (linkIndex == chain.Length() - 1)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             else
             {
+                chain.RemoveAt(linkIndex);
+                chain.InsertAt(link, linkIndex + 1);
+                db.SaveChanges();
                 return RedirectToAction("Edit", new { id = chainId });
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RemoveLink(int chainId, int linkId)
+        {
+            var chain = db.EscalationChains.Single(e => e.Id == chainId);
+            var link = db.EscalationChainLinks.Single(e => e.Id == linkId);
+            var linkIndex = chain.IndexOf(link);
+
+            chain.RemoveAt(linkIndex);
+            db.EscalationChainLinks.Remove(link);
+            db.SaveChanges();
+
+            return RedirectToAction("Edit", new {id = chainId});
         }
         
 

@@ -45,7 +45,7 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
             };
 
             var chain = ChainTool.ConstructChainFromLinks(links);
-            ChainTool.RemoveLinkAt(chain, 1);
+            chain.RemoveAt(1);
             var actualLinks = ChainTool.GetLinks(chain);
             Assert.Equal(expectedLinks, actualLinks);
         }
@@ -54,10 +54,10 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
         public void CanRemoveSingleElement()
         {
             
-            EscalationChainLink first = new EscalationChainLink();
+            var first = new EscalationChainLink();
             var chain = ChainTool.ConstructChainFromLinks(first);
 
-            ChainTool.RemoveLinkAt(chain,0);
+            chain.RemoveAt(0);
             Assert.Empty(ChainTool.GetLinks(chain));
         }
 
@@ -78,7 +78,7 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
             };
 
             var chain = ChainTool.ConstructChainFromLinks(links);
-            ChainTool.RemoveLinkAt(chain, 2);
+            chain.RemoveAt(2);
             var actualLinks = ChainTool.GetLinks(chain);
             Assert.Equal(expectedLinks, actualLinks);
         }
@@ -100,7 +100,7 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
             };
 
             var chain = ChainTool.ConstructChainFromLinks(links);
-            ChainTool.AppendLinkAt(chain, third, 2);
+            chain.InsertAt(third, 2);
             var actualLinks = ChainTool.GetLinks(chain);
             Assert.Equal(expectedLinks, actualLinks);
         }
@@ -122,7 +122,7 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
             };
 
             var chain = ChainTool.ConstructChainFromLinks(links);
-            ChainTool.AppendLinkAt(chain, second, 1);
+            ChainTool.InsertAt(chain, second, 1);
             var actualLinks = ChainTool.GetLinks(chain);
             Assert.Equal(expectedLinks, actualLinks);
         }
@@ -144,7 +144,7 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
             };
 
             var chain = ChainTool.ConstructChainFromLinks(links);
-            ChainTool.AppendLinkAt(chain, first, 0);
+            ChainTool.InsertAt(chain, first, 0);
             var actualLinks = ChainTool.GetLinks(chain);
             Assert.Equal(expectedLinks, actualLinks);
         }
@@ -167,7 +167,7 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
         [MemberData(nameof(GetLengthTestData))]
         public void GetLengthTest(EscalationChain chain, int length)
         {
-            Assert.Equal(chain.GetLength(), length);
+            Assert.Equal(chain.Length(), length);
         }
 
         public static TheoryData<EscalationChain, int, int> GetElementAtData = new TheoryData<EscalationChain, int, int>
@@ -188,6 +188,25 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
         public void GetElementAtTest(EscalationChain chain, int index, int expectedId)
         {
             Assert.Equal(chain.GetLinkAt(index).Id, expectedId);
+        }
+
+
+        public static TheoryData<EscalationChain, EscalationChainLink, int> GetIndexOfLinkData = new TheoryData
+            <EscalationChain, EscalationChainLink, int>
+        {
+            {
+                ChainTool.ConstructChainFromLinks(new EscalationChainLink {Id = 0}), new EscalationChainLink {Id = 0}, 0
+            },
+            {
+                ChainTool.ConstructChainFromLinks(new EscalationChainLink {Id = 0}, new EscalationChainLink {Id = 1}, new EscalationChainLink {Id=2}), new EscalationChainLink {Id=1}, 1
+            }
+        };
+
+        [Theory]
+        [MemberData(nameof(GetIndexOfLinkData))]
+        public void GetIndexOfLink(EscalationChain chain, EscalationChainLink link, int expectedIndex)
+        {
+            Assert.Equal(chain.IndexOf(link), expectedIndex);
         }
     }
 }

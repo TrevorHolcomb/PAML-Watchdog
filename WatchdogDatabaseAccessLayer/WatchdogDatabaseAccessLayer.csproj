@@ -94,6 +94,8 @@
     <Compile Include="EscalationChainLink.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="EscalationChainLinkPartial.cs" />
+    <Compile Include="EscalationChainPartial.cs" />
     <Compile Include="ModelHelpers\ChainTool.cs" />
     <Compile Include="ModelHelpers\ChainToolTests.cs" />
     <Compile Include="Schemata.cs" />

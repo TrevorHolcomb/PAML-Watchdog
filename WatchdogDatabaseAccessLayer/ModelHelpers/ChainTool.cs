@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace WatchdogDatabaseAccessLayer.ModelHelpers
@@ -34,7 +35,7 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
             };
         }
 
-        public static EscalationChainLink RemoveLinkAt(this EscalationChain chain, int index)
+        public static EscalationChainLink RemoveAt(this EscalationChain chain, int index)
         {
             var chainArray = GetLinks(chain);
             //If Node To Remove Has No Next Or Previous
@@ -95,7 +96,19 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
             return node;
         }
 
-        public static void AppendLinkAt(this EscalationChain chain, EscalationChainLink appendingChainLink, int index)
+        public static int IndexOf(this EscalationChain chain, EscalationChainLink link)
+        {
+            var node = chain.EscalationChainRootLink;
+            for (var i = 0; i < chain.Length(); i++)
+            {
+                if (node.Equals(link))
+                    return i;
+                node = node.NextLink;
+            }
+            throw new KeyNotFoundException();
+        }
+
+        public static void InsertAt(this EscalationChain chain, EscalationChainLink appendingChainLink, int index)
         {
             //If Node To Add Has No Next Or Previous
             if (index == 0)
@@ -122,7 +135,7 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
             }
         }
 
-        public static int GetLength(this EscalationChain chain)
+        public static int Length(this EscalationChain chain)
         {
             var node = chain.EscalationChainRootLink;
             var i = 0;
