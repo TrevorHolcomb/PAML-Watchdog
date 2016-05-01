@@ -3,9 +3,8 @@ using System.Linq;
 
 namespace WatchdogDatabaseAccessLayer.ModelHelpers
 {
-    public static partial class ChainTool
+    public static class ChainTool
     {
-
         public static EscalationChainLink[] GetLinks(EscalationChain chain)
         {
             var links = new List<EscalationChainLink>();
@@ -16,25 +15,23 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
 
         public static EscalationChain ConstructChainFromLinks(params EscalationChainLink[] links)
         {
-
             var linkList = links.ToList();
 
-            for (int i = 0; i < linkList.Count; i++)
+            for (var i = 0; i < linkList.Count; i++)
             {
                 //If Not Last
                 if (i < linkList.Count - 1)
-                    linkList[i].NextLink = linkList[i+1];
+                    linkList[i].NextLink = linkList[i + 1];
 
                 //If Not First
-                if( i > 0)
-                    linkList[i].PreviousLink = linkList[i-1];
+                if (i > 0)
+                    linkList[i].PreviousLink = linkList[i - 1];
             }
 
             return new EscalationChain
             {
                 EscalationChainRootLink = linkList.FirstOrDefault()
             };
-
         }
 
         public static EscalationChainLink RemoveLinkAt(this EscalationChain chain, int index)
@@ -47,8 +44,8 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
                 chain.EscalationChainRootLink = null;
                 return ret;
             }
-            //If Node To Remove Has a Next but no previous
-            else if (index == 0 && chainArray.Length > 1)
+                //If Node To Remove Has a Next but no previous
+            if (index == 0 && chainArray.Length > 1)
             {
                 var oldRoot = chain.EscalationChainRootLink;
                 var newRoot = chain.EscalationChainRootLink.NextLink;
@@ -62,11 +59,11 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
 
                 return oldRoot;
             }
-            //If Node To Remove Has A Next And A Previous
-            else if (index > 0 && index < chainArray.Length - 1)
+                //If Node To Remove Has A Next And A Previous
+            if (index > 0 && index < chainArray.Length - 1)
             {
                 var previous = chain.EscalationChainRootLink;
-                for (int i = 0; i < index - 1; i++)
+                for (var i = 0; i < index - 1; i++)
                     previous = previous.NextLink;
 
                 var toRemove = previous.NextLink;
@@ -78,23 +75,28 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
 
                 return toRemove;
             }
-            //If Node To Remove Has No Next, and A Previous
-            else
-            {
-                var link = chain.EscalationChainRootLink;
-                for (int i = 0; i < chainArray.Length - 2; i++)
-                    link = link.NextLink;
+                //If Node To Remove Has No Next, and A Previous
+            var link = chain.EscalationChainRootLink;
+            for (var i = 0; i < chainArray.Length - 2; i++)
+                link = link.NextLink;
 
-                var last = link.NextLink;
-                last.PreviousLink = null;
-                link.NextLink = null;
+            var last = link.NextLink;
+            last.PreviousLink = null;
+            link.NextLink = null;
 
-                return last;
-            }
+            return last;
         }
+
+        public static EscalationChainLink GetLinkAt(this EscalationChain chain, int index)
+        {
+            var node = chain.EscalationChainRootLink;
+            for (var i = 0; i < index; i++)
+                node = node.NextLink;
+            return node;
+        }
+
         public static void AppendLinkAt(this EscalationChain chain, EscalationChainLink appendingChainLink, int index)
         {
-
             //If Node To Add Has No Next Or Previous
             if (index == 0)
             {
@@ -107,7 +109,7 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
             else
             {
                 var previous = chain.EscalationChainRootLink;
-                for (int i = 0; i < index - 1; i++)
+                for (var i = 0; i < index - 1; i++)
                     previous = previous.NextLink;
                 var next = previous.NextLink;
 

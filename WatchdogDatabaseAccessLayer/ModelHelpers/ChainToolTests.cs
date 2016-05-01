@@ -7,7 +7,7 @@ using Xunit;
 
 namespace WatchdogDatabaseAccessLayer.ModelHelpers
 {
-    public class EscalationChainTests
+    public class ChainToolTests
     {
 
         [Fact]
@@ -168,6 +168,26 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
         public void GetLengthTest(EscalationChain chain, int length)
         {
             Assert.Equal(chain.GetLength(), length);
+        }
+
+        public static TheoryData<EscalationChain, int, int> GetElementAtData = new TheoryData<EscalationChain, int, int>
+        {
+            {
+                ChainTool.ConstructChainFromLinks(new EscalationChainLink {Id = 0}, new EscalationChainLink {Id = 1}, new EscalationChainLink {Id = 2}), 2, 2 
+            },
+            {
+                ChainTool.ConstructChainFromLinks(new EscalationChainLink {Id=0}, new EscalationChainLink {Id=1}),1,1
+            },
+            {
+                ChainTool.ConstructChainFromLinks(new EscalationChainLink {Id = 0}),0,0
+            }
+        };
+
+        [Theory]
+        [MemberData(nameof(GetElementAtData))]
+        public void GetElementAtTest(EscalationChain chain, int index, int expectedId)
+        {
+            Assert.Equal(chain.GetLinkAt(index).Id, expectedId);
         }
     }
 }
