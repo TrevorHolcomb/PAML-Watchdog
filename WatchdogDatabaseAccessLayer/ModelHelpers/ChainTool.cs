@@ -32,7 +32,7 @@ namespace WatchdogDatabaseAccessLayer.ModelHelpers
 
             return new EscalationChain
             {
-                EscalationChainRootLink = linkList.FirstOrDefault()
+                EscalationChainRootLink = linkList.First()
             };
 
         }
