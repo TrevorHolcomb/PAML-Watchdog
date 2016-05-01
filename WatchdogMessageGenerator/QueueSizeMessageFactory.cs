@@ -32,10 +32,12 @@ namespace WatchdogMessageGenerator
             };
         }
 
+        //TODO: update to latest message standard
         public override string GetParams()
         {
-            return "{" +
-                   $"'origin':'{GetRandomOrigin()}','server':'{GetRandomServer()}', 'queueSize':'{GetRandomQueueSize()}'" + "}";
+            return @"{
+                ""messageTypeId"": " + 
+                $"'origin':'{GetRandomOrigin()}','server':'{GetRandomServer()}', 'queueSize':'{GetRandomQueueSize()}'" + "}";
         }
     }
 

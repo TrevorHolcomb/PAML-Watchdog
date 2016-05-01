@@ -14,9 +14,9 @@ namespace WatchdogDatabaseAccessLayer
                 @"{
                     
                     ""messageTypeId"":0,
-                    ""params"":{
-                        ""server"":""Some Server"",
-                        ""origin"":""Main System"",
+                    ""server"":""Some Server"",
+                    ""origin"":""Main System"",
+                    ""params"":{    
                         ""queueSize"":100
                     }
                 }",
@@ -25,9 +25,9 @@ namespace WatchdogDatabaseAccessLayer
             {
                 @"{
                     ""messageTypeId"":0,
-                    ""params"":{
-                        ""asdfasdf"":""Some Server"",
-                        ""origin"":""Main System"",
+                    ""asdfasdf"":""Some Server"",
+                    ""origin"":""Main System"",
+                    ""params"":{    
                         ""queueSize"":100
                     }
                 }",
@@ -65,23 +65,19 @@ namespace WatchdogDatabaseAccessLayer
                         Type = new IntegerSchema() { Minimum = 0 },
                         IsRequired = true
                     },
+                    new JsonSchemaPropertyDefinition("server")
+                    {
+                        Type = new StringSchema { MaxLength = 128 },
+                        IsRequired = true
+                    },
+                    new JsonSchemaPropertyDefinition("origin")
+                    {
+                        Type = new StringSchema { MaxLength = 128 },
+                        IsRequired = true
+                    },
                     new JsonSchemaPropertyDefinition("params")
                     {
-                        Type = new ObjectSchema() {
-                            Properties = new JsonSchemaPropertyDefinitionCollection
-                            {
-                                new JsonSchemaPropertyDefinition("server")
-                                {
-                                    Type = new StringSchema { MaxLength = 128 },
-                                    IsRequired = true
-                                },
-                                new JsonSchemaPropertyDefinition("origin")
-                                {
-                                    Type = new StringSchema { MaxLength = 128 },
-                                    IsRequired = true
-                                }
-                            }
-                        }
+                        Type = new ObjectSchema() {}
                     }
                 }
             };

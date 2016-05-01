@@ -20,57 +20,92 @@ namespace WatchdogDaemon.Tests
         };
 
         public static ICollection<Rule> Rules1 = new[]
+        {
+            new Rule
             {
-                new Rule
-                {
-                    Id = 0,
-                    Name = "QueueTooSmall",
-                    RuleTrigger = @"{
-                        ""server"": ""cisco-1000"",
-                        ""orgin"": ""fell from the sky"",
-                        ""comparator"": ""lt"",
-                        ""variable"": ""queueSize"",
-                        ""constant"": 10        
-                    }"
-                },
-                new Rule
-                {
-                    Id = 1,
-                    Name = "QueueTooBig",
-                    RuleTrigger = @"{
-                        ""comparator"": ""gt"",
-                        ""variable"": ""queueSize"",
-                        ""constant"": 1000
-                    }"
-                }
-            };
+                Id = 0,
+                Name = "QueueSizeWithinRange",
+                RuleTrigger = @"{
+                    ""$schema"": ""http://json-schema.org/draft-04/schema"",
+                    ""type"": ""object"",
+                    ""title"": ""Queue Size Within Range"",
+                    ""description"": ""checks that messages from any server and origin report a queue size within range"",
+                    ""properties"": {
+                        ""params"": {
+                            ""type"": ""object"",
+                            ""properties"": {
+                                ""server"": {},
+                                ""origin"": {},
+                                ""queueSize"": {
+                                    ""type"": ""integer"",
+                                    ""minimum"": 0,
+                                    ""maximum"": 100
+                                }
+                            }
+                        }
+                    }
+                }"
+            },
+                                            
+            new Rule
+            {
+                Id = 1,
+                Name = "QueueTooBig",
+                RuleTrigger = @"{
+                    ""$schema"": ""http://json-schema.org/draft-04/schema"",
+                    ""type"":""object"",
+                    ""title"": ""Queue Too Big"",
+                    ""description"": ""checks that queue sizes from testServer2 aren't too high"",
+                    ""properties"": {
+                        ""server"": {""enum"": [""testServer2""]},
+                        ""origin"": {},
+                        ""params"": {
+                            ""type"": ""object"",
+                            ""properties"": {
+                                ""queueSize"": {
+                                    ""type"": ""integer"",
+                                    ""minimum"": 0,
+                                    ""maximum"": 50,
+                                    ""exclusiveMaximum"": true
+                                }
+                            }
+                        }
+                    }
+                }"
+            }
+        };
 
         public static ICollection<Message> Messages1 = new[]
+        {
+            new Message
             {
-                new Message
-                    {
-                        Id = 1,
-                        MessageTypeId = 0,
-                        Params = @"{""size"":""1""}",
-                        IsProcessed = false,
-                    },
-
-                    new Message
-                    {
-                        Id = 2,
-                        MessageTypeId = 0,
-                        Params = @"{""size"":""10""}",
-                        IsProcessed = false,
-                    },
-
-                    new Message
-                    {
-                        Id = 3,
-                        MessageTypeId = 0,
-                        Params = @"{""size"":""1001""}",
-                        IsProcessed = false,
+                Id = 2,
+                MessageTypeId = 0,
+                Params = @"{
+                    ""server"": ""testServer1"",
+                    ""origin"": ""WatchdogWebAPI"",
+                    ""messageTypeId"": 0,
+                    ""params"": {
+                        ""queueSize"": 10
                     }
-            };
+                }",
+                IsProcessed = false,
+            },
+            new Message
+            {
+                Id = 2,
+                MessageTypeId = 0,
+                Params = @"{
+                    ""server"": ""testServer2"",
+                    ""origin"": ""FileUpload"",
+                    ""messageTypeId"": 0,
+                    ""params"": {
+                        ""queueSize"": 50
+                    }
+                }",
+                IsProcessed = false,
+            }
+        };
 
         public static ICollection<Alert> AlertsEmpty = new List<Alert>();
 
