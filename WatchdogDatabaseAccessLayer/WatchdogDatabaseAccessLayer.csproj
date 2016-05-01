@@ -94,6 +94,8 @@
     <Compile Include="EscalationChainLink.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="ModelHelpers\ChainTool.cs" />
+    <Compile Include="ModelHelpers\ChainToolTests.cs" />
     <Compile Include="Schemata.cs" />
     <Compile Include="Message.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
@@ -156,9 +158,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ModelHelpers\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
