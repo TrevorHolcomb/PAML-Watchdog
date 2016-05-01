@@ -643,4 +643,5 @@ ul.alert-dropdown {
 /* Help Pages */
 img.help {
   height: auto;
-  width: 85%; }
+  width: 85%;
+  max-width: 500px; }
