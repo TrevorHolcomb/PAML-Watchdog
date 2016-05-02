@@ -7,7 +7,7 @@ using Xunit;
 
 namespace WatchdogDatabaseAccessLayer
 {
-    public class EscalationChains
+    public class EscalationChainTests
     {
         [Fact]
         public void TestAddChains()
@@ -43,6 +43,8 @@ namespace WatchdogDatabaseAccessLayer
 
         private static void Reset(WatchdogDatabaseContainer db)
         {
+            db.Rules.RemoveRange(db.Rules.ToList());
+            List<NotifyeeGroup> groupsToRemove = new List<NotifyeeGroup>();
             db.EscalationChains.ToList().ForEach(e =>
             {
                 var escalationChain = e;
@@ -50,12 +52,16 @@ namespace WatchdogDatabaseAccessLayer
                 var link = escalationChain.EscalationChainRootLink;
                 links.Add(link);
                 for (; link != null; link = link.NextLink)
+                {
                     links.Add(link);
+                    groupsToRemove.Add(link.NotifyeeGroup);
+                }
+                    
 
                 db.EscalationChains.Remove(escalationChain);
                 db.EscalationChainLinks.RemoveRange(links);
             });
-            db.NotifyeeGroups.RemoveRange(db.NotifyeeGroups.ToList());
+            db.NotifyeeGroups.RemoveRange(groupsToRemove.ToList());
             db.SaveChanges();
         }
     }

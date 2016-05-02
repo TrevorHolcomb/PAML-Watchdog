@@ -2,13 +2,13 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/28/2016 03:53:20
+-- Date Created: 04/30/2016 01:16:21
 -- Generated from EDMX file: C:\Users\RowleyJohn\Documents\Visual Studio 2015\Projects\paml-watchdog\WatchdogDatabaseAccessLayer\WatchdogDatabase.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
 GO
-USE [watchdog2];
+USE [watchdog];
 GO
 IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
 GO

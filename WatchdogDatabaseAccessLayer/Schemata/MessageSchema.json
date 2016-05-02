@@ -1,0 +1,24 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Message Schema",
+  "description": "The base schema for validating queue size messages. All messages should validate against this.",
+  "type": "object",
+
+  "required": [ "server", "origin", "messageTypeId", "params" ],
+  "properties": {
+    "server": {
+      "type": "string"
+    },
+    "origin": {
+      "type": "string"
+    },
+    "messageTypeId": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 0
+    },
+    "params": {
+      "type": "object"
+    }
+  }
+}

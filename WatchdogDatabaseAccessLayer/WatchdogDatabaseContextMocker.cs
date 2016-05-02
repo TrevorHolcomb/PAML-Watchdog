@@ -1,13 +1,15 @@
-﻿/*using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using Moq;
+using WatchdogDatabaseAccessLayer;
 
 namespace WatchdogDatabaseAccessLayer
 {
     public class WatchdogDatabaseContextMocker
     {
-        public static WatchdogDatabaseContext Mock(ICollection<Rule> rules,
+        public static WatchdogDatabaseContainer Mock(ICollection<Rule> rules,
             ICollection<Message> messages)
         {
 
@@ -15,7 +17,7 @@ namespace WatchdogDatabaseAccessLayer
             var mockMessages = DbSetMocker.Mock<Message>(messages);
             var mockAlerts = DbSetMocker.Mock<Alert>(new List<Alert>());
 
-            var mockedDbContext = new Mock<WatchdogDatabaseContext>();
+            var mockedDbContext = new Mock<WatchdogDatabaseContainer>();
 
             mockedDbContext.Setup(e => e.Messages).Returns(mockMessages.Object);
             mockedDbContext.Setup(e => e.Rules).Returns(mockRules.Object);
@@ -23,7 +25,7 @@ namespace WatchdogDatabaseAccessLayer
 
             return mockedDbContext.Object;
         }
-       
+
         private static class DbSetMocker
         {
             public static Mock<DbSet<T>> Mock<T>(ICollection<T> collection) where T : class
@@ -43,4 +45,3 @@ namespace WatchdogDatabaseAccessLayer
         }
     }
 }
-*/

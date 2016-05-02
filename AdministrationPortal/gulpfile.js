@@ -1,3 +1,4 @@
+/// <binding AfterBuild='css' />
 require('es6-promise').polyfill();
 /// <binding AfterBuild='css, js' />
 var gulp = require("gulp"),

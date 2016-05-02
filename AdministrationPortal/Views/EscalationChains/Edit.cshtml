@@ -6,6 +6,7 @@
 
 <h2>Edit</h2>
 
+<h3>Id - @Model.Id</h3>
 
 @using (Html.BeginForm())
 {
@@ -54,16 +55,21 @@
                 }
                 
                 @Html.ActionLink("Edit", "EditLink", new {id = @link.Id}, null)
-                <!--@using (Html.BeginForm("ShiftBack", "EscalationChains", new { chainId = Model.Id, linkId = link.Id }))
+                @using (Html.BeginForm("ShiftBack", "EscalationChains", new { chainId = Model.Id, linkId = link.Id }))
                 {
                     @Html.AntiForgeryToken()
-                    <input type="submit" value="Shift Back" style="background: none; border: none;color: #000;cursor: pointer; " />
+                    <input type="submit" value="Shift Back"/>
                 }
                 @using (Html.BeginForm("ShiftForward", "EscalationChains", new { chainId = Model.Id, linkId = link.Id }))
                 {
                     @Html.AntiForgeryToken()
-                    <input type="submit" value="Shift Forward" style="background: none; border: none;color: #000;cursor: pointer; "/>
-                }-->
+                    <input type="submit" value="Shift Forward"/>
+                }
+                @using (Html.BeginForm("RemoveLink", "EscalationChains", new {chainId = Model.Id, linkId = link.Id}))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="submit" value="Delete"/>
+                }
             </li>
         }
     </ol>

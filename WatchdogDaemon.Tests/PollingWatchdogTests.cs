@@ -26,7 +26,7 @@ namespace WatchdogDaemon.Tests
 
             watchdog.Watch();
 
-            while (watchdog.DbContext.Messages.Count(e => !e.Processed) != 0)
+            while (watchdog.DbContext.Messages.Count(e => !e.IsProcessed) != 0)
             {
                 // busy wait loop cause why not.
             }

@@ -1,4 +1,5 @@
-﻿@model WatchdogDatabaseAccessLayer.NotifyeeGroup
+﻿@using AdministrationPortal.Helpers
+@model WatchdogDatabaseAccessLayer.NotifyeeGroup
 
 @{
     ViewBag.Title = "CreateNotifyeeGroup";
@@ -33,12 +34,20 @@
 
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Notifyees, "NotifyeeGroupId", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Notifyees, "NotifyeeId", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.ListBox("NotifyeeIds", (MultiSelectList)ViewBag.NotifyeeIds, htmlAttributes: new { @class = "form-control" })
+                @if (Model != null)
+                {
+                    @Html.MultiSelectDropDown("NotifyeeIds", (MultiSelectList)ViewBag.NotifyeeIds, Model.Notifyees.Select(e => e.Id), "form-control hidden")
+                }
+                else
+                {
+                    @Html.ListBox("NotifyeeIds", (MultiSelectList)ViewBag.NotifyeeIds, htmlAttributes: new { @class = "form-control hidden" })
+                }
                 @Html.ValidationMessageFor(model => model.Notifyees, "", new { @class = "text-danger" })
             </div>
         </div>
+
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -53,5 +62,17 @@
 </div>
 
 @section Scripts {
+    <script type="text/javascript">
+            $(document).ready(function() {
+                $('#NotifyeeIds').multiselect({
+                    buttonWidth: '100%',
+                    enableCaseInsensitiveFiltering: true,
+                    disableIfEmpty: true,
+                });
+            });
+    </script>
+
+    @Scripts.Render("~/Scripts/bootstrap-multiselect.js")
+
     @Scripts.Render("~/bundles/jqueryval")
 }

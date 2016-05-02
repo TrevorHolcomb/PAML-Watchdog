@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -40,6 +39,10 @@
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Manatee.Json, Version=4.0.0.0, Culture=neutral, PublicKeyToken=c267f67a39449c62, processorArchitecture=MSIL">
+      <HintPath>..\packages\Manatee.Json.4.0.0\lib\net45\Manatee.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Moq, Version=4.2.1510.2205, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
@@ -91,7 +94,11 @@
     <Compile Include="EscalationChainLink.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="EscalationChains.cs" />
+    <Compile Include="EscalationChainLinkPartial.cs" />
+    <Compile Include="EscalationChainPartial.cs" />
+    <Compile Include="ModelHelpers\ChainTool.cs" />
+    <Compile Include="ModelHelpers\ChainToolTests.cs" />
+    <Compile Include="Schemata.cs" />
     <Compile Include="Message.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
@@ -106,42 +113,37 @@
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rule.cs">
-      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
-    </Compile>
-    <Compile Include="RuleCategory.cs">
-      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
-    </Compile>
-    <Compile Include="NotifyeesTests.cs" />
-    <Compile Include="WatchdogDatabase.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>WatchdogDatabase.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="WatchdogDatabase.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Rule.cs" />
+    <Compile Include="RuleCategory.cs" />
+    <Compile Include="WatchdogDatabase.Context.cs" />
+    <Compile Include="WatchdogDatabase.cs" />
     <Compile Include="WatchdogDatabase.Designer.cs">
+      <DependentUpon>WatchdogDatabase.edmx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>WatchdogDatabase.edmx</DependentUpon>
     </Compile>
     <Compile Include="WatchdogDatabaseContextMocker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Schemata\MessageSchema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
     <EntityDeploy Include="WatchdogDatabase.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>WatchdogDatabase.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="Schemata\QueueSizeMessageSchema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="WatchdogDatabase.edmx.diagram">
       <DependentUpon>WatchdogDatabase.edmx</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Schemata\schemata_readme.txt" />
     <Content Include="WatchdogDatabase.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>WatchdogDatabase.Context.cs</LastGenOutput>
@@ -158,13 +160,9 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

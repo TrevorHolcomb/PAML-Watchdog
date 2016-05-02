@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewBag.Title = "Help";
+}
+
+
+<h2>Help</h2>
+
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default" id="panel1">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-target="#setup-database"
+                   href="#setup-database">
+                    Setting Up The Database
+                </a>
+            </h4>
+
+        </div>
+        <div id="setup-database" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <p>This documentation was built with Visual Studio 2015 and an early version of the project, please excuse any slight inaccuracies and if inclined update the documentation to reflect those changes.</p>
+                <p>To set up the database you will need to do the following</p>
+                <ol>
+                    <li>
+                        <p>Start up visual studio and open up the solution file for the paml alerter systems.</p>
+                    </li>
+                    <li>
+                        <p>Then navigate into the <i>WatchdogDatabaseAccessLayer</i> project and open up the WatchdogDatabase.edmx file. It can take a while to load
+                        </p>
+                        <p><img src="~/Content/img/help/setup-db/step-2.PNG" class="help"/>
+                        </p>
+                    </li>
+                    <li>
+                        <p>Once the edmx file is done loading right click on the diagram and click on <b>Generate Database from Model</b>
+                        </p>
+                        <p><img src="~/Content/img/help/setup-db/step-3.PNG" class="help"/>
+                        </p>
+                    </li>
+                    <li>
+                        <p>A wizard for generating the database will popup. Click finish and it will generate the sql to build the database.</p>
+                        <p><img src="~/Content/img/help/setup-db/step-4.PNG" class="help"/>
+                        </p>
+                    </li>
+                    <li>
+                        <p>Visual Studio will then open up the newly generated sql file. Click the green arrow on the top left of the tab. It will execute the file and generate the database for you</p>
+                        <p><img src="~/Content/img/help/setup-db/step-5.PNG" class="help"/>
+                        </p>
+                    </li>
+                    <li>
+                        <p>Most likely you will then be asked to set up the connection to the database.</p>
+                        <p><img src="~/Content/img/help/setup-db/step-6.PNG" class="help"/>
+                        </p>
+                    </li>
+                    <li>
+                        <p>Fill out the information and click connect when you are done</p>
+                        <p><img src="~/Content/img/help/setup-db/step-7.PNG" class="help"/>
+                        </p>
+                    </li>
+                    <li>
+                        <p>Then you can click the green arrow on the top left of the panel again and you will see a response from the database appear in the bottom left corner of you screen. <b>If you encountered an error</b> stating that you can not open the database requested continue the guide below and I will show you how to fix it, <b>otherwise you are done!</b>
+                        </p>
+                        <p><img src="~/Content/img/help/setup-db/step-12.PNG" class="help"/>
+                        </p>
+                    </li>
+                    <li>
+                        <p>If you recieved this error it means that you have yet to create the database.</p>
+                        <p>
+                            <img src="~/Content/img/help/setup-db/step-8.PNG" class="help"/>
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            To fix this, we will need to create the database. To do this we could just write the proper sql inside of the sql file that we are trying to execute, or we can use an application such as <b>sql server management studio</b> to do it for us. When you open up the application you will be greeted by a prompt to enter your credentials and the name of the server you wish to connect to. Enter everything and click connect.
+                        </p>
+                        <p><img src="~/Content/img/help/setup-db/step-9.PNG" class="help"/>
+                        </p>
+                    </li>
+                    <li>
+                        <p>Once it is done connecting expand the sql server in the object explorer on the left. Right click on databases and select <b>New Database</b>
+                        </p>
+                        <p>
+                            <img src="~/Content/img/help/setup-db/step-10.PNG" class="help"/>
+                        </p>
+                    </li>
+                    <li>
+                        <p>Next fill in the desired name for your database, and then click ok.</p>
+                        <p><img src="~/Content/img/help/setup-db/step-11.PNG" class="help"/>
+                        </p>
+                    </li>
+                    <li>
+                        <p>Now you can go back to step 7 and finish setting up the database.</p>
+                    </li>
+                </ol>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Template for new Items
+
+        <div class="panel panel-default" id="panel2">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-target="#collapseTwo"
+                   href="#collapseTwo" class="collapsed">
+                    Collapsible Group Item #2
+                </a>
+            </h4>
+
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse">
+            <div class="panel-body">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</div>
+        </div>
+    </div> -->
+</div>
