@@ -311,3 +311,10 @@ img.help {
     width: 85%;
     max-width: 500px;
 }
+
+
+/* MultiSelect */
+span.hide-native-select > div > ul > li a label {
+    margin-left: 5px;
+}
+

@@ -170,6 +170,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\MenuLinkHelper.cs" />
+    <Compile Include="Helpers\MultiSelectHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\EscalationChainCreateViewModel.cs" />
     <Compile Include="ViewModels\EscalationChainLinksCreateViewModel.cs" />
@@ -191,6 +192,7 @@
     <Content Include="Content\img\help\setup-db\step-7.PNG" />
     <Content Include="Content\img\help\setup-db\step-8.PNG" />
     <Content Include="Content\img\help\setup-db\step-9.PNG" />
+    <Content Include="Scripts\bootstrap-multiselect.js" />
     <Content Include="Styles\css\bootstrap.css" />
     <Content Include="Styles\css\bootstrap.min.css" />
     <Content Include="favicon.ico" />
