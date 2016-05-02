@@ -413,8 +413,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="Description" Type="String" Nullable="false" />
-          <Property Name="RequiredParameters" Type="String" Nullable="false" />
-          <Property Name="OptionalParameters" Type="String" Nullable="false" />
+          <Property Name="MessageSchema" Type="String" Nullable="false" />
           <NavigationProperty Name="Messages" Relationship="WatchdogDatabase.MessageMessageType" FromRole="MessageType" ToRole="Message" />
           <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.RuleMessageType" FromRole="MessageType" ToRole="Rule" />
         </EntityType>
@@ -489,7 +488,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="Description" Type="String" Nullable="false" />
-          <Property Name="RuleTrigger" Type="String" Nullable="false" />
+          <Property Name="RuleTriggerSchema" Type="String" Nullable="false" />
           <NavigationProperty Name="EscalationChain" Relationship="WatchdogDatabase.EscalationChainRule" FromRole="Rule" ToRole="EscalationChain" />
           <Property Name="EscalationChainId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="MessageType" Relationship="WatchdogDatabase.RuleMessageType" FromRole="Rule" ToRole="MessageType" />
@@ -618,8 +617,7 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
-          <ScalarProperty Name="RequiredParameters" ColumnName="RequiredParameters" />
-          <ScalarProperty Name="OptionalParameters" ColumnName="OptionalParameters" />
+          <ScalarProperty Name="MessageSchema" ColumnName="RequiredParameters" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -664,7 +662,7 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
-          <ScalarProperty Name="RuleTrigger" ColumnName="RuleTrigger" />
+          <ScalarProperty Name="RuleTriggerSchema" ColumnName="RuleTrigger" />
           <ScalarProperty Name="EscalationChainId" ColumnName="EscalationChainId" />
           <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />
         </MappingFragment>

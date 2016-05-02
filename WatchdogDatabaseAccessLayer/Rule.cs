@@ -24,7 +24,7 @@ namespace WatchdogDatabaseAccessLayer
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string RuleTrigger { get; set; }
+        public string RuleTriggerSchema { get; set; }
         public int EscalationChainId { get; set; }
         public int AlertTypeId { get; set; }
     

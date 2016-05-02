@@ -113,10 +113,22 @@
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rule.cs" />
-    <Compile Include="RuleCategory.cs" />
-    <Compile Include="WatchdogDatabase.Context.cs" />
-    <Compile Include="WatchdogDatabase.cs" />
+    <Compile Include="Rule.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RuleCategory.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WatchdogDatabase.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WatchdogDatabase.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WatchdogDatabase.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="WatchdogDatabase.Designer.cs">
       <DependentUpon>WatchdogDatabase.edmx</DependentUpon>
       <AutoGen>True</AutoGen>
