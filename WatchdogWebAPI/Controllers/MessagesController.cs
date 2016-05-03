@@ -16,11 +16,20 @@ namespace WatchdogWebAPI.Controllers
     {
         private WatchdogDatabaseContainer db = new WatchdogDatabaseContainer();
 
-        // GET: api/Messages/5
-        [ResponseType(typeof(Message))]
+        // GET: api/Messages/5   <-- 5 is the id
+        [ResponseType(typeof(MessageType))]
         public IHttpActionResult GetMessage(int id)
         {
-            return Ok();
+            var messageType = db.MessageTypes.Find(id);
+            if(messageType != null)
+            {
+                return Ok(messageType);
+            }
+            else
+            {
+                return NotFound();
+            }
+            
         }
 
         // PUT: api/Messages/5

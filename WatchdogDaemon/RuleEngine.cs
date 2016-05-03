@@ -28,7 +28,7 @@ namespace WatchdogDaemon
             //Manatee.Json doesn't properly support "exclusiveMaximum" somehow. Yet, it does support"exclusiveMinimum".
             //IJsonSchema ruleTriggerSchema = JsonSchemaFactory.FromJson(JsonValue.Parse(rule.RuleTrigger));        
 
-            JsonSchema4 ruleTriggerSchema = JsonSchema4.FromJson(rule.RuleTrigger);
+            JsonSchema4 ruleTriggerSchema = JsonSchema4.FromJson(rule.RuleTriggerSchema);
             var result = ruleTriggerSchema.Validate(message.Params);
 
             //here's where we handle matching rules to specific servers and origins

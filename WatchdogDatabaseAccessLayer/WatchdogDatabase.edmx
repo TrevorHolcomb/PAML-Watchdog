@@ -87,8 +87,7 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="RequiredParameters" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="OptionalParameters" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="MessageSchema" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="EscalationChains">
     <Key>
@@ -131,7 +130,7 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="RuleTrigger" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RuleTriggerSchema" Type="nvarchar(max)" Nullable="false" />
     <Property Name="EscalationChainId" Type="int" Nullable="false" />
     <Property Name="AlertTypeId" Type="int" Nullable="false" />
     <Property Name="MessageType_Id" Type="int" Nullable="false" />
@@ -617,7 +616,7 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
-          <ScalarProperty Name="MessageSchema" ColumnName="RequiredParameters" />
+          <ScalarProperty Name="MessageSchema" ColumnName="MessageSchema" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -662,7 +661,7 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
-          <ScalarProperty Name="RuleTriggerSchema" ColumnName="RuleTrigger" />
+          <ScalarProperty Name="RuleTriggerSchema" ColumnName="RuleTriggerSchema" />
           <ScalarProperty Name="EscalationChainId" ColumnName="EscalationChainId" />
           <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />
         </MappingFragment>

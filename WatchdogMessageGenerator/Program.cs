@@ -58,8 +58,8 @@ namespace WatchdogMessageGenerator
                     {
                         Name = "QueueSizeUpdate",
                         Description = "A regular update from the JMS queue containing the number of elements enqueued.",
-                        RequiredParameters = "['size']",
-                        OptionalParameters = "[]",
+                        MessageSchema = "['size']",
+                        
                         Id = options.QueueSizeMessageTypeId
                     });
 

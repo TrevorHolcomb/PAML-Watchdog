@@ -16,8 +16,7 @@ namespace WatchdogDatabaseAccessLayer
                 {
                     Name = "qsu-jms",
                     Description = "queue size update",
-                    OptionalParameters = "[]",
-                    RequiredParameters = "['size']"
+                    MessageSchema = "['size']"
                 });
                 db.SaveChanges();
 

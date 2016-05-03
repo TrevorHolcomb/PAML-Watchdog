@@ -69,7 +69,7 @@ namespace AdministrationPortal.Controllers
                 Description = ruleCreateViewModel.Description,
                 MessageType = db.MessageTypes.Single(e => e.Id == ruleCreateViewModel.MessageTypeId),
                 EscalationChain = db.EscalationChains.Single(e => e.Id == ruleCreateViewModel.EscalationChainId),
-                RuleTrigger = ruleCreateViewModel.RuleTrigger,
+                RuleTriggerSchema = ruleCreateViewModel.RuleTrigger,
             };
 
             db.Rules.Add(rule);
