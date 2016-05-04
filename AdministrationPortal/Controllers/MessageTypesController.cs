@@ -47,7 +47,7 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Name,Description,RequiredParameters,OptionalParameters")] MessageType messageType)
+        public async Task<ActionResult> Create([Bind(Include = "Name,Description,MessageSchema")] MessageType messageType)
         {
             if (ModelState.IsValid)
             {
@@ -71,7 +71,7 @@ namespace AdministrationPortal.Controllers
             {
                 return HttpNotFound();
             }
-            return View(messageType);
+            return View("Create", messageType);
         }
 
         // POST: MessageTypes/Edit/5
@@ -79,7 +79,7 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Description,RequiredParams,OptionalParams")] MessageType messageType)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Description,MessageSchema")] MessageType messageType)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace AdministrationPortal.Controllers
                 await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(messageType);
+            return View("Create", messageType);
         }
 
         // GET: MessageTypes/Delete/5
