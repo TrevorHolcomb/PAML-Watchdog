@@ -25,7 +25,7 @@ namespace WatchdogDaemon.Tests
             {
                 Id = 0,
                 Name = "QueueSizeWithinRange",
-                RuleTrigger = @"{
+                RuleTriggerSchema = @"{
                     ""$schema"": ""http://json-schema.org/draft-04/schema"",
                     ""type"": ""object"",
                     ""title"": ""Queue Size Within Range"",
@@ -51,7 +51,7 @@ namespace WatchdogDaemon.Tests
             {
                 Id = 1,
                 Name = "QueueTooBig",
-                RuleTrigger = @"{
+                RuleTriggerSchema = @"{
                     ""$schema"": ""http://json-schema.org/draft-04/schema"",
                     ""type"":""object"",
                     ""title"": ""Queue Too Big"",
