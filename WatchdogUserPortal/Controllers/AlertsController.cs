@@ -17,7 +17,14 @@ namespace WatchdogUserPortal.Controllers
         // GET: Alerts
         public ActionResult Index()
         {
-            var alerts = db.Alerts.Include(a => a.AlertType).Include(a => a.Rule);
+            var alerts = db.Alerts.Include(a => a.AlertType).Include(a => a.Rule).Where(a => a.Status.ToString() == "UnAcknowledged" || a.Status.ToString() == "Acknowledged").OrderBy(a => a.Status);
+            return View(alerts.ToList());
+        }
+
+        // GET: Alerts
+        public ActionResult IndexArchived()
+        {
+            var alerts = db.Alerts.Include(a => a.AlertType).Include(a => a.Rule).Where(a => a.Status.ToString() == "Resolved").OrderBy(a => a.Status);
             return View(alerts.ToList());
         }
 

@@ -11,11 +11,11 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Payload)
+            @Html.DisplayNameFor(model => model.Status)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Payload)
+            @Html.DisplayFor(model => model.Status)
         </dd>
 
         <dt>
@@ -27,23 +27,15 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Notes)
+            @Html.DisplayNameFor(model => model.Payload)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Notes)
+            @Html.DisplayFor(model => model.Payload)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AlertType.Name)
+            @Html.DisplayNameFor(model => model.AlertType)
         </dt>
 
         <dd>
@@ -51,16 +43,24 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Rule.Name)
+            @Html.DisplayNameFor(model => model.Rule)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.Rule.Name)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.Notes)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Notes)
+        </dd>
+
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Change Status", "Edit", new { id = Model.Id }, new {@class="btn btn-default" }) 
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
 </p>
