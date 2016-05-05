@@ -79,6 +79,8 @@
     <Property Name="Params" Type="nvarchar(max)" Nullable="false" />
     <Property Name="MessageTypeId" Type="int" Nullable="false" />
     <Property Name="IsProcessed" Type="bit" Nullable="false" />
+    <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="MessageTypes">
     <Key>
@@ -404,6 +406,8 @@
           <NavigationProperty Name="MessageType" Relationship="WatchdogDatabase.MessageMessageType" FromRole="Message" ToRole="MessageType" />
           <Property Name="MessageTypeId" Type="Int32" Nullable="false" />
           <Property Name="IsProcessed" Type="Boolean" Nullable="false" />
+          <Property Name="Server" Type="String" Nullable="false" />
+          <Property Name="Origin" Type="String" Nullable="false" />
         </EntityType>
         <EntityType Name="MessageType">
           <Key>
@@ -607,6 +611,8 @@
           <ScalarProperty Name="Params" ColumnName="Params" />
           <ScalarProperty Name="MessageTypeId" ColumnName="MessageTypeId" />
           <ScalarProperty Name="IsProcessed" ColumnName="IsProcessed" />
+          <ScalarProperty Name="Server" ColumnName="Server" />
+          <ScalarProperty Name="Origin" ColumnName="Origin" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
