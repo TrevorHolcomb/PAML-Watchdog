@@ -19,13 +19,14 @@ namespace WatchdogDaemon.Tests
             }
         };
 
+
         public static ICollection<Rule> Rules1 = new[]
         {
             new Rule
             {
                 Id = 0,
                 Name = "QueueSizeWithinRange",
-                RuleTrigger = @"{
+                RuleTriggerSchema = @"{
                     ""$schema"": ""http://json-schema.org/draft-04/schema"",
                     ""type"": ""object"",
                     ""title"": ""Queue Size Within Range"",
@@ -51,7 +52,7 @@ namespace WatchdogDaemon.Tests
             {
                 Id = 1,
                 Name = "QueueTooBig",
-                RuleTrigger = @"{
+                RuleTriggerSchema = @"{
                     ""$schema"": ""http://json-schema.org/draft-04/schema"",
                     ""type"":""object"",
                     ""title"": ""Queue Too Big"",
@@ -135,13 +136,34 @@ namespace WatchdogDaemon.Tests
             WatchdogDatabaseContainer dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
             var ruleEngine = new RuleEngine();
             ruleEngine.dbContext = dbContext;
+            foreach (Message message in dbContext.Messages)
+                message.IsProcessed = false;
 
             //Act
             ruleEngine.ConsumeMessages(rules, messages);
 
             //Assert
-            int numberOfAlerts = dbContext.Alerts.Count();
-            Assert.Equal(1, numberOfAlerts);
+            int numberOfAlertsGenerated = dbContext.Alerts.Count();
+            Assert.Equal(1, numberOfAlertsGenerated);
+        }
+
+        [Theory]
+        [MemberData(nameof(TestData))]
+        public void TestIgnoreConsumedMessages(ICollection<Rule> rules, ICollection<Message> messages)
+        {
+            //Arrange
+            WatchdogDatabaseContainer dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
+            var ruleEngine = new RuleEngine();
+            ruleEngine.dbContext = dbContext;
+            foreach (Message message in dbContext.Messages)
+                message.IsProcessed = true;
+
+            //Act
+            ruleEngine.ConsumeMessages(rules, messages);
+
+            //Assert
+            int numberOfAlertsGenerated = dbContext.Alerts.Count();
+            Assert.Equal(0, numberOfAlertsGenerated);
         }
     }
 }

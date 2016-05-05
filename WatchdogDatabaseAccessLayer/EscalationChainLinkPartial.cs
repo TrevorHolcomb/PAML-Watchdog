@@ -13,5 +13,10 @@ namespace WatchdogDatabaseAccessLayer
             var link = obj as EscalationChainLink;
             return link?.Id == this.Id;
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();  
+        }
     }
 }

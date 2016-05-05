@@ -27,6 +27,8 @@ namespace WatchdogDatabaseAccessLayer
         public string RuleTriggerSchema { get; set; }
         public int EscalationChainId { get; set; }
         public int AlertTypeId { get; set; }
+        public string Server { get; set; }
+        public string Origin { get; set; }
     
         public virtual EscalationChain EscalationChain { get; set; }
         public virtual MessageType MessageType { get; set; }
