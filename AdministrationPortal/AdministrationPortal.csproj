@@ -273,7 +273,6 @@
     <Content Include="Views\MessageTypes\Create.cshtml" />
     <Content Include="Views\MessageTypes\Delete.cshtml" />
     <Content Include="Views\MessageTypes\Details.cshtml" />
-    <Content Include="Views\MessageTypes\Edit.cshtml" />
     <Content Include="Views\MessageTypes\Index.cshtml" />
     <Content Include="Views\Rules\Create.cshtml" />
     <Content Include="Views\Rules\Delete.cshtml" />

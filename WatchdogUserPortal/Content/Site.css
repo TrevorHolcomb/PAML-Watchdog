@@ -2,11 +2,14 @@
     padding-top: 50px;
     padding-bottom: 20px;
 }
-
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+}
+
+.table-hover > tbody > tr:hover > th{
+    background-color: #f9f9f9;
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 
