@@ -18,6 +18,8 @@ namespace WatchdogDatabaseAccessLayer
         public string Params { get; set; }
         public int MessageTypeId { get; set; }
         public bool IsProcessed { get; set; }
+        public string Server { get; set; }
+        public string Origin { get; set; }
     
         public virtual MessageType MessageType { get; set; }
     }
