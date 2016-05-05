@@ -19,6 +19,7 @@ namespace WatchdogDaemon.Tests
             }
         };
 
+
         public static ICollection<Rule> Rules1 = new[]
         {
             new Rule
@@ -135,13 +136,34 @@ namespace WatchdogDaemon.Tests
             WatchdogDatabaseContainer dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
             var ruleEngine = new RuleEngine();
             ruleEngine.dbContext = dbContext;
+            foreach (Message message in dbContext.Messages)
+                message.IsProcessed = false;
 
             //Act
             ruleEngine.ConsumeMessages(rules, messages);
 
             //Assert
-            int numberOfAlerts = dbContext.Alerts.Count();
-            Assert.Equal(1, numberOfAlerts);
+            int numberOfAlertsGenerated = dbContext.Alerts.Count();
+            Assert.Equal(1, numberOfAlertsGenerated);
+        }
+
+        [Theory]
+        [MemberData(nameof(TestData))]
+        public void TestIgnoreConsumedMessages(ICollection<Rule> rules, ICollection<Message> messages)
+        {
+            //Arrange
+            WatchdogDatabaseContainer dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
+            var ruleEngine = new RuleEngine();
+            ruleEngine.dbContext = dbContext;
+            foreach (Message message in dbContext.Messages)
+                message.IsProcessed = true;
+
+            //Act
+            ruleEngine.ConsumeMessages(rules, messages);
+
+            //Assert
+            int numberOfAlertsGenerated = dbContext.Alerts.Count();
+            Assert.Equal(0, numberOfAlertsGenerated);
         }
     }
 }

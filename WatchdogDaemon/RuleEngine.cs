@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using WatchdogDatabaseAccessLayer;
 using NJsonSchema;
@@ -10,11 +11,19 @@ namespace WatchdogDaemon
 
         public override void ConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages)
         {
-            foreach (var message in messages)
+            var unprocessedMessages = from m in messages where !m.IsProcessed select m;
+            foreach (var message in unprocessedMessages)
             {
                 foreach (var rule in rules)
                 {
-                    ConsumeMessage(rule, message);
+                    //TODO: for some future commit, play with storing Rule.MessageTypeAs Json to allow
+                    //validating one rule against many message types
+                    if ((rule.Origin == "all" || rule.Origin == message.Origin) && (
+                        rule.Server == "all" || rule.Server == message.Server) && (
+                        rule.MessageType == null || rule.MessageType.Id == message.MessageType.Id))
+                    {
+                        ConsumeMessage(rule, message);
+                    }
                 }
                 message.IsProcessed = true;
 
@@ -40,8 +49,6 @@ namespace WatchdogDaemon
                 CreateAlert(rule, message);
         }
 
-        #region private methods
-
         private void CreateAlert(Rule rule, Message message)
         {
             Alert newAlert = new Alert
@@ -55,8 +62,6 @@ namespace WatchdogDaemon
 
             dbContext.Alerts.Add(newAlert);
             dbContext.SaveChanges();
-        }
-       
-        #endregion
+        }       
     }
 }
