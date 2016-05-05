@@ -7,7 +7,6 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Alert</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -60,7 +59,7 @@
 
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Change Status", "Edit", new { id = Model.Id }, new {@class="btn btn-default" }) 
-    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
-</p>
+<div class="col-md-offset-1">
+    @Html.ActionLink("Change Status", "Edit", new { id = Model.Id }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Back to List", "Index", new {ActiveOrArchived = Model.Status.ToString()}, new { @class = "btn btn-default" })
+</div>

@@ -15,17 +15,18 @@ namespace WatchdogUserPortal.Controllers
         private WatchdogDatabaseContainer db = new WatchdogDatabaseContainer();
 
         // GET: Alerts
-        public ActionResult Index()
+        public ActionResult Index(string ActiveOrArchived)
         {
-            var alerts = db.Alerts.Include(a => a.AlertType).Include(a => a.Rule).Where(a => a.Status.ToString() == "UnAcknowledged" || a.Status.ToString() == "Acknowledged").OrderBy(a => a.Status);
-            return View(alerts.ToList());
-        }
-
-        // GET: Alerts
-        public ActionResult IndexArchived()
-        {
-            var alerts = db.Alerts.Include(a => a.AlertType).Include(a => a.Rule).Where(a => a.Status.ToString() == "Resolved").OrderBy(a => a.Status);
-            return View(alerts.ToList());
+            switch (ActiveOrArchived)
+            {
+                case "UnAcknowledged":
+                case "Acknowledged":
+                    var activeAlerts = db.Alerts.Include(a => a.AlertType).Include(a => a.Rule).Where(a => a.Status.ToString() == "UnAcknowledged" || a.Status.ToString() == "Acknowledged").OrderBy(a => a.Status);
+                    return View(activeAlerts.ToList());
+                default:
+                    var archivedAlerts = db.Alerts.Include(a => a.AlertType).Include(a => a.Rule).Where(a => a.Status.ToString() == "Resolved").OrderBy(a => a.Status);
+                    return View(archivedAlerts.ToList());
+            }            
         }
 
         // GET: Alerts/Details/5
@@ -98,7 +99,7 @@ namespace WatchdogUserPortal.Controllers
             {
                 db.Entry(alert).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new {ActiveOrArchived = alert.Status.ToString() });
             }
             ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", alert.AlertTypeId);
             ViewBag.RuleId = new SelectList(db.Rules, "Id", "Name", alert.RuleId);
