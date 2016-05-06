@@ -55,6 +55,8 @@ namespace AdministrationPortal.Controllers
             public string Description { get; set; }
             public int EscalationChainId { get; set; }
             public string RuleTriggerSchema { get; set; }
+            public string Origin { get; set; }
+            public string Server { get; set; }
         }
 
         [HttpPost]
@@ -70,6 +72,8 @@ namespace AdministrationPortal.Controllers
                 MessageType = db.MessageTypes.Single(e => e.Id == ruleCreateViewModel.MessageTypeId),
                 EscalationChain = db.EscalationChains.Single(e => e.Id == ruleCreateViewModel.EscalationChainId),
                 RuleTriggerSchema = ruleCreateViewModel.RuleTriggerSchema,
+                Origin = ruleCreateViewModel.Origin,
+                Server = ruleCreateViewModel.Server
             };
 
             db.Rules.Add(rule);
