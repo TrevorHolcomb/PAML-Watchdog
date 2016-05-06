@@ -74,7 +74,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractWatchdog.cs" />
+    <Compile Include="WatchdogContextProvider.cs" />
+    <Compile Include="IContextProvider.cs" />
     <Compile Include="IRuleEngine.cs" />
+    <Compile Include="MockDatabaseContextProvider.cs" />
     <Compile Include="PollingWatchdog.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

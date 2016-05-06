@@ -54,7 +54,7 @@ namespace AdministrationPortal.Controllers
             public string Name { get; set; }
             public string Description { get; set; }
             public int EscalationChainId { get; set; }
-            public string RuleTrigger { get; set; }
+            public string RuleTriggerSchema { get; set; }
         }
 
         [HttpPost]
@@ -69,17 +69,12 @@ namespace AdministrationPortal.Controllers
                 Description = ruleCreateViewModel.Description,
                 MessageType = db.MessageTypes.Single(e => e.Id == ruleCreateViewModel.MessageTypeId),
                 EscalationChain = db.EscalationChains.Single(e => e.Id == ruleCreateViewModel.EscalationChainId),
-                RuleTriggerSchema = ruleCreateViewModel.RuleTrigger,
+                RuleTriggerSchema = ruleCreateViewModel.RuleTriggerSchema,
             };
 
             db.Rules.Add(rule);
             db.SaveChanges();
             return RedirectToAction("Index");
-
-            //ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategories);
-//            ViewBag.EscalationChainId = new SelectList(db.EscalationChains, "Id", "Name", rule.EscalationChainId);
-  //          ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
-    //        return View(rule);
         }
 
         // GET: Rules/Edit/5
@@ -94,8 +89,10 @@ namespace AdministrationPortal.Controllers
             {
                 return HttpNotFound();
             }
-
-            return View(rule);
+            ViewBag.EscalationChainId = new SelectList(db.EscalationChains, "Id", "Name");
+            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name");
+            ViewBag.MessageTypeId = new SelectList(db.MessageTypes, "Id", "Name");
+            return View("Create", rule);
         }
 
         // POST: Rules/Edit/5
@@ -103,8 +100,9 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,RuleCategoryId,RuleTrigger,EscalationChainId,AlertTypeId")] Rule rule)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,RuleCategoryId,RuleTriggerSchema,EscalationChainId,AlertTypeId")] Rule rule)
         {
+
             if (ModelState.IsValid)
             {
                 db.Entry(rule).State = EntityState.Modified;
@@ -112,10 +110,11 @@ namespace AdministrationPortal.Controllers
                 return RedirectToAction("Index");
             }
 
-            //ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategoryId);
-            //ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
+            ViewBag.EscalationChainId = new SelectList(db.EscalationChains, "Id", "Name");
+            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name");
+            ViewBag.MessageTypeId = new SelectList(db.MessageTypes, "Id", "Name");
 
-            return View(rule);
+            return View("Create", rule);
         }
 
         // GET: Rules/Delete/5

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Data.Entity;
 using WatchdogDatabaseAccessLayer;
 using System.Threading;
+using Watchdog;
 
 namespace WatchdogDaemon
 {
@@ -12,10 +13,12 @@ namespace WatchdogDaemon
         {
             Console.WriteLine("Watchdog simulator started");
             //start consumer
-            AbstractWatchdog rex = new PollingWatchdog(new WatchdogDatabaseContainer(), new RuleEngine());
-            rex.Watch();
-
-            while (true) { }
+            using (var rex = new PollingWatchdog(new WatchdogContextProvider(), new RuleEngine()))
+            {
+                rex.Watch();
+                Console.WriteLine("Press \'Q\' to quit");
+                while (Console.ReadKey().Key == ConsoleKey.Q) { }
+            }
         }
     }
 }

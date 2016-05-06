@@ -8,22 +8,29 @@ namespace WatchdogDaemon
     public class RuleEngine : IRuleEngine
     {
 
-        public override void ConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages)
+        public override ICollection<Alert> ConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages)
         {
+            var alerts = new List<Alert>();
             foreach (var message in messages)
             {
                 foreach (var rule in rules)
                 {
-                    ConsumeMessage(rule, message);
+                    var alert = ConsumeMessage(rule, message);
+                    if (alert != null)
+                    {
+                        alerts.Add(alert);
+                        Console.WriteLine("Created Alert For: " + message.Id);
+                    }
                 }
                 message.IsProcessed = true;
 
                 //for debugging/simulation
                 Console.WriteLine("Consumed: " + message.Id);
             }
+            return alerts;
         }
 
-        public override void ConsumeMessage(Rule rule, Message message)
+        public override Alert ConsumeMessage(Rule rule, Message message)
         {
             //Manatee.Json doesn't properly support "exclusiveMaximum" somehow. Yet, it does support"exclusiveMinimum".
             //IJsonSchema ruleTriggerSchema = JsonSchemaFactory.FromJson(JsonValue.Parse(rule.RuleTrigger));        
@@ -34,27 +41,29 @@ namespace WatchdogDaemon
             //here's where we handle matching rules to specific servers and origins
             foreach (var error in result)
                 if (error.Property == "server" || error.Property == "origin")       
-                    return;
+                    return null;
 
             if (result.Count != 0)
-                CreateAlert(rule, message);
+                return CreateAlert(rule, message);
+
+            return null;
         }
 
         #region private methods
 
-        private void CreateAlert(Rule rule, Message message)
+        private static Alert CreateAlert(Rule rule, Message message)
         {
-            Alert newAlert = new Alert
+            return new Alert
             {
                 AlertTypeId = rule.AlertTypeId,
+                AlertType = rule.AlertType,
                 RuleId = rule.Id,
+                Rule = rule,
                 Payload = message.Params,
+                Notes = "",
                 Timestamp = DateTime.Now,
                 Status = (int)AlertStatus.UnAcknowledged,
             };
-
-            dbContext.Alerts.Add(newAlert);
-            dbContext.SaveChanges();
         }
        
         #endregion

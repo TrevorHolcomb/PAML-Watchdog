@@ -8,17 +8,19 @@ namespace WatchdogDaemon.Tests
 
     public class RuleEngineTests
     {
-        #region setup
-
         public static TheoryData<ICollection<Rule>, ICollection<Message>> TestData => 
             new TheoryData <ICollection<Rule>, ICollection<Message>>
         {
             {
                 Rules1,
                 Messages1
+            },
+            {
+                Rules2,
+                Messages2
             }
         };
-
+        #region TestData1
         public static ICollection<Rule> Rules1 = new[]
         {
             new Rule
@@ -28,8 +30,6 @@ namespace WatchdogDaemon.Tests
                 RuleTriggerSchema = @"{
                     ""$schema"": ""http://json-schema.org/draft-04/schema"",
                     ""type"": ""object"",
-                    ""title"": ""Queue Size Within Range"",
-                    ""description"": ""checks that messages from any server and origin report a queue size within range"",
                     ""properties"": {
                         ""params"": {
                             ""type"": ""object"",
@@ -54,8 +54,6 @@ namespace WatchdogDaemon.Tests
                 RuleTriggerSchema = @"{
                     ""$schema"": ""http://json-schema.org/draft-04/schema"",
                     ""type"":""object"",
-                    ""title"": ""Queue Too Big"",
-                    ""description"": ""checks that queue sizes from testServer2 aren't too high"",
                     ""properties"": {
                         ""server"": {""enum"": [""testServer2""]},
                         ""origin"": {},
@@ -106,9 +104,58 @@ namespace WatchdogDaemon.Tests
                 IsProcessed = false,
             }
         };
+        #endregion
 
-        public static ICollection<Alert> AlertsEmpty = new List<Alert>();
+        #region TestData2
 
+        public static ICollection<Rule> Rules2 = new List<Rule>
+        {
+            new Rule
+            {
+                Name = "QueueSizeTooBig",
+                RuleTriggerSchema = @"{
+                    ""$schema"": ""http://json-schema.org/draft-04/schema"",
+                    ""type"":""object"",
+                    ""properties"": {
+                        ""params"":{
+                            ""type"": ""object"",
+                            ""properties"":{
+                                ""queueSize"":{
+                                    ""type"":""integer"",
+                                    ""minimum"":0,
+                                    ""maximum"":50
+                                }
+                            }
+                         }
+                    }
+                }"
+            }
+        };
+
+        public static ICollection<Message> Messages2 = new List<Message>
+        {
+            new Message
+            {
+                Params = @"{
+	                ""server"":""Socrates"",
+	                ""origin"":""WatchdogWebAPI"",
+	                ""messageTypeId"":3,
+	                ""params"":{
+		                ""queueSize"": 59
+	                }
+                }"
+            }, new Message
+            {
+                Params = @"{
+	                ""server"":""Socrates"",
+	                ""origin"":""WatchdogWebAPI"",
+	                ""messageTypeId"":3,
+	                ""params"":{
+		                ""queueSize"": 9
+	                }
+                }"
+            }
+        };
         #endregion
 
         [Theory]
@@ -116,9 +163,8 @@ namespace WatchdogDaemon.Tests
         public void TestConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages)
         {
             //Arrange
-            WatchdogDatabaseContainer dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
+            var dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
             var ruleEngine = new RuleEngine();
-            ruleEngine.dbContext = dbContext;
 
             //Act
             ruleEngine.ConsumeMessages(rules, messages);
@@ -132,15 +178,14 @@ namespace WatchdogDaemon.Tests
         public void TestProduceAlerts(ICollection<Rule> rules, ICollection<Message> messages)
         {
             //Arrange
-            WatchdogDatabaseContainer dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
+            var dbContext = WatchdogDatabaseContextMocker.Mock(rules, messages);
             var ruleEngine = new RuleEngine();
-            ruleEngine.dbContext = dbContext;
 
             //Act
-            ruleEngine.ConsumeMessages(rules, messages);
+            var alerts = ruleEngine.ConsumeMessages(rules, messages);
 
             //Assert
-            int numberOfAlerts = dbContext.Alerts.Count();
+            int numberOfAlerts = alerts.Count;
             Assert.Equal(1, numberOfAlerts);
         }
     }

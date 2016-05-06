@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using Watchdog;
 using WatchdogDatabaseAccessLayer;
 
 namespace WatchdogDaemon
@@ -11,10 +12,7 @@ namespace WatchdogDaemon
         private Timer _pollingTimer;
         
         private const int PollingRate = 5*1000;        //5 seconds, for now
-
-        public PollingWatchdog(WatchdogDatabaseContainer dbContext, IRuleEngine ruleEngine) : base(dbContext, ruleEngine)
-        {
-        }
+        
 
         public override void Watch()
         {
@@ -31,17 +29,24 @@ namespace WatchdogDaemon
 
         protected override void Run(object state)
         {
-            var totalMessages = DbContext.Messages.ToList<Message>();
-            Console.WriteLine("watchdog sees " + totalMessages.Count + " total messages");
+            using (var dbContext = ContextProvider.GetDatabaseContext())
+            {
+                var totalMessages = dbContext.Messages.ToList<Message>();
+                Console.WriteLine("watchdog sees " + totalMessages.Count + " total messages");
 
-            //ToList() forces .net to do the query and store in memory, otherwise, or with LINQ, the expression is lazy-evaluated and causes an error in the second loop
-            var messages = DbContext.Messages.Where<Message>(msg => !msg.IsProcessed).ToList<Message>();
-            var rules = DbContext.Rules.Select<Rule, Rule>(e=>e).ToList<Rule>();
+                //ToList() forces .net to do the query and store in memory, otherwise, or with LINQ, the expression is lazy-evaluated and causes an error in the second loop
+                var messages = dbContext.Messages.Where<Message>(msg => !msg.IsProcessed).ToList<Message>();
+                var rules = dbContext.Rules.ToList<Rule>();
 
-            RuleEngine.ConsumeMessages(rules, messages);
+                var alerts = RuleEngine.ConsumeMessages(rules, messages);
+                dbContext.Alerts.AddRange(alerts);
+                // DbContext.Messages.RemoveRange(messages);       //delete messages after processing
+                dbContext.SaveChanges();
+            }
+        }
 
-            // DbContext.Messages.RemoveRange(messages);       //delete messages after processing
-            DbContext.SaveChanges();
+        public PollingWatchdog(IContextProvider provider, IRuleEngine ruleEngine) : base(provider, ruleEngine)
+        {
         }
     }
 }

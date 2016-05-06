@@ -9,9 +9,7 @@ namespace WatchdogDaemon
 {
     public abstract class IRuleEngine
     {
-        public abstract void ConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages);
-        public abstract void ConsumeMessage(Rule rule, Message message);
-
-        public WatchdogDatabaseContainer dbContext { get; set; }  //so that the RuleEngine can create and insert alerts
+        public abstract ICollection<Alert> ConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages);
+        public abstract Alert ConsumeMessage(Rule rule, Message message);
     }
 }

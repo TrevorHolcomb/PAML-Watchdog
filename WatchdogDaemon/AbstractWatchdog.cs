@@ -1,24 +1,24 @@
 ﻿using System;
+using System.Data.Entity;
+using Watchdog;
 using WatchdogDatabaseAccessLayer;
 
 namespace WatchdogDaemon
 {
     public abstract class AbstractWatchdog : IDisposable
     {
-        protected AbstractWatchdog(WatchdogDatabaseContainer dbContext, IRuleEngine ruleEngine)
+        public AbstractWatchdog(IContextProvider provider, IRuleEngine ruleEngine)
         {
-            DbContext = dbContext;
+            ContextProvider = provider;
             RuleEngine = ruleEngine;
-
-            RuleEngine.dbContext = dbContext;       //bleh
         }
 
-        public WatchdogDatabaseContainer DbContext { get; set; }
+        protected readonly IContextProvider ContextProvider;
         protected readonly IRuleEngine RuleEngine;
 
         public void Dispose()
         {
-            DbContext.Dispose();
+            
         }
 
         public abstract void Watch();

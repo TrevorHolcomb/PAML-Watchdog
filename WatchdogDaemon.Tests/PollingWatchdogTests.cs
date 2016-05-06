@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Watchdog;
 using WatchdogDatabaseAccessLayer;
 using WatchdogMessageGenerator;
 using Xunit;
@@ -19,14 +20,14 @@ namespace WatchdogDaemon.Tests
                 messages.Add(factory.Build());
 
             var watchdog = new PollingWatchdog(
-                WatchdogDatabaseContextMocker.Mock(
+                new MockDatabaseContextProvider(
                     new List<Rule>(), 
                     messages), 
                 new RuleEngine());
 
             watchdog.Watch();
 
-            while (watchdog.DbContext.Messages.Count(e => !e.IsProcessed) != 0)
+            while (messages.Count(e => !e.IsProcessed) != 0)
             {
                 // busy wait loop cause why not.
             }

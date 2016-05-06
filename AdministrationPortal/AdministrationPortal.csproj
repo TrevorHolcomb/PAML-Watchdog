@@ -277,7 +277,6 @@
     <Content Include="Views\Rules\Create.cshtml" />
     <Content Include="Views\Rules\Delete.cshtml" />
     <Content Include="Views\Rules\Details.cshtml" />
-    <Content Include="Views\Rules\Edit.cshtml" />
     <Content Include="Views\Rules\Index.cshtml" />
     <Content Include="Views\RuleCategories\Create.cshtml" />
     <Content Include="Views\RuleCategories\Delete.cshtml" />
