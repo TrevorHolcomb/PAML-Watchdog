@@ -4,6 +4,8 @@ using System.Runtime.InteropServices.ComTypes;
 using CommandLine;
 using CommandLine.Text;
 using WatchdogDatabaseAccessLayer;
+using WatchdogDatabaseAccessLayer.Models;
+using WatchdogDatabaseAccessLayer.Repositories.Database;
 
 namespace WatchdogMessageGenerator
 {
@@ -50,35 +52,33 @@ namespace WatchdogMessageGenerator
 
         private static void GenerateMessages(Options options)
         {
-            using (var db = new WatchdogDatabaseContainer())
+            var messageRepository = new EFMessageRepository();
+            var messageTypeRepository = new EFMessageTypeRepository();
+
+            if (options.Reset)
             {
-                if (options.Reset)
+                messageTypeRepository.Insert(new MessageType
                 {
-                    db.MessageTypes.Add(new MessageType
-                    {
-                        Name = "QueueSizeUpdate",
-                        Description = "A regular update from the JMS queue containing the number of elements enqueued.",
-                        MessageSchema = "['size']",
-                        
-                        Id = options.QueueSizeMessageTypeId
-                    });
+                    Name = "QueueSizeUpdate",
+                    Description = "A regular update from the JMS queue containing the number of elements enqueued.",
+                    Id = options.QueueSizeMessageTypeId
+                });
 
-                    db.SaveChanges();
-                }
-
-                var factory = new QueueSizeMessageFactory(new[] {"socrates", "plato", "aristotle"},
-                    new[] {"webapi", "cli"}, options.QueueSizeMessageTypeId);
-
-                for (var i = 0; i < options.QueueSizeMessageCount; i++)
-                {
-                    var message = factory.Build();
-                    db.Messages.Add(message);
-                }
-
-                db.SaveChanges();
-
-                return;
+                messageTypeRepository.Save();
             }
+
+            var factory = new QueueSizeMessageFactory(new[] {"socrates", "plato", "aristotle"},
+                new[] {"webapi", "cli"}, options.QueueSizeMessageTypeId);
+
+            for (var i = 0; i < options.QueueSizeMessageCount; i++)
+            {
+                var message = factory.Build();
+                messageRepository.Insert(message);
+            }
+
+            messageRepository.Save();
+
+            return;
         }
     }
 }
