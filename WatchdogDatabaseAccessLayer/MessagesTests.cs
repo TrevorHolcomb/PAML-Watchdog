@@ -24,6 +24,8 @@ namespace WatchdogDatabaseAccessLayer
                 {
                     MessageTypeId = mt.Id,
                     IsProcessed = false,
+                    Server = "testServer1",
+                    Origin = "WatchdogWebAPI",
                     Params = "{'size':0}"
                 });
                 db.SaveChanges();
@@ -36,6 +38,7 @@ namespace WatchdogDatabaseAccessLayer
         {
             db.MessageTypes.RemoveRange(db.MessageTypes.ToList());
             db.Messages.RemoveRange(db.Messages.ToList());
+            db.SaveChanges();
         }
     }
 }

@@ -6,6 +6,6 @@ namespace WatchdogDatabaseAccessLayer
     public static class Schemata
     {
         public static readonly IJsonSchema MessageSchema = JsonSchemaFactory.Load("Schemata\\MessageSchema.json");
-        public static readonly IJsonSchema QuerySizeMessageSchema = JsonSchemaFactory.Load("Schemata\\QueueSizeMessageSchema.json");
+        public static readonly IJsonSchema QueueSizeMessageParamsSchema = JsonSchemaFactory.Load("Schemata\\QueueSizeMessageParamsSchema.json");
     }
 }

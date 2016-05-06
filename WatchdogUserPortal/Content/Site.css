@@ -8,6 +8,7 @@
     padding-right: 15px;
 }
 
+/* Disabled hoverering over table header*/
 .table-hover > tbody > tr:hover > th{
     background-color: #f9f9f9;
 }
@@ -25,3 +26,45 @@ select,
 textarea {
     max-width: 280px;
 }
+
+
+/* Overrides bootstra table-striped class to allow for red bg color in the status td*/
+.redTableCell,
+.table-striped > tbody > tr:nth-child(odd) > .redTableCell
+{
+    background-color: #FF0000;
+}
+
+/* Overrides table-hover to change hover color of the status td*/
+.table-hover > tbody > tr:hover > .redTableCell{
+    background-color: #ED1515;
+}
+
+
+/* Overrides bootstra table-striped class to allow for yellow bg color in the status td*/
+.yellowTableCell,
+.table-striped > tbody > tr:nth-child(odd) > .yellowTableCell
+{
+    background-color: #FFFB00;
+}
+/* Overrides table-hover to change hover color of the status td*/
+.table-hover > tbody > tr:hover > .yellowTableCell{
+    background-color: #E3DF07;
+}
+
+/* Overrides bootstra table-striped class to allow for yellow bg color in the status td*/
+.greenTableCell,
+.table-striped > tbody > tr:nth-child(odd) > .greenTableCell
+{
+    background-color: #09FF00;
+}
+/* Overrides table-hover to change hover color of the status td*/
+.table-hover > tbody > tr:hover > .greenTableCell{
+    background-color: #0FED07;
+}
+
+/* Change cursor to pointer when hovering over table row*/
+.table-hover > tbody > tr:hover > td{
+    cursor:pointer;
+}
+
