@@ -19,9 +19,9 @@ namespace WatchdogDatabaseAccessLayer
 
             var mockedDbContext = new Mock<WatchdogDatabaseContainer>();
 
-            mockedDbContext.Setup(e => e.Messages).Returns(mockMessages.Object);
-            mockedDbContext.Setup(e => e.Rules).Returns(mockRules.Object);
-            mockedDbContext.Setup(e => e.Alerts).Returns(mockAlerts.Object);
+            mockedDbContext.Setup(mock => mock.Messages).Returns(mockMessages.Object);
+            mockedDbContext.Setup(mock => mock.Rules).Returns(mockRules.Object);
+            mockedDbContext.Setup(mock => mock.Alerts).Returns(mockAlerts.Object);
 
             return mockedDbContext.Object;
         }
@@ -33,12 +33,12 @@ namespace WatchdogDatabaseAccessLayer
                 var data = collection.AsQueryable();
 
                 var mockSet = new Mock<DbSet<T>>();
-                mockSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(data.Provider);
-                mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(data.Expression);
-                mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(data.ElementType);
-                mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => data.GetEnumerator());
+                mockSet.As<IQueryable<T>>().Setup(mock => mock.Provider).Returns(data.Provider);
+                mockSet.As<IQueryable<T>>().Setup(mock => mock.Expression).Returns(data.Expression);
+                mockSet.As<IQueryable<T>>().Setup(mock => mock.ElementType).Returns(data.ElementType);
+                mockSet.As<IQueryable<T>>().Setup(mock => mock.GetEnumerator()).Returns(() => data.GetEnumerator());
 
-                mockSet.Setup(e => e.Add(It.IsAny<T>())).Returns<T>(e=>e).Callback<T>(e => collection.Add(e));
+                mockSet.Setup(mock => mock.Add(It.IsAny<T>())).Returns<T>(element => element).Callback<T>(element => collection.Add(element));
                 
                 return mockSet;
             }

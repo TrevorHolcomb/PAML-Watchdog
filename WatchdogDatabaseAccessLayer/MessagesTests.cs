@@ -36,11 +36,6 @@ namespace WatchdogDatabaseAccessLayer
 
         private static void Reset(WatchdogDatabaseContainer db)
         {
-            foreach (MessageType messageType in db.MessageTypes.ToList())
-            {
-                string something = messageType.Name;
-            }
-
             db.MessageTypes.RemoveRange(db.MessageTypes.ToList());
             db.Messages.RemoveRange(db.Messages.ToList());
             db.SaveChanges();

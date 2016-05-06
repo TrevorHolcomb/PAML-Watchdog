@@ -11,8 +11,8 @@ namespace WatchdogDaemon
 
         public override void ConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages)
         {
-            var unprocessedMessages = from m in messages where !m.IsProcessed select m;
-            foreach (var message in unprocessedMessages)
+            ICollection<Message> unprocessedMessages = messages.Where(message => !message.IsProcessed).ToList();
+            foreach (Message message in unprocessedMessages)
             {
                 foreach (var rule in rules)
                 {
@@ -39,11 +39,6 @@ namespace WatchdogDaemon
 
             JsonSchema4 ruleTriggerSchema = JsonSchema4.FromJson(rule.RuleTriggerSchema);
             var result = ruleTriggerSchema.Validate(message.Params);
-
-            //here's where we handle matching rules to specific servers and origins
-            foreach (var error in result)
-                if (error.Property == "server" || error.Property == "origin")       
-                    return;
 
             if (result.Count != 0)
                 CreateAlert(rule, message);

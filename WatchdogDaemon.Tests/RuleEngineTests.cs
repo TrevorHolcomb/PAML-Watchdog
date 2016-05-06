@@ -19,7 +19,6 @@ namespace WatchdogDaemon.Tests
             }
         };
 
-
         public static ICollection<Rule> Rules1 = new[]
         {
             new Rule
@@ -30,36 +29,8 @@ namespace WatchdogDaemon.Tests
                     ""$schema"": ""http://json-schema.org/draft-04/schema"",
                     ""type"": ""object"",
                     ""title"": ""Queue Size Within Range"",
-                    ""description"": ""checks that messages from any server and origin report a queue size within range"",
+                    ""description"": ""checks that messages report a queue size within range"",
                     ""properties"": {
-                        ""params"": {
-                            ""type"": ""object"",
-                            ""properties"": {
-                                ""server"": {},
-                                ""origin"": {},
-                                ""queueSize"": {
-                                    ""type"": ""integer"",
-                                    ""minimum"": 0,
-                                    ""maximum"": 100
-                                }
-                            }
-                        }
-                    }
-                }"
-            },
-                                            
-            new Rule
-            {
-                Id = 1,
-                Name = "QueueTooBig",
-                RuleTriggerSchema = @"{
-                    ""$schema"": ""http://json-schema.org/draft-04/schema"",
-                    ""type"":""object"",
-                    ""title"": ""Queue Too Big"",
-                    ""description"": ""checks that queue sizes from testServer2 aren't too high"",
-                    ""properties"": {
-                        ""server"": {""enum"": [""testServer2""]},
-                        ""origin"": {},
                         ""params"": {
                             ""type"": ""object"",
                             ""properties"": {
@@ -73,7 +44,7 @@ namespace WatchdogDaemon.Tests
                         }
                     }
                 }"
-            }
+            },
         };
 
         public static ICollection<Message> Messages1 = new[]
@@ -92,6 +63,7 @@ namespace WatchdogDaemon.Tests
                 }",
                 IsProcessed = false,
             },
+
             new Message
             {
                 Id = 2,
@@ -125,7 +97,7 @@ namespace WatchdogDaemon.Tests
             ruleEngine.ConsumeMessages(rules, messages);
 
             //Assert
-            Assert.Empty(messages.Where(e => e.IsProcessed == false));
+            Assert.Empty(messages.Where(message => message.IsProcessed == false));
         }
 
         [Theory]

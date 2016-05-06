@@ -34,9 +34,9 @@ namespace WatchdogDaemon
             var totalMessages = DbContext.Messages.ToList<Message>();
             Console.WriteLine("watchdog sees " + totalMessages.Count + " total messages");
 
-            //ToList() forces .net to do the query and store in memory, otherwise, or with LINQ, the expression is lazy-evaluated and causes an error in the second loop
-            var messages = DbContext.Messages.Where<Message>(msg => !msg.IsProcessed).ToList<Message>();
-            var rules = DbContext.Rules.Select<Rule, Rule>(e=>e).ToList<Rule>();
+            //ToList() forces .net to do the query and store in memory, otherwise the expression is lazy-evaluated and causes an error in the second loop
+            var messages = DbContext.Messages.Where<Message>(message => !message.IsProcessed).ToList<Message>();
+            var rules = DbContext.Rules.Select<Rule, Rule>(rule => rule).ToList<Rule>();
 
             RuleEngine.ConsumeMessages(rules, messages);
 

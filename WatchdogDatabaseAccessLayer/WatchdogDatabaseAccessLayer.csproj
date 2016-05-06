@@ -147,7 +147,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>WatchdogDatabase.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Schemata\QueueSizeMessageSchema.json">
+    <None Include="Schemata\QueueSizeMessageParamsSchema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="WatchdogDatabase.edmx.diagram">

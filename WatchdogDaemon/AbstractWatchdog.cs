@@ -10,7 +10,7 @@ namespace WatchdogDaemon
             DbContext = dbContext;
             RuleEngine = ruleEngine;
 
-            RuleEngine.dbContext = dbContext;       //bleh
+            RuleEngine.dbContext = dbContext;
         }
 
         public WatchdogDatabaseContainer DbContext { get; set; }
