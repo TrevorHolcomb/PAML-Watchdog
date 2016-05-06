@@ -28,16 +28,15 @@ namespace WatchdogMessageGenerator
                 Id = GetRandomId(),
                 MessageTypeId = MessageTypeId,
                 Params = GetParams(),
-                IsProcessed = false
+                IsProcessed = false,
+                Server = GetRandomServer(),
+                Origin = GetRandomOrigin()
             };
         }
 
         public override string GetParams()
         {
             return @"{
-                ""messageTypeId"": " + MessageTypeId + @",
-                ""origin"": """ + GetRandomOrigin() + @""",
-                ""server"": """ + GetRandomServer() + @""", 
                 ""params"": {
                     ""queueSize"": " + GetRandomQueueSize() + @"
                 }

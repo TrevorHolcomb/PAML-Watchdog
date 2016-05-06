@@ -15,6 +15,12 @@ namespace WatchdogDaemon
             {
                 foreach (var rule in rules)
                 {
+                    //if (!(rule.Server == message.Server && rule.Origin == message.Origin))
+                    //continue;
+
+                    //if (rule.MessageType.Id != message.MessageTypeId)
+                        //continue;
+
                     var alert = ConsumeMessage(rule, message);
                     if (alert != null)
                     {
@@ -37,11 +43,6 @@ namespace WatchdogDaemon
 
             JsonSchema4 ruleTriggerSchema = JsonSchema4.FromJson(rule.RuleTriggerSchema);
             var result = ruleTriggerSchema.Validate(message.Params);
-
-            //here's where we handle matching rules to specific servers and origins
-            foreach (var error in result)
-                if (error.Property == "server" || error.Property == "origin")       
-                    return null;
 
             if (result.Count != 0)
                 return CreateAlert(rule, message);

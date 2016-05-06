@@ -2,13 +2,13 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 05/04/2016 14:23:01
+-- Date Created: 05/05/2016 23:43:07
 -- Generated from EDMX file: C:\git\paml-watchdog\WatchdogDatabaseAccessLayer\WatchdogDatabase.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
 GO
-USE [watchdog];
+USE [watchdog2];
 GO
 IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
 GO
@@ -164,6 +164,8 @@ CREATE TABLE [dbo].[Rules] (
     [RuleTriggerSchema] nvarchar(max)  NOT NULL,
     [EscalationChainId] int  NOT NULL,
     [AlertTypeId] int  NOT NULL,
+    [Server] nvarchar(max)  NOT NULL,
+    [Origin] nvarchar(max)  NOT NULL,
     [MessageType_Id] int  NOT NULL
 );
 GO
