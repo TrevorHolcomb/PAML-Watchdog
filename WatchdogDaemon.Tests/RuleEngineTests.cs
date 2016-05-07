@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Watchdog.RuleEngine;
 using WatchdogDaemon.RuleEngine;
+using WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine;
 using WatchdogDatabaseAccessLayer;
 using WatchdogDatabaseAccessLayer.Models;
 using Xunit;
@@ -13,12 +13,48 @@ namespace WatchdogDaemon.Tests
     {
         public static TheoryData<Rule, Message> ShouldGenerateAlertData = new TheoryData<Rule, Message>
         {
-
+            {
+                new Rule
+                {
+                    Expression = "queueSize > 1000"
+                }, new Message
+                {
+                    MessageColumns = new List<MessageColumn>
+                    {
+                        new MessageColumn
+                        {
+                            Value = "10000", MessageTypeColumn = new MessageTypeColumn
+                            {
+                                Name = "queueSize",
+                                Type = "integer"
+                            }
+                        }
+                    }
+                }
+            }
         };
 
         public static TheoryData<Rule, Message> ShouldntGenerateAlertData = new TheoryData<Rule, Message>
         {
-
+            {
+                new Rule
+                {
+                    Expression = "queueSize > 1000"
+                }, new Message
+                {
+                    MessageColumns = new List<MessageColumn>
+                    {
+                        new MessageColumn
+                        {
+                            Value = "100", MessageTypeColumn = new MessageTypeColumn
+                            {
+                                Name = "queueSize",
+                                Type = "integer"
+                            }
+                        }
+                    }
+                }
+            }
         };
 
 

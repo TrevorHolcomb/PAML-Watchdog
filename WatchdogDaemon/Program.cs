@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Linq;
-using System.Data.Entity;
-using WatchdogDatabaseAccessLayer;
-using System.Threading;
 using Ninject;
-using Watchdog;
-using Watchdog.RuleEngine;
-using Watchdog.Watchdogs;
+using WatchdogDaemon.Watchdogs;
 using WatchdogDatabaseAccessLayer.Repositories;
 using WatchdogDatabaseAccessLayer.Repositories.Database;
 

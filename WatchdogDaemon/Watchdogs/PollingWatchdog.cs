@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using Ninject.Syntax;
-using WatchdogDatabaseAccessLayer.Models;
 
-namespace Watchdog.Watchdogs
+namespace WatchdogDaemon.Watchdogs
 {
     public class PollingWatchdog : AbstractWatchdog
     {
@@ -30,7 +27,7 @@ namespace Watchdog.Watchdogs
 
         protected override void Run(object state)
         {
-            var messages = MessageRepository.Get().Where<Message>(msg => !msg.IsProcessed).ToList<Message>();
+            var messages = MessageRepository.Get().Where(msg => !msg.IsProcessed).ToList();
             var rules = RuleRepository.Get();
 
             foreach (var message in messages)

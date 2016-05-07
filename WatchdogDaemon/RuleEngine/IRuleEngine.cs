@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using WatchdogDatabaseAccessLayer.Models;
+﻿using WatchdogDatabaseAccessLayer.Models;
 
-namespace Watchdog.RuleEngine
+namespace WatchdogDaemon.RuleEngine
 {
     public interface IRuleEngine
     {

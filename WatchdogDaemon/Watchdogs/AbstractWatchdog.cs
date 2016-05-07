@@ -1,10 +1,10 @@
 ﻿using System;
 using Ninject;
 using Ninject.Syntax;
-using Watchdog.RuleEngine;
+using WatchdogDaemon.RuleEngine;
 using WatchdogDatabaseAccessLayer.Repositories;
 
-namespace Watchdog.Watchdogs
+namespace WatchdogDaemon.Watchdogs
 {
     public abstract class AbstractWatchdog : IDisposable
     {
