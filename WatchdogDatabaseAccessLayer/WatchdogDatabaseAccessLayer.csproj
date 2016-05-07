@@ -96,19 +96,47 @@
     </Compile>
     <Compile Include="Models\EscalationChainLinkPartial.cs" />
     <Compile Include="Models\EscalationChainPartial.cs" />
-    <Compile Include="Models\MessageColumn.cs">
+    <Compile Include="Models\MessageParameter.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\MessageTypeColumn.cs">
+    <Compile Include="Models\MessageTypeParameterType.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MessageTypePartial.cs" />
+    <Compile Include="Repositories\Database\EFAlertTypeRepository.cs" />
     <Compile Include="Repositories\Database\EFAlertRepository.cs" />
+    <Compile Include="Repositories\Database\EFEscalationChainLinkRepository.cs" />
+    <Compile Include="Repositories\Database\EFEscalationChainRepository.cs" />
+    <Compile Include="Repositories\Database\EFMessageParameterRepository.cs" />
+    <Compile Include="Repositories\Database\EFRuleCategoryRepository.cs" />
+    <Compile Include="Repositories\Database\EFNotifyeeRepository.cs" />
+    <Compile Include="Repositories\Database\EFNotifyeeGroupRepository.cs" />
+    <Compile Include="Repositories\Database\EFMessageTypeParameterTypeRepository.cs" />
     <Compile Include="Repositories\Database\EFRuleRepository.cs" />
+    <Compile Include="Repositories\Fake\ListAlertTypeRepository.cs" />
     <Compile Include="Repositories\Fake\ListAlertRepository.cs" />
+    <Compile Include="Repositories\Fake\ListEscalationChainLinkRepository.cs" />
+    <Compile Include="Repositories\Fake\ListEscalationChainRepository.cs" />
+    <Compile Include="Repositories\Fake\ListMessageParameterRepository.cs" />
+    <Compile Include="Repositories\Fake\ListRuleCategoryRepository.cs" />
+    <Compile Include="Repositories\Fake\ListNotifyeeRepository.cs" />
+    <Compile Include="Repositories\Fake\ListNotifyeeGroupRepository.cs" />
+    <Compile Include="Repositories\Fake\ListMessageTypeParameterTypeRepository.cs" />
+    <Compile Include="Repositories\Fake\ListMessageTypeRepository.cs" />
     <Compile Include="Repositories\Fake\ListRuleRepository.cs" />
     <Compile Include="Repositories\Fake\ListMessageRepository.cs" />
-    <Compile Include="Repositories\RepositoryInterfaces.cs" />
+    <Compile Include="Repositories\INotifyeeGroupRepository.cs" />
+    <Compile Include="Repositories\INotifyeeRepository.cs" />
+    <Compile Include="Repositories\IEscalationChainLinkRepository.cs" />
+    <Compile Include="Repositories\IEscalationChainRepository.cs" />
+    <Compile Include="Repositories\IRuleCategoryRepository.cs" />
+    <Compile Include="Repositories\IAlertTypeRepository.cs" />
+    <Compile Include="Repositories\IMessageTypeParameterTypeRepository.cs" />
+    <Compile Include="Repositories\IMessageParameterRepository.cs" />
+    <Compile Include="Repositories\IAlertRepository.cs" />
+    <Compile Include="Repositories\IMessageRepository.cs" />
+    <Compile Include="Repositories\IMessageTypeRepository.cs" />
+    <Compile Include="Repositories\IRuleRepository.cs" />
     <Compile Include="Models\Message.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
