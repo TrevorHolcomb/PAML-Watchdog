@@ -19,11 +19,11 @@ namespace WatchdogDaemon.Tests
                     Expression = "queueSize > 1000"
                 }, new Message
                 {
-                    MessageColumns = new List<MessageColumn>
+                    MessageParameters = new List<MessageParameter>
                     {
-                        new MessageColumn
+                        new MessageParameter
                         {
-                            Value = "10000", MessageTypeColumn = new MessageTypeColumn
+                            Value = "10000", MessageTypeParameterType = new MessageTypeParameterType
                             {
                                 Name = "queueSize",
                                 Type = "integer"
@@ -42,11 +42,11 @@ namespace WatchdogDaemon.Tests
                     Expression = "queueSize > 1000"
                 }, new Message
                 {
-                    MessageColumns = new List<MessageColumn>
+                    MessageParameters = new List<MessageParameter>
                     {
-                        new MessageColumn
+                        new MessageParameter
                         {
-                            Value = "100", MessageTypeColumn = new MessageTypeColumn
+                            Value = "100", MessageTypeParameterType = new MessageTypeParameterType
                             {
                                 Name = "queueSize",
                                 Type = "integer"

@@ -102,6 +102,7 @@
     <Compile Include="Models\MessageTypeColumn.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MessageTypePartial.cs" />
     <Compile Include="Repositories\Database\EFAlertRepository.cs" />
     <Compile Include="Repositories\Database\EFRuleRepository.cs" />
     <Compile Include="Repositories\Fake\ListAlertRepository.cs" />

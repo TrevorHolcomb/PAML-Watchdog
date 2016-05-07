@@ -35,7 +35,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public virtual DbSet<AlertType> AlertTypes { get; set; }
         public virtual DbSet<Alert> Alerts { get; set; }
         public virtual DbSet<RuleCategory> RuleCategories { get; set; }
-        public virtual DbSet<MessageTypeColumn> MessageTypeColumns { get; set; }
-        public virtual DbSet<MessageColumn> MessageColumns { get; set; }
+        public virtual DbSet<MessageTypeParameterType> MessageTypeParameterTypes { get; set; }
+        public virtual DbSet<MessageParameter> MessageParameters { get; set; }
     }
 }

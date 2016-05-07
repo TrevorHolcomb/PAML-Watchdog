@@ -12,7 +12,7 @@ namespace WatchdogDatabaseAccessLayer.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class MessageColumn
+    public partial class MessageParameter
     {
         public int Id { get; set; }
         public string Value { get; set; }
@@ -20,6 +20,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         public int MessageTypeColumnId { get; set; }
     
         public virtual Message Message { get; set; }
-        public virtual MessageTypeColumn MessageTypeColumn { get; set; }
+        public virtual MessageTypeParameterType MessageTypeParameterType { get; set; }
     }
 }
