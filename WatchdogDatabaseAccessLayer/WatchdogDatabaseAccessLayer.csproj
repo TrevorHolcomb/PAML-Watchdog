@@ -191,7 +191,6 @@
       <LastGenOutput>WatchdogDatabase.Context.cs</LastGenOutput>
       <DependentUpon>WatchdogDatabase.edmx</DependentUpon>
     </Content>
-    <Content Include="Models\WatchdogDatabase.edmx.sql" />
     <Content Include="Models\WatchdogDatabase.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>WatchdogDatabase.cs</LastGenOutput>
