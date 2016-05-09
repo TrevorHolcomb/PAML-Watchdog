@@ -5,7 +5,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Database
 {
-    public class EFMessageTypeRepository : IMessageTypeRepository
+    public class EFMessageTypeRepository : IRepository<MessageType>
     {
         private readonly WatchdogDatabaseContainer _container;
 
@@ -21,7 +21,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
 
         public MessageType GetById(int id)
         {
-            return _container.MessageTypes.Find(id);
+            return _container.MessageTypes.Single(messageType => messageType.Id == id);
         }
 
         public void Insert(MessageType model)

@@ -5,7 +5,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Database
 {
-    public class EFMessageRepository : IMessageRepository
+    public class EFMessageRepository : IRepository<Message>
     {
         private readonly WatchdogDatabaseContainer _container;
         public EFMessageRepository()

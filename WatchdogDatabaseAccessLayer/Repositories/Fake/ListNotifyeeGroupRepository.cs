@@ -7,7 +7,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 {
-    public class ListNotifyeeGroupRepository : INotifyeeGroupRepository
+    public class ListNotifyeeGroupRepository : IRepository<NotifyeeGroup>
     {
         private readonly List<NotifyeeGroup> _notifyeeGroups;
 

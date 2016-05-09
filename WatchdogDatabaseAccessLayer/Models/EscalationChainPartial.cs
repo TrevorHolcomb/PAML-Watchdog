@@ -23,7 +23,7 @@ namespace WatchdogDatabaseAccessLayer.Models
                 links.Add(node);
             return links.ToArray();
         }
-
+        
         public static EscalationChain NewChainFromLinks(params EscalationChainLink[] links)
         {
             var linkList = links.ToList();

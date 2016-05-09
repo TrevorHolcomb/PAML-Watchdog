@@ -12,18 +12,18 @@ namespace WatchdogMessageGenerator
     {
         public string[] Servers { get; }
         public string[] Origins { get; }
-        public int MessageTypeId { get; }
+        public MessageType MessageType { get; set; }
 
         internal readonly Random Random;
 
-        protected AbstractMessageFactory(string[] servers, string[] origins, int messageTypeId)
+        protected AbstractMessageFactory(string[] servers, string[] origins, MessageType messageType)
         {
             Servers = servers;
             Origins = origins;
-            MessageTypeId = messageTypeId;
+            MessageType = messageType;
 
             Random = new Random();
-    }
+        }
 
         public int GetRandomId()
         {

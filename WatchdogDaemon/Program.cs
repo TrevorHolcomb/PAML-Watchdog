@@ -1,6 +1,7 @@
 ﻿using System;
 using Ninject;
 using WatchdogDaemon.Watchdogs;
+using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using WatchdogDatabaseAccessLayer.Repositories.Database;
 
@@ -12,9 +13,9 @@ namespace WatchdogDaemon
         {
             using (var kernel = new StandardKernel())
             {
-                kernel.Bind<IMessageRepository>().To<EFMessageRepository>();
-                kernel.Bind<IAlertRepository>().To<EFAlertRepository>();
-                kernel.Bind<IRuleRepository>().To<EFRuleRepository>();
+                kernel.Bind<IRepository<Message>>().To<EFMessageRepository>();
+                kernel.Bind<IRepository<Alert>>().To<EFAlertRepository>();
+                kernel.Bind<IRepository<Rule>>().To<EFRuleRepository>();
 
                 Console.WriteLine("Watchdog simulator started");
                 //start consumer

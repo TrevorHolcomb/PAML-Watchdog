@@ -7,7 +7,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 {
-    public class ListRuleRepository : IRuleRepository
+    public class ListRuleRepository : IRepository<Rule>
     {
         private readonly List<Rule> _rules;
 

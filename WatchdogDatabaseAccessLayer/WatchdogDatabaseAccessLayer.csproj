@@ -49,6 +49,10 @@
       <HintPath>..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -79,6 +83,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MessageParameterFactory.cs" />
     <Compile Include="Models\Alert.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
@@ -125,18 +130,7 @@
     <Compile Include="Repositories\Fake\ListMessageTypeRepository.cs" />
     <Compile Include="Repositories\Fake\ListRuleRepository.cs" />
     <Compile Include="Repositories\Fake\ListMessageRepository.cs" />
-    <Compile Include="Repositories\INotifyeeGroupRepository.cs" />
-    <Compile Include="Repositories\INotifyeeRepository.cs" />
-    <Compile Include="Repositories\IEscalationChainLinkRepository.cs" />
-    <Compile Include="Repositories\IEscalationChainRepository.cs" />
-    <Compile Include="Repositories\IRuleCategoryRepository.cs" />
-    <Compile Include="Repositories\IAlertTypeRepository.cs" />
-    <Compile Include="Repositories\IMessageTypeParameterTypeRepository.cs" />
-    <Compile Include="Repositories\IMessageParameterRepository.cs" />
-    <Compile Include="Repositories\IAlertRepository.cs" />
-    <Compile Include="Repositories\IMessageRepository.cs" />
-    <Compile Include="Repositories\IMessageTypeRepository.cs" />
-    <Compile Include="Repositories\IRuleRepository.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Models\Message.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
@@ -173,6 +167,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="TestingKernel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

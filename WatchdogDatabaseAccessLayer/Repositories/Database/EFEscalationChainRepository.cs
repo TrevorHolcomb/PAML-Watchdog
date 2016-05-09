@@ -5,7 +5,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Database
 {
-    public class EFEscalationChainRepository : IEscalationChainRepository
+    public class EFEscalationChainRepository : IRepository<EscalationChain>
     {
         private readonly WatchdogDatabaseContainer _container;
         public EFEscalationChainRepository()

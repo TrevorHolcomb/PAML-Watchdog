@@ -8,7 +8,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Database
 {
-    public class EFRuleRepository : IRuleRepository
+    public class EFRuleRepository : IRepository<Rule>
     {
         private readonly WatchdogDatabaseContainer _container;
         public EFRuleRepository()

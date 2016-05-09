@@ -5,7 +5,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Database
 {
-    public class EFNotifyeeRepository : INotifyeeRepository
+    public class EFNotifyeeRepository : IRepository<Notifyee>
     {
         private readonly WatchdogDatabaseContainer _container;
         public EFNotifyeeRepository()

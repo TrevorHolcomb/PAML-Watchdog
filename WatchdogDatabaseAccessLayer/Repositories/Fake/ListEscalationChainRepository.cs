@@ -7,7 +7,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 {
-    public class ListEscalationChainRepository : IEscalationChainRepository
+    public class ListEscalationChainRepository : IRepository<EscalationChain>
     {
         private readonly List<EscalationChain> _escalationChains;
 

@@ -2,7 +2,9 @@
 using Ninject;
 using Ninject.Syntax;
 using WatchdogDaemon.RuleEngine;
+using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
+using WatchdogDatabaseAccessLayer.Repositories.Database;
 
 namespace WatchdogDaemon.Watchdogs
 {
@@ -10,15 +12,15 @@ namespace WatchdogDaemon.Watchdogs
     {
         protected AbstractWatchdog(IResolutionRoot kernel)
         {
-            MessageRepository = kernel.Get<IMessageRepository>();
-            RuleRepository = kernel.Get<IRuleRepository>();
-            AlertRepository = kernel.Get<IAlertRepository>();
+            MessageRepository = kernel.Get<IRepository<Message>>();
+            RuleRepository = kernel.Get<IRepository<Rule>>();
+            AlertRepository = kernel.Get<IRepository<Alert>>();
             RuleEngine = kernel.Get<IRuleEngine>();
         }
 
-        protected readonly IAlertRepository AlertRepository;
-        protected readonly IMessageRepository MessageRepository;
-        protected readonly IRuleRepository RuleRepository;
+        protected readonly IRepository<Alert> AlertRepository;
+        protected readonly IRepository<Message> MessageRepository;
+        protected readonly IRepository<Rule> RuleRepository;
         protected readonly IRuleEngine RuleEngine;
 
         public void Dispose()

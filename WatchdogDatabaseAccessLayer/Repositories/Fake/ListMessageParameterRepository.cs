@@ -7,7 +7,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 {
-    public class ListMessageParameterRepository : IMessageParameterRepository
+    public class ListMessageParameterRepository : IRepository<MessageParameter>
     {
         private readonly List<MessageParameter> _messageParameters;
 

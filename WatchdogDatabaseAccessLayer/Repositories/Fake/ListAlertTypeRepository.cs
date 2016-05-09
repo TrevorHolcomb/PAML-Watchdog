@@ -7,7 +7,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 {
-    public class ListAlertTypeRepository : IAlertTypeRepository
+    public class ListAlertTypeRepository : IRepository<AlertType>
     {
         private readonly List<AlertType> _alertTypes;
 

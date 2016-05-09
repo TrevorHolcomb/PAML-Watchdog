@@ -32,68 +32,66 @@ namespace WatchdogMessageGenerator
 
     public class Program
     {
+        public static IRepository<Message> MessageRepository { get; set; }
+        public static IRepository<MessageType> MessageTypeRepository { get; set; }
+        public static IRepository<MessageTypeParameterType> MessageTypeParameterTypeRepository { get; set; }
+
         public static int Main(string[] args)
         {
+            MessageRepository = new EFMessageRepository();
+            MessageTypeRepository = new EFMessageTypeRepository();
+            MessageTypeParameterTypeRepository = new EFMessageTypeParameterTypeRepository();
 
             var options = new Options();
-            if (CommandLine.Parser.Default.ParseArguments(args, options))
-            {
-                try
-                {
-                    GenerateMessages(options);
-                    return 0;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.ToString());
-                }
-            }
-
-            return 2;
+            if (!CommandLine.Parser.Default.ParseArguments(args, options)) return -1;
+            GenerateMessages(options);
+            return 0;
         }
 
         private static void GenerateMessages(Options options)
         {
-            var messageRepository = new EFMessageRepository();
-            var messageTypeRepository = new EFMessageTypeRepository();
-            var messageTypeParameterTypeRepository = new EFMessageTypeParameterTypeRepository();
-
+        
             if (options.Reset)
             {
-                var messageType = new MessageType
-                {
-                    Name = "QueueSizeUpdate",
-                    Description = "A regular update from the JMS queue containing the number of elements enqueued.",
-                    Id = options.QueueSizeMessageTypeId
-                };
-
-                var messageTypeParameterType = new MessageTypeParameterType
-                {
-                    MessageType = messageType,
-                    Name = "QueueSize",
-                    Type = "integer",
-                };
-
-                messageType.MessageTypeParameterTypes = new List<MessageTypeParameterType>() { messageTypeParameterType };
-                messageTypeRepository.Insert(messageType);
-                messageTypeParameterTypeRepository.Insert(messageTypeParameterType);
-
-                messageTypeRepository.Save();
-                messageTypeParameterTypeRepository.Save();
+                Reset(options);
             }
-            /*
-            var factory = new QueueSizeMessageFactory(new[] {"socrates", "plato", "aristotle"},
-                new[] {"webapi", "cli"}, options.QueueSizeMessageTypeId);
+
+            var messageType = MessageTypeRepository.GetById(options.QueueSizeMessageTypeId);
+
+            var factory = new QueueSizeMessageFactory(new[] {"dev-machine"},
+                new[] {"message-generator"}, messageType);
 
             for (var i = 0; i < options.QueueSizeMessageCount; i++)
             {
                 var message = factory.Build();
-                messageRepository.Insert(message);
-            }*/
+                MessageRepository.Insert(message);
+            }
 
-            messageRepository.Save();
+            MessageRepository.Save();
+        }
 
-            return;
+        private static void Reset(Options options)
+        {
+            var messageType = new MessageType
+            {
+                Name = "QueueSizeUpdate",
+                Description = "A regular update from the JMS queue containing the number of elements enqueued.",
+                Id = options.QueueSizeMessageTypeId
+            };
+
+            var messageTypeParameterType = new MessageTypeParameterType
+            {
+                MessageType = messageType,
+                Name = "QueueSize",
+                Type = "integer",
+            };
+
+            messageType.MessageTypeParameterTypes = new List<MessageTypeParameterType>() {messageTypeParameterType};
+            MessageTypeRepository.Insert(messageType);
+            MessageTypeParameterTypeRepository.Insert(messageTypeParameterType);
+
+            MessageTypeRepository.Save();
+            MessageTypeParameterTypeRepository.Save();
         }
     }
 }

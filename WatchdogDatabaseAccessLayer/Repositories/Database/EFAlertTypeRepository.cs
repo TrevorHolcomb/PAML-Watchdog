@@ -8,7 +8,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Database
 {
-    public class EFAlertTypeRepository : IAlertTypeRepository
+    public class EFAlertTypeRepository : IRepository<AlertType>
     {
         private readonly WatchdogDatabaseContainer _container;
 

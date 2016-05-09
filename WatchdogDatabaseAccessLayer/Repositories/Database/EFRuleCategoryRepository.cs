@@ -5,7 +5,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Database
 {
-    public class EFRuleCategoryRepository : IRuleCategoryRepository
+    public class EFRuleCategoryRepository : IRepository<RuleCategory>
     {
         private readonly WatchdogDatabaseContainer _container;
         public EFRuleCategoryRepository()
