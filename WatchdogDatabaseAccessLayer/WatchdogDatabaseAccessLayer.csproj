@@ -79,90 +79,120 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Alert.cs">
+    <Compile Include="Models\Alert.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="AlertStatus.cs">
+    <Compile Include="Models\AlertStatus.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="AlertType.cs">
+    <Compile Include="Models\AlertType.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="EscalationChain.cs">
+    <Compile Include="Models\EscalationChain.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="EscalationChainLink.cs">
+    <Compile Include="Models\EscalationChainLink.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="EscalationChainLinkPartial.cs" />
-    <Compile Include="EscalationChainPartial.cs" />
-    <Compile Include="ModelHelpers\ChainTool.cs" />
-    <Compile Include="ModelHelpers\ChainToolTests.cs" />
-    <Compile Include="Schemata.cs" />
-    <Compile Include="Message.cs">
+    <Compile Include="Models\EscalationChainLinkPartial.cs" />
+    <Compile Include="Models\EscalationChainPartial.cs" />
+    <Compile Include="Models\MessageParameter.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="MessagesTests.cs" />
-    <Compile Include="MessageType.cs">
+    <Compile Include="Models\MessageTypeParameterType.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="Notifyee.cs">
+    <Compile Include="Models\MessageTypePartial.cs" />
+    <Compile Include="Repositories\Database\EFAlertTypeRepository.cs" />
+    <Compile Include="Repositories\Database\EFAlertRepository.cs" />
+    <Compile Include="Repositories\Database\EFEscalationChainLinkRepository.cs" />
+    <Compile Include="Repositories\Database\EFEscalationChainRepository.cs" />
+    <Compile Include="Repositories\Database\EFMessageParameterRepository.cs" />
+    <Compile Include="Repositories\Database\EFRuleCategoryRepository.cs" />
+    <Compile Include="Repositories\Database\EFNotifyeeRepository.cs" />
+    <Compile Include="Repositories\Database\EFNotifyeeGroupRepository.cs" />
+    <Compile Include="Repositories\Database\EFMessageTypeParameterTypeRepository.cs" />
+    <Compile Include="Repositories\Database\EFRuleRepository.cs" />
+    <Compile Include="Repositories\Fake\ListAlertTypeRepository.cs" />
+    <Compile Include="Repositories\Fake\ListAlertRepository.cs" />
+    <Compile Include="Repositories\Fake\ListEscalationChainLinkRepository.cs" />
+    <Compile Include="Repositories\Fake\ListEscalationChainRepository.cs" />
+    <Compile Include="Repositories\Fake\ListMessageParameterRepository.cs" />
+    <Compile Include="Repositories\Fake\ListRuleCategoryRepository.cs" />
+    <Compile Include="Repositories\Fake\ListNotifyeeRepository.cs" />
+    <Compile Include="Repositories\Fake\ListNotifyeeGroupRepository.cs" />
+    <Compile Include="Repositories\Fake\ListMessageTypeParameterTypeRepository.cs" />
+    <Compile Include="Repositories\Fake\ListMessageTypeRepository.cs" />
+    <Compile Include="Repositories\Fake\ListRuleRepository.cs" />
+    <Compile Include="Repositories\Fake\ListMessageRepository.cs" />
+    <Compile Include="Repositories\INotifyeeGroupRepository.cs" />
+    <Compile Include="Repositories\INotifyeeRepository.cs" />
+    <Compile Include="Repositories\IEscalationChainLinkRepository.cs" />
+    <Compile Include="Repositories\IEscalationChainRepository.cs" />
+    <Compile Include="Repositories\IRuleCategoryRepository.cs" />
+    <Compile Include="Repositories\IAlertTypeRepository.cs" />
+    <Compile Include="Repositories\IMessageTypeParameterTypeRepository.cs" />
+    <Compile Include="Repositories\IMessageParameterRepository.cs" />
+    <Compile Include="Repositories\IAlertRepository.cs" />
+    <Compile Include="Repositories\IMessageRepository.cs" />
+    <Compile Include="Repositories\IMessageTypeRepository.cs" />
+    <Compile Include="Repositories\IRuleRepository.cs" />
+    <Compile Include="Models\Message.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="NotifyeeGroup.cs">
+    <Compile Include="Models\MessageType.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Notifyee.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NotifyeeGroup.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rule.cs">
+    <Compile Include="Repositories\Database\EFMessageRepository.cs" />
+    <Compile Include="Repositories\Database\EFMessageTypeRepository.cs" />
+    <Compile Include="Models\Rule.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="RuleCategory.cs">
+    <Compile Include="Models\RuleCategory.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="WatchdogDatabase.Context.cs">
+    <Compile Include="Models\WatchdogDatabase.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>WatchdogDatabase.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="WatchdogDatabase.cs">
+    <Compile Include="Models\WatchdogDatabase.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="WatchdogDatabase.Designer.cs">
+    <Compile Include="Models\WatchdogDatabase.Designer.cs">
       <DependentUpon>WatchdogDatabase.edmx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="WatchdogDatabaseContextMocker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
-    <None Include="Schemata\MessageSchema.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config" />
-    <EntityDeploy Include="WatchdogDatabase.edmx">
+    <EntityDeploy Include="Models\WatchdogDatabase.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>WatchdogDatabase.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Schemata\QueueSizeMessageParamsSchema.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="WatchdogDatabase.edmx.diagram">
+    <None Include="Models\WatchdogDatabase.edmx.diagram">
       <DependentUpon>WatchdogDatabase.edmx</DependentUpon>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Schemata\schemata_readme.txt" />
-    <Content Include="WatchdogDatabase.Context.tt">
+    <Content Include="Models\WatchdogDatabase.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>WatchdogDatabase.Context.cs</LastGenOutput>
       <DependentUpon>WatchdogDatabase.edmx</DependentUpon>
     </Content>
-    <Content Include="WatchdogDatabase.edmx.sql" />
-    <Content Include="WatchdogDatabase.tt">
+    <Content Include="Models\WatchdogDatabase.edmx.sql" />
+    <Content Include="Models\WatchdogDatabase.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>WatchdogDatabase.cs</LastGenOutput>
       <DependentUpon>WatchdogDatabase.edmx</DependentUpon>

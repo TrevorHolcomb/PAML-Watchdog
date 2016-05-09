@@ -1,23 +1,30 @@
 ﻿using System;
-using System.Linq;
-using System.Data.Entity;
-using WatchdogDatabaseAccessLayer;
-using System.Threading;
-using Watchdog;
+using Ninject;
+using WatchdogDaemon.Watchdogs;
+using WatchdogDatabaseAccessLayer.Repositories;
+using WatchdogDatabaseAccessLayer.Repositories.Database;
 
 namespace WatchdogDaemon
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Watchdog simulator started");
-            //start consumer
-            using (var rex = new PollingWatchdog(new WatchdogContextProvider(), new RuleEngine()))
+            using (var kernel = new StandardKernel())
             {
-                rex.Watch();
-                Console.WriteLine("Press \'Q\' to quit");
-                while (Console.ReadKey().Key == ConsoleKey.Q) { }
+                kernel.Bind<IMessageRepository>().To<EFMessageRepository>();
+                kernel.Bind<IAlertRepository>().To<EFAlertRepository>();
+                kernel.Bind<IRuleRepository>().To<EFRuleRepository>();
+
+                Console.WriteLine("Watchdog simulator started");
+                //start consumer
+                using (var rex = new PollingWatchdog(kernel))
+                {
+                    rex.Watch();
+                    Console.WriteLine("Press \'Q\' to quit");
+                    while (Console.ReadKey().Key == ConsoleKey.Q) { }
+                    rex.StopWatching();
+                }
             }
         }
     }

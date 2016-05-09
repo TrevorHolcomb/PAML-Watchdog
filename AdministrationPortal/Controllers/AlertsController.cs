@@ -6,42 +6,48 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using AdministrationPortal.ViewModels.Alerts;
+using Ninject;
 using WatchdogDatabaseAccessLayer;
+using WatchdogDatabaseAccessLayer.Models;
+using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace AdministrationPortal.Controllers
 {
     public class AlertsController : Controller
     {
-        private WatchdogDatabaseContainer db = new WatchdogDatabaseContainer();
+        [Inject]
+        public IAlertRepository AlertRepository { private get; set; }
+        [Inject]
+        public IRuleRepository RuleRepository { private get; set; }
 
         // GET: Alerts
         public ActionResult Index()
         {
-            var alerts = db.Alerts.Include(a => a.AlertType).Include(a => a.Rule);
-            return View(alerts.ToList());
+            var alerts = AlertRepository.Get();
+            return View(alerts);
         }
 
         // GET: Alerts/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
-            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Alert alert = db.Alerts.Find(id);
+
+            var alert = AlertRepository.GetById((int) id);
             if (alert == null)
-            {
                 return HttpNotFound();
-            }
+
             return View(alert);
         }
 
         // GET: Alerts/Create
         public ActionResult Create()
         {
-            ViewBag.Id = new SelectList(db.AlertTypes, "Id", "Name");
-            ViewBag.RuleId = new SelectList(db.Rules, "Id", "Name");
-            return View();
+            var vm = new AlertCreateViewModel(
+                new SelectList(db.AlertTypes, "Id", "Name"),
+                new SelectList(RuleRepository.Get(), "Id", "Name"));
+            return View(vm);
         }
 
         // POST: Alerts/Create

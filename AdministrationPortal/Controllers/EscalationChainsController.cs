@@ -1,27 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using AdministrationPortal.ViewModels;
-using WatchdogDatabaseAccessLayer;
-using WatchdogDatabaseAccessLayer.ModelHelpers;
+using AdministrationPortal.ViewModels.EscalationChains;
+using Ninject;
+using WatchdogDatabaseAccessLayer.Models;
+using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace AdministrationPortal.Controllers
 {
     public class EscalationChainsController : Controller
     {
-        private WatchdogDatabaseContainer db = new WatchdogDatabaseContainer();
+        [Inject]
+        public IEscalationChainRepository EscalationChainRepository { private get; set; }
+
+        [Inject]
+        public IEscalationChainLinkRepository EscalationChainLinkRepository { private get; set; }
+
+        [Inject]
+        public INotifyeeGroupRepository NotifyeeGroupRepository { private get; set; }
 
         // GET: EscalationChains
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            var escalationChains = db.EscalationChains;
-            return View(await escalationChains.ToListAsync());
+            var escalationChains = EscalationChainRepository.Get();
+            return View(escalationChains);
         }
 
         // GET: EscalationChains/Create
@@ -35,37 +39,32 @@ namespace AdministrationPortal.Controllers
                 EscalationChainRootLink = rootChainLink
             };
 
-            db.EscalationChainLinks.Add(rootChainLink);
-            db.EscalationChains.Add(escalationChain);
-            db.SaveChanges();
+            EscalationChainLinkRepository.Insert(rootChainLink);
+            EscalationChainRepository.Insert(escalationChain);
+            EscalationChainLinkRepository.Save();
+            EscalationChainRepository.Save();
+            
 
             return RedirectToAction("Edit", new { id = escalationChain.Id });
         }
 
         // GET: EscalationChains/EditLink/0
-        public ActionResult EditLink(int? id)
+        public ActionResult EditLink(int id)
         {
-            ViewBag.NotifyeeGroupId = new SelectList(db.NotifyeeGroups, "Id", "Name");
-            return View(db.EscalationChainLinks.Single(e => e.Id == id));
-        }
-
-        public class EscalationChainsEditLinkViewModel
-        {
-            public int NotifyeeGroupId { get; set; }
-            public int Id { get; set; }
+            ViewBag.NotifyeeGroupId = new SelectList(NotifyeeGroupRepository.Get(), "Id", "Name");
+            return View(EscalationChainLinkRepository.GetById(id));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditLink(EscalationChainsEditLinkViewModel escalationChainsEditLinkViewModel)
         {
-            var chainLink = db.EscalationChainLinks.Single(e => e.Id == escalationChainsEditLinkViewModel.Id);
+            var chainLink = EscalationChainLinkRepository.GetById(escalationChainsEditLinkViewModel.Id);
 
             chainLink.NotifyeeGroup =
-                db.NotifyeeGroups.Single(e => e.Id == escalationChainsEditLinkViewModel.NotifyeeGroupId);
-            db.Entry(chainLink).State = EntityState.Modified;
-            db.SaveChanges();
-
+                NotifyeeGroupRepository.GetById(escalationChainsEditLinkViewModel.NotifyeeGroupId);
+            EscalationChainLinkRepository.Update(chainLink);
+            EscalationChainLinkRepository.Save();
 
             EscalationChainLink rootLink;
             for (rootLink = chainLink; rootLink.PreviousLink != null; rootLink = rootLink.PreviousLink){}
@@ -76,8 +75,8 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ShiftBack(int chainId, int linkId)
         {
-            var chain = db.EscalationChains.Single(e => e.Id == chainId);
-            var link = db.EscalationChainLinks.Single(e => e.Id == linkId);
+            var chain = EscalationChainRepository.GetById(chainId);
+            var link = EscalationChainLinkRepository.GetById(linkId);
             var linkIndex = chain.IndexOf(link);
 
             if (linkIndex == 0)
@@ -88,7 +87,10 @@ namespace AdministrationPortal.Controllers
             {
                 chain.RemoveAt(linkIndex);
                 chain.InsertAt(link,linkIndex - 1);
-                db.SaveChanges();
+
+                EscalationChainLinkRepository.Save();
+                EscalationChainRepository.Save();
+
                 return RedirectToAction("Edit", new { id = chainId });
             }
         }
@@ -97,9 +99,10 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ShiftForward(int chainId, int linkId)
         {
-            var chain = db.EscalationChains.Single(e => e.Id == chainId);
-            var link = db.EscalationChainLinks.Single(e => e.Id == linkId);
+            var chain = EscalationChainRepository.GetById(chainId);
+            var link = EscalationChainLinkRepository.GetById(linkId);
             var linkIndex = chain.IndexOf(link);
+
             if (linkIndex == chain.Length() - 1)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -108,7 +111,10 @@ namespace AdministrationPortal.Controllers
             {
                 chain.RemoveAt(linkIndex);
                 chain.InsertAt(link, linkIndex + 1);
-                db.SaveChanges();
+
+                EscalationChainLinkRepository.Save();
+                EscalationChainRepository.Save();
+
                 return RedirectToAction("Edit", new { id = chainId });
             }
         }
@@ -117,13 +123,14 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RemoveLink(int chainId, int linkId)
         {
-            var chain = db.EscalationChains.Single(e => e.Id == chainId);
-            var link = db.EscalationChainLinks.Single(e => e.Id == linkId);
+            var chain = EscalationChainRepository.GetById(chainId);
+            var link = EscalationChainLinkRepository.GetById(linkId);
             var linkIndex = chain.IndexOf(link);
 
             chain.RemoveAt(linkIndex);
-            db.EscalationChainLinks.Remove(link);
-            db.SaveChanges();
+
+            EscalationChainLinkRepository.Delete(link);
+            EscalationChainLinkRepository.Save();
 
             return RedirectToAction("Edit", new {id = chainId});
         }
@@ -132,29 +139,28 @@ namespace AdministrationPortal.Controllers
         // Appends a new EscalationChainLink on to the end of the list.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AppendLink(int? id)
+        public ActionResult AppendLink(int id)
         {
-            var chain = db.EscalationChains.Single(e => e.Id == id);
+            var chain = EscalationChainRepository.GetById(id);
 
             //Traverse to end of chain
             EscalationChainLink link;
             for (link = chain.EscalationChainRootLink; link.NextLink != null; link = link.NextLink) { }
             var newLink = new EscalationChainLink();
             link.NextLink = newLink;
-            db.EscalationChainLinks.Add(newLink);
-            db.Entry(link).State = EntityState.Modified;
-            db.SaveChanges();
+
+            EscalationChainLinkRepository.Insert(newLink);
+            EscalationChainLinkRepository.Update(link);
+            EscalationChainLinkRepository.Save();
+            
             return RedirectToAction("Edit", new { id = id });
         }
 
         // GET: EscalationChains/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            EscalationChain escalationChain = db.EscalationChains.Find(id);
+            var escalationChain = EscalationChainRepository.GetById(id);
+
             if (escalationChain == null)
             {
                 return HttpNotFound();
@@ -177,22 +183,20 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(EscalationChainEditViewModel escalationChainEditViewModel)
         {
-            var model = db.EscalationChains.Single(e => e.Id == escalationChainEditViewModel.Id);
+            var model = EscalationChainRepository.GetById(escalationChainEditViewModel.Id);
             model.Name = escalationChainEditViewModel.Name;
             model.Description = escalationChainEditViewModel.Description;
-            db.Entry(model).State = EntityState.Modified;
-            db.SaveChanges();
+
+            EscalationChainRepository.Update(model);
+            EscalationChainRepository.Save();
+            
             return RedirectToAction("Index");
         }
 
         // GET: EscalationChains/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public ActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            EscalationChain escalationChain = await db.EscalationChains.FindAsync(id);
+            var escalationChain = EscalationChainRepository.GetById(id);
             if (escalationChain == null)
             {
                 return HttpNotFound();
@@ -205,20 +209,26 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            EscalationChain escalationChain = db.EscalationChains.Find(id);
-            
-            List<EscalationChainLink> links = new List<EscalationChainLink>();
-            EscalationChainLink link = escalationChain.EscalationChainRootLink;
+            var escalationChain = EscalationChainRepository.GetById(id);
+            var links = new List<EscalationChainLink>();
+            var link = escalationChain.EscalationChainRootLink;
             links.Add(link);
+
             for (; link != null; link = link.NextLink)
             {
                 links.Add(link);
             }
 
-            db.EscalationChains.Remove(escalationChain);
-            db.EscalationChainLinks.RemoveRange(links);
+            EscalationChainRepository.Delete(escalationChain);
+
+            foreach (var each_link in links)
+            {
+                EscalationChainLinkRepository.Delete(each_link);
+            }
+
+            EscalationChainRepository.Save();
+            EscalationChainLinkRepository.Save();
             
-            db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -226,8 +236,11 @@ namespace AdministrationPortal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                EscalationChainLinkRepository.Dispose();
+                EscalationChainRepository.Dispose();
+                NotifyeeGroupRepository.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WatchdogDatabaseAccessLayer;
+using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogMessageGenerator
 {
@@ -27,20 +28,12 @@ namespace WatchdogMessageGenerator
             {
                 Id = GetRandomId(),
                 MessageTypeId = MessageTypeId,
-                Params = GetParams(),
                 IsProcessed = false,
-                Server = GetRandomServer(),
-                Origin = GetRandomOrigin()
-            };
-        }
-
-        public override string GetParams()
-        {
-            return @"{
-                ""params"": {
-                    ""queueSize"": " + GetRandomQueueSize() + @"
+                MessageParameters = new List<MessageParameter>
+                {
+                    
                 }
-            }";
+            };
         }
     }
 }

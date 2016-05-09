@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Runtime.InteropServices.ComTypes;
 using CommandLine;
 using CommandLine.Text;
 using WatchdogDatabaseAccessLayer;
+using WatchdogDatabaseAccessLayer.Models;
+using WatchdogDatabaseAccessLayer.Repositories;
+using WatchdogDatabaseAccessLayer.Repositories.Database;
 
 namespace WatchdogMessageGenerator
 {
@@ -50,35 +54,46 @@ namespace WatchdogMessageGenerator
 
         private static void GenerateMessages(Options options)
         {
-            using (var db = new WatchdogDatabaseContainer())
+            var messageRepository = new EFMessageRepository();
+            var messageTypeRepository = new EFMessageTypeRepository();
+            var messageTypeParameterTypeRepository = new EFMessageTypeParameterTypeRepository();
+
+            if (options.Reset)
             {
-                if (options.Reset)
+                var messageType = new MessageType
                 {
-                    db.MessageTypes.Add(new MessageType
-                    {
-                        Name = "QueueSizeUpdate",
-                        Description = "A regular update from the JMS queue containing the number of elements enqueued.",
-                        MessageSchema = "['size']",
-                        
-                        Id = options.QueueSizeMessageTypeId
-                    });
+                    Name = "QueueSizeUpdate",
+                    Description = "A regular update from the JMS queue containing the number of elements enqueued.",
+                    Id = options.QueueSizeMessageTypeId
+                };
 
-                    db.SaveChanges();
-                }
-
-                var factory = new QueueSizeMessageFactory(new[] {"socrates", "plato", "aristotle"},
-                    new[] {"webapi", "cli"}, options.QueueSizeMessageTypeId);
-
-                for (var i = 0; i < options.QueueSizeMessageCount; i++)
+                var messageTypeParameterType = new MessageTypeParameterType
                 {
-                    var message = factory.Build();
-                    db.Messages.Add(message);
-                }
+                    MessageType = messageType,
+                    Name = "QueueSize",
+                    Type = "integer",
+                };
 
-                db.SaveChanges();
+                messageType.MessageTypeParameterTypes = new List<MessageTypeParameterType>() { messageTypeParameterType };
+                messageTypeRepository.Insert(messageType);
+                messageTypeParameterTypeRepository.Insert(messageTypeParameterType);
 
-                return;
+                messageTypeRepository.Save();
+                messageTypeParameterTypeRepository.Save();
             }
+            /*
+            var factory = new QueueSizeMessageFactory(new[] {"socrates", "plato", "aristotle"},
+                new[] {"webapi", "cli"}, options.QueueSizeMessageTypeId);
+
+            for (var i = 0; i < options.QueueSizeMessageCount; i++)
+            {
+                var message = factory.Build();
+                messageRepository.Insert(message);
+            }*/
+
+            messageRepository.Save();
+
+            return;
         }
     }
 }
