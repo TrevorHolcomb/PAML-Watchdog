@@ -16,8 +16,8 @@
     <EntitySet Name="AlertTypes" EntityType="WatchdogDatabase.Store.AlertTypes" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Alerts" EntityType="WatchdogDatabase.Store.Alerts" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="RuleCategories" EntityType="WatchdogDatabase.Store.RuleCategories" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="MessageTypeColumns" EntityType="WatchdogDatabase.Store.MessageTypeColumns" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="MessageColumns" EntityType="WatchdogDatabase.Store.MessageColumns" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="MessageTypeParameterTypes" EntityType="WatchdogDatabase.Store.MessageTypeParameterTypes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="MessageParameters" EntityType="WatchdogDatabase.Store.MessageParameters" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="NotifyeeNotifyeeGroup" EntityType="WatchdogDatabase.Store.NotifyeeNotifyeeGroup" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="RuleRuleCategory" EntityType="WatchdogDatabase.Store.RuleRuleCategory" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="MessageMessageType" Association="WatchdogDatabase.Store.MessageMessageType">
@@ -74,15 +74,15 @@
     </AssociationSet>
     <AssociationSet Name="MessageTypeMessageTypeColumn" Association="WatchdogDatabase.Store.MessageTypeMessageTypeColumn">
       <End Role="MessageType" EntitySet="MessageTypes" />
-      <End Role="MessageTypeColumn" EntitySet="MessageTypeColumns" />
+      <End Role="MessageTypeColumn" EntitySet="MessageTypeParameterTypes" />
     </AssociationSet>
     <AssociationSet Name="MessageMessageColumn" Association="WatchdogDatabase.Store.MessageMessageColumn">
       <End Role="Message" EntitySet="Messages" />
-      <End Role="MessageColumn" EntitySet="MessageColumns" />
+      <End Role="MessageColumn" EntitySet="MessageParameters" />
     </AssociationSet>
     <AssociationSet Name="MessageTypeColumnMessageColumn" Association="WatchdogDatabase.Store.MessageTypeColumnMessageColumn">
-      <End Role="MessageTypeColumn" EntitySet="MessageTypeColumns" />
-      <End Role="MessageColumn" EntitySet="MessageColumns" />
+      <End Role="MessageTypeColumn" EntitySet="MessageTypeParameterTypes" />
+      <End Role="MessageColumn" EntitySet="MessageParameters" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Messages">
@@ -179,7 +179,7 @@
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
-  <EntityType Name="MessageTypeColumns">
+  <EntityType Name="MessageTypeParameterTypes">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
@@ -188,7 +188,7 @@
     <Property Name="Type" Type="nvarchar(max)" Nullable="false" />
     <Property Name="MessageTypeId" Type="int" Nullable="false" />
   </EntityType>
-  <EntityType Name="MessageColumns">
+  <EntityType Name="MessageParameters">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
@@ -323,7 +323,7 @@
   </Association>
   <Association Name="MessageTypeMessageTypeColumn">
     <End Role="MessageType" Type="WatchdogDatabase.Store.MessageTypes" Multiplicity="1" />
-    <End Role="MessageTypeColumn" Type="WatchdogDatabase.Store.MessageTypeColumns" Multiplicity="*" />
+    <End Role="MessageTypeColumn" Type="WatchdogDatabase.Store.MessageTypeParameterTypes" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="MessageType">
         <PropertyRef Name="Id" />
@@ -335,7 +335,7 @@
   </Association>
   <Association Name="MessageMessageColumn">
     <End Role="Message" Type="WatchdogDatabase.Store.Messages" Multiplicity="1" />
-    <End Role="MessageColumn" Type="WatchdogDatabase.Store.MessageColumns" Multiplicity="*" />
+    <End Role="MessageColumn" Type="WatchdogDatabase.Store.MessageParameters" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Message">
         <PropertyRef Name="Id" />
@@ -346,8 +346,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="MessageTypeColumnMessageColumn">
-    <End Role="MessageTypeColumn" Type="WatchdogDatabase.Store.MessageTypeColumns" Multiplicity="1" />
-    <End Role="MessageColumn" Type="WatchdogDatabase.Store.MessageColumns" Multiplicity="*" />
+    <End Role="MessageTypeColumn" Type="WatchdogDatabase.Store.MessageTypeParameterTypes" Multiplicity="1" />
+    <End Role="MessageColumn" Type="WatchdogDatabase.Store.MessageParameters" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="MessageTypeColumn">
         <PropertyRef Name="Id" />
@@ -848,7 +848,7 @@
     </EntitySetMapping>
     <EntitySetMapping Name="MessageTypeParameterTypes">
       <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.MessageTypeParameterType)">
-        <MappingFragment StoreEntitySet="MessageTypeColumns">
+        <MappingFragment StoreEntitySet="MessageTypeParameterTypes">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Type" ColumnName="Type" />
@@ -858,7 +858,7 @@
     </EntitySetMapping>
     <EntitySetMapping Name="MessageParameters">
       <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.MessageParameter)">
-        <MappingFragment StoreEntitySet="MessageColumns">
+        <MappingFragment StoreEntitySet="MessageParameters">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Value" ColumnName="Value" />
           <ScalarProperty Name="MessageId" ColumnName="MessageId" />

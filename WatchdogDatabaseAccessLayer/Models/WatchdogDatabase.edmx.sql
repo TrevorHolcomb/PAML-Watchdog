@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 05/05/2016 23:22:33
+-- Date Created: 05/07/2016 12:43:11
 -- Generated from EDMX file: C:\Users\RowleyJohn\Documents\Visual Studio 2015\Projects\paml-watchdog\WatchdogDatabaseAccessLayer\Models\WatchdogDatabase.edmx
 -- --------------------------------------------------
 
@@ -56,6 +56,15 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_RuleRuleCategory_RuleCategory]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[RuleRuleCategory] DROP CONSTRAINT [FK_RuleRuleCategory_RuleCategory];
 GO
+IF OBJECT_ID(N'[dbo].[FK_MessageTypeMessageTypeColumn]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[MessageTypeColumns] DROP CONSTRAINT [FK_MessageTypeMessageTypeColumn];
+GO
+IF OBJECT_ID(N'[dbo].[FK_MessageMessageColumn]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[MessageColumns] DROP CONSTRAINT [FK_MessageMessageColumn];
+GO
+IF OBJECT_ID(N'[dbo].[FK_MessageTypeColumnMessageColumn]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[MessageColumns] DROP CONSTRAINT [FK_MessageTypeColumnMessageColumn];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -90,6 +99,12 @@ IF OBJECT_ID(N'[dbo].[Alerts]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[RuleCategories]', 'U') IS NOT NULL
     DROP TABLE [dbo].[RuleCategories];
+GO
+IF OBJECT_ID(N'[dbo].[MessageTypeColumns]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[MessageTypeColumns];
+GO
+IF OBJECT_ID(N'[dbo].[MessageColumns]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[MessageColumns];
 GO
 IF OBJECT_ID(N'[dbo].[NotifyeeNotifyeeGroup]', 'U') IS NOT NULL
     DROP TABLE [dbo].[NotifyeeNotifyeeGroup];
@@ -196,8 +211,8 @@ CREATE TABLE [dbo].[RuleCategories] (
 );
 GO
 
--- Creating table 'MessageTypeColumns'
-CREATE TABLE [dbo].[MessageTypeColumns] (
+-- Creating table 'MessageTypeParameterTypes'
+CREATE TABLE [dbo].[MessageTypeParameterTypes] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [Name] nvarchar(max)  NOT NULL,
     [Type] nvarchar(max)  NOT NULL,
@@ -205,8 +220,8 @@ CREATE TABLE [dbo].[MessageTypeColumns] (
 );
 GO
 
--- Creating table 'MessageColumns'
-CREATE TABLE [dbo].[MessageColumns] (
+-- Creating table 'MessageParameters'
+CREATE TABLE [dbo].[MessageParameters] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [Value] nvarchar(max)  NOT NULL,
     [MessageId] int  NOT NULL,
@@ -292,15 +307,15 @@ ADD CONSTRAINT [PK_RuleCategories]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
--- Creating primary key on [Id] in table 'MessageTypeColumns'
-ALTER TABLE [dbo].[MessageTypeColumns]
-ADD CONSTRAINT [PK_MessageTypeColumns]
+-- Creating primary key on [Id] in table 'MessageTypeParameterTypes'
+ALTER TABLE [dbo].[MessageTypeParameterTypes]
+ADD CONSTRAINT [PK_MessageTypeParameterTypes]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
--- Creating primary key on [Id] in table 'MessageColumns'
-ALTER TABLE [dbo].[MessageColumns]
-ADD CONSTRAINT [PK_MessageColumns]
+-- Creating primary key on [Id] in table 'MessageParameters'
+ALTER TABLE [dbo].[MessageParameters]
+ADD CONSTRAINT [PK_MessageParameters]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -503,8 +518,8 @@ ON [dbo].[RuleRuleCategory]
     ([RuleCategories_Id]);
 GO
 
--- Creating foreign key on [MessageTypeId] in table 'MessageTypeColumns'
-ALTER TABLE [dbo].[MessageTypeColumns]
+-- Creating foreign key on [MessageTypeId] in table 'MessageTypeParameterTypes'
+ALTER TABLE [dbo].[MessageTypeParameterTypes]
 ADD CONSTRAINT [FK_MessageTypeMessageTypeColumn]
     FOREIGN KEY ([MessageTypeId])
     REFERENCES [dbo].[MessageTypes]
@@ -514,12 +529,12 @@ GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_MessageTypeMessageTypeColumn'
 CREATE INDEX [IX_FK_MessageTypeMessageTypeColumn]
-ON [dbo].[MessageTypeColumns]
+ON [dbo].[MessageTypeParameterTypes]
     ([MessageTypeId]);
 GO
 
--- Creating foreign key on [MessageId] in table 'MessageColumns'
-ALTER TABLE [dbo].[MessageColumns]
+-- Creating foreign key on [MessageId] in table 'MessageParameters'
+ALTER TABLE [dbo].[MessageParameters]
 ADD CONSTRAINT [FK_MessageMessageColumn]
     FOREIGN KEY ([MessageId])
     REFERENCES [dbo].[Messages]
@@ -529,22 +544,22 @@ GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_MessageMessageColumn'
 CREATE INDEX [IX_FK_MessageMessageColumn]
-ON [dbo].[MessageColumns]
+ON [dbo].[MessageParameters]
     ([MessageId]);
 GO
 
--- Creating foreign key on [MessageTypeColumnId] in table 'MessageColumns'
-ALTER TABLE [dbo].[MessageColumns]
+-- Creating foreign key on [MessageTypeColumnId] in table 'MessageParameters'
+ALTER TABLE [dbo].[MessageParameters]
 ADD CONSTRAINT [FK_MessageTypeColumnMessageColumn]
     FOREIGN KEY ([MessageTypeColumnId])
-    REFERENCES [dbo].[MessageTypeColumns]
+    REFERENCES [dbo].[MessageTypeParameterTypes]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_MessageTypeColumnMessageColumn'
 CREATE INDEX [IX_FK_MessageTypeColumnMessageColumn]
-ON [dbo].[MessageColumns]
+ON [dbo].[MessageParameters]
     ([MessageTypeColumnId]);
 GO
 

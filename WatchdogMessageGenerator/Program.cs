@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Runtime.InteropServices.ComTypes;
 using CommandLine;
 using CommandLine.Text;
 using WatchdogDatabaseAccessLayer;
 using WatchdogDatabaseAccessLayer.Models;
+using WatchdogDatabaseAccessLayer.Repositories;
 using WatchdogDatabaseAccessLayer.Repositories.Database;
 
 namespace WatchdogMessageGenerator
@@ -54,19 +56,32 @@ namespace WatchdogMessageGenerator
         {
             var messageRepository = new EFMessageRepository();
             var messageTypeRepository = new EFMessageTypeRepository();
+            var messageTypeParameterTypeRepository = new EFMessageTypeParameterTypeRepository();
 
             if (options.Reset)
             {
-                messageTypeRepository.Insert(new MessageType
+                var messageType = new MessageType
                 {
                     Name = "QueueSizeUpdate",
                     Description = "A regular update from the JMS queue containing the number of elements enqueued.",
                     Id = options.QueueSizeMessageTypeId
-                });
+                };
+
+                var messageTypeParameterType = new MessageTypeParameterType
+                {
+                    MessageType = messageType,
+                    Name = "QueueSize",
+                    Type = "integer",
+                };
+
+                messageType.MessageTypeParameterTypes = new List<MessageTypeParameterType>() { messageTypeParameterType };
+                messageTypeRepository.Insert(messageType);
+                messageTypeParameterTypeRepository.Insert(messageTypeParameterType);
 
                 messageTypeRepository.Save();
+                messageTypeParameterTypeRepository.Save();
             }
-
+            /*
             var factory = new QueueSizeMessageFactory(new[] {"socrates", "plato", "aristotle"},
                 new[] {"webapi", "cli"}, options.QueueSizeMessageTypeId);
 
@@ -74,7 +89,7 @@ namespace WatchdogMessageGenerator
             {
                 var message = factory.Build();
                 messageRepository.Insert(message);
-            }
+            }*/
 
             messageRepository.Save();
 

@@ -46,8 +46,6 @@ namespace WatchdogMessageGenerator
         }
 
         public abstract Message Build();
-
-        public abstract string GetParams();
     }
 
     
