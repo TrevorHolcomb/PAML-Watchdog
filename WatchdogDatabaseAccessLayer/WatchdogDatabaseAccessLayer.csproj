@@ -109,6 +109,7 @@
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MessageTypePartial.cs" />
+    <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Repositories\Database\EFAlertTypeRepository.cs" />
     <Compile Include="Repositories\Database\EFAlertRepository.cs" />
     <Compile Include="Repositories\Database\EFEscalationChainLinkRepository.cs" />
@@ -131,7 +132,6 @@
     <Compile Include="Repositories\Fake\ListMessageTypeRepository.cs" />
     <Compile Include="Repositories\Fake\ListRuleRepository.cs" />
     <Compile Include="Repositories\Fake\ListMessageRepository.cs" />
-    <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Models\Message.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>

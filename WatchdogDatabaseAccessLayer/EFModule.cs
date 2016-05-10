@@ -10,18 +10,18 @@ namespace WatchdogDatabaseAccessLayer
         {
             Bind<WatchdogDatabaseContainer>().ToSelf().InSingletonScope();
 
-            Bind<IRepository<Alert>>().To<EFAlertRepository>();
-            Bind<IRepository<AlertType>>().To<EFAlertTypeRepository>();
-            Bind<IRepository<EscalationChainLink>>().To<EFEscalationChainLinkRepository>();
-            Bind<IRepository<EscalationChain>>().To<EFEscalationChainRepository>();
-            Bind<IRepository<MessageParameter>>().To<EFMessageParameterRepository>();
-            Bind<IRepository<Message>>().To<EFMessageRepository>();
-            Bind<IRepository<MessageTypeParameterType>>().To<EFMessageTypeParameterTypeRepository>();
-            Bind<IRepository<MessageType>>().To<EFMessageTypeRepository>();
-            Bind<IRepository<NotifyeeGroup>>().To<EFNotifyeeGroupRepository>();
-            Bind<IRepository<Notifyee>>().To<EFNotifyeeRepository>();
-            Bind<IRepository<RuleCategory>>().To<EFRuleCategoryRepository>();
-            Bind<IRepository<Rule>>().To<EFRuleRepository>();
+            Bind<Repository<Alert>>().To<EFAlertRepository>();
+            Bind<Repository<AlertType>>().To<EFAlertTypeRepository>();
+            Bind<Repository<EscalationChainLink>>().To<EFEscalationChainLinkRepository>();
+            Bind<Repository<EscalationChain>>().To<EFEscalationChainRepository>();
+            Bind<Repository<MessageParameter>>().To<EFMessageParameterRepository>();
+            Bind<Repository<Message>>().To<EFMessageRepository>();
+            Bind<Repository<MessageTypeParameterType>>().To<EFMessageTypeParameterTypeRepository>();
+            Bind<Repository<MessageType>>().To<EFMessageTypeRepository>();
+            Bind<Repository<NotifyeeGroup>>().To<EFNotifyeeGroupRepository>();
+            Bind<Repository<Notifyee>>().To<EFNotifyeeRepository>();
+            Bind<Repository<RuleCategory>>().To<EFRuleCategoryRepository>();
+            Bind<Repository<Rule>>().To<EFRuleRepository>();
         }
     }
 }

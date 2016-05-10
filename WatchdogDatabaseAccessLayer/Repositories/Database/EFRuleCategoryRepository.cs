@@ -5,7 +5,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Database
 {
-    public class EFRuleCategoryRepository : IRepository<RuleCategory>
+    public class EFRuleCategoryRepository : Repository<RuleCategory>
     {
         private readonly WatchdogDatabaseContainer _container;
 
@@ -14,37 +14,37 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
             _container = container;
         }
 
-        public IEnumerable<RuleCategory> Get()
+        public override IEnumerable<RuleCategory> Get()
         {
             return _container.RuleCategories.ToList();
         }
 
-        public RuleCategory GetById(int id)
+        public override RuleCategory GetById(int id)
         {
             return _container.RuleCategories.Find(id);
         }
 
-        public void Insert(RuleCategory model)
+        public override void Insert(RuleCategory model)
         {
             _container.RuleCategories.Add(model);
         }
 
-        public void Delete(RuleCategory model)
+        public override void Delete(RuleCategory model)
         {
             _container.RuleCategories.Remove(model);
         }
 
-        public void Update(RuleCategory model)
+        public override void Update(RuleCategory model)
         {
             _container.Entry(model).State = EntityState.Modified;
         }
 
-        public void Save()
+        public override void Save()
         {
             _container.SaveChanges();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _container.Dispose();
         }

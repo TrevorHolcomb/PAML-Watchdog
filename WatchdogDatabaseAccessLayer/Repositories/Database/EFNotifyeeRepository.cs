@@ -5,7 +5,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Database
 {
-    public class EFNotifyeeRepository : IRepository<Notifyee>
+    public class EFNotifyeeRepository : Repository<Notifyee>
     {
         private readonly WatchdogDatabaseContainer _container;
 
@@ -14,37 +14,37 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
             _container = container;
         }
 
-        public IEnumerable<Notifyee> Get()
+        public override IEnumerable<Notifyee> Get()
         {
             return _container.Notifyees.ToList();
         }
 
-        public Notifyee GetById(int id)
+        public override Notifyee GetById(int id)
         {
             return _container.Notifyees.Find(id);
         }
 
-        public void Insert(Notifyee model)
+        public override void Insert(Notifyee model)
         {
             _container.Notifyees.Add(model);
         }
 
-        public void Delete(Notifyee model)
+        public override void Delete(Notifyee model)
         {
             _container.Notifyees.Remove(model);
         }
 
-        public void Update(Notifyee model)
+        public override void Update(Notifyee model)
         {
             _container.Entry(model).State = EntityState.Modified;
         }
 
-        public void Save()
+        public override void Save()
         {
             _container.SaveChanges();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _container.Dispose();
         }

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WatchdogDatabaseAccessLayer.Models;
+using WatchdogDatabaseAccessLayer.Repositories.Database;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 {
-    public class ListEscalationChainRepository : IRepository<EscalationChain>
+    public class ListEscalationChainRepository : Repository<EscalationChain>
     {
         private readonly List<EscalationChain> _escalationChains;
 
@@ -15,37 +16,37 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
         {
             _escalationChains = new List<EscalationChain>();
         }
-        public void Dispose()
+        public  override void Dispose()
         {
             //do nothing
         }
 
-        public IEnumerable<EscalationChain> Get()
+        public  override IEnumerable<EscalationChain> Get()
         {
             return _escalationChains.ToList();
         }
 
-        public EscalationChain GetById(int id)
+        public  override EscalationChain GetById(int id)
         {
             return _escalationChains.Find(escalationChain => escalationChain.Id == id);
         }
 
-        public void Insert(EscalationChain model)
+        public  override void Insert(EscalationChain model)
         {
             _escalationChains.Add(model);
         }
 
-        public void Delete(EscalationChain model)
+        public  override void Delete(EscalationChain model)
         {
             _escalationChains.Remove(model);
         }
 
-        public void Update(EscalationChain model)
+        public  override void Update(EscalationChain model)
         {
             //do nothing
         }
 
-        public void Save()
+        public  override void Save()
         {
             //do nothing
         }

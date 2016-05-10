@@ -7,7 +7,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 {
-    public class ListNotifyeeGroupRepository : IRepository<NotifyeeGroup>
+    public class ListNotifyeeGroupRepository : Repository<NotifyeeGroup>
     {
         private readonly List<NotifyeeGroup> _notifyeeGroups;
 
@@ -15,37 +15,37 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
         {
             _notifyeeGroups = new List<NotifyeeGroup>();
         }
-        public void Dispose()
+        public override void Dispose()
         {
             //do nothing
         }
 
-        public IEnumerable<NotifyeeGroup> Get()
+        public override IEnumerable<NotifyeeGroup> Get()
         {
             return _notifyeeGroups.ToList();
         }
 
-        public NotifyeeGroup GetById(int id)
+        public override NotifyeeGroup GetById(int id)
         {
             return _notifyeeGroups.Find(notifyeeGroup => notifyeeGroup.Id == id);
         }
 
-        public void Insert(NotifyeeGroup model)
+        public override void Insert(NotifyeeGroup model)
         {
             _notifyeeGroups.Add(model);
         }
 
-        public void Delete(NotifyeeGroup model)
+        public override void Delete(NotifyeeGroup model)
         {
             _notifyeeGroups.Remove(model);
         }
 
-        public void Update(NotifyeeGroup model)
+        public override void Update(NotifyeeGroup model)
         {
             //do nothing
         }
 
-        public void Save()
+        public override void Save()
         {
             //do nothing
         }

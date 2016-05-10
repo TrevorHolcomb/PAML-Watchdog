@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Runtime.InteropServices.ComTypes;
+﻿using System.Collections.Generic;
+using System.Linq;
 using CommandLine;
 using CommandLine.Text;
+using Ninject;
 using WatchdogDatabaseAccessLayer;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
-using WatchdogDatabaseAccessLayer.Repositories.Database;
-using Ninject;
 
 namespace WatchdogMessageGenerator
 {
@@ -27,26 +24,28 @@ namespace WatchdogMessageGenerator
         public string GetUsage()
         {
             return HelpText.AutoBuild(this,
-                (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
+                current => HelpText.DefaultParsingErrorsHandler(this, current));
         }
     }
 
     public class Program
     {
-        public static IRepository<Message> MessageRepository { get; set; }
-        public static IRepository<MessageType> MessageTypeRepository { get; set; }
-        public static IRepository<MessageTypeParameterType> MessageTypeParameterTypeRepository { get; set; }
+        public static Repository<Message> MessageRepository { get; set; }
+        public static Repository<MessageType> MessageTypeRepository { get; set; }
+        public static Repository<MessageTypeParameterType> MessageTypeParameterTypeRepository { get; set; }
+        public static Repository<MessageParameter> MessageParameterRepository { get; set; }
 
         public static int Main(string[] args)
         {
-            using (Ninject.IKernel kernel = new Ninject.StandardKernel(new EFModule()))
+            using (IKernel kernel = new StandardKernel(new EFModule()))
             {
-                MessageRepository = kernel.Get<IRepository<Message>>();
-                MessageTypeRepository = kernel.Get<IRepository<MessageType>>();
-                MessageTypeParameterTypeRepository = kernel.Get<IRepository<MessageTypeParameterType>>();
+                MessageRepository = kernel.Get<Repository<Message>>();
+                MessageTypeRepository = kernel.Get<Repository<MessageType>>();
+                MessageTypeParameterTypeRepository = kernel.Get<Repository<MessageTypeParameterType>>();
+                MessageParameterRepository = kernel.Get<Repository<MessageParameter>>();
 
                 var options = new Options();
-                if (!CommandLine.Parser.Default.ParseArguments(args, options)) return -1;
+                if (!Parser.Default.ParseArguments(args, options)) return -1;
                 GenerateMessages(options);
             }
             return 0;
@@ -58,6 +57,7 @@ namespace WatchdogMessageGenerator
             if (options.Reset)
             {
                 Reset(options);
+                return;
             }
 
             var messageType = MessageTypeRepository.GetById(options.QueueSizeMessageTypeId);
@@ -76,6 +76,33 @@ namespace WatchdogMessageGenerator
 
         private static void Reset(Options options)
         {
+            DeleteMessageType();
+
+            MessageTypeRepository.Save();
+            MessageTypeParameterTypeRepository.Save();
+
+            InsertMessageType(options);
+
+            MessageTypeRepository.Save();
+            MessageTypeParameterTypeRepository.Save();
+        }
+
+        private static void DeleteMessageType()
+        {
+            var messageTypesToRemove = MessageTypeRepository.Get().Where(messageType => messageType.Name == "QueueSizeUpdate").ToList();
+            var messagesToRemove = MessageRepository.Get().Where(message => messageTypesToRemove.Contains(message.MessageType)).ToList();
+            var messageParametersToRemove = messagesToRemove.SelectMany(message => message.MessageParameters).ToList();
+            var messageTypeParameterTypesToRemove =
+                messageParametersToRemove.Select(messageParameter => messageParameter.MessageTypeParameterType).ToList();
+
+            MessageParameterRepository.DeleteRange(messageParametersToRemove);
+            MessageTypeParameterTypeRepository.DeleteRange(messageTypeParameterTypesToRemove);
+            MessageRepository.DeleteRange(messagesToRemove);
+            MessageTypeRepository.DeleteRange(messageTypesToRemove);
+        }
+
+        private static void InsertMessageType(Options options)
+        {
             var messageType = new MessageType
             {
                 Name = "QueueSizeUpdate",
@@ -87,15 +114,12 @@ namespace WatchdogMessageGenerator
             {
                 MessageType = messageType,
                 Name = "QueueSize",
-                Type = "integer",
+                Type = "integer"
             };
 
-            messageType.MessageTypeParameterTypes = new List<MessageTypeParameterType>() {messageTypeParameterType};
+            messageType.MessageTypeParameterTypes = new List<MessageTypeParameterType> {messageTypeParameterType};
             MessageTypeRepository.Insert(messageType);
             MessageTypeParameterTypeRepository.Insert(messageTypeParameterType);
-
-            MessageTypeRepository.Save();
-            MessageTypeParameterTypeRepository.Save();
         }
     }
 }

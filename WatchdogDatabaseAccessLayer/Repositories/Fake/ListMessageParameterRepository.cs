@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WatchdogDatabaseAccessLayer.Models;
+using WatchdogDatabaseAccessLayer.Repositories.Database;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 {
-    public class ListMessageParameterRepository : IRepository<MessageParameter>
+    public class ListMessageParameterRepository : Repository<MessageParameter>
     {
         private readonly List<MessageParameter> _messageParameters;
 
@@ -15,37 +16,37 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
         {
             _messageParameters = new List<MessageParameter>();
         }
-        public void Dispose()
+        public  override void Dispose()
         {
             //do nothing
         }
 
-        public IEnumerable<MessageParameter> Get()
+        public  override IEnumerable<MessageParameter> Get()
         {
             return _messageParameters.ToList();
         }
 
-        public MessageParameter GetById(int id)
+        public  override MessageParameter GetById(int id)
         {
             return _messageParameters.Find(messageParameter => messageParameter.Id == id);
         }
 
-        public void Insert(MessageParameter model)
+        public  override void Insert(MessageParameter model)
         {
             _messageParameters.Add(model);
         }
 
-        public void Delete(MessageParameter model)
+        public  override void Delete(MessageParameter model)
         {
             _messageParameters.Remove(model);
         }
 
-        public void Update(MessageParameter model)
+        public  override void Update(MessageParameter model)
         {
             //do nothing
         }
 
-        public void Save()
+        public  override void Save()
         {
             //do nothing
         }

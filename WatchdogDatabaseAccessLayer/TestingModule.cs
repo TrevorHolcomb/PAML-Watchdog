@@ -10,18 +10,18 @@ namespace WatchdogDatabaseAccessLayer
     {
         public override void Load()
         {
-            Bind<IRepository<Alert>>().To<ListAlertRepository>();
-            Bind<IRepository<AlertType>>().To<ListAlertTypeRepository>();
-            Bind<IRepository<EscalationChainLink>>().To<ListEscalationChainLinkRepository>();
-            Bind<IRepository<EscalationChain>>().To<ListEscalationChainRepository>();
-            Bind<IRepository<MessageParameter>>().To<ListMessageParameterRepository>();
-            Bind<IRepository<Message>>().To<ListMessageRepository>();
-            Bind<IRepository<MessageTypeParameterType>>().To<ListMessageTypeParameterTypeRepository>();
-            Bind<IRepository<MessageType>>().To<ListMessageTypeRepository>();
-            Bind<IRepository<NotifyeeGroup>>().To<ListNotifyeeGroupRepository>();
-            Bind<IRepository<Notifyee>>().To<ListNotifyeeRepository>();
-            Bind<IRepository<RuleCategory>>().To<ListRuleCategoryRepository>();
-            Bind<IRepository<Rule>>().To<ListRuleRepository>();
+            Bind<Repository<Alert>>().To<ListAlertRepository>();
+            Bind<Repository<AlertType>>().To<ListAlertTypeRepository>();
+            Bind<Repository<EscalationChainLink>>().To<ListEscalationChainLinkRepository>();
+            Bind<Repository<EscalationChain>>().To<ListEscalationChainRepository>();
+            Bind<Repository<MessageParameter>>().To<ListMessageParameterRepository>();
+            Bind<Repository<Message>>().To<ListMessageRepository>();
+            Bind<Repository<MessageTypeParameterType>>().To<ListMessageTypeParameterTypeRepository>();
+            Bind<Repository<MessageType>>().To<ListMessageTypeRepository>();
+            Bind<Repository<NotifyeeGroup>>().To<ListNotifyeeGroupRepository>();
+            Bind<Repository<Notifyee>>().To<ListNotifyeeRepository>();
+            Bind<Repository<RuleCategory>>().To<ListRuleCategoryRepository>();
+            Bind<Repository<Rule>>().To<ListRuleRepository>();
         }
     }
 }

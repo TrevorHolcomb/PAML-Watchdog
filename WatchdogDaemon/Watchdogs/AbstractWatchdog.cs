@@ -12,15 +12,15 @@ namespace WatchdogDaemon.Watchdogs
     {
         protected AbstractWatchdog(IResolutionRoot kernel)
         {
-            MessageRepository = kernel.Get<IRepository<Message>>();
-            RuleRepository = kernel.Get<IRepository<Rule>>();
-            AlertRepository = kernel.Get<IRepository<Alert>>();
+            MessageRepository = kernel.Get<WatchdogDatabaseAccessLayer.Repositories.Repository<Message>>();
+            RuleRepository = kernel.Get<WatchdogDatabaseAccessLayer.Repositories.Repository<Rule>>();
+            AlertRepository = kernel.Get<WatchdogDatabaseAccessLayer.Repositories.Repository<Alert>>();
             RuleEngine = kernel.Get<IRuleEngine>();
         }
 
-        protected readonly IRepository<Alert> AlertRepository;
-        protected readonly IRepository<Message> MessageRepository;
-        protected readonly IRepository<Rule> RuleRepository;
+        protected readonly WatchdogDatabaseAccessLayer.Repositories.Repository<Alert> AlertRepository;
+        protected readonly WatchdogDatabaseAccessLayer.Repositories.Repository<Message> MessageRepository;
+        protected readonly WatchdogDatabaseAccessLayer.Repositories.Repository<Rule> RuleRepository;
         protected readonly IRuleEngine RuleEngine;
 
         public void Dispose()

@@ -7,7 +7,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 {
-    public class ListRuleCategoryRepository : IRepository<RuleCategory>
+    public class ListRuleCategoryRepository : Repository<RuleCategory>
     {
         private readonly List<RuleCategory> _ruleCategorys;
 
@@ -15,37 +15,37 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
         {
             _ruleCategorys = new List<RuleCategory>();
         }
-        public void Dispose()
+        public override void Dispose()
         {
             //do nothing
         }
 
-        public IEnumerable<RuleCategory> Get()
+        public override IEnumerable<RuleCategory> Get()
         {
             return _ruleCategorys.ToList();
         }
 
-        public RuleCategory GetById(int id)
+        public override RuleCategory GetById(int id)
         {
             return _ruleCategorys.Find(ruleCategory => ruleCategory.Id == id);
         }
 
-        public void Insert(RuleCategory model)
+        public override void Insert(RuleCategory model)
         {
             _ruleCategorys.Add(model);
         }
 
-        public void Delete(RuleCategory model)
+        public override void Delete(RuleCategory model)
         {
             _ruleCategorys.Remove(model);
         }
 
-        public void Update(RuleCategory model)
+        public override void Update(RuleCategory model)
         {
             //do nothing
         }
 
-        public void Save()
+        public override void Save()
         {
             //do nothing
         }

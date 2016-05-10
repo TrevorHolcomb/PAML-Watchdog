@@ -7,7 +7,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 {
-    public class ListMessageTypeParameterTypeRepository : IRepository<MessageTypeParameterType>
+    public class ListMessageTypeParameterTypeRepository : Repository<MessageTypeParameterType>
     {
         private readonly List<MessageTypeParameterType> _messageTypeParameterTypes;
 
@@ -15,37 +15,37 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
         {
             _messageTypeParameterTypes = new List<MessageTypeParameterType>();
         }
-        public void Dispose()
+        public override void Dispose()
         {
             //do nothing
         }
 
-        public IEnumerable<MessageTypeParameterType> Get()
+        public override IEnumerable<MessageTypeParameterType> Get()
         {
             return _messageTypeParameterTypes.ToList();
         }
 
-        public MessageTypeParameterType GetById(int id)
+        public override MessageTypeParameterType GetById(int id)
         {
             return _messageTypeParameterTypes.Find(messageTypeParameterType => messageTypeParameterType.Id == id);
         }
 
-        public void Insert(MessageTypeParameterType model)
+        public override void Insert(MessageTypeParameterType model)
         {
             _messageTypeParameterTypes.Add(model);
         }
 
-        public void Delete(MessageTypeParameterType model)
+        public override void Delete(MessageTypeParameterType model)
         {
             _messageTypeParameterTypes.Remove(model);
         }
 
-        public void Update(MessageTypeParameterType model)
+        public override void Update(MessageTypeParameterType model)
         {
             //do nothing
         }
 
-        public void Save()
+        public override void Save()
         {
             //do nothing
         }

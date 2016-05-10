@@ -5,7 +5,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Database
 {
-    public class EFEscalationChainLinkRepository : IRepository<EscalationChainLink>
+    public class EFEscalationChainLinkRepository : Repository<EscalationChainLink>
     {
         private readonly WatchdogDatabaseContainer _container;
 
@@ -14,37 +14,37 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
             _container = container;
         }
 
-        public IEnumerable<EscalationChainLink> Get()
+        public override IEnumerable<EscalationChainLink> Get()
         {
             return _container.EscalationChainLinks.ToList();
         }
 
-        public EscalationChainLink GetById(int id)
+        public override EscalationChainLink GetById(int id)
         {
             return _container.EscalationChainLinks.Find(id);
         }
 
-        public void Insert(EscalationChainLink model)
+        public override void Insert(EscalationChainLink model)
         {
             _container.EscalationChainLinks.Add(model);
         }
 
-        public void Delete(EscalationChainLink model)
+        public override void Delete(EscalationChainLink model)
         {
             _container.EscalationChainLinks.Remove(model);
         }
 
-        public void Update(EscalationChainLink model)
+        public override void Update(EscalationChainLink model)
         {
             _container.Entry(model).State = EntityState.Modified;
         }
 
-        public void Save()
+        public override void Save()
         {
             _container.SaveChanges();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _container.Dispose();
         }

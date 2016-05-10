@@ -5,7 +5,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Database
 {
-    public class EFMessageParameterRepository : IRepository<MessageParameter>
+    public class EFMessageParameterRepository : Repository<MessageParameter>
     {
         private readonly WatchdogDatabaseContainer _container;
 
@@ -14,37 +14,37 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
             _container = container;
         }
 
-        public IEnumerable<MessageParameter> Get()
+        public override IEnumerable<MessageParameter> Get()
         {
             return _container.MessageParameters.ToList();
         }
 
-        public MessageParameter GetById(int id)
+        public override MessageParameter GetById(int id)
         {
             return _container.MessageParameters.Find(id);
         }
 
-        public void Insert(MessageParameter model)
+        public override void Insert(MessageParameter model)
         {
             _container.MessageParameters.Add(model);
         }
 
-        public void Delete(MessageParameter model)
+        public override void Delete(MessageParameter model)
         {
             _container.MessageParameters.Remove(model);
         }
 
-        public void Update(MessageParameter model)
+        public override void Update(MessageParameter model)
         {
             _container.Entry(model).State = EntityState.Modified;
         }
 
-        public void Save()
+        public override void Save()
         {
             _container.SaveChanges();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _container.Dispose();
         }

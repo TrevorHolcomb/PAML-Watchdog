@@ -8,7 +8,7 @@ using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogDatabaseAccessLayer.Repositories.Database
 {
-    public class EFAlertTypeRepository : IRepository<AlertType>
+    public class EFAlertTypeRepository : Repository<AlertType>
     {
         private readonly WatchdogDatabaseContainer _container;
 
@@ -17,37 +17,37 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
             _container = container;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _container.Dispose();
         }
 
-        public IEnumerable<AlertType> Get()
+        public override IEnumerable<AlertType> Get()
         {
             return _container.AlertTypes.ToList();
         }
 
-        public AlertType GetById(int id)
+        public override AlertType GetById(int id)
         {
             return _container.AlertTypes.Find(id);
         }
 
-        public void Insert(AlertType model)
+        public override void Insert(AlertType model)
         {
             _container.AlertTypes.Add(model);
         }
 
-        public void Delete(AlertType model)
+        public override void Delete(AlertType model)
         {
             _container.AlertTypes.Remove(model);
         }
 
-        public void Update(AlertType model)
+        public override void Update(AlertType model)
         {
             _container.Entry(model).State = EntityState.Modified;
         }
 
-        public void Save()
+        public override void Save()
         {
             _container.SaveChanges();
         }
