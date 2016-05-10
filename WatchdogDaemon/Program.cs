@@ -1,5 +1,7 @@
 ﻿using System;
 using Ninject;
+using WatchdogDaemon.RuleEngine;
+using WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine;
 using WatchdogDaemon.Watchdogs;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
@@ -16,6 +18,7 @@ namespace WatchdogDaemon
                 kernel.Bind<IRepository<Message>>().To<EFMessageRepository>();
                 kernel.Bind<IRepository<Alert>>().To<EFAlertRepository>();
                 kernel.Bind<IRepository<Rule>>().To<EFRuleRepository>();
+                kernel.Bind<IRuleEngine>().To<StandardRuleEngine>();
 
                 Console.WriteLine("Watchdog simulator started");
                 //start consumer

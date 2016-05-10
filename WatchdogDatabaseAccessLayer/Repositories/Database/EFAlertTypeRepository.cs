@@ -12,9 +12,9 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
     {
         private readonly WatchdogDatabaseContainer _container;
 
-        public EFAlertTypeRepository()
+        public EFAlertTypeRepository(WatchdogDatabaseContainer container)
         {
-            _container = new WatchdogDatabaseContainer();
+            _container = container;
         }
 
         public void Dispose()

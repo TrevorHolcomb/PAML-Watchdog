@@ -8,6 +8,7 @@ using WatchdogDatabaseAccessLayer;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using WatchdogDatabaseAccessLayer.Repositories.Database;
+using Ninject;
 
 namespace WatchdogMessageGenerator
 {
@@ -38,13 +39,16 @@ namespace WatchdogMessageGenerator
 
         public static int Main(string[] args)
         {
-            MessageRepository = new EFMessageRepository();
-            MessageTypeRepository = new EFMessageTypeRepository();
-            MessageTypeParameterTypeRepository = new EFMessageTypeParameterTypeRepository();
+            using (Ninject.IKernel kernel = new Ninject.StandardKernel(new EFModule()))
+            {
+                MessageRepository = kernel.Get<IRepository<Message>>();
+                MessageTypeRepository = kernel.Get<IRepository<MessageType>>();
+                MessageTypeParameterTypeRepository = kernel.Get<IRepository<MessageTypeParameterType>>();
 
-            var options = new Options();
-            if (!CommandLine.Parser.Default.ParseArguments(args, options)) return -1;
-            GenerateMessages(options);
+                var options = new Options();
+                if (!CommandLine.Parser.Default.ParseArguments(args, options)) return -1;
+                GenerateMessages(options);
+            }
             return 0;
         }
 

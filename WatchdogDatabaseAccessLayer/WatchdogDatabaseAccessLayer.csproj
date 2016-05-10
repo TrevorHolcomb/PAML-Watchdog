@@ -83,6 +83,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EFModule.cs" />
     <Compile Include="MessageParameterFactory.cs" />
     <Compile Include="Models\Alert.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
@@ -167,7 +168,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="TestingKernel.cs" />
+    <Compile Include="TestingModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -186,6 +187,7 @@
       <LastGenOutput>WatchdogDatabase.Context.cs</LastGenOutput>
       <DependentUpon>WatchdogDatabase.edmx</DependentUpon>
     </Content>
+    <Content Include="Models\WatchdogDatabase.edmx.sql" />
     <Content Include="Models\WatchdogDatabase.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>WatchdogDatabase.cs</LastGenOutput>

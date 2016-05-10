@@ -9,9 +9,9 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
     {
         private readonly WatchdogDatabaseContainer _container;
 
-        public EFMessageTypeRepository()
+        public EFMessageTypeRepository(WatchdogDatabaseContainer container)
         {
-            _container = new WatchdogDatabaseContainer();
+            _container = container;
         }
 
         public IEnumerable<MessageType> Get()

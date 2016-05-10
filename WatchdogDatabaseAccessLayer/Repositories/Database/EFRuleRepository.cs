@@ -11,9 +11,10 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
     public class EFRuleRepository : IRepository<Rule>
     {
         private readonly WatchdogDatabaseContainer _container;
-        public EFRuleRepository()
+
+        public EFRuleRepository(WatchdogDatabaseContainer container)
         {
-            _container = new WatchdogDatabaseContainer();
+            _container = container;
         }
         public void Dispose()
         {

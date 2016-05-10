@@ -8,9 +8,10 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
     public class EFNotifyeeRepository : IRepository<Notifyee>
     {
         private readonly WatchdogDatabaseContainer _container;
-        public EFNotifyeeRepository()
+
+        public EFNotifyeeRepository(WatchdogDatabaseContainer container)
         {
-            _container = new WatchdogDatabaseContainer();
+            _container = container;
         }
 
         public IEnumerable<Notifyee> Get()

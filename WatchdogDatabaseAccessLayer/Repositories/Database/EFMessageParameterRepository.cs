@@ -8,9 +8,10 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
     public class EFMessageParameterRepository : IRepository<MessageParameter>
     {
         private readonly WatchdogDatabaseContainer _container;
-        public EFMessageParameterRepository()
+
+        public EFMessageParameterRepository(WatchdogDatabaseContainer container)
         {
-            _container = new WatchdogDatabaseContainer();
+            _container = container;
         }
 
         public IEnumerable<MessageParameter> Get()

@@ -8,9 +8,10 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
     public class EFRuleCategoryRepository : IRepository<RuleCategory>
     {
         private readonly WatchdogDatabaseContainer _container;
-        public EFRuleCategoryRepository()
+
+        public EFRuleCategoryRepository(WatchdogDatabaseContainer container)
         {
-            _container = new WatchdogDatabaseContainer();
+            _container = container;
         }
 
         public IEnumerable<RuleCategory> Get()

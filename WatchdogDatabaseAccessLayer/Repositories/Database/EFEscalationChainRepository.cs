@@ -8,9 +8,10 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
     public class EFEscalationChainRepository : IRepository<EscalationChain>
     {
         private readonly WatchdogDatabaseContainer _container;
-        public EFEscalationChainRepository()
+
+        public EFEscalationChainRepository(WatchdogDatabaseContainer container)
         {
-            _container = new WatchdogDatabaseContainer();
+            _container = container;
         }
 
         public IEnumerable<EscalationChain> Get()
