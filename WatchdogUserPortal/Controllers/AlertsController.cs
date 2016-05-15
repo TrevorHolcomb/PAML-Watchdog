@@ -10,6 +10,7 @@ using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using WatchdogUserPortal.ViewModels.Alerts;
 using Ninject;
+using PagedList;
 
 namespace WatchdogUserPortal.Controllers
 {
@@ -19,19 +20,22 @@ namespace WatchdogUserPortal.Controllers
         public Repository<Alert> AlertRepository { private get; set; }
 
         // GET: Alerts
-        public ActionResult Index(string ActiveOrArchived)
+        public ActionResult Index(string ActiveOrArchived, int? Page_No)
         {
-            
+            int Size_Of_Page = 10;
+            int No_Of_Page = (Page_No ?? 1);
             switch (ActiveOrArchived)
             {
                 case "UnAcknowledged":
                 case "Acknowledged":
-                    var activeAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Acknowledged" || a.Status.ToString() == "UnAcknowledged");
-                    return View(activeAlerts);
+                    var activeAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Acknowledged" || a.Status.ToString() == "UnAcknowledged").OrderBy(a => a.Status).ThenByDescending(a => a.Timestamp);
+                    ViewBag.Active = "UnAcknowledged";
+                    return View(activeAlerts.ToPagedList(No_Of_Page, Size_Of_Page));
                 default:
-                    var archivedAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Resolved");
-                    return View(archivedAlerts);
-            }         
+                    var archivedAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Resolved").OrderByDescending(a => a.Timestamp);
+                    ViewBag.Active = "Resolved";
+                    return View(archivedAlerts.ToPagedList(No_Of_Page, Size_Of_Page));
+            }  
         }
 
         // GET: Alerts/Details/5
