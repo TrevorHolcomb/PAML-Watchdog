@@ -1,4 +1,4 @@
-﻿@model WatchdogDatabaseAccessLayer.Alert
+﻿@model WatchdogDatabaseAccessLayer.Models.Alert
 
 @{
     ViewBag.Title = "Details";
@@ -60,6 +60,6 @@
     </dl>
 </div>
 <div class="col-md-offset-1">
-    @Html.ActionLink("Change Status", "Edit", new { id = Model.Id }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Change Status", "Edit", new { id = (int)Model.Id }, new { @class = "btn btn-default" })
     @Html.ActionLink("Back to List", "Index", new {ActiveOrArchived = Model.Status.ToString()}, new { @class = "btn btn-default" })
 </div>

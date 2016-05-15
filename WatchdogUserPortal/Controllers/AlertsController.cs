@@ -6,37 +6,38 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using WatchdogDatabaseAccessLayer;
+using WatchdogDatabaseAccessLayer.Models;
+using WatchdogDatabaseAccessLayer.Repositories;
+using WatchdogUserPortal.ViewModels.Alerts;
+using Ninject;
 
 namespace WatchdogUserPortal.Controllers
 {
     public class AlertsController : Controller
     {
-        private WatchdogDatabaseContainer db = new WatchdogDatabaseContainer();
+        [Inject]
+        public Repository<Alert> AlertRepository { private get; set; }
 
         // GET: Alerts
         public ActionResult Index(string ActiveOrArchived)
         {
+            
             switch (ActiveOrArchived)
             {
                 case "UnAcknowledged":
                 case "Acknowledged":
-                    var activeAlerts = db.Alerts.Include(a => a.AlertType).Include(a => a.Rule).Where(a => a.Status.ToString() == "UnAcknowledged" || a.Status.ToString() == "Acknowledged").OrderBy(a => a.Status);
-                    return View(activeAlerts.ToList());
+                    var activeAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Acknowledged" || a.Status.ToString() == "UnAcknowledged");
+                    return View(activeAlerts);
                 default:
-                    var archivedAlerts = db.Alerts.Include(a => a.AlertType).Include(a => a.Rule).Where(a => a.Status.ToString() == "Resolved").OrderBy(a => a.Status);
-                    return View(archivedAlerts.ToList());
-            }            
+                    var archivedAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Resolved");
+                    return View(archivedAlerts);
+            }         
         }
 
         // GET: Alerts/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Alert alert = db.Alerts.Find(id);
+            var alert = AlertRepository.GetById(id);
             if (alert == null)
             {
                 return HttpNotFound();
@@ -47,8 +48,6 @@ namespace WatchdogUserPortal.Controllers
         // GET: Alerts/Create
         public ActionResult Create()
         {
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name");
-            ViewBag.RuleId = new SelectList(db.Rules, "Id", "Name");
             return View();
         }
 
@@ -61,31 +60,22 @@ namespace WatchdogUserPortal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Alerts.Add(alert);
-                db.SaveChanges();
+                AlertRepository.Insert(alert);
+                AlertRepository.Save();
                 return RedirectToAction("Index");
             }
-
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", alert.AlertTypeId);
-            ViewBag.RuleId = new SelectList(db.Rules, "Id", "Name", alert.RuleId);
             return View(alert);
         }
 
         // GET: Alerts/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Alert alert = db.Alerts.Find(id);
+            var alert = AlertRepository.GetById(id);
             if (alert == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", alert.AlertTypeId);
-            ViewBag.RuleId = new SelectList(db.Rules, "Id", "Name", alert.RuleId);
-            return View(alert);
+            return View(new AlertCreateViewModel(alert));
         }
 
         // POST: Alerts/Edit/5
@@ -97,23 +87,17 @@ namespace WatchdogUserPortal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(alert).State = EntityState.Modified;
-                db.SaveChanges();
+                AlertRepository.Update(alert);
+                AlertRepository.Save();
                 return RedirectToAction("Index", new {ActiveOrArchived = alert.Status.ToString() });
             }
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", alert.AlertTypeId);
-            ViewBag.RuleId = new SelectList(db.Rules, "Id", "Name", alert.RuleId);
             return View(alert);
         }
 
         // GET: Alerts/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Alert alert = db.Alerts.Find(id);
+            var alert = AlertRepository.GetById(id);
             if (alert == null)
             {
                 return HttpNotFound();
@@ -126,9 +110,9 @@ namespace WatchdogUserPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Alert alert = db.Alerts.Find(id);
-            db.Alerts.Remove(alert);
-            db.SaveChanges();
+            var alert = AlertRepository.GetById(id);
+            AlertRepository.Delete(alert);
+            AlertRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -136,7 +120,7 @@ namespace WatchdogUserPortal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                AlertRepository.Dispose();
             }
             base.Dispose(disposing);
         }
