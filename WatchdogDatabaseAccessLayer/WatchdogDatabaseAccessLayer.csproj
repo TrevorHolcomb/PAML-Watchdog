@@ -94,6 +94,7 @@
     <Compile Include="Models\AlertType.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\APIMessageParameter.cs" />
     <Compile Include="Models\EscalationChain.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
@@ -169,6 +170,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="TestingModule.cs" />
+    <Compile Include="WatchdogValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

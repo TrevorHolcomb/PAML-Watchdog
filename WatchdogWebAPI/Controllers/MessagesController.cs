@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -9,23 +8,32 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WatchdogDatabaseAccessLayer;
-using NJsonSchema;
-using Newtonsoft.Json;
+using WatchdogDatabaseAccessLayer.Models;
 using WatchdogWebAPI.Models;
+using Ninject;
+using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace WatchdogWebAPI.Controllers
 {
     public class MessagesController : ApiController
     {
-        private WatchdogDatabaseContainer db = new WatchdogDatabaseContainer();
-        private const string ORIGIN = "WatchdogWebAPI";
+        [Inject]
+        public Repository<Message> messageRepository { private get; set; }
+        [Inject]
+        public Repository<MessageParameter> messageParameterRepository { private get; set; }
+        [Inject]
+        public Repository<MessageType> messageTypeRepository { private get; set; }
+        [Inject]
+        public Repository<MessageTypeParameterType> messageTypeParameterTypeRepository { private get; set; }
+
+
 
         #region GET
 
         // GET: api/Messages
         public IQueryable<MessageTypeDTO> GetMessageTypes()
         {
-            var messageTypes = from mt in db.MessageTypes
+            var messageTypes = from mt in messageTypeRepository.Get().AsQueryable()
                         select new MessageTypeDTO()
                         {
                             Id = mt.Id,
@@ -40,7 +48,16 @@ namespace WatchdogWebAPI.Controllers
         [ResponseType(typeof(MessageTypeDetailDTO))]
         public IHttpActionResult GetMessageType(int id)
         {
-            MessageType messageType = db.MessageTypes.Find(id);
+            MessageType messageType = messageTypeRepository.GetById(id);
+
+            var param = from messageParameter in messageTypeParameterTypeRepository.Get().Where(messageTypeParameter => messageTypeParameter.MessageTypeId == id).AsQueryable()
+                        select new APIMessageParameter()
+                        {
+                            name = messageParameter.Name,
+                            value = messageParameter.Type
+                        };
+
+            APIMessageParameter[] paramsArray = param.ToArray<APIMessageParameter>();
 
             if (messageType == null)
             {
@@ -52,10 +69,11 @@ namespace WatchdogWebAPI.Controllers
                 Id = messageType.Id,
                 Name = messageType.Name,
                 Descrpiton = messageType.Description,
-                Schema = messageType.MessageSchema
+                parameters = paramsArray
             };
 
-            return Ok(toReturn);           
+            return Ok(toReturn);  
+                  
         }
 
         #endregion
@@ -67,9 +85,9 @@ namespace WatchdogWebAPI.Controllers
         [ResponseType(typeof(string))]
         public IHttpActionResult PostMessage(IncomingMessage incomingMessage)
         {
-
-            //The new model JSON is validated against the requested message type schema
-            bool isValidMessage = isValid(JsonConvert.SerializeObject(incomingMessage),incomingMessage.MessageTypeId);
+            
+            bool isValidMessage = isValid(incomingMessage);
+            
             //if properly formatted message create a new message object to add to database
             if (isValidMessage)
             {
@@ -77,20 +95,48 @@ namespace WatchdogWebAPI.Controllers
                 Message toDatabase = new Message
                 {
                     Server = incomingMessage.Server,
-                    Origin = ORIGIN,
+                    //Engine = incomingMessage.Engine,
+                    Origin = incomingMessage.Origin,
                     MessageTypeId = incomingMessage.MessageTypeId,
-                    Params = JsonConvert.SerializeObject(incomingMessage.Params),
                     IsProcessed = false
                 };
 
-                db.Messages.Add(toDatabase);
-                db.SaveChanges();
+                //insert Message
+                messageRepository.Insert(toDatabase);
+                messageRepository.Save();
+
+
+                MessageType messageType = messageTypeRepository.GetById(incomingMessage.MessageTypeId);
+
+                //gets the parameter types of inserted message
+                var parameterTypes = messageTypeParameterTypeRepository.Get().Where(messageTypeParameter => messageTypeParameter.MessageTypeId == incomingMessage.MessageTypeId).AsQueryable();
+                            
+
+                foreach (APIMessageParameter param in incomingMessage.Params){
+
+                    //find the parameter type id
+                    //validation should catch a fail before this point
+                    int paramId = parameterTypes.First(curParam => curParam.Name.Equals(param.name)).Id;
+
+
+                    MessageParameter toInsert = new MessageParameter
+                    {
+                        MessageId = toDatabase.Id,
+                        Value = param.value,
+                        MessageTypeColumnId = paramId
+                    };
+                    //insert parameters
+                    messageParameterRepository.Insert(toInsert);
+                    messageParameterRepository.Save();
+                }
+
 
                 //incoming message gets moved to new model for return
                 OutGoingMessage toReturn = new OutGoingMessage
                 {
                     Server = incomingMessage.Server,
-                    Origin = ORIGIN,
+                    Engine = incomingMessage.Engine,
+                    Origin = incomingMessage.Origin,
                     MessageTypeId = incomingMessage.MessageTypeId,
                     Params = incomingMessage.Params
                 };
@@ -108,20 +154,31 @@ namespace WatchdogWebAPI.Controllers
 
         #region private methods
 
-        private bool isValid(string messageJson,int messageTypeId)
+        private bool isValid(IncomingMessage messageToValidate)
         {
-            string schema = db.MessageTypes.Find(messageTypeId).MessageSchema;
+            bool valid = true;
 
-            if (schema == null)
+            if (messageToValidate == null)
                 return false;
 
-            JsonSchema4 incomingMessageSchema = JsonSchema4.FromJson(schema);
-            var result = incomingMessageSchema.Validate(messageJson);
-
-            if (result.Count == 0)
-                return true;
-            else
+            valid = WatchdogValidator.validateServer(messageToValidate.Server);
+            if (!valid)
                 return false;
+
+            valid = WatchdogValidator.validateEngine(messageToValidate.Engine);
+            if (!valid)
+                return false;
+
+            valid = WatchdogValidator.validateOrigin(messageToValidate.Origin);
+            if (!valid)
+                return false;
+
+            valid = WatchdogValidator.validateParameters(messageToValidate.Params, messageToValidate.MessageTypeId);
+            if (!valid)
+                return false;
+
+
+            return valid;
         }
 
         #endregion
