@@ -44,6 +44,7 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
 
         public Alert ConsumeMessage(Rule rule, Message message)
         {
+            //TODO: check if rule.Server, Origin, and Engine are set to 'all', or a specific target
             var registry = RegisterVariables(message);
             var ce = new CompiledExpression(rule.Expression) {TypeRegistry = registry};
             var triggers = ce.Eval() is bool && (bool) ce.Eval();
@@ -60,7 +61,14 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
                 AlertType = rule.AlertType,
                 AlertTypeId = rule.AlertTypeId,
                 Rule = rule,
-                RuleId = rule.Id
+                RuleId = rule.Id,
+                Engine = rule.Engine,
+                Origin = rule.Origin,
+                Server = rule.Server,
+                MessageTypeId = message.MessageTypeId,
+                //TODO: add parameters
+                TimeCreated = System.DateTime.Now
+
             };
         }
 

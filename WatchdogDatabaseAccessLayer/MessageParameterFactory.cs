@@ -32,7 +32,7 @@ namespace WatchdogDatabaseAccessLayer
             {
                 MessageTypeParameterType = parameterType,
                 Value = rawParameter.Value,
-                MessageTypeColumnId = parameterType.Id
+                MessageTypeParameterId = parameterType.Id
             };
         }
 
