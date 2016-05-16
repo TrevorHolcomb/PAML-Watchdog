@@ -82,59 +82,7 @@ namespace AdministrationPortal.Controllers
 
             return View(viewModel);
         }
-
-        // GET: MessageTypes/Edit/5
-        public ActionResult Edit(int id)
-        {
-            var messageType = MessageTypeRepository.GetById(id);
-
-            if (messageType == null)
-                return HttpNotFound();
-            
-
-            var parameters = new List<CreateMessageTypeParameterTypeViewModel>(messageType.MessageTypeParameterTypes.Select(
-                    messageTypeParameterType => new CreateMessageTypeParameterTypeViewModel(messageTypeParameterType.Name, messageTypeParameterType.Type, true)));
-            parameters.Add(new CreateMessageTypeParameterTypeViewModel(null, null, false));
-
-            var viewModel = new CreateMessageTypeViewModel(messageType.Name, messageType.Description, parameters);
-
-            return View("Create", viewModel);
-        }
-
-        // POST: MessageTypes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(CreateMessageTypeViewModel viewModel)
-        {
-
-            var messageType = new MessageType
-            {
-                Name = viewModel.Name,
-                Description = viewModel.Description,
-                
-            };
-
-            var parameters = viewModel.Parameters.Where(parameter => parameter.Enabled).Select(parameter => new MessageTypeParameterType
-            {
-                Name = parameter.Name,
-                Type = parameter.Type,
-                MessageType = messageType
-            });
-
-            messageType.MessageTypeParameterTypes = parameters.ToList();
-
-            if (ModelState.IsValid)
-            {
-                MessageTypeRepository.Update(messageType);
-                MessageTypeRepository.Save();
-                return RedirectToAction("Index");
-            }
-
-            return View("Create", viewModel);
-        }
-
+        
         // GET: MessageTypes/Delete/5
         public ActionResult Delete(int id)
         {
