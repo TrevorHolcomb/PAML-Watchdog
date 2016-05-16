@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Net;
 using System.Web.Mvc;
+using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 
@@ -9,7 +10,8 @@ namespace AdministrationPortal.Controllers
 {
     public class AlertTypesController : Controller
     {
-        public IAlertTypeRepository AlertTypeRepository { private get; set; }
+        [Inject]
+        public Repository<AlertType> AlertTypeRepository { private get; set; }
 
         // GET: AlertTypes
         public ActionResult Index()

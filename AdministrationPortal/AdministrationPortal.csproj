@@ -175,13 +175,12 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AlertTypesController.cs" />
-    <Compile Include="Controllers\EscalationChainsController.cs" />
+    <Compile Include="ViewModels\MessageTypes\CreateMessageTypeViewModel.cs" />
+    <Compile Include="ViewModels\Rules\RuleCreateViewModel.cs" />
     <Compile Include="ViewModels\EscalationChains\EscalationChainsEditLinkViewModel.cs" />
     <Compile Include="Controllers\HelpController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MessageTypesController.cs" />
-    <Compile Include="Controllers\NotifyeesController.cs" />
-    <Compile Include="Controllers\RuleCategoriesController.cs" />
     <Compile Include="Controllers\RulesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -296,17 +295,6 @@
     <Content Include="Views\Rules\Delete.cshtml" />
     <Content Include="Views\Rules\Details.cshtml" />
     <Content Include="Views\Rules\Index.cshtml" />
-    <Content Include="Views\RuleCategories\Create.cshtml" />
-    <Content Include="Views\RuleCategories\Delete.cshtml" />
-    <Content Include="Views\RuleCategories\Details.cshtml" />
-    <Content Include="Views\RuleCategories\Edit.cshtml" />
-    <Content Include="Views\RuleCategories\Index.cshtml" />
-    <Content Include="Views\Notifyees\CreateNotifyee.cshtml" />
-    <Content Include="Views\Notifyees\DeleteNotifyee.cshtml" />
-    <Content Include="Views\Notifyees\Index.cshtml" />
-    <Content Include="Views\EscalationChains\Delete.cshtml" />
-    <Content Include="Views\EscalationChains\Edit.cshtml" />
-    <Content Include="Views\EscalationChains\Index.cshtml" />
     <Content Include="Views\AlertTypes\Create.cshtml" />
     <Content Include="Views\AlertTypes\Delete.cshtml" />
     <Content Include="Views\AlertTypes\Details.cshtml" />
@@ -333,20 +321,11 @@
     <Content Include="Styles\scss\vendor\_external.scss" />
     <Content Include="Views\Shared\_Sidebar.cshtml" />
     <Content Include="Styles\scss\site.scss" />
-    <Content Include="Views\Alerts\Create.cshtml" />
-    <Content Include="Views\Alerts\Delete.cshtml" />
-    <Content Include="Views\Alerts\Details.cshtml" />
-    <Content Include="Views\Alerts\Edit.cshtml" />
-    <Content Include="Views\Alerts\Index.cshtml" />
-    <Content Include="Views\EscalationChains\EditLink.cshtml" />
-    <Content Include="Views\Notifyees\CreateNotifyeeGroup.cshtml" />
-    <Content Include="Views\Notifyees\DeleteNotifyeeGroup.cshtml" />
     <Content Include="Views\Help\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="Views\Layout\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
