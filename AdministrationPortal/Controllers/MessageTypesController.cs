@@ -1,34 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using WatchdogDatabaseAccessLayer;
+using AdministrationPortal.ViewModels.MessageTypes;
+using Ninject;
+using WatchdogDatabaseAccessLayer.Models;
+using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace AdministrationPortal.Controllers
 {
     public class MessageTypesController : Controller
     {
-        private readonly WatchdogDatabaseContainer _db = new WatchdogDatabaseContainer();
+        [Inject]
+        public Repository<MessageType> MessageTypeRepository { get; set; }
+        [Inject]
+        public Repository<MessageTypeParameterType> MessageTypeParameterTypeRepository { get; set; }
 
         // GET: MessageTypes
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            return View(await _db.MessageTypes.ToListAsync());
+            return View(MessageTypeRepository.Get());
         }
 
         // GET: MessageTypes/Details/5
-        public async Task<ActionResult> Details(int? id)
+        public ActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            MessageType messageType = await _db.MessageTypes.FindAsync(id);
+            var messageType = MessageTypeRepository.GetById(id);
             if (messageType == null)
             {
                 return HttpNotFound();
@@ -39,7 +35,12 @@ namespace AdministrationPortal.Controllers
         // GET: MessageTypes/Create
         public ActionResult Create()
         {
-            return View();
+            var parameters = new List<CreateMessageTypeParameterTypeViewModel>();
+            for (var i = 0; i < 5; i++)
+                parameters.Add(new CreateMessageTypeParameterTypeViewModel(null,null,false));
+            var viewModel = new CreateMessageTypeViewModel(null, null, parameters);
+
+            return View(viewModel);
         }
 
         // POST: MessageTypes/Create
@@ -47,31 +48,57 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Name,Description,MessageSchema")] MessageType messageType)
+        public ActionResult Create(CreateMessageTypeViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                _db.MessageTypes.Add(messageType);
-                await _db.SaveChangesAsync();
+                var messageType = new MessageType
+                {
+                    Name = viewModel.Name,
+                    Description = viewModel.Description,
+                };
+
+                var parameterTypes = new List<MessageTypeParameterType>();
+                foreach (var createParameter in viewModel.Parameters)
+                {
+                    if (createParameter.Enabled)
+                    {
+                        parameterTypes.Add(new MessageTypeParameterType
+                        {
+                            Name = createParameter.Name,
+                            Type = createParameter.Type,
+                            MessageType = messageType,
+                        });
+                    }
+                }
+
+                messageType.MessageTypeParameterTypes = parameterTypes;
+                MessageTypeParameterTypeRepository.InsertRange(parameterTypes);
+                MessageTypeRepository.Insert(messageType);
+                MessageTypeRepository.Save();
+                MessageTypeParameterTypeRepository.Save();
                 return RedirectToAction("Index");
             }
 
-            return View(messageType);
+            return View(viewModel);
         }
 
         // GET: MessageTypes/Edit/5
-        public async Task<ActionResult> Edit(int? id)
+        public ActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            MessageType messageType = await _db.MessageTypes.FindAsync(id);
+            var messageType = MessageTypeRepository.GetById(id);
+
             if (messageType == null)
-            {
                 return HttpNotFound();
-            }
-            return View("Create", messageType);
+            
+
+            var parameters = new List<CreateMessageTypeParameterTypeViewModel>(messageType.MessageTypeParameterTypes.Select(
+                    messageTypeParameterType => new CreateMessageTypeParameterTypeViewModel(messageTypeParameterType.Name, messageTypeParameterType.Type, true)));
+            parameters.Add(new CreateMessageTypeParameterTypeViewModel(null, null, false));
+
+            var viewModel = new CreateMessageTypeViewModel(messageType.Name, messageType.Description, parameters);
+
+            return View("Create", viewModel);
         }
 
         // POST: MessageTypes/Edit/5
@@ -79,25 +106,39 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Description,MessageSchema")] MessageType messageType)
+        public ActionResult Edit(CreateMessageTypeViewModel viewModel)
         {
+
+            var messageType = new MessageType
+            {
+                Name = viewModel.Name,
+                Description = viewModel.Description,
+                
+            };
+
+            var parameters = viewModel.Parameters.Where(parameter => parameter.Enabled).Select(parameter => new MessageTypeParameterType
+            {
+                Name = parameter.Name,
+                Type = parameter.Type,
+                MessageType = messageType
+            });
+
+            messageType.MessageTypeParameterTypes = parameters.ToList();
+
             if (ModelState.IsValid)
             {
-                _db.Entry(messageType).State = EntityState.Modified;
-                await _db.SaveChangesAsync();
+                MessageTypeRepository.Update(messageType);
+                MessageTypeRepository.Save();
                 return RedirectToAction("Index");
             }
-            return View("Create", messageType);
+
+            return View("Create", viewModel);
         }
 
         // GET: MessageTypes/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public ActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            MessageType messageType = await _db.MessageTypes.FindAsync(id);
+            var messageType = MessageTypeRepository.GetById(id);
             if (messageType == null)
             {
                 return HttpNotFound();
@@ -108,11 +149,17 @@ namespace AdministrationPortal.Controllers
         // POST: MessageTypes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id)
         {
-            MessageType messageType = await _db.MessageTypes.FindAsync(id);
-            _db.MessageTypes.Remove(messageType);
-            await _db.SaveChangesAsync();
+            var messageType = MessageTypeRepository.GetById(id);
+            var messageTypeParameterTypes =
+                MessageTypeParameterTypeRepository.Get().Where(parameter => parameter.MessageTypeId == messageType.Id);
+
+            MessageTypeParameterTypeRepository.DeleteRange(messageTypeParameterTypes);
+            MessageTypeParameterTypeRepository.Save();
+
+            MessageTypeRepository.Delete(messageType);
+            MessageTypeRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -120,7 +167,7 @@ namespace AdministrationPortal.Controllers
         {
             if (disposing)
             {
-                _db.Dispose();
+                MessageTypeRepository.Dispose();
             }
             base.Dispose(disposing);
         }

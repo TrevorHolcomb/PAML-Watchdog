@@ -1,4 +1,4 @@
-﻿@model WatchdogDatabaseAccessLayer.MessageType
+﻿@model WatchdogDatabaseAccessLayer.Models.MessageType
 
 @{
     ViewBag.Title = "Details";
@@ -27,21 +27,19 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.MessageSchema)
+            Parameters
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.MessageSchema)
+            <ul>
+                @foreach (var parameter in Model.MessageTypeParameterTypes)
+                {
+                    <li>
+                        @parameter.Name, @parameter.Type
+                    </li>
+                }
+            </ul>
         </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.OptionalParams)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.OptionalParams)
-        </dd>
-
     </dl>
 </div>
 <p>

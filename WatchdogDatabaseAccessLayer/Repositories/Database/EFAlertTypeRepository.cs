@@ -19,7 +19,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
 
         public override void Dispose()
         {
-            _container.Dispose();
+            
         }
 
         public override IEnumerable<AlertType> Get()

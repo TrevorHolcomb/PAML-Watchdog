@@ -1,3 +1,4 @@
+using WatchdogDatabaseAccessLayer;
 using WatchdogDatabaseAccessLayer.Repositories;
 using WatchdogDatabaseAccessLayer.Repositories.Database;
 
@@ -64,9 +65,7 @@ namespace AdministrationPortal.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Bind<IAlertRepository>().To<EFAlertRepository>();
-            kernel.Bind<IMessageTypeRepository>().To<EFMessageTypeRepository>();
-            kernel.Bind<IMessageRepository>().To<EFMessageRepository>();
+            kernel.Load(new EFModule());
         }        
     }
 }

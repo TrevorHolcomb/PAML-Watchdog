@@ -1,4 +1,4 @@
-﻿@model WatchdogDatabaseAccessLayer.MessageType
+﻿@model AdministrationPortal.ViewModels.MessageTypes.CreateMessageTypeViewModel
 
 @{
     ViewBag.Title = "Create";
@@ -30,12 +30,33 @@
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.MessageSchema, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextAreaFor(model => model.MessageSchema, new { @class = "form-control", @id = "schema" })
-                @Html.ValidationMessageFor(model => model.MessageSchema, "", new { @class = "text-danger" })
-            </div>
+        <div>
+            @for (var i = 0; i < Model.Parameters.Count; i++)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Parameters[i].Name)
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Parameters[i].Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Parameters[i].Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Parameters[i].Type)
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Parameters[i].Type, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Parameters[i].Type, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Parameters[i].Enabled)
+                    <div class="col-md-10">
+                        @Html.CheckBoxFor(model => model.Parameters[i].Enabled, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Parameters[i].Enabled, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
         </div>
 
         <div class="form-group">

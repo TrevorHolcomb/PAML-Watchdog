@@ -1,4 +1,4 @@
-﻿@model WatchdogDatabaseAccessLayer.MessageType
+﻿@model WatchdogDatabaseAccessLayer.Models.MessageType
 
 @{
     ViewBag.Title = "Delete";
@@ -28,20 +28,20 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.RequiredParams)
+            Parameters
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.RequiredParams)
+            <ul>
+                @foreach (var parameter in Model.MessageTypeParameterTypes)
+                {
+                    <li>
+                        @parameter.Name, @parameter.Type
+                    </li>
+                }
+            </ul>
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.OptionalParams)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.OptionalParams)
-        </dd>
 
     </dl>
 
