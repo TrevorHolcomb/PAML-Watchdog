@@ -12,14 +12,15 @@ namespace WatchdogDatabaseAccessLayer.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class MessageParameter
+    public partial class AlertParameter
     {
         public int Id { get; set; }
         public string Value { get; set; }
         public int MessageId { get; set; }
         public int MessageTypeParameterId { get; set; }
+        public int AlertId { get; set; }
     
-        public virtual Message Message { get; set; }
         public virtual MessageTypeParameterType MessageTypeParameterType { get; set; }
+        public virtual Alert Alert { get; set; }
     }
 }

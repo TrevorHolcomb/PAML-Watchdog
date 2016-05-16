@@ -12,24 +12,19 @@ namespace WatchdogDatabaseAccessLayer.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Message
+    public partial class SupportCategory
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Message()
+        public SupportCategory()
         {
-            this.Engine = "N/A";
-            this.MessageParameters = new HashSet<MessageParameter>();
+            this.Rules = new HashSet<Rule>();
         }
     
         public int Id { get; set; }
-        public int MessageTypeId { get; set; }
-        public bool IsProcessed { get; set; }
-        public string Server { get; set; }
-        public string Origin { get; set; }
-        public string Engine { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
     
-        public virtual MessageType MessageType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<MessageParameter> MessageParameters { get; set; }
+        public virtual ICollection<Rule> Rules { get; set; }
     }
 }

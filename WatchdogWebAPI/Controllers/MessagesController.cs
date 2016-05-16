@@ -123,7 +123,6 @@ namespace WatchdogWebAPI.Controllers
                     {
                         MessageId = toDatabase.Id,
                         Value = param.value,
-                        MessageTypeColumnId = paramId
                     };
                     //insert parameters
                     messageParameterRepository.Insert(toInsert);
