@@ -44,6 +44,7 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
 
         public Alert ConsumeMessage(Rule rule, Message message)
         {
+            //TODO: enforce rule constraints on messageType
             //TODO: check if rule.Server, Origin, and Engine are set to 'all', or a specific target
             var registry = RegisterVariables(message);
             var ce = new CompiledExpression(rule.Expression) {TypeRegistry = registry};
@@ -64,21 +65,26 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
                     MessageId = messageParameter.MessageId,
                     MessageTypeParameterId = messageParameter.MessageTypeParameterId,
                     Value = messageParameter.Value,
+                    MessageTypeParameterType = messageParameter.MessageTypeParameterType
                 });
             }
 
             return new Alert
             {
+                AlertParameters = alertParams,
                 AlertType = rule.AlertType,
                 AlertTypeId = rule.AlertTypeId,
+                Engine = rule.Engine,
+                Notes = " ",
+                Origin = rule.Origin,
                 Rule = rule,
                 RuleId = rule.Id,
-                Engine = rule.Engine,
-                Origin = rule.Origin,
                 Server = rule.Server,
+                Severity = rule.DefaultSeverity,
+                TimeCreated = System.DateTime.Now,
+                TimeModified = System.DateTime.Now,
+                MessageType = message.MessageType,
                 MessageTypeId = message.MessageTypeId,
-                AlertParameters = alertParams,
-                TimeCreated = System.DateTime.Now
             };
         }
 

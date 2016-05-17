@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e5e3167d3dc04e51a2d12eb062001561" Name="Diagram1" ZoomLevel="63" >
+      <Diagram DiagramId="e5e3167d3dc04e51a2d12eb062001561" Name="Diagram1" ZoomLevel="62" >
         <EntityTypeShape EntityType="WatchdogDatabase.Message" Width="3.5" PointX="11.5" PointY="1.625" />
         <EntityTypeShape EntityType="WatchdogDatabase.MessageType" Width="2.375" PointX="15.625" PointY="0.75" />
         <AssociationConnector Association="WatchdogDatabase.MessageMessageType" />
@@ -26,16 +26,16 @@
         <AssociationConnector Association="WatchdogDatabase.AlertRule" />
         <EntityTypeShape EntityType="WatchdogDatabase.RuleCategory" Width="1.5" PointX="8.125" PointY="2.875" />
         <AssociationConnector Association="WatchdogDatabase.RuleRuleCategory" />
-        <EntityTypeShape EntityType="WatchdogDatabase.MessageTypeParameterType" Width="2.75" PointX="19.5" PointY="2.875" />
+        <EntityTypeShape EntityType="WatchdogDatabase.MessageTypeParameterType" Width="2.75" PointX="19.5" PointY="2.875" IsExpanded="true" />
         <AssociationConnector Association="WatchdogDatabase.MessageTypeMessageTypeColumn" />
         <EntityTypeShape EntityType="WatchdogDatabase.MessageParameter" Width="2.375" PointX="15.75" PointY="4.5" />
         <AssociationConnector Association="WatchdogDatabase.MessageMessageColumn" />
         <AssociationConnector Association="WatchdogDatabase.MessageTypeColumnMessageColumn" />
         <AssociationConnector Association="WatchdogDatabase.AlertMessageType" />
-        <EntityTypeShape EntityType="WatchdogDatabase.AlertParameter" Width="2.625" PointX="13.25" PointY="12.625" />
+        <EntityTypeShape EntityType="WatchdogDatabase.AlertParameter" Width="2.625" PointX="13.25" PointY="13" />
         <AssociationConnector Association="WatchdogDatabase.AlertParameterMessageTypeParameterType" />
         <AssociationConnector Association="WatchdogDatabase.AlertAlertParameter" />
-        <EntityTypeShape EntityType="WatchdogDatabase.SupportCategory" Width="2" PointX="9.75" PointY="12.125" />
+        <EntityTypeShape EntityType="WatchdogDatabase.SupportCategory" Width="2" PointX="12.125" PointY="15.75" />
         <AssociationConnector Association="WatchdogDatabase.RuleSupportCategory" />
       </Diagram>
     </edmx:Diagrams>

@@ -17,6 +17,9 @@ namespace WatchdogDatabaseAccessLayer.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Rule()
         {
+            this.Engine = "ALL";
+            this.Origin = "ALL";
+            this.Server = "ALL";
             this.DefaultSeverity = 1;
             this.Alerts = new HashSet<Alert>();
             this.RuleCategories = new HashSet<RuleCategory>();
@@ -30,10 +33,10 @@ namespace WatchdogDatabaseAccessLayer.Models
         public string Server { get; set; }
         public string Expression { get; set; }
         public int AlertTypeId { get; set; }
-        public string SupportCategoryId { get; set; }
         public string RuleCreator { get; set; }
         public int DefaultSeverity { get; set; }
         public int EscalationChainId { get; set; }
+        public int SupportCategoryId { get; set; }
     
         public virtual EscalationChain EscalationChain { get; set; }
         public virtual MessageType MessageType { get; set; }

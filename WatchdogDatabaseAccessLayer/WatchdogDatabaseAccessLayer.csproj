@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EFModule.cs" />
+    <Compile Include="FormattedDbEntityValidationException.cs" />
     <Compile Include="MessageParameterFactory.cs" />
     <Compile Include="Models\Alert.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
@@ -106,13 +107,31 @@
     </Compile>
     <Compile Include="Models\EscalationChainLinkPartial.cs" />
     <Compile Include="Models\EscalationChainPartial.cs" />
+    <Compile Include="Models\Message.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\MessageParameter.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MessageType.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MessageTypeParameterType.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MessageTypePartial.cs" />
+    <Compile Include="Models\Notifyee.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NotifyeeGroup.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Rule.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\RuleCategory.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SupportCategory.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
@@ -143,27 +162,9 @@
     <Compile Include="Repositories\Fake\ListMessageTypeRepository.cs" />
     <Compile Include="Repositories\Fake\ListRuleRepository.cs" />
     <Compile Include="Repositories\Fake\ListMessageRepository.cs" />
-    <Compile Include="Models\Message.cs">
-      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MessageType.cs">
-      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Notifyee.cs">
-      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NotifyeeGroup.cs">
-      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Database\EFMessageRepository.cs" />
     <Compile Include="Repositories\Database\EFMessageTypeRepository.cs" />
-    <Compile Include="Models\Rule.cs">
-      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\RuleCategory.cs">
-      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\WatchdogDatabase.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -25,22 +25,19 @@ namespace WatchdogDaemon.Watchdogs
             _pollingTimer?.Change(0, Timeout.Infinite);
         }
 
-        //TODO: enforce rule constraints on messageType
         protected override void Run(object state)
         {
             var messages = MessageRepository.Get().Where(msg => !msg.IsProcessed).ToList();
             var rules = RuleRepository.Get();
 
-            foreach (var message in messages.Where(msg => !msg.IsProcessed))
+            foreach (var message in messages)
             {
                 foreach (var rule in rules)
                 {
                     var alert = RuleEngine.ConsumeMessage(rule, message);
                     if (alert != null)
                     {
-                        AlertRepository.Insert(alert);
-                        
-                        //TODO: insert alertParameter
+                        AlertRepository.Insert(alert);                        
                     }
                 }
 

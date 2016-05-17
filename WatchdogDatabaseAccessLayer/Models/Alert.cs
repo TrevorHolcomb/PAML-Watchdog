@@ -33,7 +33,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public string Origin { get; set; }
         public string Engine { get; set; }
         public int MessageTypeId { get; set; }
-        public string AlertParameterId { get; set; }
+        public int AlertParameterId { get; set; }
         public string Assignee { get; set; }
     
         public virtual AlertType AlertType { get; set; }
