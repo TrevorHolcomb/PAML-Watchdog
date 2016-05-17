@@ -68,12 +68,13 @@ namespace AdministrationPortal.Tests.Controllers
                         "RabbitMQ Queue Size Update", 
                         "A message from rabbitmq detailing how many elements are currently enqueued in it.", 
                         parameters)) as ViewResult;
-
                 // Assert
                 Assert.NotNull(result);
             }
         }
 
+        /*
+         * See todo in MessageTypesController
         [Fact]
         public void Edit()
         {
@@ -131,7 +132,7 @@ namespace AdministrationPortal.Tests.Controllers
                 // Assert
                 Assert.NotNull(result);
             }
-        }
+        }*/
 
 
         [Fact]
@@ -144,7 +145,8 @@ namespace AdministrationPortal.Tests.Controllers
                 {
                     Name = "RabbitMQ Queue Size Update",
                     Description = "A message from rabbitmq detailing how many elements are currently enqueued in it.",
-                    Id = 0
+                    Id = 0,
+                    
                 });
                 messageTypeRepository.Save();
 

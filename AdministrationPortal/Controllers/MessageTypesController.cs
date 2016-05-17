@@ -119,5 +119,7 @@ namespace AdministrationPortal.Controllers
             }
             base.Dispose(disposing);
         }
+
+        //TODO: reimplement Edit such that a messageType can be edited iff no messages or alerts referencing it exist
     }
 }

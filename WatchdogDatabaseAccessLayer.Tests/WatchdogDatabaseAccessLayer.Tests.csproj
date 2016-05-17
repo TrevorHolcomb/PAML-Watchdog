@@ -81,6 +81,7 @@
     <Content Include="DummyData\dbo.AlertTypes.data.sql" />
     <Content Include="DummyData\dbo.EscalationChainLinks.data.sql" />
     <Content Include="DummyData\dbo.EscalationChains.data.sql" />
+    <Content Include="DummyData\dbo.Merged.sql" />
     <Content Include="DummyData\dbo.Rules.data.sql" />
     <Content Include="DummyData\dbo.SupportCategories.data.sql" />
     <Content Include="DummyData\readme.txt" />
