@@ -56,6 +56,17 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
 
         private static Alert CreateAlert(Rule rule, Message message)
         {
+            ICollection<AlertParameter> alertParams = new List<AlertParameter>();
+
+            foreach (MessageParameter messageParameter in message.MessageParameters){
+                alertParams.Add(new AlertParameter
+                {
+                    MessageId = messageParameter.MessageId,
+                    MessageTypeParameterId = messageParameter.MessageTypeParameterId,
+                    Value = messageParameter.Value,
+                });
+            }
+
             return new Alert
             {
                 AlertType = rule.AlertType,
@@ -66,12 +77,10 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
                 Origin = rule.Origin,
                 Server = rule.Server,
                 MessageTypeId = message.MessageTypeId,
-                //TODO: add parameters
+                AlertParameters = alertParams,
                 TimeCreated = System.DateTime.Now
-
             };
         }
-
 
     }
 }

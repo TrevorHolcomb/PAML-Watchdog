@@ -116,6 +116,10 @@
     <Compile Include="Models\SupportCategory.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Repositories\Database\EFAlertParameterRepository.cs" />
+    <Compile Include="Repositories\Database\EFSupportCategoryRepository.cs" />
+    <Compile Include="Repositories\Fake\ListAlertParameterRepository.cs" />
+    <Compile Include="Repositories\Fake\ListSupportCategoryRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Repositories\Database\EFAlertTypeRepository.cs" />
     <Compile Include="Repositories\Database\EFAlertRepository.cs" />
