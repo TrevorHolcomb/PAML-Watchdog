@@ -163,16 +163,17 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="RuleCreator" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Engine" Type="nvarchar(max)" Nullable="false" DefaultValue="ALL" />
     <Property Name="Origin" Type="nvarchar(max)" Nullable="false" DefaultValue="ALL" />
     <Property Name="Server" Type="nvarchar(max)" Nullable="false" DefaultValue="ALL" />
     <Property Name="Expression" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="AlertTypeId" Type="int" Nullable="false" />
-    <Property Name="RuleCreator" Type="nvarchar(max)" Nullable="false" />
     <Property Name="DefaultSeverity" Type="int" Nullable="false" DefaultValue="1" />
+    <Property Name="AlertTypeId" Type="int" Nullable="false" />
     <Property Name="EscalationChainId" Type="int" Nullable="false" />
+    <Property Name="MessageTypeId" Type="int" Nullable="false" />
+    <Property Name="RuleCategoryId" Type="int" Nullable="false" />
     <Property Name="SupportCategoryId" Type="int" Nullable="false" />
-    <Property Name="MessageType_Id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="AlertTypes">
     <Key>
@@ -332,7 +333,7 @@
         <PropertyRef Name="Id" />
       </Principal>
       <Dependent Role="Rule">
-        <PropertyRef Name="MessageType_Id" />
+        <PropertyRef Name="MessageTypeId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -692,6 +693,11 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="Description" Type="String" Nullable="true" />
+          <Property Name="RuleCreator" Type="String" Nullable="false">
+            <Documentation>
+              <Summary>Who Created this rule</Summary>
+            </Documentation>
+          </Property>
           <Property Name="Engine" Type="String" Nullable="false" DefaultValue="ALL" annotation:StoreGeneratedPattern="None" />
           <Property Name="Origin" Type="String" Nullable="false" DefaultValue="ALL" annotation:StoreGeneratedPattern="None" />
           <Property Name="Server" Type="String" Nullable="false" DefaultValue="ALL" annotation:StoreGeneratedPattern="None" />
@@ -699,17 +705,14 @@
           <NavigationProperty Name="EscalationChain" Relationship="WatchdogDatabase.EscalationChainRule" FromRole="Rule" ToRole="EscalationChain" />
           <NavigationProperty Name="MessageType" Relationship="WatchdogDatabase.RuleMessageType" FromRole="Rule" ToRole="MessageType" />
           <NavigationProperty Name="AlertType" Relationship="WatchdogDatabase.AlertTypeRule" FromRole="Rule" ToRole="AlertType" />
-          <Property Name="AlertTypeId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Alerts" Relationship="WatchdogDatabase.AlertRule" FromRole="Rule" ToRole="Alert" />
           <NavigationProperty Name="RuleCategories" Relationship="WatchdogDatabase.RuleRuleCategory" FromRole="Rule" ToRole="RuleCategory" />
           <NavigationProperty Name="SupportCategory" Relationship="WatchdogDatabase.RuleSupportCategory" FromRole="Rule" ToRole="SupportCategory" />
-          <Property Name="RuleCreator" Type="String" Nullable="false" >
-            <Documentation>
-              <Summary>Who Created this rule</Summary>
-            </Documentation>
-          </Property>
-          <Property Name="DefaultSeverity" Type="Int32" Nullable="false" DefaultValue="1" annotation:StoreGeneratedPattern="None" />
+          <Property Name="DefaultSeverity" Type="Int32" Nullable="false" DefaultValue="1" annotation:StoreGeneratedPattern="None" xmlns="http://schemas.microsoft.com/ado/2009/11/edm" />
+          <Property Name="AlertTypeId" Type="Int32" Nullable="false" />
           <Property Name="EscalationChainId" Type="Int32" Nullable="false" />
+          <Property Name="MessageTypeId" Type="Int32" Nullable="false" />
+          <Property Name="RuleCategoryId" Type="Int32" Nullable="false" />
           <Property Name="SupportCategoryId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="EscalationChainRule">
@@ -741,6 +744,14 @@
         <Association Name="RuleMessageType">
           <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="*" />
           <End Type="WatchdogDatabase.MessageType" Role="MessageType" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="MessageType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Rule">
+              <PropertyRef Name="MessageTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
         <EntityType Name="Alert">
           <Key>
@@ -1000,14 +1011,16 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="RuleCreator" ColumnName="RuleCreator" />
           <ScalarProperty Name="Engine" ColumnName="Engine" />
           <ScalarProperty Name="Origin" ColumnName="Origin" />
           <ScalarProperty Name="Server" ColumnName="Server" />
           <ScalarProperty Name="Expression" ColumnName="Expression" />
-          <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />
-          <ScalarProperty Name="RuleCreator" ColumnName="RuleCreator" />
           <ScalarProperty Name="DefaultSeverity" ColumnName="DefaultSeverity" />
+          <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />
           <ScalarProperty Name="EscalationChainId" ColumnName="EscalationChainId" />
+          <ScalarProperty Name="MessageTypeId" ColumnName="MessageTypeId" />
+          <ScalarProperty Name="RuleCategoryId" ColumnName="RuleCategoryId" />
           <ScalarProperty Name="SupportCategoryId" ColumnName="SupportCategoryId" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -1124,14 +1137,6 @@
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
       <Condition ColumnName="PreviousLink_Id" IsNull="false" />
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="RuleMessageType" TypeName="WatchdogDatabase.RuleMessageType" StoreEntitySet="Rules">
-      <EndProperty Name="MessageType">
-        <ScalarProperty Name="Id" ColumnName="MessageType_Id" />
-      </EndProperty>
-      <EndProperty Name="Rule">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
     </AssociationSetMapping>
     <AssociationSetMapping Name="RuleRuleCategory" TypeName="WatchdogDatabase.RuleRuleCategory" StoreEntitySet="RuleRuleCategory">
       <EndProperty Name="Rule">

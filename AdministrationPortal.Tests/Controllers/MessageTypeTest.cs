@@ -54,8 +54,7 @@ namespace AdministrationPortal.Tests.Controllers
             using (var kernel = new StandardKernel(new TestingModule()))
             {
                 // Arrange
-                var controller = new MessageTypesController();
-                kernel.Inject(controller);
+                var controller = kernel.Get<MessageTypesController>();
 
                 // Act
                 var parameters = new List<CreateMessageTypeParameterTypeViewModel>()
@@ -67,7 +66,8 @@ namespace AdministrationPortal.Tests.Controllers
                 var result = controller.Create(new CreateMessageTypeViewModel(
                         "RabbitMQ Queue Size Update", 
                         "A message from rabbitmq detailing how many elements are currently enqueued in it.", 
-                        parameters)) as ViewResult;
+                        parameters)) as ActionResult;
+
                 // Assert
                 Assert.NotNull(result);
             }
@@ -152,7 +152,7 @@ namespace AdministrationPortal.Tests.Controllers
 
                 // Arrange
                 var controller = new MessageTypesController();
-                kernel.Inject(controller);
+                controller.MessageTypeRepository = messageTypeRepository;
 
                 // Act
                 var result = controller.Details(0) as ViewResult;

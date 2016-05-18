@@ -175,6 +175,8 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AlertTypesController.cs" />
+    <Compile Include="Controllers\RuleCategoriesController.cs" />
+    <Compile Include="Controllers\SupportCategoriesController.cs" />
     <Compile Include="ViewModels\MessageTypes\CreateMessageTypeViewModel.cs" />
     <Compile Include="ViewModels\Rules\RuleCreateViewModel.cs" />
     <Compile Include="ViewModels\EscalationChains\EscalationChainsEditLinkViewModel.cs" />
@@ -192,6 +194,8 @@
     <Compile Include="ViewModels\EscalationChains\EscalationChainCreateViewModel.cs" />
     <Compile Include="ViewModels\EscalationChains\EscalationChainLinksCreateViewModel.cs" />
     <Compile Include="ViewModels\NotifyeesIndexViewModel.cs" />
+    <Compile Include="ViewModels\Rules\RuleOptionsViewModel.cs" />
+    <Compile Include="ViewModels\Rules\RuleViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\font-awesome\css\font-awesome.css" />
@@ -291,9 +295,8 @@
     <Content Include="Views\MessageTypes\Delete.cshtml" />
     <Content Include="Views\MessageTypes\Details.cshtml" />
     <Content Include="Views\MessageTypes\Index.cshtml" />
-    <Content Include="Views\Rules\Create.cshtml" />
+    <Content Include="Views\Rules\CreateOld.cshtml" />
     <Content Include="Views\Rules\Delete.cshtml" />
-    <Content Include="Views\Rules\Details.cshtml" />
     <Content Include="Views\Rules\Index.cshtml" />
     <Content Include="Views\AlertTypes\Create.cshtml" />
     <Content Include="Views\AlertTypes\Delete.cshtml" />
@@ -322,6 +325,19 @@
     <Content Include="Views\Shared\_Sidebar.cshtml" />
     <Content Include="Styles\scss\site.scss" />
     <Content Include="Views\Help\Index.cshtml" />
+    <Content Include="Views\RuleCategories\Index.cshtml" />
+    <Content Include="Views\SupportCategories\Index.cshtml" />
+    <Content Include="Views\RuleCategories\Create.cshtml" />
+    <Content Include="Views\RuleCategories\Details.cshtml" />
+    <Content Include="Views\RuleCategories\Edit.cshtml" />
+    <Content Include="Views\RuleCategories\Delete.cshtml" />
+    <Content Include="Views\SupportCategories\Create.cshtml" />
+    <Content Include="Views\SupportCategories\Details.cshtml" />
+    <Content Include="Views\SupportCategories\Delete.cshtml" />
+    <Content Include="Views\SupportCategories\Edit.cshtml" />
+    <Content Include="Views\Rules\Edit.cshtml" />
+    <Content Include="Views\Rules\Create.cshtml" />
+    <Content Include="Views\Rules\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

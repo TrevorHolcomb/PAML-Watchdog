@@ -1,82 +1,125 @@
-﻿@model WatchdogDatabaseAccessLayer.Models.Rule
+﻿@model AdministrationPortal.ViewModels.RuleViewModels
 
 @{
     ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
+<h2>Create2</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Rule</h4>
         <hr />
-
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.RuleToCreate.Id)
         <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.RuleToCreate.Name, "Rule Name", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.RuleToCreate.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RuleToCreate.Name, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.RuleTriggerSchema, htmlAttributes: new {@class = "control-label col-md-2"})
+            @Html.LabelFor(model => model.RuleToCreate.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.RuleTriggerSchema, new {@class = "form-control", @id = "schema" })
-                @Html.ValidationMessageFor(model => model.RuleTriggerSchema, "", new {@class = "text-danger"})
+                @Html.EditorFor(model => model.RuleToCreate.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RuleToCreate.Description, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.EscalationChainId, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.RuleToCreate.RuleCreator, "Created by", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("EscalationChainId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.EscalationChainId, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.RuleToCreate.RuleCreator, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RuleToCreate.RuleCreator, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.MessageType, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.RuleToCreate.Engine, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("MessageTypeId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.MessageType, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.RuleToCreate.Engine, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RuleToCreate.Engine, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.AlertTypeId, "AlertTypeId", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.RuleToCreate.Origin, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("AlertTypeId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.AlertTypeId, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.RuleToCreate.Origin, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RuleToCreate.Origin, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Origin, "Origin", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.RuleToCreate.Server, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Origin,  new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Origin, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.RuleToCreate.Server, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RuleToCreate.Server, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Server, "Server", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.RuleToCreate.Expression, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Server, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Server, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.RuleToCreate.Expression, new { htmlAttributes = new { @class = "form-control", @id = "Expression" } })
+                @Html.ValidationMessageFor(model => model.RuleToCreate.Expression, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RuleToCreate.DefaultSeverity, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RuleToCreate.DefaultSeverity, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RuleToCreate.DefaultSeverity, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RuleToCreate.AlertTypeId, "Alert Type", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.RuleToCreate.AlertTypeId, Model.RuleOptions.AlertTypes, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.RuleToCreate.AlertTypeId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        
+            <div class="form-group">
+                @Html.LabelFor(model => model.RuleToCreate.EscalationChainId, "EscalationChain", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.RuleToCreate.EscalationChainId, Model.RuleOptions.EscalationChains, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.RuleToCreate.EscalationChainId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RuleToCreate.MessageType, "Message Type", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.RuleToCreate.MessageTypeId, Model.RuleOptions.MessageTypes, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.RuleToCreate.MessageType, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RuleToCreate.RuleCategories, "Rule Category", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.RuleToCreate.RuleCategoryId, Model.RuleOptions.RuleCategories, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.RuleToCreate.RuleCategories, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RuleToCreate.SupportCategoryId, "Support Category", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.RuleToCreate.SupportCategoryId, Model.RuleOptions.SupportCategories, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.RuleToCreate.SupportCategoryId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -94,7 +137,7 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    
+
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/codemirror.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/mode/javascript/javascript.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/codemirror.css">
@@ -106,7 +149,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            CodeMirror.fromTextArea($('#schema')[0], {
+            CodeMirror.fromTextArea($('#Expression')[0], {
                 lineNumbers: true,
                 mode: "application/json",
                 gutters: ["CodeMirror-lint-markers"],
