@@ -30,11 +30,11 @@ namespace WatchdogUserPortal.Controllers
                 case "Acknowledged":
                     var activeAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Acknowledged" || a.Status.ToString() == "UnAcknowledged").OrderBy(a => a.Status).ThenByDescending(a => a.Timestamp);
                     ViewBag.Active = "UnAcknowledged";
-                    return View(activeAlerts.ToPagedList(No_Of_Page, Size_Of_Page));
+                    return View(new AlertPagingCreateView(activeAlerts.ToPagedList(No_Of_Page, Size_Of_Page), "Acknowledged"));
                 default:
                     var archivedAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Resolved").OrderByDescending(a => a.Timestamp);
                     ViewBag.Active = "Resolved";
-                    return View(archivedAlerts.ToPagedList(No_Of_Page, Size_Of_Page));
+                    return View(new AlertPagingCreateView(archivedAlerts.ToPagedList(No_Of_Page, Size_Of_Page), "Resolved"));
             }  
         }
 
