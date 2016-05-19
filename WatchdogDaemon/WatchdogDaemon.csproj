@@ -93,6 +93,7 @@
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\ITypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\IntegerTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\TypeHandlerList.cs" />
+    <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypesSupported.cs" />
     <Compile Include="Watchdogs\AbstractWatchdog.cs" />
     <Compile Include="RuleEngine\IRuleEngine.cs" />
     <Compile Include="Watchdogs\PollingWatchdog.cs" />

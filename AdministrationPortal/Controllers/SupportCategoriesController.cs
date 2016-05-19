@@ -72,7 +72,13 @@ namespace AdministrationPortal.Controllers
         {
             if (ModelState.IsValid)
             {
-                SupportCategoryRepository.Update(supportCategory);
+                SupportCategory supportCategoryInDb = mapNewCategoryOntoDbCategory(supportCategory);
+                if(supportCategoryInDb == null)
+                {
+                    return HttpNotFound();
+                }
+
+                SupportCategoryRepository.Update(supportCategoryInDb);
                 SupportCategoryRepository.Save();
                 return RedirectToAction("Index");
             }
@@ -110,6 +116,17 @@ namespace AdministrationPortal.Controllers
                 SupportCategoryRepository.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private SupportCategory mapNewCategoryOntoDbCategory(SupportCategory newSupportCategory)
+        {
+            SupportCategory dbSupportCategory = SupportCategoryRepository.GetById(newSupportCategory.Id);
+            if (dbSupportCategory != null)
+            {
+                dbSupportCategory.Name = newSupportCategory.Name;
+                dbSupportCategory.Description = newSupportCategory.Description;
+            }
+            return dbSupportCategory;
         }
     }
 }

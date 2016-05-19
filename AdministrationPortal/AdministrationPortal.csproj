@@ -338,6 +338,7 @@
     <Content Include="Views\Rules\Edit.cshtml" />
     <Content Include="Views\Rules\Create.cshtml" />
     <Content Include="Views\Rules\Details.cshtml" />
+    <Content Include="Views\MessageTypes\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -352,6 +353,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WatchdogDaemon\WatchdogDaemon.csproj">
+      <Project>{a8db6220-0361-47cd-8f1d-2287f74b54cd}</Project>
+      <Name>WatchdogDaemon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WatchdogDatabaseAccessLayer\WatchdogDatabaseAccessLayer.csproj">
       <Project>{b46ab31a-997a-4786-9966-43ffe91b1909}</Project>
       <Name>WatchdogDatabaseAccessLayer</Name>

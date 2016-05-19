@@ -10,6 +10,9 @@ namespace AdministrationPortal.Controllers
 {
     public class MessageTypesController : Controller
     {
+        //TODO: Add fields dynamically clientside. See: http://formvalidation.io/examples/adding-dynamic-field/
+        private static readonly int NUMBER_OF_PARAMETERS = 5;
+
         [Inject]
         public Repository<MessageType> MessageTypeRepository { get; set; }
         [Inject]
@@ -35,8 +38,11 @@ namespace AdministrationPortal.Controllers
         // GET: MessageTypes/Create
         public ActionResult Create()
         {
+            List<string> supportedParameterTypes = WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypesSupported.Types;
+            TempData["TypeList"] = new SelectList(supportedParameterTypes);
+
             var parameters = new List<CreateMessageTypeParameterTypeViewModel>();
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < NUMBER_OF_PARAMETERS; i++)
                 parameters.Add(new CreateMessageTypeParameterTypeViewModel(null,null,false));
             var viewModel = new CreateMessageTypeViewModel(null, null, parameters);
 
@@ -91,6 +97,15 @@ namespace AdministrationPortal.Controllers
             {
                 return HttpNotFound();
             }
+            else if ((messageType.Alerts.Count != 0) || (messageType.Rules.Count != 0) || (messageType.Messages.Count != 0))
+            {
+                TempData["PageMessage"] = "This MessageType is in use and cannot be deleted.";
+                TempData["ButtonState"] = "disabled = \"\"";
+                TempData["MessageTypeInUse"] = "disabled";
+                return View(messageType);
+            }
+            TempData["PageMessage"] = "Are you sure you want to delete this?";
+            TempData["MessageTypeInUse"] = "active";
             return View(messageType);
         }
 
@@ -111,6 +126,53 @@ namespace AdministrationPortal.Controllers
             return RedirectToAction("Index");
         }
 
+        // GET: Rules/Edit/5
+        public ActionResult Edit(int id)
+        {
+            MessageType messageType = MessageTypeRepository.GetById(id);
+            if (messageType == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(messageType);
+        }
+
+        // POST: Rules/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Name, Description")] MessageType messageType)
+        {
+
+            if (ModelState.IsValid)
+            {
+                MessageType messageInDb = MessageTypeRepository.GetById(messageType.Id);
+                if (messageInDb != null)
+                {
+                    messageInDb = mapNewMessageTypeOntoDbMessageType(messageType);
+                }
+
+                MessageTypeRepository.Update(messageInDb);
+                MessageTypeRepository.Save();
+                return RedirectToAction("Index");
+            }
+
+            return View(messageType);
+        }
+
+        private MessageType mapNewMessageTypeOntoDbMessageType(MessageType newMessageType)
+        {
+            MessageType dbMessageType = MessageTypeRepository.GetById(newMessageType.Id);
+            if (dbMessageType != null)
+            {
+                dbMessageType.Name = newMessageType.Name;
+                dbMessageType.Description = newMessageType.Description;
+            }
+            return dbMessageType;
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -119,7 +181,5 @@ namespace AdministrationPortal.Controllers
             }
             base.Dispose(disposing);
         }
-
-        //TODO: reimplement Edit such that a messageType can be edited iff no messages or alerts referencing it exist
     }
 }

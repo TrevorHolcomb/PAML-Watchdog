@@ -106,15 +106,16 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "RuleToCreate")] RuleViewModels ruleViewModel)
         {
-
-            if (ModelState.IsValid)
+            
+            if (ModelState.IsValid) 
             {
-                Rule ruleInDb = RuleRepository.GetById(ruleViewModel.RuleToCreate.Id);
-                if (ruleInDb != null)
+                Rule ruleInDb = mapNewRuleOntoDbRule(ruleViewModel.RuleToCreate);
+
+                if (ruleInDb == null)
                 {
-                    ruleInDb = mapNewEntityOntoDbEntity(ruleViewModel.RuleToCreate);
+                    return HttpNotFound();
                 }
-                
+
                 RuleRepository.Update(ruleInDb);
                 RuleRepository.Save();
                 return RedirectToAction("Index");
@@ -168,7 +169,7 @@ namespace AdministrationPortal.Controllers
 
         //TODO: Think about which of these properties we want to allow the user to edit, and under what conditons.
         //also: change the Edit page to reflect those restrictions.
-        private Rule mapNewEntityOntoDbEntity(Rule newRule)
+        private Rule mapNewRuleOntoDbRule(Rule newRule)
         {
             Rule dbRule = RuleRepository.GetById(newRule.Id);
             if (dbRule != null)

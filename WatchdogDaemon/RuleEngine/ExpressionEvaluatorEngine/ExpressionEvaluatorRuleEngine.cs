@@ -22,24 +22,24 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
 
         private static void RegisterMessageParameters(Message message, IEnumerable<ITypeHandler> typeHandlers, TypeRegistry registry)
         {
-            foreach (var column in message.MessageParameters)
+            foreach (var parameter in message.MessageParameters)
             {
-                RegisterMessageParameter(typeHandlers, column, registry);
+                RegisterMessageParameter(parameter, typeHandlers, registry);
             }
         }
 
-        private static void RegisterMessageParameter(IEnumerable<ITypeHandler> typeHandlers, MessageParameter column, TypeRegistry registry)
+        private static void RegisterMessageParameter(MessageParameter parameter, IEnumerable<ITypeHandler> typeHandlers, TypeRegistry registry)
         {
             foreach (var handler in typeHandlers)
             {
-                if (column.MessageTypeParameterType.Type == handler.GetTypeName())
+                if (parameter.MessageTypeParameterType.Type == handler.GetTypeName())
                 {
-                    handler.RegisterValue(column.MessageTypeParameterType.Name, column.Value, registry);
+                    handler.RegisterValue(parameter.MessageTypeParameterType.Name, parameter.Value, registry);
                     return;
                 }
             }
 
-            throw new KeyNotFoundException("Couldn't find TypeHandler for \"" + column.MessageTypeParameterType.Type + "\"");
+            throw new KeyNotFoundException("Couldn't find TypeHandler for \"" + parameter.MessageTypeParameterType.Type + "\"");
         }
 
         public Alert ConsumeMessage(Rule rule, Message message)
