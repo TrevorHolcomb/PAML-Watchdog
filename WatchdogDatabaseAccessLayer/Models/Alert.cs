@@ -14,15 +14,32 @@ namespace WatchdogDatabaseAccessLayer.Models
     
     public partial class Alert
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Alert()
+        {
+            this.Assignee = "N/A";
+            this.AlertParameters = new HashSet<AlertParameter>();
+        }
+    
         public int Id { get; set; }
-        public string Payload { get; set; }
-        public System.DateTime Timestamp { get; set; }
+        public int Severity { get; set; }
+        public System.DateTime TimeCreated { get; set; }
+        public System.DateTime TimeModified { get; set; }
         public int AlertTypeId { get; set; }
         public int RuleId { get; set; }
         public string Notes { get; set; }
         public AlertStatus Status { get; set; }
+        public string Server { get; set; }
+        public string Origin { get; set; }
+        public string Engine { get; set; }
+        public int MessageTypeId { get; set; }
+        public int AlertParameterId { get; set; }
+        public string Assignee { get; set; }
     
         public virtual AlertType AlertType { get; set; }
         public virtual Rule Rule { get; set; }
+        public virtual MessageType MessageType { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AlertParameter> AlertParameters { get; set; }
     }
 }

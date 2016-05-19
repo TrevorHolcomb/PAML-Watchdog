@@ -17,6 +17,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Message()
         {
+            this.Engine = "N/A";
             this.MessageParameters = new HashSet<MessageParameter>();
         }
     
@@ -25,6 +26,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public bool IsProcessed { get; set; }
         public string Server { get; set; }
         public string Origin { get; set; }
+        public string Engine { get; set; }
     
         public virtual MessageType MessageType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

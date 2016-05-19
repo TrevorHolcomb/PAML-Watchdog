@@ -17,7 +17,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public int Id { get; set; }
         public string Value { get; set; }
         public int MessageId { get; set; }
-        public int MessageTypeColumnId { get; set; }
+        public int MessageTypeParameterId { get; set; }
     
         public virtual Message Message { get; set; }
         public virtual MessageTypeParameterType MessageTypeParameterType { get; set; }

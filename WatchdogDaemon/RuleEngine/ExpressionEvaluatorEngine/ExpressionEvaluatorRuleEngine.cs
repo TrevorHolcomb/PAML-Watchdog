@@ -22,28 +22,30 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
 
         private static void RegisterMessageParameters(Message message, IEnumerable<ITypeHandler> typeHandlers, TypeRegistry registry)
         {
-            foreach (var column in message.MessageParameters)
+            foreach (var parameter in message.MessageParameters)
             {
-                RegisterMessageParameter(typeHandlers, column, registry);
+                RegisterMessageParameter(parameter, typeHandlers, registry);
             }
         }
 
-        private static void RegisterMessageParameter(IEnumerable<ITypeHandler> typeHandlers, MessageParameter column, TypeRegistry registry)
+        private static void RegisterMessageParameter(MessageParameter parameter, IEnumerable<ITypeHandler> typeHandlers, TypeRegistry registry)
         {
             foreach (var handler in typeHandlers)
             {
-                if (column.MessageTypeParameterType.Type == handler.GetTypeName())
+                if (parameter.MessageTypeParameterType.Type == handler.GetTypeName())
                 {
-                    handler.RegisterValue(column.MessageTypeParameterType.Name, column.Value, registry);
+                    handler.RegisterValue(parameter.MessageTypeParameterType.Name, parameter.Value, registry);
                     return;
                 }
             }
 
-            throw new KeyNotFoundException("Couldn't find TypeHandler for \"" + column.MessageTypeParameterType.Type + "\"");
+            throw new KeyNotFoundException("Couldn't find TypeHandler for \"" + parameter.MessageTypeParameterType.Type + "\"");
         }
 
         public Alert ConsumeMessage(Rule rule, Message message)
         {
+            //TODO: enforce rule constraints on messageType
+            //TODO: check if rule.Server, Origin, and Engine are set to 'all', or a specific target
             var registry = RegisterVariables(message);
             var ce = new CompiledExpression(rule.Expression) {TypeRegistry = registry};
             var triggers = ce.Eval() is bool && (bool) ce.Eval();
@@ -55,15 +57,36 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
 
         private static Alert CreateAlert(Rule rule, Message message)
         {
+            ICollection<AlertParameter> alertParams = new List<AlertParameter>();
+
+            foreach (MessageParameter messageParameter in message.MessageParameters){
+                alertParams.Add(new AlertParameter
+                {
+                    MessageId = messageParameter.MessageId,
+                    MessageTypeParameterId = messageParameter.MessageTypeParameterId,
+                    Value = messageParameter.Value,
+                    MessageTypeParameterType = messageParameter.MessageTypeParameterType
+                });
+            }
+
             return new Alert
             {
+                AlertParameters = alertParams,
                 AlertType = rule.AlertType,
                 AlertTypeId = rule.AlertTypeId,
+                Engine = rule.Engine,
+                Notes = " ",
+                Origin = rule.Origin,
                 Rule = rule,
-                RuleId = rule.Id
+                RuleId = rule.Id,
+                Server = rule.Server,
+                Severity = rule.DefaultSeverity,
+                TimeCreated = System.DateTime.Now,
+                TimeModified = System.DateTime.Now,
+                MessageType = message.MessageType,
+                MessageTypeId = message.MessageTypeId,
             };
         }
-
 
     }
 }

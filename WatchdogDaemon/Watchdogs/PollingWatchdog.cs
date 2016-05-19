@@ -37,7 +37,7 @@ namespace WatchdogDaemon.Watchdogs
                     var alert = RuleEngine.ConsumeMessage(rule, message);
                     if (alert != null)
                     {
-                        AlertRepository.Insert(alert);
+                        AlertRepository.Insert(alert);                        
                     }
                 }
 

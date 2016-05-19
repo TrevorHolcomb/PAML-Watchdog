@@ -1,10 +1,7 @@
-﻿using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Web.Mvc;
 using Ninject;
-using WatchdogDatabaseAccessLayer;
+using AdministrationPortal.ViewModels;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 
@@ -20,6 +17,10 @@ namespace AdministrationPortal.Controllers
         public Repository<AlertType> AlertTypeRepository { get; set; }
         [Inject]
         public Repository<MessageType> MessageTypeRepository { get; set; }
+        [Inject]
+        public Repository<EscalationChain> EscalationChainRepository { get; set; }
+        [Inject]
+        public Repository<SupportCategory> SupportCategoryRepository { get; set; }
 
         // GET: Rules
         public ActionResult Index()
@@ -42,10 +43,21 @@ namespace AdministrationPortal.Controllers
         // GET: Rules/Create
         public ActionResult Create()
         {
-            //ViewBag.EscalationChainId = new SelectList(db.EscalationChains, "Id", "Name");
-            ViewBag.AlertTypeId = new SelectList(AlertTypeRepository.Get(), "Id", "Name");
-            ViewBag.MessageTypeId = new SelectList(MessageTypeRepository.Get(), "Id", "Name");
-            return View();
+            //intialize the dropdowns
+            RuleViewModels ruleViewModel = new RuleViewModels();
+            ruleViewModel.RuleOptions = new RuleOptionsViewModel()
+            {
+                AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
+                EscalationChains = new SelectList(EscalationChainRepository.Get(), "Id", "Name"),
+                MessageTypes = new SelectList(MessageTypeRepository.Get(), "Id", "Name"),
+                RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
+                SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name")
+            };
+
+            //sets default values
+            ruleViewModel.RuleToCreate = new Rule();
+
+            return View(ruleViewModel);
         }
 
         
@@ -56,21 +68,9 @@ namespace AdministrationPortal.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(RuleCreateViewModel ruleCreateViewModel)
+        public ActionResult Create(RuleViewModels ruleViewModel)
         {
-            var rule = new Rule
-            {
-                AlertType = AlertTypeRepository.GetById(ruleCreateViewModel.AlertTypeId),
-                AlertTypeId = ruleCreateViewModel.AlertTypeId,
-                Name = ruleCreateViewModel.Name,
-                Description = ruleCreateViewModel.Description,
-                MessageType = MessageTypeRepository.GetById(ruleCreateViewModel.MessageTypeId),
-                Expression = ruleCreateViewModel.RuleTriggerSchema,
-                Origin = ruleCreateViewModel.Origin,
-                Server = ruleCreateViewModel.Server
-            };
-
-            RuleRepository.Insert(rule);
+            RuleRepository.Insert(ruleViewModel.RuleToCreate);
             RuleRepository.Save();
 
             return RedirectToAction("Index");
@@ -85,10 +85,18 @@ namespace AdministrationPortal.Controllers
                 return HttpNotFound();
             }
 
-            //ViewBag.EscalationChainId = new SelectList(db.EscalationChains, "Id", "Name");
-            ViewBag.AlertTypeId = new SelectList(AlertTypeRepository.Get(), "Id", "Name");
-            ViewBag.MessageTypeId = new SelectList(MessageTypeRepository.Get(), "Id", "Name");
-            return View("Create", rule);
+            RuleViewModels ruleViewModel = new RuleViewModels();
+            ruleViewModel.RuleToCreate = rule;
+            ruleViewModel.RuleOptions = new RuleOptionsViewModel
+            {
+                AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
+                EscalationChains = new SelectList(EscalationChainRepository.Get(), "Id", "Name"),
+                MessageTypes = new SelectList(MessageTypeRepository.Get(), "Id", "Name"),
+                RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
+                SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name")
+            };
+
+            return View("Create", ruleViewModel);
         }
 
         // POST: Rules/Edit/5
@@ -96,21 +104,33 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,RuleCategoryId,RuleTriggerSchema,EscalationChainId,AlertTypeId")] Rule rule)
+        public ActionResult Edit([Bind(Include = "RuleToCreate")] RuleViewModels ruleViewModel)
         {
-
-            if (ModelState.IsValid)
+            
+            if (ModelState.IsValid) 
             {
-                RuleRepository.Update(rule);
+                Rule ruleInDb = mapNewRuleOntoDbRule(ruleViewModel.RuleToCreate);
+
+                if (ruleInDb == null)
+                {
+                    return HttpNotFound();
+                }
+
+                RuleRepository.Update(ruleInDb);
                 RuleRepository.Save();
                 return RedirectToAction("Index");
             }
 
-            //ViewBag.EscalationChainId = new SelectList(db.EscalationChains, "Id", "Name");
-            ViewBag.AlertTypeId = new SelectList(AlertTypeRepository.Get(), "Id", "Name");
-            ViewBag.MessageTypeId = new SelectList(MessageTypeRepository.Get(), "Id", "Name");
+            ruleViewModel.RuleOptions = new RuleOptionsViewModel
+            {
+                AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
+                EscalationChains = new SelectList(EscalationChainRepository.Get(), "Id", "Name"),
+                MessageTypes = new SelectList(MessageTypeRepository.Get(), "Id", "Name"),
+                RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
+                SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name")
+            };
 
-            return View("Create", rule);
+            return View("Create", ruleViewModel);
         }
 
         // GET: Rules/Delete/5
@@ -145,6 +165,29 @@ namespace AdministrationPortal.Controllers
                 MessageTypeRepository.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        //TODO: Think about which of these properties we want to allow the user to edit, and under what conditons.
+        //also: change the Edit page to reflect those restrictions.
+        private Rule mapNewRuleOntoDbRule(Rule newRule)
+        {
+            Rule dbRule = RuleRepository.GetById(newRule.Id);
+            if (dbRule != null)
+            {
+                dbRule.AlertTypeId = newRule.AlertTypeId;
+                dbRule.DefaultSeverity = newRule.DefaultSeverity;
+                dbRule.Description = newRule.Description;
+                dbRule.Engine = newRule.Engine;
+                dbRule.EscalationChainId = newRule.EscalationChainId;
+                dbRule.Expression = newRule.Expression;
+                dbRule.MessageTypeId = newRule.MessageTypeId;
+                dbRule.Name = newRule.Name;
+                dbRule.Origin = newRule.Origin;
+                dbRule.RuleCategoryId = newRule.RuleCategoryId;
+                dbRule.Server = newRule.Server;
+                dbRule.SupportCategoryId = newRule.SupportCategoryId;
+            }
+            return dbRule;
         }
     }
 }

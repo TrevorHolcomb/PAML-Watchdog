@@ -44,7 +44,10 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.Parameters[i].Type)
                     <div class="col-md-10">
+                        @*
                         @Html.EditorFor(model => model.Parameters[i].Type, new { htmlAttributes = new { @class = "form-control" } })
+                        *@
+                        @Html.DropDownListFor(model => model.Parameters[i].Type, TempData["TypeList"] as SelectList, htmlAttributes: new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.Parameters[i].Type, "", new { @class = "text-danger" })
                     </div>
                 </div>
