@@ -38,13 +38,13 @@ namespace AdministrationPortal.Controllers
         // GET: MessageTypes/Create
         public ActionResult Create()
         {
-            List<string> supportedParameterTypes = WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypesSupported.Types;
-            TempData["TypeList"] = new SelectList(supportedParameterTypes);
-
             var parameters = new List<CreateMessageTypeParameterTypeViewModel>();
             for (var i = 0; i < NUMBER_OF_PARAMETERS; i++)
                 parameters.Add(new CreateMessageTypeParameterTypeViewModel(null,null,false));
             var viewModel = new CreateMessageTypeViewModel(null, null, parameters);
+
+            var supportedParameterTypes = WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypesSupported.Types;
+            viewModel.SupportedParameterTypes = new SelectList(supportedParameterTypes);
 
             return View(viewModel);
         }
@@ -89,24 +89,20 @@ namespace AdministrationPortal.Controllers
             return View(viewModel);
         }
         
-        // GET: MessageTypes/Delete/5
+        // GET: MessageTypes/Delete/1
         public ActionResult Delete(int id)
         {
             var messageType = MessageTypeRepository.GetById(id);
+            DeleteMessageTypeViewModel viewModel = new DeleteMessageTypeViewModel();
+            viewModel.MessageType = messageType;
+
             if (messageType == null)
             {
                 return HttpNotFound();
             }
-            else if ((messageType.Alerts.Count != 0) || (messageType.Rules.Count != 0) || (messageType.Messages.Count != 0))
-            {
-                TempData["PageMessage"] = "This MessageType is in use and cannot be deleted.";
-                TempData["ButtonState"] = "disabled = \"\"";
-                TempData["MessageTypeInUse"] = "disabled";
-                return View(messageType);
-            }
-            TempData["PageMessage"] = "Are you sure you want to delete this?";
-            TempData["MessageTypeInUse"] = "active";
-            return View(messageType);
+
+            bool notSafeToDelete = (messageType.Alerts.Count != 0) || (messageType.Rules.Count != 0) || (messageType.Messages.Count != 0);
+            return View(viewModel.canDeleteThisMessageType(!notSafeToDelete));
         }
 
         // POST: MessageTypes/Delete/5

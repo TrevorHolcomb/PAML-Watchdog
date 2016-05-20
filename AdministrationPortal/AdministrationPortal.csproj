@@ -178,6 +178,7 @@
     <Compile Include="Controllers\RuleCategoriesController.cs" />
     <Compile Include="Controllers\SupportCategoriesController.cs" />
     <Compile Include="ViewModels\MessageTypes\CreateMessageTypeViewModel.cs" />
+    <Compile Include="ViewModels\MessageTypes\DeleteMessageTypeViewModel.cs" />
     <Compile Include="ViewModels\Rules\RuleCreateViewModel.cs" />
     <Compile Include="ViewModels\EscalationChains\EscalationChainsEditLinkViewModel.cs" />
     <Compile Include="Controllers\HelpController.cs" />
@@ -196,6 +197,7 @@
     <Compile Include="ViewModels\NotifyeesIndexViewModel.cs" />
     <Compile Include="ViewModels\Rules\RuleOptionsViewModel.cs" />
     <Compile Include="ViewModels\Rules\RuleViewModels.cs" />
+    <Compile Include="ViewModels\SupportCategories\DeleteSupportCategoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\font-awesome\css\font-awesome.css" />

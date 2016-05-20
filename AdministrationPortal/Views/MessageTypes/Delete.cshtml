@@ -1,32 +1,30 @@
-﻿@model WatchdogDatabaseAccessLayer.Models.MessageType
+﻿@model AdministrationPortal.ViewModels.MessageTypes.DeleteMessageTypeViewModel
 
-@{
-    ViewBag.Title = "Delete";
-}
+@Model.PageTitle
 
 <h2>Delete</h2>
 
 <h3>
-    @TempData["PageMessage"]
+    @Model.PageHeaderMessage
 </h3>
 <div>
     <h4>MessageType</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.MessageType.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.MessageType.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.MessageType.Description)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.MessageType.Description)
         </dd>
 
         <dt>
@@ -35,7 +33,7 @@
 
         <dd>
             <ul>
-                @foreach (var parameter in Model.MessageTypeParameterTypes)
+                @foreach (var parameter in Model.MessageType.MessageTypeParameterTypes)
                 {
                     <li>
                         @parameter.Name, @parameter.Type
@@ -51,8 +49,7 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default @TempData["MessageTypeInUse"]" @TempData["ButtonState"]/>
-            
+            <input type="submit" value="Delete" class="btn btn-default @Model.ButtonClass()" @Model.ButtonState()/>
             @Html.ActionLink("Back to List", "Index")
         </div>
     }

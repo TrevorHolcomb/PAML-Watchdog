@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using AdministrationPortal.ViewModels.SupportCategories;
 using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
@@ -86,15 +83,20 @@ namespace AdministrationPortal.Controllers
             return View(supportCategory);
         }
 
-        // GET: SupportCategories/Delete/5
+        // GET: SupportCategories/Delete/1
         public ActionResult Delete(int id)
         {
             var supportCategory = SupportCategoryRepository.GetById(id);
+            DeleteSupportCategoryViewModel viewModel = new DeleteSupportCategoryViewModel();
+            viewModel.SupportCategory = supportCategory;
+               
             if (supportCategory == null)
             {
                 return HttpNotFound();
             }
-            return View(supportCategory);
+
+            bool safeToDelete = (supportCategory.Rules.Count == 0);
+            return View(viewModel.canDeleteThisSupportCategory(safeToDelete));
         }
 
         // POST: SupportCategories/Delete/5

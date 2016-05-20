@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using WatchdogDatabaseAccessLayer.Models;
 
 namespace AdministrationPortal.ViewModels.MessageTypes
@@ -11,6 +9,8 @@ namespace AdministrationPortal.ViewModels.MessageTypes
         public string Name { get; set; }
         public string Description { get; set; }
         public List<CreateMessageTypeParameterTypeViewModel> Parameters { get; set; }
+
+        public SelectList SupportedParameterTypes { get; set; }
 
         public CreateMessageTypeViewModel() { }
 
