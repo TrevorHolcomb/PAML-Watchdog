@@ -8,5 +8,10 @@ namespace AdministrationPortal.Controllers
         {
             return View();
         }
+
+        public ActionResult IndexAdmin()
+        {
+            return View();
+        }
     }
 }

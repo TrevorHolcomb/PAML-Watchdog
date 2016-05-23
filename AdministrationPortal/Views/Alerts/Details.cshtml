@@ -1,0 +1,66 @@
+﻿@model WatchdogDatabaseAccessLayer.Models.Alert
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutUserPortal.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Timestamp)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Timestamp)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Payload)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Payload)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AlertType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AlertType.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Rule)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Rule.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Notes)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Notes)
+        </dd>
+
+    </dl>
+</div>
+<div class="col-md-offset-1">
+    @Html.ActionLink("Change Status", "Edit", new { id = (int)Model.Id }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Back to List", "Index", new {ActiveOrArchived = Model.Status.ToString()}, new { @class = "btn btn-default" })
+</div>
