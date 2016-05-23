@@ -36,7 +36,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public int DefaultSeverity { get; set; }
         public int AlertTypeId { get; set; }
         public int EscalationChainId { get; set; }
-        public int MessageTypeId { get; set; }
+        public string MessageTypeName { get; set; }
         public int RuleCategoryId { get; set; }
         public int SupportCategoryId { get; set; }
     
