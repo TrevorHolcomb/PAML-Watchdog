@@ -11,6 +11,13 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
+            @Html.DisplayNameFor(model => model.Severity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Severity)
+        </dd>
+        <dt>
             @Html.DisplayNameFor(model => model.Status)
         </dt>
 
@@ -19,19 +26,19 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Timestamp)
+            @Html.DisplayNameFor(model => model.TimeCreated)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Timestamp)
+            @Html.DisplayFor(model => model.TimeCreated)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Payload)
+            @Html.DisplayNameFor(model => model.TimeModified)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Payload)
+            @Html.DisplayFor(model => model.TimeModified)
         </dd>
 
         <dt>
@@ -48,6 +55,54 @@
 
         <dd>
             @Html.DisplayFor(model => model.Rule.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Server)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Server)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Origin)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Origin)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Engine)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Engine)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MessageType)
+        </dt>
+        
+        <dd>
+            @Html.DisplayFor(model => model.MessageType.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AlertParameters)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AlertParameters)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Assignee)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Assignee)
         </dd>
 
         <dt>
