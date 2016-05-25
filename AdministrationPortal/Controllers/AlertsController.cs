@@ -30,11 +30,10 @@ namespace AdministrationPortal.Controllers
                 case "Acknowledged":
                     var activeAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Acknowledged" || a.Status.ToString() == "UnAcknowledged").OrderBy(a => a.Status).ThenByDescending(a => a.TimeCreated);
                     ViewBag.Active = "UnAcknowledged";
-                    return View(activeAlerts.ToPagedList(No_Of_Page, Size_Of_Page));
+                    return View(new AlertPagingCreateView(activeAlerts.ToPagedList(No_Of_Page, Size_Of_Page), "UnAcknowledged"));
                 default:
                     var archivedAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Resolved").OrderByDescending(a => a.TimeCreated);
-                    ViewBag.Active = "Resolved";
-                    return View(archivedAlerts.ToPagedList(No_Of_Page, Size_Of_Page));
+                    return View(new AlertPagingCreateView(archivedAlerts.ToPagedList(No_Of_Page, Size_Of_Page), "Resolved"));
             }  
         }
 
@@ -92,11 +91,27 @@ namespace AdministrationPortal.Controllers
             if (ModelState.IsValid)
             {
                 Alert alertInDb = AlertRepository.GetById(alert.Id);
+                if (alertInDb != null)
+                {
+                    alertInDb = mapNewAlertOntoDbAlert(alert);
+                }
                 AlertRepository.Update(alertInDb);
                 AlertRepository.Save();
                 return RedirectToAction("Index", new {ActiveOrArchived = alert.Status.ToString() });
             }
             return View(alert);
+        }
+
+        private Alert mapNewAlertOntoDbAlert(Alert alert)
+        {
+            Alert dbAlert = AlertRepository.GetById(alert.Id);
+            if (alert != null)
+            {
+                dbAlert.Severity = alert.Severity;
+                dbAlert.Status = alert.Status;
+                dbAlert.Notes = alert.Notes;
+            }
+            return dbAlert;
         }
 
         // GET: Alerts/Delete/5
