@@ -19,11 +19,10 @@ namespace WatchdogDatabaseAccessLayer.Models
         {
             this.Messages = new HashSet<Message>();
             this.Rules = new HashSet<Rule>();
-            this.MessageTypeParameterTypes = new HashSet<MessageTypeParameterType>();
             this.Alerts = new HashSet<Alert>();
+            this.MessageTypeParameterTypes = new HashSet<MessageTypeParameterType>();
         }
     
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
     
@@ -32,8 +31,8 @@ namespace WatchdogDatabaseAccessLayer.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Rule> Rules { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<MessageTypeParameterType> MessageTypeParameterTypes { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Alert> Alerts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MessageTypeParameterType> MessageTypeParameterTypes { get; set; }
     }
 }
