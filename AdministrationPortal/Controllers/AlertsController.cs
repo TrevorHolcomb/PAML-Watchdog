@@ -30,11 +30,11 @@ namespace AdministrationPortal.Controllers
                 case "Acknowledged":
                     var activeAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Acknowledged" || a.Status.ToString() == "UnAcknowledged").OrderBy(a => a.Status).ThenByDescending(a => a.TimeCreated);
                     ViewBag.Active = "UnAcknowledged";
-                    return View(activeAlerts.ToPagedList(No_Of_Page, Size_Of_Page));
+                    return View(new AlertPagingCreateView(activeAlerts.ToPagedList(No_Of_Page, Size_Of_Page), "Acknowledged"));
                 default:
                     var archivedAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Resolved").OrderByDescending(a => a.TimeCreated);
                     ViewBag.Active = "Resolved";
-                    return View(archivedAlerts.ToPagedList(No_Of_Page, Size_Of_Page));
+                    return View(new AlertPagingCreateView(archivedAlerts.ToPagedList(No_Of_Page, Size_Of_Page), "Resolved"));
             }  
         }
 
@@ -79,7 +79,9 @@ namespace AdministrationPortal.Controllers
             {
                 return HttpNotFound();
             }
-            return View(new AlertCreateViewModelUserPortal(alert));
+            var viewModel = new AlertCreateViewModel(null, null);
+            viewModel.Alert = alert;
+            return View(viewModel);
         }
 
         // POST: Alerts/Edit/5
@@ -87,15 +89,32 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Payload,Timestamp,AlertTypeId,RuleId,Notes,Status")] Alert alert)
+        public ActionResult Edit([Bind(Include = "Id,Severity,TimeCreated,TimeModified,AlertTypeId,RuleId,Notes,Status,Server,Origin,Engine,MessageTypeId,AlertParameters,Assignee")] Alert alert)
         {
             if (ModelState.IsValid)
             {
-                AlertRepository.Update(alert);
+                Alert alertInDb = AlertRepository.GetById(alert.Id);
+                if (alertInDb != null)
+                {
+                    alertInDb = mapNewAlertOntoDbAlert(alert);
+                }
+                AlertRepository.Update(alertInDb);
                 AlertRepository.Save();
                 return RedirectToAction("Index", new {ActiveOrArchived = alert.Status.ToString() });
             }
             return View(alert);
+        }
+
+        private Alert mapNewAlertOntoDbAlert(Alert newAlert)
+        {
+            Alert dbAlert = AlertRepository.GetById(newAlert.Id);
+            if (dbAlert != null)
+            {
+                dbAlert.Status = newAlert.Status;
+                dbAlert.Severity = newAlert.Severity;
+                dbAlert.Notes = newAlert.Notes;
+            }
+            return dbAlert;
         }
 
         // GET: Alerts/Delete/5
