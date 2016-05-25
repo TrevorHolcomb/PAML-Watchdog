@@ -87,12 +87,11 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Severity,TimeCreated,TimeModified,AlertTypeId,RuleId,Notes,Status,Server,Origin,Engine,MessageTypeId,AlertParameterId,Assignee")] Alert alert)
+        public ActionResult Edit([Bind(Include = "Id,Payload,Timestamp,AlertTypeId,RuleId,Notes,Status")] Alert alert)
         {
             if (ModelState.IsValid)
             {
-                Alert alertInDb = AlertRepository.GetById(alert.Id);
-                AlertRepository.Update(alertInDb);
+                AlertRepository.Update(alert);
                 AlertRepository.Save();
                 return RedirectToAction("Index", new {ActiveOrArchived = alert.Status.ToString() });
             }

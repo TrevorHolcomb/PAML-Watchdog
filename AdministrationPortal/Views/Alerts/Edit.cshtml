@@ -1,4 +1,4 @@
-﻿@model AdministrationPortal.ViewModels.Alerts.AlertCreateViewModelUserPortal
+﻿@model AdministrationPortal.ViewModels.Alerts.AlertCreateViewModel
 
 @{
     ViewBag.Title = "Edit";
@@ -17,37 +17,30 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Alert.Id)
-        @Html.HiddenFor(model => model.Alert.MessageType)
+        @Html.HiddenFor(model => model.Alert.AlertTypeId)
+        @Html.HiddenFor(model => model.Alert.RuleId)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Alert.Severity, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Alert.Payload, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Alert.Severity, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Alert.Severity, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(model => model.Alert.Payload, new {@readonly = "readonly", @class="form-control" })
+            </div>
+        </div>
+        
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Alert.Timestamp, "Time", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Alert.Timestamp, new { @readonly = "readonly", @class = "form-control" })
+ 
+                @Html.ValidationMessageFor(model => model.Alert.Timestamp, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Alert.TimeCreated, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Alert.AlertTypeId, "AlertType", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Alert.TimeCreated, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Alert.TimeCreated, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Alert.TimeModified, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Alert.TimeModified, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Alert.TimeModified, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Alert.AlertTypeId, "AlertTypeId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Alert.AlertTypeId, new { htmlAttributes = new { @class = "form-control" } })
-
+                @Html.TextBoxFor(model => model.Alert.AlertTypeId, new { @readonly = "readonly", @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Alert.AlertTypeId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -55,23 +48,13 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Alert.RuleId, "RuleId", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Alert.RuleId, new { htmlAttributes = new { @class = "form-control" } })
-
-
+                @Html.TextBoxFor(model => model.Alert.RuleId, new { @readonly = "readonly", @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Alert.RuleId, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Alert.Notes, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Alert.Notes, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Alert.Notes, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Alert.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Alert.Status, "Change Status", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EnumDropDownListFor(model => model.Alert.Status, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Alert.Status, "", new { @class = "text-danger" })
@@ -79,52 +62,12 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Alert.Server, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Alert.Notes, "Edit Notes", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Alert.Server, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Alert.Server, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Alert.Notes, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Alert.Notes, "", new { @class = "text-danger" })
             </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Alert.Origin, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Alert.Origin, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Alert.Origin, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Alert.Engine, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Alert.Engine, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Alert.Engine, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Alert.MessageTypeId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Alert.MessageTypeId, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Alert.MessageTypeId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Alert.AlertParameterId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Alert.AlertParameterId, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Alert.AlertParameterId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Alert.Assignee, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Alert.Assignee, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Alert.Assignee, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        </div>        
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
