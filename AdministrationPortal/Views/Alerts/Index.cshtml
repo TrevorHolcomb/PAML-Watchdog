@@ -1,4 +1,4 @@
-﻿@model AdministrationPortal.ViewModels.Alerts.AlertPagingCreateView
+﻿@model PagedList.IPagedList<WatchdogDatabaseAccessLayer.Models.Alert>
 @using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" />
 
@@ -37,7 +37,7 @@
        
     </tr>
 
-@foreach (var item in Model.pagedList)
+@foreach (var item in Model)
 {
     string cssClass = "";
     switch (item.Status.ToString())
@@ -80,6 +80,6 @@
 
 </table>
 <br />
-Page @(Model.pagedList.PageCount < Model.pagedList.PageNumber ? 0 : Model.pagedList.PageNumber) of @Model.pagedList.PageCount
-@Html.PagedListPager(Model.pagedList, Page_No => Url.Action("Index",
-    new { ActiveOrArchived = Model.status,  Page_No  })) 
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, Page_No => Url.Action("Index",
+    new { ActiveOrArchived = ViewBag.Active,  Page_No  })) 
