@@ -22,8 +22,8 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     
-                    <li>@Html.ActionLink("Active Alerts", "Index", "Alerts", new { ActiveOrArchived = "UnAcknowledged"}, null)</li>
-                    <li>@Html.ActionLink("Archived", "Index", "Alerts")</li>
+                    <li>@Html.ActionLink("Active Alerts", "Index", "Alerts")</li>
+                    <li>@Html.ActionLink("Archived", "Index", "Alerts", new { ActiveOrArchived = "Resolved" }, null)</li>
                     <li>@Html.ActionLink("AdminPortal", "IndexAdmin", "Home")</li>
                 </ul>
                 

@@ -20,33 +20,62 @@ namespace AdministrationPortal.Controllers
         public Repository<Alert> AlertRepository { private get; set; }
 
         // GET: Alerts
-        public ActionResult Index(string ActiveOrArchived, int? Page_No)
+        public ActionResult Index(string ActiveOrArchived, int? Page_No, String sortOrder)
         {
             int Size_Of_Page = 10;
             int No_Of_Page = (Page_No ?? 1);
+            var alerts = AlertRepository.Get();
+            String status;
+
             switch (ActiveOrArchived)
             {
-                case "UnAcknowledged":
-                case "Acknowledged":
-                    var activeAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Acknowledged" || a.Status.ToString() == "UnAcknowledged").OrderBy(a => a.Status).ThenByDescending(a => a.TimeCreated);
-                    ViewBag.Active = "UnAcknowledged";
-                    return View(new AlertPagingCreateView(activeAlerts.ToPagedList(No_Of_Page, Size_Of_Page), "Acknowledged"));
+                case "Resolved":
+                    alerts = alerts.Where(a => a.Status.ToString() == "Resolved");
+                    status = "Resolved";
+                    break;
                 default:
-                    var archivedAlerts = AlertRepository.Get().Where(a => a.Status.ToString() == "Resolved").OrderByDescending(a => a.TimeCreated);
-                    ViewBag.Active = "Resolved";
-                    return View(new AlertPagingCreateView(archivedAlerts.ToPagedList(No_Of_Page, Size_Of_Page), "Resolved"));
-            }  
+                    alerts = alerts.Where(a => a.Status.ToString() == "Acknowledged" || a.Status.ToString() == "UnAcknowledged");
+                    status = "Acknowledged";
+                    break;
+            }
+
+            switch(sortOrder)
+            {
+                case "Severity":
+                    alerts = alerts.OrderByDescending(a => a.Severity).ThenByDescending(a => a.TimeCreated);
+                    break;
+                case "Time":
+                    alerts = alerts.OrderByDescending(a => a.TimeCreated);
+                    break;
+                case "Origin":
+                    alerts = alerts.OrderBy(a => a.Origin).ThenByDescending(a => a.TimeCreated);
+                    break;
+                case "AlertType":
+                    alerts = alerts.OrderBy(a => a.AlertType.Name);
+                    break;
+                case "Group":
+                    alerts = alerts.OrderBy(a => a.Rule.SupportCategory.Name).ThenByDescending(a => a.Severity);
+                    break;
+                default:
+                    alerts = alerts.OrderBy(a => a.Status).ThenByDescending(a => a.Severity).ThenByDescending(a => a.TimeCreated);
+                    break;
+            }
+
+            return View(new AlertPagingCreateView(alerts.ToPagedList(No_Of_Page, Size_Of_Page), status, sortOrder, No_Of_Page));
         }
 
         // GET: Alerts/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(int id, int PageNo, String sortOrder)
         {
-            var alert = AlertRepository.GetById(id);
-            if (alert == null)
+            var viewModel = new AlertDetailsViewModel(AlertRepository.GetById(id), PageNo, sortOrder);
+            viewModel.Alert = AlertRepository.GetById(id);
+            if (viewModel.Alert == null)
             {
                 return HttpNotFound();
             }
-            return View(alert);
+            viewModel.sortOrder = sortOrder;
+            viewModel.PageNo = PageNo;
+            return View(viewModel);
         }
 
         // GET: Alerts/Create
@@ -72,15 +101,14 @@ namespace AdministrationPortal.Controllers
         }
 
         // GET: Alerts/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int id, int PageNo, String sortOrder)
         {
             var alert = AlertRepository.GetById(id);
             if (alert == null)
             {
                 return HttpNotFound();
             }
-            var viewModel = new AlertCreateViewModel(null, null);
-            viewModel.Alert = alert;
+            var viewModel = new AlertDetailsViewModel(alert, PageNo, sortOrder);
             return View(viewModel);
         }
 
@@ -89,7 +117,7 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Severity,TimeCreated,TimeModified,AlertTypeId,RuleId,Notes,Status,Server,Origin,Engine,MessageTypeId,AlertParameters,Assignee")] Alert alert)
+        public ActionResult Edit([Bind(Include = "Id,Severity,TimeCreated,TimeModified,AlertTypeId,RuleId,Notes,Status,Server,Origin,Engine,MessageTypeName,AlertParameters,Assignee")] Alert alert)
         {
             if (ModelState.IsValid)
             {
