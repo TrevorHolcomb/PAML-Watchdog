@@ -92,10 +92,13 @@
         <dt>
             @Html.DisplayNameFor(model => model.AlertParameters)
         </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AlertParameters)
-        </dd>
+@foreach (var item in Model.AlertParameters)
+{
+    <dd>
+        @Html.DisplayFor(model => item.Value)
+    </dd>
+}
+        
 
         <dt>
             @Html.DisplayNameFor(model => model.Assignee)

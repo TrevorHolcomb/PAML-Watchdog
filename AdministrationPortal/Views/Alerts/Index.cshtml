@@ -16,23 +16,23 @@
 <table class="table table-striped table-hover">
     <tr class="noHover">
         <th>
-            Severity
+            @Html.ActionLink("Severity", "Index", new { ActiveOrArchived = Model.status, sortOrder = "Severity" })    
         </th>
         
         <th>
-            Status
+            @Html.ActionLink("Status", "Index", new { ActiveOrArchived = Model.status, sortOrder = "Status" })
         </th>
 
         <th>
-            AlertType
+            @Html.ActionLink("AlertType", "Index", new { ActiveOrArchived = Model.status, sortOrder = "AlertType" })
         </th>
 
         <th>
-            Time
+            @Html.ActionLink("Time", "Index", new { ActiveOrArchived = Model.status, sortOrder = "Time" })
         </th>
         
         <th>
-            Origin
+            @Html.ActionLink("Origin", "Index", new { ActiveOrArchived = Model.status, sortOrder = "Origin" })
         </th>
        
     </tr>
@@ -40,26 +40,32 @@
 @foreach (var item in Model.pagedList)
 {
     string cssClass = "";
-    switch (item.Status.ToString())
+    switch (item.Severity)
     {
-        case "UnAcknowledged":
+        case 5:
             cssClass = "redTableCell";
             break;
-        case "Resolved":
-            cssClass = "greenTableCell";
+        case 4:
+            cssClass = "orangeTableCell";
+            break;
+        case 3:
+            cssClass = "yellowTableCell";
+            break;
+        case 2:
+            cssClass = "blueTableCell";
             break;
         default:
-            cssClass = "yellowTableCell";
+            cssClass = "greenTableCell";
             break;
     }
 
 
     <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id }))'" >
         
-        <td>
+        <td class="@cssClass">
             @Html.DisplayFor(modelItem => item.Severity)
         </td>
-        <td class="@cssClass">
+        <td >
             @Html.DisplayFor(modelItem => item.Status)
         </td>
 
@@ -82,4 +88,4 @@
 <br />
 Page @(Model.pagedList.PageCount < Model.pagedList.PageNumber ? 0 : Model.pagedList.PageNumber) of @Model.pagedList.PageCount
 @Html.PagedListPager(Model.pagedList, Page_No => Url.Action("Index",
-    new { ActiveOrArchived = Model.status,  Page_No  })) 
+    new { ActiveOrArchived = Model.status,  Page_No, Model.sortOrder  })) 
