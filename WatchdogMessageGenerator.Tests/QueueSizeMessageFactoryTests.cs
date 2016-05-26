@@ -13,7 +13,7 @@ namespace WatchdogMessageGenerator.Tests
         [MemberData(nameof(TestBuildData))]
         public void TestBuild(string[] origins, string[] servers)
         {
-            MessageType queueSizeMessageType = new MessageType() { Id = 0, Name = "queueSizeMessage", Description = "a message indicating the size of some queue" };
+            MessageType queueSizeMessageType = new MessageType() { Name = "queueSizeMessage", Description = "a message indicating the size of some queue" };
             var factory = new QueueSizeMessageFactory(servers, origins, queueSizeMessageType);
             for (var i = 0; i < 10; i++)
             {

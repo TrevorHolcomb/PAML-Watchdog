@@ -25,9 +25,9 @@ namespace AdministrationPortal.Controllers
         }
 
         // GET: MessageTypes/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(string name)
         {
-            var messageType = MessageTypeRepository.GetById(id);
+            var messageType = MessageTypeRepository.GetByName(name);
             if (messageType == null)
             {
                 return HttpNotFound();
@@ -112,7 +112,7 @@ namespace AdministrationPortal.Controllers
         {
             var messageType = MessageTypeRepository.GetById(id);
             var messageTypeParameterTypes =
-                MessageTypeParameterTypeRepository.Get().Where(parameter => parameter.MessageTypeId == messageType.Id);
+                MessageTypeParameterTypeRepository.Get().Where(parameter => parameter.MessageTypeName == messageType.Name);
 
             MessageTypeParameterTypeRepository.DeleteRange(messageTypeParameterTypes);
             MessageTypeParameterTypeRepository.Save();
@@ -144,7 +144,7 @@ namespace AdministrationPortal.Controllers
 
             if (ModelState.IsValid)
             {
-                MessageType messageInDb = MessageTypeRepository.GetById(messageType.Id);
+                MessageType messageInDb = MessageTypeRepository.GetByName(messageType.Name);
                 if (messageInDb != null)
                 {
                     messageInDb = mapNewMessageTypeOntoDbMessageType(messageType);
@@ -160,7 +160,7 @@ namespace AdministrationPortal.Controllers
 
         private MessageType mapNewMessageTypeOntoDbMessageType(MessageType newMessageType)
         {
-            MessageType dbMessageType = MessageTypeRepository.GetById(newMessageType.Id);
+            MessageType dbMessageType = MessageTypeRepository.GetByName(newMessageType.Name);
             if (dbMessageType != null)
             {
                 dbMessageType.Name = newMessageType.Name;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using WatchdogDatabaseAccessLayer.Models;
@@ -22,6 +23,11 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
         public override NotifyeeGroup GetById(int id)
         {
             return _container.NotifyeeGroups.Find(id);
+        }
+
+        public override NotifyeeGroup GetByName(string name)
+        {
+            return _container.NotifyeeGroups.FirstOrDefault(group => group.Name == name);
         }
 
         public override void Insert(NotifyeeGroup model)

@@ -27,6 +27,11 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
             return _ruleCategories.Find(ruleCategory => ruleCategory.Id == id);
         }
 
+        public override RuleCategory GetByName(string name)
+        {
+            return _ruleCategories.FirstOrDefault(category => category.Name == name);
+        }
+
         public override void Insert(RuleCategory model)
         {
             _ruleCategories.Add(model);

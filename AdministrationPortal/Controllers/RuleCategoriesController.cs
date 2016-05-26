@@ -81,6 +81,7 @@ namespace AdministrationPortal.Controllers
             return View(ruleCategory);
         }
 
+        //TODO: don't allow deletion if in use
         // GET: RuleCategories/Delete/5
         public ActionResult Delete(int id)
         {

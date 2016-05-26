@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="DummyData\dbo.MessageType.data.sql" />
     <Content Include="DummyData\dbo.AlertTypes.data.sql" />
     <Content Include="DummyData\dbo.EscalationChainLinks.data.sql" />
     <Content Include="DummyData\dbo.EscalationChains.data.sql" />

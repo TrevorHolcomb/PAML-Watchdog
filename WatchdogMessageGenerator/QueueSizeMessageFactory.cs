@@ -23,7 +23,7 @@ namespace WatchdogMessageGenerator
             var message = new Message
             {
                 Id = GetRandomId(),
-                MessageTypeId = MessageType.Id,
+                MessageTypeName = MessageType.Name,
                 MessageType = MessageType,
                 IsProcessed = false,
                 Origin = GetRandomOrigin(),
@@ -32,7 +32,7 @@ namespace WatchdogMessageGenerator
 
             var dictionary = new Dictionary<string, MessageParameterFactory.RawMessageParameter>
             {
-                {"QueueSize", MessageParameterFactory.WrapParameter("integer", GetRandomQueueSize().ToString())}
+                {MessageType.Name, MessageParameterFactory.WrapParameter("integer", GetRandomQueueSize().ToString())}
             };
 
             message.MessageParameters = MessageParameterFactory.BuildParameters(message, dictionary);

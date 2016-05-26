@@ -28,7 +28,7 @@ namespace WatchdogDaemon.Watchdogs
         protected override void Run(object state)
         {
             var messages = MessageRepository.Get().Where(msg => !msg.IsProcessed).ToList();
-            var rules = RuleRepository.Get();
+            var rules = RuleRepository.Get().ToList();
 
             foreach (var message in messages)
             {

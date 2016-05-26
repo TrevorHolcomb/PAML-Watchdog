@@ -25,9 +25,9 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
             return _messageTypes.ToList();
         }
 
-        public override MessageType GetById(int id)
+        public override MessageType GetByName(string name)
         {
-            return _messageTypes.Find(MessageType => MessageType.Id == id);
+            return _messageTypes.FirstOrDefault(type => type.Name == name);
         }
 
         public override void Insert(MessageType model)

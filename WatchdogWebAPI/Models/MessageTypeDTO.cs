@@ -4,7 +4,6 @@ namespace WatchdogWebAPI.Models
 {
     public class MessageTypeDTO
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Descrpiton { get; set; }
         
@@ -12,9 +11,8 @@ namespace WatchdogWebAPI.Models
 
     public class MessageTypeDetailDTO
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public string Descrpiton { get; set; }
+        public string Description { get; set; }
         public APIMessageParameter[] parameters { get; set; }
     }
 }

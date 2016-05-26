@@ -4,6 +4,7 @@ using Ninject;
 
 namespace WatchdogDatabaseAccessLayer
 {
+    //TODO: finish WatchdogValidator
     public static class WatchdogValidator
     {
 
@@ -46,7 +47,7 @@ namespace WatchdogDatabaseAccessLayer
             return true;
         }
 
-        public static bool validateParameters(APIMessageParameter[] parameters, int messageTypeId)
+        public static bool validateParameters(APIMessageParameter[] parameters, string messageTypeName)
         {
             if (parameters == null)
                 return false;

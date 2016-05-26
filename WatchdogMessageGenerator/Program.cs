@@ -11,8 +11,8 @@ namespace WatchdogMessageGenerator
 {
     internal class Options
     {
-        [Option('i', "id", Required = true, HelpText = "The QueueMessageTypeId to use")]
-        public int QueueSizeMessageTypeId { get; set; }
+        [Option('i', "id", Required = true, HelpText = "The QueueMessageTypeName to use")]
+        public string QueueSizeMessageTypeName { get; set; }
 
         [Option('c', "count", Required = true, HelpText = "The number of messages to create")]
         public int QueueSizeMessageCount { get; set; }
@@ -60,7 +60,7 @@ namespace WatchdogMessageGenerator
                 return;
             }
 
-            var messageType = MessageTypeRepository.GetById(options.QueueSizeMessageTypeId);
+            var messageType = MessageTypeRepository.GetByName(options.QueueSizeMessageTypeName);
 
             var factory = new QueueSizeMessageFactory(new[] {"dev-machine"},
                 new[] {"message-generator"}, messageType);
@@ -76,7 +76,7 @@ namespace WatchdogMessageGenerator
 
         private static void Reset(Options options)
         {
-            DeleteMessageType();
+            DeleteMessageType(options);
 
             MessageTypeRepository.Save();
             MessageTypeParameterTypeRepository.Save();
@@ -87,10 +87,13 @@ namespace WatchdogMessageGenerator
             MessageTypeParameterTypeRepository.Save();
         }
 
-        private static void DeleteMessageType()
+        private static void DeleteMessageType(Options options)
         {
-            var messageTypesToRemove = MessageTypeRepository.Get().Where(messageType => messageType.Name == "QueueSizeUpdate").ToList();
-            var messagesToRemove = MessageRepository.Get().Where(message => messageTypesToRemove.Contains(message.MessageType)).ToList();
+            var messageTypeToRemove = MessageTypeRepository.GetByName(options.QueueSizeMessageTypeName);
+            if (messageTypeToRemove == null)
+                return;
+
+            var messagesToRemove = MessageRepository.Get().Where(message => message.MessageTypeName == messageTypeToRemove.Name).ToList();
             var messageParametersToRemove = messagesToRemove.SelectMany(message => message.MessageParameters).ToList();
             var messageTypeParameterTypesToRemove =
                 messageParametersToRemove.Select(messageParameter => messageParameter.MessageTypeParameterType).ToList();
@@ -98,16 +101,15 @@ namespace WatchdogMessageGenerator
             MessageParameterRepository.DeleteRange(messageParametersToRemove);
             MessageTypeParameterTypeRepository.DeleteRange(messageTypeParameterTypesToRemove);
             MessageRepository.DeleteRange(messagesToRemove);
-            MessageTypeRepository.DeleteRange(messageTypesToRemove);
+            MessageTypeRepository.Delete(messageTypeToRemove);
         }
 
         private static void InsertMessageType(Options options)
         {
             var messageType = new MessageType
             {
-                Name = "QueueSizeUpdate",
+                Name = options.QueueSizeMessageTypeName,
                 Description = "A regular update from the JMS queue containing the number of elements enqueued.",
-                Id = options.QueueSizeMessageTypeId
             };
 
             var messageTypeParameterType = new MessageTypeParameterType
@@ -118,8 +120,15 @@ namespace WatchdogMessageGenerator
             };
 
             messageType.MessageTypeParameterTypes = new List<MessageTypeParameterType> {messageTypeParameterType};
-            MessageTypeRepository.Insert(messageType);
-            MessageTypeParameterTypeRepository.Insert(messageTypeParameterType);
+
+            if (MessageTypeRepository.GetByName(options.QueueSizeMessageTypeName) == null)
+            {
+                MessageTypeRepository.Insert(messageType);
+                MessageTypeParameterTypeRepository.Insert(messageTypeParameterType);
+            } else
+            {
+                System.Console.WriteLine("Skipping insertion of MessageType " + messageType.Name + " since it already exists.");
+            }
         }
     }
 }

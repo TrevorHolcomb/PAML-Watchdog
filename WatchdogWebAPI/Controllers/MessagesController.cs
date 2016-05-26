@@ -36,7 +36,6 @@ namespace WatchdogWebAPI.Controllers
             var messageTypes = from mt in messageTypeRepository.Get().AsQueryable()
                         select new MessageTypeDTO()
                         {
-                            Id = mt.Id,
                             Name = mt.Name,
                             Descrpiton = mt.Description
                         };
@@ -46,11 +45,11 @@ namespace WatchdogWebAPI.Controllers
 
         // GET: api/Messages/id
         [ResponseType(typeof(MessageTypeDetailDTO))]
-        public IHttpActionResult GetMessageType(int id)
+        public IHttpActionResult GetMessageType(string name)
         {
-            MessageType messageType = messageTypeRepository.GetById(id);
+            MessageType messageType = messageTypeRepository.GetByName(name);
 
-            var param = from messageParameter in messageTypeParameterTypeRepository.Get().Where(messageTypeParameter => messageTypeParameter.MessageTypeId == id).AsQueryable()
+            var param = from messageParameter in messageTypeParameterTypeRepository.Get().Where(messageTypeParameter => messageTypeParameter.MessageTypeName == name).AsQueryable()
                         select new APIMessageParameter()
                         {
                             name = messageParameter.Name,
@@ -66,10 +65,9 @@ namespace WatchdogWebAPI.Controllers
 
             MessageTypeDetailDTO toReturn = new MessageTypeDetailDTO
             {
-                Id = messageType.Id,
                 Name = messageType.Name,
-                Descrpiton = messageType.Description,
-                parameters = paramsArray
+                Description = messageType.Description,
+                parameters = paramsArray,
             };
 
             return Ok(toReturn);  
@@ -97,7 +95,7 @@ namespace WatchdogWebAPI.Controllers
                     Server = incomingMessage.Server,
                     //Engine = incomingMessage.Engine,
                     Origin = incomingMessage.Origin,
-                    MessageTypeId = incomingMessage.MessageTypeId,
+                    MessageTypeName = incomingMessage.MessageTypeName,
                     IsProcessed = false
                 };
 
@@ -106,10 +104,10 @@ namespace WatchdogWebAPI.Controllers
                 messageRepository.Save();
 
 
-                MessageType messageType = messageTypeRepository.GetById(incomingMessage.MessageTypeId);
+                MessageType messageType = messageTypeRepository.GetByName(incomingMessage.MessageTypeName);
 
                 //gets the parameter types of inserted message
-                var parameterTypes = messageTypeParameterTypeRepository.Get().Where(messageTypeParameter => messageTypeParameter.MessageTypeId == incomingMessage.MessageTypeId).AsQueryable();
+                var parameterTypes = messageTypeParameterTypeRepository.Get().Where(messageTypeParameter => messageTypeParameter.MessageTypeName == incomingMessage.MessageTypeName).AsQueryable();
                             
 
                 foreach (APIMessageParameter param in incomingMessage.Params){
@@ -136,7 +134,7 @@ namespace WatchdogWebAPI.Controllers
                     Server = incomingMessage.Server,
                     Engine = incomingMessage.Engine,
                     Origin = incomingMessage.Origin,
-                    MessageTypeId = incomingMessage.MessageTypeId,
+                    MessageTypeName = incomingMessage.MessageTypeName,
                     Params = incomingMessage.Params
                 };
 
@@ -172,7 +170,7 @@ namespace WatchdogWebAPI.Controllers
             if (!valid)
                 return false;
 
-            valid = WatchdogValidator.validateParameters(messageToValidate.Params, messageToValidate.MessageTypeId);
+            valid = WatchdogValidator.validateParameters(messageToValidate.Params, messageToValidate.MessageTypeName);
             if (!valid)
                 return false;
 

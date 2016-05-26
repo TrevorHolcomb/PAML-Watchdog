@@ -31,6 +31,11 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
             return _escalationChains.Find(escalationChain => escalationChain.Id == id);
         }
 
+        public override EscalationChain GetByName(string name)
+        {
+            return _escalationChains.FirstOrDefault(chain => chain.Name == name);
+        }
+
         public  override void Insert(EscalationChain model)
         {
             _escalationChains.Add(model);

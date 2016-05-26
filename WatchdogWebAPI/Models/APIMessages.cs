@@ -11,7 +11,7 @@ namespace WatchdogWebAPI.Models
         public string Server { get; set; }
         public string Engine { get; set; }
         public string Origin { get; set; }
-        public int MessageTypeId { get; set; }
+        public string MessageTypeName { get; set; }
         public APIMessageParameter[] Params { get; set; }
     }
 
@@ -20,7 +20,7 @@ namespace WatchdogWebAPI.Models
         public string Server { get; set; }
         public string Engine { get; set; }
         public string Origin { get; set; }
-        public int MessageTypeId { get; set; }
+        public string MessageTypeName { get; set; }
         public APIMessageParameter[] Params { get; set; }
     }
 }

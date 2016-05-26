@@ -31,6 +31,11 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
             return _container.Rules.Find(id);
         }
 
+        public override Rule GetByName(string name)
+        {
+            return _container.Rules.FirstOrDefault(rule => rule.Name == name);
+        }
+
         public override void Insert(Rule model)
         {
             _container.Rules.Add(model);

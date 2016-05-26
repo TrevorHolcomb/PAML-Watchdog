@@ -180,7 +180,7 @@ namespace AdministrationPortal.Controllers
                 dbRule.Engine = newRule.Engine;
                 dbRule.EscalationChainId = newRule.EscalationChainId;
                 dbRule.Expression = newRule.Expression;
-                dbRule.MessageTypeId = newRule.MessageTypeId;
+                dbRule.MessageTypeName = newRule.MessageTypeName;
                 dbRule.Name = newRule.Name;
                 dbRule.Origin = newRule.Origin;
                 dbRule.RuleCategoryId = newRule.RuleCategoryId;

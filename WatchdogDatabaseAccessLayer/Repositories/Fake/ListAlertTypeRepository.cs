@@ -31,6 +31,11 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
             return _alertTypes.Find(alertType => alertType.Id == id);
         }
 
+        public override AlertType GetByName(string name)
+        {
+            return _alertTypes.FirstOrDefault(alertType => alertType.Name == name);
+        }
+
         public  override void Insert(AlertType model)
         {
             _alertTypes.Add(model);

@@ -30,6 +30,11 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
             return _notifyeeGroups.Find(notifyeeGroup => notifyeeGroup.Id == id);
         }
 
+        public override NotifyeeGroup GetByName(string name)
+        {
+            return _notifyeeGroups.FirstOrDefault(group => group.Name == name);
+        }
+
         public override void Insert(NotifyeeGroup model)
         {
             _notifyeeGroups.Add(model);

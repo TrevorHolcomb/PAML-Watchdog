@@ -32,7 +32,7 @@ namespace WatchdogDatabaseAccessLayer
             {
                 MessageTypeParameterType = parameterType,
                 Value = rawParameter.Value,
-                MessageTypeParameterId = parameterType.Id
+                MessageTypeParameterTypeId = parameterType.Id
             };
         }
 
@@ -42,7 +42,7 @@ namespace WatchdogDatabaseAccessLayer
             
             foreach (var parameterType in message.MessageType.MessageTypeParameterTypes)
             {
-                var rawParameter = rawMessageParameters[parameterType.Name];
+                var rawParameter = rawMessageParameters[parameterType.MessageTypeName];
                 var messageParameter = BuildParameter(rawParameter, parameterType);
                 messageParameter.Message = message;
                 messageParameter.MessageId = message.Id;

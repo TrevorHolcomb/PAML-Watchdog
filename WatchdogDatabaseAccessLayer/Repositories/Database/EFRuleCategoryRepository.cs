@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using WatchdogDatabaseAccessLayer.Models;
@@ -22,6 +23,11 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
         public override RuleCategory GetById(int id)
         {
             return _container.RuleCategories.Find(id);
+        }
+
+        public override RuleCategory GetByName(string name)
+        {
+            return _container.RuleCategories.FirstOrDefault(category => category.Name == name);
         }
 
         public override void Insert(RuleCategory model)

@@ -63,7 +63,7 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
                 alertParams.Add(new AlertParameter
                 {
                     MessageId = messageParameter.MessageId,
-                    MessageTypeParameterId = messageParameter.MessageTypeParameterId,
+                    MessageTypeParameterTypeId = messageParameter.MessageTypeParameterTypeId,
                     Value = messageParameter.Value,
                     MessageTypeParameterType = messageParameter.MessageTypeParameterType
                 });
@@ -84,9 +84,7 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
                 TimeCreated = System.DateTime.Now,
                 TimeModified = System.DateTime.Now,
                 MessageType = message.MessageType,
-                MessageTypeId = message.MessageTypeId,
             };
         }
-
     }
 }

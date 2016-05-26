@@ -144,9 +144,7 @@ namespace AdministrationPortal.Tests.Controllers
                 messageTypeRepository.Insert(new MessageType
                 {
                     Name = "RabbitMQ Queue Size Update",
-                    Description = "A message from rabbitmq detailing how many elements are currently enqueued in it.",
-                    Id = 0,
-                    
+                    Description = "A message from rabbitmq detailing how many elements are currently enqueued in it.",                  
                 });
                 messageTypeRepository.Save();
 
@@ -155,7 +153,7 @@ namespace AdministrationPortal.Tests.Controllers
                 controller.MessageTypeRepository = messageTypeRepository;
 
                 // Act
-                var result = controller.Details(0) as ViewResult;
+                var result = controller.Details("RabbitMQ Queue Size Update") as ViewResult;
 
                 // Assert
                 Assert.NotNull(result);

@@ -23,7 +23,17 @@ namespace WatchdogDatabaseAccessLayer.Repositories
 
         public abstract void Dispose();
         public abstract IEnumerable<TEntity> Get();
-        public abstract TEntity GetById(int id);
+
+        /// <summary>
+        /// DO NOT CALL: This class does not have an "Id" property.
+        /// </summary>
+        public virtual TEntity GetById(int id) { throw new NotSupportedException("This class does not have an \"Id\" property."); }
+
+        /// <summary>
+        /// DO NOT CALL: This class does not have a "Name" property.
+        /// </summary>
+        public virtual TEntity GetByName(string name) { throw new NotSupportedException("This class does not have a \"Name\" property."); }
+
         public abstract void Insert(TEntity model);
         public abstract void Delete(TEntity model);
         public abstract void Update(TEntity model);
