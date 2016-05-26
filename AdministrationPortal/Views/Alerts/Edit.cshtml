@@ -1,4 +1,4 @@
-﻿@model AdministrationPortal.ViewModels.Alerts.AlertCreateViewModel
+﻿@model AdministrationPortal.ViewModels.Alerts.AlertDetailsViewModel
 
 @{
     ViewBag.Title = "Edit";
@@ -130,7 +130,7 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-default" />
-                @Html.ActionLink("Back to List", "Index", new { ActiveOrArchived = Model.Alert.Status.ToString() }, new { @class = "btn btn-default" })
+                @Html.ActionLink("Back to List", "Index", new { ActiveOrArchived = Model.Alert.Status.ToString(), Page_No = Model.PageNo, Model.sortOrder }, new { @class = "btn btn-default" })
             </div>
         </div>
     </div>

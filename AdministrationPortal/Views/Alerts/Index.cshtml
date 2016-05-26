@@ -22,7 +22,9 @@
         <th>
             @Html.ActionLink("Status", "Index", new { ActiveOrArchived = Model.status, sortOrder = "Status" })
         </th>
-
+        <th>
+            @Html.ActionLink("Group", "Index", new { ActiveOrArchived = Model.status, sortOrder = "Group" })
+        </th>
         <th>
             @Html.ActionLink("AlertType", "Index", new { ActiveOrArchived = Model.status, sortOrder = "AlertType" })
         </th>
@@ -60,7 +62,7 @@
     }
 
 
-    <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id }))'" >
+    <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id, Model.PageNo, Model.sortOrder}))'" >
         
         <td class="@cssClass">
             @Html.DisplayFor(modelItem => item.Severity)
@@ -68,7 +70,9 @@
         <td >
             @Html.DisplayFor(modelItem => item.Status)
         </td>
-
+        <td>
+            @Html.DisplayFor(modelItem => item.Rule.SupportCategory.Name)
+        </td>
         <td>
             @Html.DisplayFor(modelItem => item.AlertType.Name)
         </td>

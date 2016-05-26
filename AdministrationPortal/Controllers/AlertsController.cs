@@ -29,14 +29,13 @@ namespace AdministrationPortal.Controllers
 
             switch (ActiveOrArchived)
             {
-                case "UnAcknowledged":
-                case "Acknowledged":
-                    alerts = alerts.Where(a => a.Status.ToString() == "Acknowledged" || a.Status.ToString() == "UnAcknowledged");
-                    status = "Acknowledged";
-                    break;
-                default:
+                case "Resolved":
                     alerts = alerts.Where(a => a.Status.ToString() == "Resolved");
                     status = "Resolved";
+                    break;
+                default:
+                    alerts = alerts.Where(a => a.Status.ToString() == "Acknowledged" || a.Status.ToString() == "UnAcknowledged");
+                    status = "Acknowledged";
                     break;
             }
 
@@ -54,23 +53,29 @@ namespace AdministrationPortal.Controllers
                 case "AlertType":
                     alerts = alerts.OrderBy(a => a.AlertType.Name);
                     break;
+                case "Group":
+                    alerts = alerts.OrderBy(a => a.Rule.SupportCategory.Name).ThenByDescending(a => a.Severity);
+                    break;
                 default:
                     alerts = alerts.OrderBy(a => a.Status).ThenByDescending(a => a.Severity).ThenByDescending(a => a.TimeCreated);
                     break;
             }
 
-            return View(new AlertPagingCreateView(alerts.ToPagedList(No_Of_Page, Size_Of_Page), status, sortOrder));
+            return View(new AlertPagingCreateView(alerts.ToPagedList(No_Of_Page, Size_Of_Page), status, sortOrder, No_Of_Page));
         }
 
         // GET: Alerts/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(int id, int PageNo, String sortOrder)
         {
-            var alert = AlertRepository.GetById(id);
-            if (alert == null)
+            var viewModel = new AlertDetailsViewModel(AlertRepository.GetById(id), PageNo, sortOrder);
+            viewModel.Alert = AlertRepository.GetById(id);
+            if (viewModel.Alert == null)
             {
                 return HttpNotFound();
             }
-            return View(alert);
+            viewModel.sortOrder = sortOrder;
+            viewModel.PageNo = PageNo;
+            return View(viewModel);
         }
 
         // GET: Alerts/Create
@@ -96,15 +101,14 @@ namespace AdministrationPortal.Controllers
         }
 
         // GET: Alerts/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int id, int PageNo, String sortOrder)
         {
             var alert = AlertRepository.GetById(id);
             if (alert == null)
             {
                 return HttpNotFound();
             }
-            var viewModel = new AlertCreateViewModel(null, null);
-            viewModel.Alert = alert;
+            var viewModel = new AlertDetailsViewModel(alert, PageNo, sortOrder);
             return View(viewModel);
         }
 

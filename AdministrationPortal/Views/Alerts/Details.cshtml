@@ -1,4 +1,4 @@
-﻿@model WatchdogDatabaseAccessLayer.Models.Alert
+﻿@model AdministrationPortal.ViewModels.Alerts.AlertDetailsViewModel
 
 @{
     ViewBag.Title = "Details";
@@ -11,88 +11,88 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Severity)
+            @Html.DisplayNameFor(model => model.Alert.Severity)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Severity)
+            @Html.DisplayFor(model => model.Alert.Severity)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Status)
+            @Html.DisplayNameFor(model => model.Alert.Status)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Status)
+            @Html.DisplayFor(model => model.Alert.Status)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.TimeCreated)
+            @Html.DisplayNameFor(model => model.Alert.TimeCreated)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.TimeCreated)
+            @Html.DisplayFor(model => model.Alert.TimeCreated)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.TimeModified)
+            @Html.DisplayNameFor(model => model.Alert.TimeModified)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.TimeModified)
+            @Html.DisplayFor(model => model.Alert.TimeModified)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.AlertType)
+            @Html.DisplayNameFor(model => model.Alert.AlertType)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.AlertType.Name)
+            @Html.DisplayFor(model => model.Alert.AlertType.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Rule)
+            @Html.DisplayNameFor(model => model.Alert.Rule)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Rule.Name)
+            @Html.DisplayFor(model => model.Alert.Rule.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Server)
+            @Html.DisplayNameFor(model => model.Alert.Server)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Server)
+            @Html.DisplayFor(model => model.Alert.Server)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Origin)
+            @Html.DisplayNameFor(model => model.Alert.Origin)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Origin)
+            @Html.DisplayFor(model => model.Alert.Origin)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Engine)
+            @Html.DisplayNameFor(model => model.Alert.Engine)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Engine)
+            @Html.DisplayFor(model => model.Alert.Engine)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.MessageType)
+            @Html.DisplayNameFor(model => model.Alert.MessageType)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.MessageType.Name)
+            @Html.DisplayFor(model => model.Alert.MessageType.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.AlertParameters)
+            @Html.DisplayNameFor(model => model.Alert.AlertParameters)
         </dt>
-@foreach (var item in Model.AlertParameters)
+@foreach (var item in Model.Alert.AlertParameters)
 {
     <dd>
         @Html.DisplayFor(model => item.Value)
@@ -101,24 +101,24 @@
         
 
         <dt>
-            @Html.DisplayNameFor(model => model.Assignee)
+            @Html.DisplayNameFor(model => model.Alert.Assignee)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Assignee)
+            @Html.DisplayFor(model => model.Alert.Assignee)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Notes)
+            @Html.DisplayNameFor(model => model.Alert.Notes)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Notes)
+            @Html.DisplayFor(model => model.Alert.Notes)
         </dd>
 
     </dl>
 </div>
 <div class="col-md-offset-1">
-    @Html.ActionLink("Change Status", "Edit", new { id = (int)Model.Id }, new { @class = "btn btn-default" })
-    @Html.ActionLink("Back to List", "Index", new {ActiveOrArchived = Model.Status.ToString()}, new { @class = "btn btn-default" })
+    @Html.ActionLink("Edit Alert", "Edit", new { id = (int)Model.Alert.Id, Model.PageNo, Model.sortOrder }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Back to List", "Index", new {ActiveOrArchived = Model.Alert.Status.ToString(), Page_No = Model.PageNo, sortOrder = Model.sortOrder }, new { @class = "btn btn-default" })
 </div>

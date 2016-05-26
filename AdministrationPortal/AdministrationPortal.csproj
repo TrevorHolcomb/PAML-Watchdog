@@ -186,6 +186,7 @@
     <Compile Include="Controllers\AlertTypesController.cs" />
     <Compile Include="Controllers\RuleCategoriesController.cs" />
     <Compile Include="Controllers\SupportCategoriesController.cs" />
+    <Compile Include="ViewModels\Alerts\AlertDetailsViewModel.cs" />
     <Compile Include="ViewModels\Alerts\AlertPagingCreateView.cs" />
     <Compile Include="ViewModels\MessageTypes\CreateMessageTypeViewModel.cs" />
     <Compile Include="ViewModels\MessageTypes\DeleteMessageTypeViewModel.cs" />
