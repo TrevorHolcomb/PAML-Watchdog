@@ -7,9 +7,8 @@ namespace WatchdogMessageGenerator
     public class QueueSizeMessageFactory : AbstractMessageFactory
     {
         public const int MaxSize = 100000;
-        public QueueSizeMessageFactory(string[] servers, string[] origins, MessageType messageType) : base(servers, origins, messageType)
+        public QueueSizeMessageFactory(Engine engine, string[] servers, string[] origins, MessageType messageType) : base(engine, servers, origins, messageType)
         {
-            
         }
 
         public int GetRandomQueueSize()
@@ -26,15 +25,18 @@ namespace WatchdogMessageGenerator
                 MessageTypeName = MessageType.Name,
                 MessageType = MessageType,
                 IsProcessed = false,
+                Engine = Engine,
+                EngineName = Engine.Name,
                 Origin = GetRandomOrigin(),
-                Server = GetRandomServer(),
+                Server = GetRandomServer()
+                
             };
 
             var dictionary = new Dictionary<string, MessageParameterFactory.RawMessageParameter>
             {
                 {MessageType.Name, MessageParameterFactory.WrapParameter("integer", GetRandomQueueSize().ToString())}
             };
-
+            
             message.MessageParameters = MessageParameterFactory.BuildParameters(message, dictionary);
 
             return message;

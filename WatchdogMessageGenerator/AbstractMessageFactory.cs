@@ -10,14 +10,16 @@ namespace WatchdogMessageGenerator
 {
     public abstract class AbstractMessageFactory
     {
+        public Engine Engine { get; }
         public string[] Servers { get; }
         public string[] Origins { get; }
         public MessageType MessageType { get; set; }
 
         internal readonly Random Random;
 
-        protected AbstractMessageFactory(string[] servers, string[] origins, MessageType messageType)
+        protected AbstractMessageFactory(Engine engine, string[] servers, string[] origins, MessageType messageType)
         {
+            Engine = engine;
             Servers = servers;
             Origins = origins;
             MessageType = messageType;

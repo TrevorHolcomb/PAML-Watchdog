@@ -25,12 +25,12 @@ namespace WatchdogDatabaseAccessLayer.Repositories
         public abstract IEnumerable<TEntity> Get();
 
         /// <summary>
-        /// DO NOT CALL: This class does not have an "Id" property.
+        /// WARNING: Make sure the TEntity held by this Repository does have an "Id" property before you call this 
         /// </summary>
         public virtual TEntity GetById(int id) { throw new NotSupportedException("This class does not have an \"Id\" property."); }
 
         /// <summary>
-        /// DO NOT CALL: This class does not have a "Name" property.
+        /// WARNING: Make sure the TEntity held by this Repository does have a "Name" property before you call this 
         /// </summary>
         public virtual TEntity GetByName(string name) { throw new NotSupportedException("This class does not have a \"Name\" property."); }
 

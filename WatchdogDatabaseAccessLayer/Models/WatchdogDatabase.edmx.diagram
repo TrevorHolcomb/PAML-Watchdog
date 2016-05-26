@@ -4,39 +4,43 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e5e3167d3dc04e51a2d12eb062001561" Name="Diagram1" ZoomLevel="63" DisplayType="false" >
+      <Diagram DiagramId="e5e3167d3dc04e51a2d12eb062001561" Name="Diagram1" ZoomLevel="75" DisplayType="false" >
         <EntityTypeShape EntityType="WatchdogDatabase.Message" Width="3.5" PointX="11.75" PointY="0.5" />
-        <EntityTypeShape EntityType="WatchdogDatabase.MessageType" Width="2.375" PointX="12.25" PointY="3.875" />
+        <EntityTypeShape EntityType="WatchdogDatabase.MessageType" Width="2.375" PointX="11.875" PointY="3.875" />
         <AssociationConnector Association="WatchdogDatabase.MessageMessageType" />
-        <EntityTypeShape EntityType="WatchdogDatabase.EscalationChain" Width="2.375" PointX="3.625" PointY="4.25" />
-        <EntityTypeShape EntityType="WatchdogDatabase.EscalationChainLink" Width="2" PointX="1" PointY="3.625" />
+        <EntityTypeShape EntityType="WatchdogDatabase.EscalationChain" Width="2.375" PointX="3.875" PointY="7.875" FillColor="204, 82, 0" />
+        <EntityTypeShape EntityType="WatchdogDatabase.EscalationChainLink" Width="2" PointX="1" PointY="7.75" FillColor="204, 82, 0" />
         <AssociationConnector Association="WatchdogDatabase.EscalationChainEscalationChainLink" />
-        <EntityTypeShape EntityType="WatchdogDatabase.Notifyee" Width="1.5" PointX="4" PointY="1.75" />
-        <EntityTypeShape EntityType="WatchdogDatabase.NotifyeeGroup" Width="1.5" PointX="1.5" PointY="1" />
+        <EntityTypeShape EntityType="WatchdogDatabase.Notifyee" Width="1.5" PointX="3.875" PointY="5.5" FillColor="204, 82, 0" />
+        <EntityTypeShape EntityType="WatchdogDatabase.NotifyeeGroup" Width="1.5" PointX="1" PointY="5.375" FillColor="204, 82, 0" />
         <AssociationConnector Association="WatchdogDatabase.NotifyeeNotifyeeGroup" />
         <AssociationConnector Association="WatchdogDatabase.EscalationChainLinkNotifyeeGroup" />
-        <EntityTypeShape EntityType="WatchdogDatabase.Rule" Width="1.5" PointX="9.875" PointY="7.5" />
+        <EntityTypeShape EntityType="WatchdogDatabase.Rule" Width="1.5" PointX="10.375" PointY="9" FillColor="0, 204, 133" />
         <AssociationConnector Association="WatchdogDatabase.EscalationChainRule" />
-        <EntityTypeShape EntityType="WatchdogDatabase.AlertType" Width="1.5" PointX="12.75" PointY="10.125" />
+        <EntityTypeShape EntityType="WatchdogDatabase.AlertType" Width="1.5" PointX="13.25" PointY="11.625" FillColor="31, 0, 204" />
         <AssociationConnector Association="WatchdogDatabase.EscalationChainLinkEscalationChainLink" />
         <AssociationConnector Association="WatchdogDatabase.RuleMessageType" />
-        <EntityTypeShape EntityType="WatchdogDatabase.Alert" Width="2.75" PointX="15.75" PointY="7.5" />
+        <EntityTypeShape EntityType="WatchdogDatabase.Alert" Width="2.75" PointX="16.25" PointY="9" FillColor="31, 0, 204" />
         <AssociationConnector Association="WatchdogDatabase.AlertAlertType" />
         <AssociationConnector Association="WatchdogDatabase.AlertTypeRule" />
         <AssociationConnector Association="WatchdogDatabase.AlertRule" />
-        <EntityTypeShape EntityType="WatchdogDatabase.RuleCategory" Width="1.5" PointX="7.75" PointY="8" />
+        <EntityTypeShape EntityType="WatchdogDatabase.RuleCategory" Width="1.5" PointX="8.25" PointY="9.5" FillColor="0, 204, 133" />
         <AssociationConnector Association="WatchdogDatabase.RuleRuleCategory" />
         <EntityTypeShape EntityType="WatchdogDatabase.MessageTypeParameterType" Width="2.75" PointX="17.5" PointY="3.625" IsExpanded="true" />
         <EntityTypeShape EntityType="WatchdogDatabase.MessageParameter" Width="2.375" PointX="17.75" PointY="0.5" />
         <AssociationConnector Association="WatchdogDatabase.MessageMessageColumn" />
-        <AssociationConnector Association="WatchdogDatabase.MessageTypeColumnMessageColumn" />
-        <EntityTypeShape EntityType="WatchdogDatabase.AlertParameter" Width="2.625" PointX="18.75" PointY="9.75" />
+        <EntityTypeShape EntityType="WatchdogDatabase.AlertParameter" Width="2.625" PointX="19.625" PointY="9.5" FillColor="31, 0, 204" />
         <AssociationConnector Association="WatchdogDatabase.AlertParameterMessageTypeParameterType" />
         <AssociationConnector Association="WatchdogDatabase.AlertAlertParameter" />
-        <EntityTypeShape EntityType="WatchdogDatabase.SupportCategory" Width="2" PointX="7.25" PointY="10.25" />
+        <EntityTypeShape EntityType="WatchdogDatabase.SupportCategory" Width="2" PointX="7.75" PointY="11.75" FillColor="0, 204, 133" />
         <AssociationConnector Association="WatchdogDatabase.RuleSupportCategory" />
         <AssociationConnector Association="WatchdogDatabase.AlertMessageType" />
         <AssociationConnector Association="WatchdogDatabase.MessageTypeParameterTypeMessageType" />
+        <EntityTypeShape EntityType="WatchdogDatabase.Engine" Width="1.5" PointX="14.25" PointY="6.875" FillColor="0, 204, 31" />
+        <AssociationConnector Association="WatchdogDatabase.EngineMessage" />
+        <AssociationConnector Association="WatchdogDatabase.EngineRule" />
+        <AssociationConnector Association="WatchdogDatabase.EngineAlert" />
+        <AssociationConnector Association="WatchdogDatabase.MessageParameterMessageTypeParameterType" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

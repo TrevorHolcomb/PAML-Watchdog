@@ -12,6 +12,7 @@ namespace WatchdogDatabaseAccessLayer
         {
             Bind<Repository<Alert>>().To<ListAlertRepository>();
             Bind<Repository<AlertType>>().To<ListAlertTypeRepository>();
+            Bind<Repository<Engine>>().To<ListEngineRepository>();
             Bind<Repository<EscalationChainLink>>().To<ListEscalationChainLinkRepository>();
             Bind<Repository<EscalationChain>>().To<ListEscalationChainRepository>();
             Bind<Repository<MessageParameter>>().To<ListMessageParameterRepository>();

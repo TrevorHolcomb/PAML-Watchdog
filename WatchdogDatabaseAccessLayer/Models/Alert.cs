@@ -31,15 +31,16 @@ namespace WatchdogDatabaseAccessLayer.Models
         public AlertStatus Status { get; set; }
         public string Server { get; set; }
         public string Origin { get; set; }
-        public string Engine { get; set; }
         public string MessageTypeName { get; set; }
         public int AlertParameterId { get; set; }
         public string Assignee { get; set; }
+        public string EngineName { get; set; }
     
         public virtual AlertType AlertType { get; set; }
         public virtual Rule Rule { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AlertParameter> AlertParameters { get; set; }
         public virtual MessageType MessageType { get; set; }
+        public virtual Engine Engine { get; set; }
     }
 }

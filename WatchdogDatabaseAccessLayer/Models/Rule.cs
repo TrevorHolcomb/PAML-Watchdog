@@ -17,7 +17,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Rule()
         {
-            this.Engine = "ALL";
             this.Origin = "ALL";
             this.Server = "ALL";
             this.DefaultSeverity = 1;
@@ -29,7 +28,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string RuleCreator { get; set; }
-        public string Engine { get; set; }
         public string Origin { get; set; }
         public string Server { get; set; }
         public string Expression { get; set; }
@@ -39,6 +37,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public string MessageTypeName { get; set; }
         public int RuleCategoryId { get; set; }
         public int SupportCategoryId { get; set; }
+        public string EngineName { get; set; }
     
         public virtual EscalationChain EscalationChain { get; set; }
         public virtual MessageType MessageType { get; set; }
@@ -48,5 +47,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RuleCategory> RuleCategories { get; set; }
         public virtual SupportCategory SupportCategory { get; set; }
+        public virtual Engine Engine { get; set; }
     }
 }

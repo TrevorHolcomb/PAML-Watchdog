@@ -184,6 +184,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AlertsController.cs" />
     <Compile Include="Controllers\AlertTypesController.cs" />
+    <Compile Include="Controllers\RegisteredEnginesController.cs" />
     <Compile Include="Controllers\RuleCategoriesController.cs" />
     <Compile Include="Controllers\SupportCategoriesController.cs" />
     <Compile Include="ViewModels\Alerts\AlertPagingCreateView.cs" />
@@ -362,6 +363,10 @@
     <Content Include="Views\Alerts\Index.cshtml" />
     <Content Include="Views\Shared\_LayoutUserPortal.cshtml" />
     <Content Include="Views\Home\IndexAdmin.cshtml" />
+    <Content Include="Views\RegisteredEngines\Index.cshtml" />
+    <Content Include="Views\RegisteredEngines\Edit.cshtml" />
+    <Content Include="Views\RegisteredEngines\Delete.cshtml" />
+    <Content Include="Views\RegisteredEngines\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

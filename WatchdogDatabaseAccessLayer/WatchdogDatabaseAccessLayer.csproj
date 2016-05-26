@@ -99,6 +99,9 @@
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\APIMessageParameter.cs" />
+    <Compile Include="Models\Engine.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\EscalationChain.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
@@ -136,8 +139,10 @@
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Repositories\Database\EFAlertParameterRepository.cs" />
+    <Compile Include="Repositories\Database\EFEngineRepository.cs" />
     <Compile Include="Repositories\Database\EFSupportCategoryRepository.cs" />
     <Compile Include="Repositories\Fake\ListAlertParameterRepository.cs" />
+    <Compile Include="Repositories\Fake\ListEngineRepository.cs" />
     <Compile Include="Repositories\Fake\ListSupportCategoryRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Repositories\Database\EFAlertTypeRepository.cs" />

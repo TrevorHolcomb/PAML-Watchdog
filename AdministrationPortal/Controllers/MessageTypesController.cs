@@ -90,9 +90,9 @@ namespace AdministrationPortal.Controllers
         }
         
         // GET: MessageTypes/Delete/1
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
-            var messageType = MessageTypeRepository.GetById(id);
+            var messageType = MessageTypeRepository.GetByName(id);
             DeleteMessageTypeViewModel viewModel = new DeleteMessageTypeViewModel();
             viewModel.MessageType = messageType;
 
@@ -108,9 +108,9 @@ namespace AdministrationPortal.Controllers
         // POST: MessageTypes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(string id)
         {
-            var messageType = MessageTypeRepository.GetById(id);
+            var messageType = MessageTypeRepository.GetByName(id);
             var messageTypeParameterTypes =
                 MessageTypeParameterTypeRepository.Get().Where(parameter => parameter.MessageTypeName == messageType.Name);
 

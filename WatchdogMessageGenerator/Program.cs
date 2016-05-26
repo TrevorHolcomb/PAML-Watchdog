@@ -30,15 +30,19 @@ namespace WatchdogMessageGenerator
 
     public class Program
     {
+        public static Repository<Engine> EngineRepository { get; set; }
         public static Repository<Message> MessageRepository { get; set; }
         public static Repository<MessageType> MessageTypeRepository { get; set; }
         public static Repository<MessageTypeParameterType> MessageTypeParameterTypeRepository { get; set; }
         public static Repository<MessageParameter> MessageParameterRepository { get; set; }
 
+        private const string engineName = "WatchdogMessageGenerator";
+
         public static int Main(string[] args)
         {
             using (IKernel kernel = new StandardKernel(new EFModule()))
             {
+                EngineRepository = kernel.Get<Repository<Engine>>();
                 MessageRepository = kernel.Get<Repository<Message>>();
                 MessageTypeRepository = kernel.Get<Repository<MessageType>>();
                 MessageTypeParameterTypeRepository = kernel.Get<Repository<MessageTypeParameterType>>();
@@ -62,7 +66,9 @@ namespace WatchdogMessageGenerator
 
             var messageType = MessageTypeRepository.GetByName(options.QueueSizeMessageTypeName);
 
-            var factory = new QueueSizeMessageFactory(new[] {"dev-machine"},
+            Engine engine = EngineRepository.GetByName(engineName);
+
+            var factory = new QueueSizeMessageFactory(engine, new[] {"dev-machine"},
                 new[] {"message-generator"}, messageType);
 
             for (var i = 0; i < options.QueueSizeMessageCount; i++)
@@ -77,14 +83,26 @@ namespace WatchdogMessageGenerator
         private static void Reset(Options options)
         {
             DeleteMessageType(options);
-
             MessageTypeRepository.Save();
-            MessageTypeParameterTypeRepository.Save();
+            DeleteEngine();
 
+            InsertEngine();
             InsertMessageType(options);
-
             MessageTypeRepository.Save();
-            MessageTypeParameterTypeRepository.Save();
+        }
+
+        private static void DeleteEngine()
+        {
+            Engine engineToRemove = EngineRepository.GetByName(engineName);
+            if (engineToRemove != null)
+                EngineRepository.Delete(engineToRemove);
+            EngineRepository.Save();
+        }
+
+        private static void InsertEngine()
+        {
+            EngineRepository.Insert(new Engine() { Name = engineName } );
+            EngineRepository.Save();
         }
 
         private static void DeleteMessageType(Options options)
@@ -92,15 +110,14 @@ namespace WatchdogMessageGenerator
             var messageTypeToRemove = MessageTypeRepository.GetByName(options.QueueSizeMessageTypeName);
             if (messageTypeToRemove == null)
                 return;
-
-            var messagesToRemove = MessageRepository.Get().Where(message => message.MessageTypeName == messageTypeToRemove.Name).ToList();
+          
+            var messagesToRemove = messageTypeToRemove.Messages.ToList();
             var messageParametersToRemove = messagesToRemove.SelectMany(message => message.MessageParameters).ToList();
-            var messageTypeParameterTypesToRemove =
-                messageParametersToRemove.Select(messageParameter => messageParameter.MessageTypeParameterType).ToList();
+            var messageTypeParameterTypesToRemove = messageTypeToRemove.MessageTypeParameterTypes.ToList();
 
+            MessageRepository.DeleteRange(messagesToRemove);
             MessageParameterRepository.DeleteRange(messageParametersToRemove);
             MessageTypeParameterTypeRepository.DeleteRange(messageTypeParameterTypesToRemove);
-            MessageRepository.DeleteRange(messagesToRemove);
             MessageTypeRepository.Delete(messageTypeToRemove);
         }
 
