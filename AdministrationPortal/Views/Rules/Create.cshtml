@@ -44,7 +44,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.RuleToCreate.Engine, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.RuleToCreate.Engine, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.RuleToCreate.Engine.Name, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.RuleToCreate.Engine, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -102,7 +102,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.RuleToCreate.MessageType, "Message Type", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.RuleToCreate.MessageTypeId, Model.RuleOptions.MessageTypes, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.RuleToCreate.MessageTypeName, Model.RuleOptions.MessageTypes, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.RuleToCreate.MessageType, "", new { @class = "text-danger" })
             </div>
         </div>

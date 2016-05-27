@@ -49,7 +49,7 @@ namespace AdministrationPortal.Controllers
             {
                 AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
                 EscalationChains = new SelectList(EscalationChainRepository.Get(), "Id", "Name"),
-                MessageTypes = new SelectList(MessageTypeRepository.Get(), "Id", "Name"),
+                MessageTypes = new SelectList(MessageTypeRepository.Get(), "Name", "Name"),
                 RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
                 SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name")
             };

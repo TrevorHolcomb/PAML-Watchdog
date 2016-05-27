@@ -3,7 +3,7 @@ namespace AdministrationPortal.ViewModels
     public class RuleCreateViewModel
     {
         public int AlertTypeId { get; set; }
-        public int MessageTypeId { get; set; }
+        public int MessageTypeName { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public int DefaultSeverity { get; set; }

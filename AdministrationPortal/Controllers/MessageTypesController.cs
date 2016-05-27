@@ -43,8 +43,8 @@ namespace AdministrationPortal.Controllers
                 parameters.Add(new CreateMessageTypeParameterTypeViewModel(null,null,false));
             var viewModel = new CreateMessageTypeViewModel(null, null, parameters);
 
-            var supportedParameterTypes = WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypesSupported.Types;
-            viewModel.SupportedParameterTypes = new SelectList(supportedParameterTypes);
+            viewModel.SupportedParameterTypes = new SelectList(WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypesSupported.Types);
+            viewModel.ParameterName = new List<string>();
 
             return View(viewModel);
         }
@@ -64,28 +64,24 @@ namespace AdministrationPortal.Controllers
                     Description = viewModel.Description,
                 };
 
-                var parameterTypes = new List<MessageTypeParameterType>();
-                foreach (var createParameter in viewModel.Parameters)
-                {
-                    if (createParameter.Enabled)
-                    {
-                        parameterTypes.Add(new MessageTypeParameterType
-                        {
-                            Name = createParameter.Name,
-                            Type = createParameter.Type,
-                            MessageType = messageType,
-                        });
-                    }
-                }
+                List<MessageTypeParameterType> messageTypeParameterType = new List<MessageTypeParameterType>();
 
-                messageType.MessageTypeParameterTypes = parameterTypes;
-                MessageTypeParameterTypeRepository.InsertRange(parameterTypes);
+                for (int i = 0; i < viewModel.ParameterName.Count; i++)
+                    messageTypeParameterType.Add(new MessageTypeParameterType
+                    {
+                        Name = viewModel.ParameterName[i],
+                        Type = viewModel.ParameterType[i]
+                    });
+                
+                messageType.MessageTypeParameterTypes = messageTypeParameterType;
+                MessageTypeParameterTypeRepository.InsertRange(messageTypeParameterType);
                 MessageTypeRepository.Insert(messageType);
                 MessageTypeRepository.Save();
                 MessageTypeParameterTypeRepository.Save();
                 return RedirectToAction("Index");
+                
             }
-
+            viewModel.ParameterName = new List<string>();
             return View(viewModel);
         }
         

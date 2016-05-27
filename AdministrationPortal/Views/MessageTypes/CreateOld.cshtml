@@ -1,0 +1,203 @@
+﻿@model AdministrationPortal.ViewModels.MessageTypes.CreateMessageTypeViewModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "createForm" }))
+{
+@Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>MessageType</h4>
+        <hr />
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*
+            <div id="dynamicFields">
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Parameter Name</label>
+                    <div class="col-md-10">
+                        @Html.Editor("parameterName", new { htmlAttributes = new { @class = "form-control", @name = "name[]" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Type</label>
+                    <div class="col-md-2">
+                        @Html.DropDownList("type", Model.SupportedParameterTypes, htmlAttributes: new { @class = "form-control", @name = "type[]" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button type="button" class="btn btn-default addButton"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-xs-1 control-label">Name(s)</label>
+                <div class="col-xs-6 ">
+                    <input type="text" class="form-control" name="name[]" placeholder="Name" />
+                </div>
+
+                <label class="col-xs-1 control-label">Type(s)</label>
+                <div class="col-xs-6 col-xs-offset-1">
+                    <input type="text" class="form-control" name="type[]" placeholder="Type" />
+                </div>
+
+                <div class="col-xs-1">
+                    <button type="button" class="btn btn-default addButton"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+
+            <!-- The template for adding new field -->
+            <div class="form-group hide" id="fieldTemplate">
+                <div class="col-xs-6 col-xs-offset-1">
+                    <input type="text" class="form-control" name="name[]" placeholder="Name" />
+                </div>
+                <div class="col-xs-6 col-xs-offset-1">
+                    <input type="text" class="form-control" name="type[]" placeholder="Type" />
+                </div>
+                <div class="col-xs-1">
+                    <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+        *@
+
+        <div class="col-md-4">
+            <div class="parameters">
+                <label>Parameters:</label>
+                <div class="form-group multiple-form-group input-group">
+                    <div class="input-group-btn input-group-select">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="concept">Phone</span> <span class="caret"></span>
+                        </button>
+                        @*@Html.DropDownList("type", Model.SupportedParameterTypes, htmlAttributes: new { @class = "dropdown-menu", @name = "type[]", @role = "menu" })*@
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#phone">Phone</a></li>
+                            <li><a href="#fax">Fax</a></li>
+                            <li><a href="#skype">Skype</a></li>
+                            <li><a href="#email">E-mail</a></li>
+                            <li><a href="#www">Web</a></li>
+                        </ul>
+                        <input type="hidden" class="input-group-select-val" name="contacts['type'][]" value="phone">
+                    </div>
+                    <input type="text" name="contacts['value'][]" class="form-control">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-success btn-add">+</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@*
+    @Html.LabelFor(model => model.Parameters[i].Type)
+    <div class="col-md-10">
+        @Html.DropDownListFor(model => model.Parameters[i].Type, Model.SupportedParameterTypes, htmlAttributes: new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Parameters[i].Type, "", new { @class = "text-danger" })
+    </div>
+*@
+
+@*
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <span class="concept">type</span>
+        <span class="caret"></span>
+    </button
+
+    @*
+    <ul class="dropdown-menu" role="menu">
+        @foreach (string typeName in Model.SupportedParameterTypes)
+        {
+            <li><a href="#@typeName">@typeName</a></li>
+        }
+    </ul>
+
+    <input type="hidden" class="input-group-selected-val" name="parameters['type'][]" value="type">
+*@
+
+@*
+
+
+    <div>
+        @for (var i = 0; i < Model.Parameters.Count; i++)
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Parameters[i].Name)
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Parameters[i].Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Parameters[i].Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Parameters[i].Type)
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.Parameters[i].Type, Model.SupportedParameterTypes, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Parameters[i].Type, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Parameters[i].Enabled)
+                <div class="col-md-10">
+                    @Html.CheckBoxFor(model => model.Parameters[i].Enabled, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Parameters[i].Enabled, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+    </div>
+*@
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/codemirror.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/mode/javascript/javascript.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/codemirror.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/addon/lint/json-lint.js"></script>
+    <script src="//ajax.aspnetcdn.com/ajax/jshint/r07/jshint.js"></script>
+    <script src="https://rawgithub.com/zaach/jsonlint/79b553fb65c192add9066da64043458981b3972b/lib/jsonlint.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/addon/lint/lint.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/addon/lint/lint.css">
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+        });
+    </script>
+}

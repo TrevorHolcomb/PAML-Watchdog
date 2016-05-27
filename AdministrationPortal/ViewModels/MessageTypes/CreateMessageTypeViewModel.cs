@@ -6,14 +6,19 @@ namespace AdministrationPortal.ViewModels.MessageTypes
 {
     public class CreateMessageTypeViewModel
     {
+        public readonly int MAX_PARAMETERS = 5;
+
         public string Name { get; set; }
         public string Description { get; set; }
-        public List<CreateMessageTypeParameterTypeViewModel> Parameters { get; set; }
 
         public SelectList SupportedParameterTypes { get; set; }
 
+        public List<string> ParameterType { get; set; }
+        public List<string> ParameterName { get; set; }
+
         public CreateMessageTypeViewModel() { }
 
+        public List<CreateMessageTypeParameterTypeViewModel> Parameters { get; set; }
         public CreateMessageTypeViewModel(string name, string description,
             List<CreateMessageTypeParameterTypeViewModel> parameters)
         {
