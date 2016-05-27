@@ -117,11 +117,13 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Severity,TimeCreated,TimeModified,AlertTypeId,RuleId,Notes,Status,Server,Origin,Engine,MessageTypeName,AlertParameters,Assignee")] Alert alert)
+        public ActionResult Edit(AlertDetailsViewModel alertViewModel)
         {
             if (ModelState.IsValid)
             {
-                Alert alertInDb = AlertRepository.GetById(alert.Id);
+                var alert = alertViewModel.Alert;
+                var alertInDb = AlertRepository.GetById(alert.Id);
+
                 if (alertInDb != null)
                 {
                     alertInDb = mapNewAlertOntoDbAlert(alert);
@@ -130,7 +132,8 @@ namespace AdministrationPortal.Controllers
                 AlertRepository.Save();
                 return RedirectToAction("Index", new {ActiveOrArchived = alert.Status.ToString() });
             }
-            return View(alert);
+
+            return View(alertViewModel);
         }
 
         private Alert mapNewAlertOntoDbAlert(Alert newAlert)
