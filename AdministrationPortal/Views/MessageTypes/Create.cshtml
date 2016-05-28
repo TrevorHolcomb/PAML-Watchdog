@@ -29,30 +29,43 @@
                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
             </div>
         </div>
-        <div class="parameters" data-max=@Model.MAX_PARAMETERS>
-            <div class="form-group multiple-form-group">
-                <label class="control-label col-md-2">Parameter</label>
-                <div class="col-md-10">
-                    <div class="input-group">
 
-                        <div class="input-group-addon input-group-select">
-                            @Html.DropDownListFor(model => model.ParameterType, Model.SupportedParameterTypes, htmlAttributes: new { @name = "type[]", @role = "menu" })
+        <div class="form-group">
+            <div class="control-label col-md-2">
+                @Html.Label("", "Parameters", htmlAttributes: new { @class = "label-parameters" })
+            </div>
+
+            <div class="parameters col-md-10" data-max=@Model.MAX_PARAMETERS>
+                @for (var p = 0; p < Model.MAX_PARAMETERS; p++)
+                {
+                    var style = (Model.ParametersEnabled[p]) ? "" : "display:none";
+                    <div class="multiple-form-group" style="margin-bottom: 15px; @style">
+                        @Html.HiddenFor(model => model.ParametersEnabled[p], htmlAttributes: new { @class = "parameter-enabled" })
+                        <div class="input-group">
+                            
+                            <div class="input-group-addon input-group-select">
+                                @Html.DropDownListFor(model => model.ParameterTypes[p].Value, Model.SupportedParameterTypes, htmlAttributes: new { @role = "menu" })
+                            </div>
+
+                            @Html.EditorFor(model => model.ParameterNames[p].Value, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "parameter name" } })
+
+                            <span class="input-group-addon">
+                                <label class="">Required </label>
+                                @Html.CheckBoxFor(model => model.ParametersRequired[p], htmlAttributes: new { @class = "check-box" })
+                            </span>
+
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-danger btn-remove" >-</button>
+                            </span>
+
                         </div>
-
-                        @for (var i = Model.ParameterName.Count; ;)
-                        {
-                            Model.ParameterName.Add("");
-                            @Html.EditorFor(model => model.ParameterName[i], new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "parameter name" } })
-                            @Html.ValidationMessageFor(model => model.ParameterName[i], "", new { @class = "text-danger" })
-                            break;
-                        }
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-success btn-add">+</button>
-                        </span>
+                        @Html.ValidationMessageFor(model => model.ParameterNames[p], "", new { @class = "text-danger" })
                     </div>
-                </div>
+                }
             </div>
         </div>
+        @Html.ValidationSummary("", htmlAttributes: new { @class = "text-danger" })
+
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -73,51 +86,55 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
+            //Toggle last visible button
+            var makeLastVisibleButtonGreen = function () {
+                var $lastEnabled = $('.parameters').find('.parameter-enabled').filter("[value='True']").last();
+                var $lastButton = $lastEnabled.next('.input-group').find('.btn');
+                $lastButton.removeClass('btn-danger btn-remove');
+                $lastButton.addClass('btn-success btn-add').html('+');
+            }
+
+            //Enables and shows the next invisible control group
             var addFormGroup = function (event) {
                 event.preventDefault();
 
-                var $formGroup = $(this).closest('.form-group');
-                var $multipleFormGroup = $formGroup.closest('.multiple-form-group');
-                var $formGroupClone = $formGroup.clone();
+                var $multipleFormGroup = $(this).closest('.multiple-form-group');
 
-                $(this)
-                    .toggleClass('btn-success btn-add btn-danger btn-remove')
-                    .html('–');
+                //Toggle this button state
+                $(this).toggleClass('btn-success btn-add btn-danger btn-remove').html('–');
 
-                $formGroupClone.find('input').val('');
-                $formGroupClone.find('label').text('');
-                $formGroupClone.insertAfter($formGroup);
+                //Enable the next group
+                var $nextGroup = $multipleFormGroup.next('.multiple-form-group');
+                $nextGroup.find('.parameter-enabled').attr('value', 'True');
+                $nextGroup.find('.btn').toggleClass('btn-success btn-add btn-danger btn-remove').html('+');
+                $nextGroup.fadeIn(300);
 
-                var $lastFormGroup = $multipleFormGroup.siblings('.form-group:last').andSelf();
-                if ($multipleFormGroup.parent('.parameters').data('max') <= countFormGroup($multipleFormGroup)) {
-                    $lastFormGroup.find('.btn-add').attr('disabled', true);
-                }
+                //Always disable the last button
+                var $lastFormGroup = $multipleFormGroup.siblings('.multiple-form-group:last');
+                $lastFormGroup.find('.btn').attr('disabled', true);
+                makeLastVisibleButtonGreen();
             };
 
+            //Disables and hides the selected control group
             var removeFormGroup = function (event) {
                 event.preventDefault();
 
-                var $formGroup = $(this).closest('.form-group');
-                var $multipleFormGroup = $formGroup.closest('.multiple-form-group');
+                var $multipleFormGroup = $(this).closest('.multiple-form-group');
 
-                var $lastFormGroup = $multipleFormGroup.siblings().addBack().filter('.form-group:last');
-                if ($multipleFormGroup.parent('.parameters').data('max') >= countFormGroup($multipleFormGroup)) {
-                    $lastFormGroup.find('.btn-add').attr('disabled', false);
-                }
+                //Always reenable the last button before replacing it
+                var $lastFormGroup = $multipleFormGroup.siblings('.multiple-form-group:last');
+                $lastFormGroup.find('.btn').attr('disabled', false);                   
 
-                var $firstFormGroup = $multipleFormGroup.siblings().addBack().filter('.form-group:first');
-                if ($firstFormGroup.length == $formGroup.length && $firstFormGroup.length == $firstFormGroup.filter($formGroup).length) {
-                    var thisText = $formGroup.find('label').text();
-                    $formGroup.next().find('label').text(thisText);
-                }
-
-                $formGroup.remove();
+                //Disable this group and move it to the bottom
+                $multipleFormGroup.fadeOut(300);
+                $multipleFormGroup.find('.text-box').val('');
+                //$multipleFormGroup.find('.check-box').attr('checked', 'checked');
+                $multipleFormGroup.find('.parameter-enabled').attr('value', 'False');
+                $multipleFormGroup.insertAfter($lastFormGroup);
+                makeLastVisibleButtonGreen();
             };
 
-            var countFormGroup = function ($form) {
-                return $form.siblings('.form-group').addBack().length;
-            };
-
+            makeLastVisibleButtonGreen();
             $(document).on('click', '.btn-add', addFormGroup);
             $(document).on('click', '.btn-remove', removeFormGroup);
         });

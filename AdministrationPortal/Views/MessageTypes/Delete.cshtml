@@ -30,13 +30,13 @@
         <dt>
             Parameters
         </dt>
-
+        <dd>Type, Name, Required</dd>
         <dd>
             <ul>
                 @foreach (var parameter in Model.MessageType.MessageTypeParameterTypes)
                 {
                     <li>
-                        @parameter.Name, @parameter.Type
+                        @parameter.Type, @parameter.Name, @parameter.Required
                     </li>
                 }
             </ul>
