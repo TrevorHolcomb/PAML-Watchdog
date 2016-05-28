@@ -9,7 +9,7 @@ namespace AdministrationPortal.Controllers
             return View();
         }
 
-        public ActionResult IndexAdmin()
+        public ActionResult Dashboard()
         {
             return View();
         }

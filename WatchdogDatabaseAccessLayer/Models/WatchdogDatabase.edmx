@@ -43,10 +43,6 @@
       <End Role="EscalationChainLink" EntitySet="EscalationChainLinks" />
       <End Role="NotifyeeGroup" EntitySet="NotifyeeGroups" />
     </AssociationSet>
-    <AssociationSet Name="EscalationChainRule" Association="WatchdogDatabase.Store.EscalationChainRule">
-      <End Role="Rule" EntitySet="Rules" />
-      <End Role="EscalationChain" EntitySet="EscalationChains" />
-    </AssociationSet>
     <AssociationSet Name="EscalationChainLinkEscalationChainLink" Association="WatchdogDatabase.Store.EscalationChainLinkEscalationChainLink">
       <End Role="EscalationChainLink" EntitySet="EscalationChainLinks" />
       <End Role="EscalationChainLink1" EntitySet="EscalationChainLinks" />
@@ -181,7 +177,6 @@
     <Property Name="Expression" Type="nvarchar(max)" Nullable="false" />
     <Property Name="DefaultSeverity" Type="int" Nullable="false" DefaultValue="1" />
     <Property Name="AlertTypeId" Type="int" Nullable="false" />
-    <Property Name="EscalationChainId" Type="int" Nullable="false" />
     <Property Name="MessageTypeName" Type="nvarchar" Nullable="false" MaxLength="1000" />
     <Property Name="RuleCategoryId" Type="int" Nullable="false" />
     <Property Name="SupportCategoryId" Type="int" Nullable="false" />
@@ -314,18 +309,6 @@
       </Principal>
       <Dependent Role="EscalationChainLink">
         <PropertyRef Name="NotifyeeGroup_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="EscalationChainRule">
-    <End Role="Rule" Type="WatchdogDatabase.Store.Rules" Multiplicity="*" />
-    <End Role="EscalationChain" Type="WatchdogDatabase.Store.EscalationChains" Multiplicity="1" />
-    <ReferentialConstraint>
-      <Principal Role="EscalationChain">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Rule">
-        <PropertyRef Name="EscalationChainId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -585,10 +568,6 @@
             <End Role="NotifyeeGroup" EntitySet="NotifyeeGroups" />
           </AssociationSet>
           <EntitySet Name="Rules" EntityType="WatchdogDatabase.Rule" />
-          <AssociationSet Name="EscalationChainRule" Association="WatchdogDatabase.EscalationChainRule">
-            <End Role="Rule" EntitySet="Rules" />
-            <End Role="EscalationChain" EntitySet="EscalationChains" />
-          </AssociationSet>
           <EntitySet Name="AlertTypes" EntityType="WatchdogDatabase.AlertType" />
           <AssociationSet Name="EscalationChainLinkEscalationChainLink" Association="WatchdogDatabase.EscalationChainLinkEscalationChainLink">
             <End Role="EscalationChainLink" EntitySet="EscalationChainLinks" />
@@ -707,7 +686,6 @@
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="Description" Type="String" Nullable="true" />
           <NavigationProperty Name="EscalationChainRootLink" Relationship="WatchdogDatabase.EscalationChainEscalationChainLink" FromRole="EscalationChain" ToRole="EscalationChainLink" />
-          <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.EscalationChainRule" FromRole="EscalationChain" ToRole="Rule" />
         </EntityType>
         <EntityType Name="EscalationChainLink">
           <Key>
@@ -766,7 +744,6 @@
           <Property Name="Origin" Type="String" Nullable="false" DefaultValue="ALL" annotation:StoreGeneratedPattern="None" />
           <Property Name="Server" Type="String" Nullable="false" DefaultValue="ALL" annotation:StoreGeneratedPattern="None" />
           <Property Name="Expression" Type="String" Nullable="false" />
-          <NavigationProperty Name="EscalationChain" Relationship="WatchdogDatabase.EscalationChainRule" FromRole="Rule" ToRole="EscalationChain" />
           <NavigationProperty Name="MessageType" Relationship="WatchdogDatabase.RuleMessageType" FromRole="Rule" ToRole="MessageType" />
           <NavigationProperty Name="AlertType" Relationship="WatchdogDatabase.AlertTypeRule" FromRole="Rule" ToRole="AlertType" />
           <NavigationProperty Name="Alerts" Relationship="WatchdogDatabase.AlertRule" FromRole="Rule" ToRole="Alert" />
@@ -774,25 +751,12 @@
           <NavigationProperty Name="SupportCategory" Relationship="WatchdogDatabase.RuleSupportCategory" FromRole="Rule" ToRole="SupportCategory" />
           <Property Name="DefaultSeverity" Type="Int32" Nullable="false" DefaultValue="1" annotation:StoreGeneratedPattern="None" xmlns="http://schemas.microsoft.com/ado/2009/11/edm" />
           <Property Name="AlertTypeId" Type="Int32" Nullable="false" />
-          <Property Name="EscalationChainId" Type="Int32" Nullable="false" />
           <Property Name="MessageTypeName" Type="String" Nullable="false" MaxLength="1000" />
           <Property Name="RuleCategoryId" Type="Int32" Nullable="false" />
           <Property Name="SupportCategoryId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Engine" Relationship="WatchdogDatabase.EngineRule" FromRole="Rule" ToRole="Engine" />
           <Property Name="EngineName" Type="String" Nullable="false" MaxLength="1000" />
         </EntityType>
-        <Association Name="EscalationChainRule">
-          <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="*" />
-          <End Type="WatchdogDatabase.EscalationChain" Role="EscalationChain" Multiplicity="1" />
-          <ReferentialConstraint>
-            <Principal Role="EscalationChain">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Rule">
-              <PropertyRef Name="EscalationChainId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="AlertType">
           <Key>
             <PropertyRef Name="Id" />
@@ -1144,7 +1108,6 @@
           <ScalarProperty Name="Expression" ColumnName="Expression" />
           <ScalarProperty Name="DefaultSeverity" ColumnName="DefaultSeverity" />
           <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />
-          <ScalarProperty Name="EscalationChainId" ColumnName="EscalationChainId" />
           <ScalarProperty Name="MessageTypeName" ColumnName="MessageTypeName" />
           <ScalarProperty Name="RuleCategoryId" ColumnName="RuleCategoryId" />
           <ScalarProperty Name="SupportCategoryId" ColumnName="SupportCategoryId" />

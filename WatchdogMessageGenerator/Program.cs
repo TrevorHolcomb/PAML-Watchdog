@@ -57,7 +57,7 @@ namespace WatchdogMessageGenerator
 
         private static void GenerateMessages(Options options)
         {
-        
+
             if (options.Reset)
             {
                 Reset(options);
@@ -110,7 +110,7 @@ namespace WatchdogMessageGenerator
             var messageTypeToRemove = MessageTypeRepository.GetByName(options.QueueSizeMessageTypeName);
             if (messageTypeToRemove == null)
                 return;
-          
+
             var messagesToRemove = messageTypeToRemove.Messages.ToList();
             var messageParametersToRemove = messagesToRemove.SelectMany(message => message.MessageParameters).ToList();
             var messageTypeParameterTypesToRemove = messageTypeToRemove.MessageTypeParameterTypes.ToList();

@@ -1,64 +1,126 @@
-﻿@model WatchdogDatabaseAccessLayer.Models.Rule
+﻿@using AdministrationPortal.Helpers
+@model WatchdogDatabaseAccessLayer.Models.Rule
 
 @{
     ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Delete</h2>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
+
+<div class="form-horizontal">
     <h4>Rule</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+    <hr/>
 
-        <dd>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name, "Rule Name", htmlAttributes: new {@class = "control-label col-md-2"})
+        <div class="col-md-10">
             @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.RuleTriggerSchema)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.RuleTriggerSchema)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.EscalationChainId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.EscalationChainId)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Origin)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Origin)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Server)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Server)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
         </div>
-    }
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Description, htmlAttributes: new {@class = "control-label col-md-2"})
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.Description)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.RuleCreator, "Created by", htmlAttributes: new {@class = "control-label col-md-2"})
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.RuleCreator)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Engine, htmlAttributes: new {@class = "control-label col-md-2"})
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.EngineName)
+
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Origin, htmlAttributes: new {@class = "control-label col-md-2"})
+        <div class="col-md-10">
+
+            @Html.DisplayFor(model => model.Origin)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Server, htmlAttributes: new {@class = "control-label col-md-2"})
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.Server)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Expression, htmlAttributes: new {@class = "control-label col-md-2"})
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.Expression)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.DefaultSeverity, htmlAttributes: new {@class = "control-label col-md-2"})
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.DefaultSeverity)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.AlertTypeId, "Alert Type", htmlAttributes: new {@class = "control-label col-md-2"})
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.AlertType.Name)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.MessageTypeName, "Message Type", htmlAttributes: new {@class = "control-label col-md-2"})
+        <div class="col-md-10">
+
+            @Html.DisplayFor(model => model.MessageTypeName)
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.RuleCategories, "RuleCategories", htmlAttributes: new {@class = "control-label col-md-2"})
+        <div class="col-md-10">
+            <ul>
+                @foreach (var cat in Model.RuleCategories)
+                {
+                    <li>@cat.Name</li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.SupportCategoryId, "Support Category", htmlAttributes: new {@class = "control-label col-md-2"})
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.SupportCategory.Name)
+        </div>
+    </div>
 </div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-actions no-color">
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        @Html.ActionLink("Back to List", "Index") |
+        @Html.ActionLink("Edit", "Edit", new { id = 1 })
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval") |
+    
+}
