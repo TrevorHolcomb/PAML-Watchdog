@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using WatchdogDatabaseAccessLayer.Models;
 
 namespace AdministrationPortal.ViewModels.Rules
 {
-    public class RuleCreateViewModel
+    public class RuleEditViewModel
     {
+        public int Id { get; set; }
         public int AlertTypeId { get; set; }
         public string MessageTypeName { get; set; }
         public string Name { get; set; }
@@ -23,20 +21,12 @@ namespace AdministrationPortal.ViewModels.Rules
 
         public RuleOptionsViewModel RuleOptions { get; set; }
 
-        public void Map(Rule rule, IEnumerable<RuleCategory> ruleCategories)
+        public void Map(Rule rule)
         {
-            rule.AlertTypeId = AlertTypeId;
-            rule.DefaultSeverity = DefaultSeverity;
-            rule.Description = Description;
-            rule.EngineName = Engine;
-            rule.Expression = Expression;
-            rule.MessageTypeName = MessageTypeName;
             rule.Name = Name;
-            rule.Origin = Origin;
-            rule.RuleCreator = RuleCreator;
-            rule.Server = Server;
-            rule.SupportCategoryId = SupportCategoryId;
-            rule.RuleCategories = ruleCategories.Where(e => RuleCategoryIds.Contains(e.Id)).ToList();
+            rule.Description = Description;
+            rule.Expression = Expression;
         }
     }
+
 }

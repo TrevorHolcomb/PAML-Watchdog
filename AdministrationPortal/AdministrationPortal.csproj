@@ -191,6 +191,7 @@
     <Compile Include="ViewModels\Alerts\AlertPagingCreateView.cs" />
     <Compile Include="ViewModels\MessageTypes\CreateMessageTypeViewModel.cs" />
     <Compile Include="ViewModels\MessageTypes\DeleteMessageTypeViewModel.cs" />
+    <Compile Include="ViewModels\Rules\RuleEditViewModel.cs" />
     <Compile Include="ViewModels\Rules\RuleCreateViewModel.cs" />
     <Compile Include="ViewModels\EscalationChains\EscalationChainsEditLinkViewModel.cs" />
     <Compile Include="Controllers\HelpController.cs" />
@@ -208,7 +209,6 @@
     <Compile Include="ViewModels\EscalationChains\EscalationChainLinksCreateViewModel.cs" />
     <Compile Include="ViewModels\NotifyeesIndexViewModel.cs" />
     <Compile Include="ViewModels\Rules\RuleOptionsViewModel.cs" />
-    <Compile Include="ViewModels\Rules\RuleViewModels.cs" />
     <Compile Include="ViewModels\SupportCategories\DeleteSupportCategoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -313,8 +313,6 @@
     <Content Include="Views\MessageTypes\Delete.cshtml" />
     <Content Include="Views\MessageTypes\Details.cshtml" />
     <Content Include="Views\MessageTypes\Index.cshtml" />
-    <Content Include="Views\Rules\CreateOld.cshtml" />
-    <Content Include="Views\Rules\Delete.cshtml" />
     <Content Include="Views\Rules\Index.cshtml" />
     <Content Include="Views\AlertTypes\Create.cshtml" />
     <Content Include="Views\AlertTypes\Delete.cshtml" />
@@ -353,9 +351,7 @@
     <Content Include="Views\SupportCategories\Details.cshtml" />
     <Content Include="Views\SupportCategories\Delete.cshtml" />
     <Content Include="Views\SupportCategories\Edit.cshtml" />
-    <Content Include="Views\Rules\Edit.cshtml" />
     <Content Include="Views\Rules\Create.cshtml" />
-    <Content Include="Views\Rules\Details.cshtml" />
     <Content Include="Views\MessageTypes\Edit.cshtml" />
     <Content Include="Views\Alerts\Create.cshtml" />
     <Content Include="Views\Alerts\Delete.cshtml" />
@@ -363,12 +359,15 @@
     <Content Include="Views\Alerts\Edit.cshtml" />
     <Content Include="Views\Alerts\Index.cshtml" />
     <Content Include="Views\Shared\_LayoutUserPortal.cshtml" />
-    <Content Include="Views\Home\IndexAdmin.cshtml" />
+    <Content Include="Views\Home\Dashboard.cshtml" />
     <Content Include="Views\RegisteredEngines\Index.cshtml" />
     <Content Include="Views\RegisteredEngines\Edit.cshtml" />
     <Content Include="Views\RegisteredEngines\Delete.cshtml" />
     <Content Include="Views\RegisteredEngines\Create.cshtml" />
     <Content Include="Views\MessageTypes\Create.cshtml" />
+    <Content Include="Views\Rules\Edit.cshtml" />
+    <Content Include="Views\Rules\Details.cshtml" />
+    <Content Include="Views\Rules\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
