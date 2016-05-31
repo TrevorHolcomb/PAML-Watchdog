@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e5e3167d3dc04e51a2d12eb062001561" Name="Diagram1" ZoomLevel="75" DisplayType="false" >
+      <Diagram DiagramId="e5e3167d3dc04e51a2d12eb062001561" Name="Diagram1" ZoomLevel="50" DisplayType="false" >
         <EntityTypeShape EntityType="WatchdogDatabase.Message" Width="3.5" PointX="11.75" PointY="0.5" />
         <EntityTypeShape EntityType="WatchdogDatabase.MessageType" Width="2.375" PointX="11.875" PointY="3.875" />
         <AssociationConnector Association="WatchdogDatabase.MessageMessageType" />
@@ -40,6 +40,9 @@
         <AssociationConnector Association="WatchdogDatabase.EngineRule" />
         <AssociationConnector Association="WatchdogDatabase.EngineAlert" />
         <AssociationConnector Association="WatchdogDatabase.MessageParameterMessageTypeParameterType" />
+        <EntityTypeShape EntityType="WatchdogDatabase.UnvalidatedMessage" Width="2.25" PointX="4" PointY="1" />
+        <EntityTypeShape EntityType="WatchdogDatabase.UnvalidatedMessageParameter" Width="2.375" PointX="7.5" PointY="1.125" />
+        <AssociationConnector Association="WatchdogDatabase.MessageMessageColumn1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

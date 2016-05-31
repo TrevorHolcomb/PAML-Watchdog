@@ -21,6 +21,8 @@
     <EntitySet Name="AlertParameters" EntityType="WatchdogDatabase.Store.AlertParameters" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="SupportCategories" EntityType="WatchdogDatabase.Store.SupportCategories" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Engines" EntityType="WatchdogDatabase.Store.Engines" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="UnvalidatedMessages" EntityType="WatchdogDatabase.Store.UnvalidatedMessages" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="UnvalidatedMessageParameters" EntityType="WatchdogDatabase.Store.UnvalidatedMessageParameters" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="NotifyeeNotifyeeGroup" EntityType="WatchdogDatabase.Store.NotifyeeNotifyeeGroup" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="RuleRuleCategory" EntityType="WatchdogDatabase.Store.RuleRuleCategory" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="MessageMessageType" Association="WatchdogDatabase.Store.MessageMessageType">
@@ -110,6 +112,10 @@
     <AssociationSet Name="MessageParameterMessageTypeParameterType" Association="WatchdogDatabase.Store.MessageParameterMessageTypeParameterType">
       <End Role="MessageParameter" EntitySet="MessageParameters" />
       <End Role="MessageTypeParameterType" EntitySet="MessageTypeParameterTypes" />
+    </AssociationSet>
+    <AssociationSet Name="MessageMessageColumn1" Association="WatchdogDatabase.Store.MessageMessageColumn1">
+      <End Role="Message1" EntitySet="UnvalidatedMessages" />
+      <End Role="MessageParameter1" EntitySet="UnvalidatedMessageParameters" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Messages">
@@ -259,6 +265,25 @@
       <PropertyRef Name="Name" />
     </Key>
     <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="1000" />
+  </EntityType>
+  <EntityType Name="UnvalidatedMessages">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MessageTypeName" Type="nvarchar" Nullable="false" MaxLength="1000" />
+    <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="EngineName" Type="nvarchar" Nullable="false" MaxLength="1000" />
+    <Property Name="IsProcessed" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UnvalidatedMessageParameters">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Value" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="MessageId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="NotifyeeNotifyeeGroup">
     <Key>
@@ -492,6 +517,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="MessageMessageColumn1">
+    <End Role="Message1" Type="WatchdogDatabase.Store.UnvalidatedMessages" Multiplicity="1" />
+    <End Role="MessageParameter1" Type="WatchdogDatabase.Store.UnvalidatedMessageParameters" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Message1">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="MessageParameter1">
+        <PropertyRef Name="MessageId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_NotifyeeNotifyeeGroup_Notifyee">
     <End Role="Notifyee" Type="WatchdogDatabase.Store.Notifyees" Multiplicity="1" />
     <End Role="NotifyeeNotifyeeGroup" Type="WatchdogDatabase.Store.NotifyeeNotifyeeGroup" Multiplicity="*" />
@@ -639,6 +676,12 @@
           <AssociationSet Name="MessageParameterMessageTypeParameterType" Association="WatchdogDatabase.MessageParameterMessageTypeParameterType">
             <End Role="MessageParameter" EntitySet="MessageParameters" />
             <End Role="MessageTypeParameterType" EntitySet="MessageTypeParameterTypes" />
+          </AssociationSet>
+          <EntitySet Name="UnvalidatedMessages" EntityType="WatchdogDatabase.UnvalidatedMessage" />
+          <EntitySet Name="UnvalidatedMessageParameters" EntityType="WatchdogDatabase.UnvalidatedMessageParameter" />
+          <AssociationSet Name="MessageMessageColumn1" Association="WatchdogDatabase.MessageMessageColumn1">
+            <End Role="Message1" EntitySet="UnvalidatedMessages" />
+            <End Role="MessageParameter1" EntitySet="UnvalidatedMessageParameters" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Message">
@@ -1035,6 +1078,39 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="UnvalidatedMessage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MessageTypeName" Type="String" Nullable="false" MaxLength="1000" />
+          <Property Name="Server" Type="String" Nullable="false" />
+          <Property Name="Origin" Type="String" Nullable="false" />
+          <Property Name="EngineName" Type="String" Nullable="false" MaxLength="1000" />
+          <Property Name="IsProcessed" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="MessageParameters" Relationship="WatchdogDatabase.MessageMessageColumn1" FromRole="Message1" ToRole="MessageParameter1" />
+        </EntityType>
+        <EntityType Name="UnvalidatedMessageParameter">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Value" Type="String" Nullable="false" />
+          <Property Name="MessageId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Message" Relationship="WatchdogDatabase.MessageMessageColumn1" FromRole="MessageParameter1" ToRole="Message1" />
+        </EntityType>
+        <Association Name="MessageMessageColumn1">
+          <End Type="WatchdogDatabase.UnvalidatedMessage" Role="Message1" Multiplicity="1" />
+          <End Type="WatchdogDatabase.UnvalidatedMessageParameter" Role="MessageParameter1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Message1">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MessageParameter1">
+              <PropertyRef Name="MessageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1198,6 +1274,27 @@
       <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.Engine)">
         <MappingFragment StoreEntitySet="Engines">
           <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UnvalidatedMessages">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.UnvalidatedMessage)">
+        <MappingFragment StoreEntitySet="UnvalidatedMessages">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="MessageTypeName" ColumnName="MessageTypeName" />
+          <ScalarProperty Name="Server" ColumnName="Server" />
+          <ScalarProperty Name="Origin" ColumnName="Origin" />
+          <ScalarProperty Name="EngineName" ColumnName="EngineName" />
+          <ScalarProperty Name="IsProcessed" ColumnName="IsProcessed" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UnvalidatedMessageParameters">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.UnvalidatedMessageParameter)">
+        <MappingFragment StoreEntitySet="UnvalidatedMessageParameters">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="MessageId" ColumnName="MessageId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

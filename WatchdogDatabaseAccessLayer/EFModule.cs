@@ -25,6 +25,8 @@ namespace WatchdogDatabaseAccessLayer
             Bind<Repository<RuleCategory>>().To<EFRuleCategoryRepository>();
             Bind<Repository<Rule>>().To<EFRuleRepository>();
             Bind<Repository<SupportCategory>>().To<EFSupportCategoryRepository>();
+            Bind<Repository<UnvalidatedMessage>>().To<EFUnvalidatedMessageRepository>();
+            Bind<Repository<UnvalidatedMessageParameter>>().To<EFUnvalidatedMessageParameterRepository>();
         }
     }
 }

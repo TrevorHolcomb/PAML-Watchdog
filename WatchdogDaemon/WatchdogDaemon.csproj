@@ -94,12 +94,14 @@
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\IntegerTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\TypeHandlerList.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypesSupported.cs" />
+    <Compile Include="Watchdogs\AbstractValidator.cs" />
     <Compile Include="Watchdogs\AbstractWatchdog.cs" />
     <Compile Include="RuleEngine\IRuleEngine.cs" />
     <Compile Include="Watchdogs\PollingWatchdog.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\ExpressionEvaluatorRuleEngine.cs" />
+    <Compile Include="Watchdogs\WatchdogValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

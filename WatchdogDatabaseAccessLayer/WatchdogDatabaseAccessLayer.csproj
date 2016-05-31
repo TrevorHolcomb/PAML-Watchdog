@@ -138,8 +138,16 @@
     <Compile Include="Models\SupportCategory.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\UnvalidatedMessage.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UnvalidatedMessageParameter.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Repositories\Database\EFAlertParameterRepository.cs" />
     <Compile Include="Repositories\Database\EFEngineRepository.cs" />
+    <Compile Include="Repositories\Database\EFUnvalidatedMessageParameterRepository.cs" />
+    <Compile Include="Repositories\Database\EFUnvalidatedMessageRepository.cs" />
     <Compile Include="Repositories\Database\EFSupportCategoryRepository.cs" />
     <Compile Include="Repositories\Fake\ListAlertParameterRepository.cs" />
     <Compile Include="Repositories\Fake\ListEngineRepository.cs" />
@@ -186,7 +194,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="TestingModule.cs" />
-    <Compile Include="WatchdogValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
