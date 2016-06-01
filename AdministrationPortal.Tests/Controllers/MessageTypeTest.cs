@@ -56,25 +56,24 @@ namespace AdministrationPortal.Tests.Controllers
                 // Arrange
                 var controller = kernel.Get<MessageTypesController>();
 
-                // Act
-                var parameters = new List<CreateMessageTypeParameterTypeViewModel>()
-                {
-                    new CreateMessageTypeParameterTypeViewModel("QueueSize", "integer", true),
-                    new CreateMessageTypeParameterTypeViewModel(null, null, false)
-                };
+                CreateMessageTypeViewModel viewModel = new CreateMessageTypeViewModel(
+                        "RabbitMQ Queue Size Update",
+                        "A message from rabbitmq detailing how many elements are currently enqueued in it."
+                        );
 
-                var result = controller.Create(new CreateMessageTypeViewModel(
-                        "RabbitMQ Queue Size Update", 
-                        "A message from rabbitmq detailing how many elements are currently enqueued in it.", 
-                        parameters)) as ActionResult;
+                viewModel.ParametersEnabled[0] = true;
+                viewModel.ParameterNames[0].Value = "paramName";
+                var supportedParameterType = viewModel.SupportedParameterTypes.ElementAtOrDefault(0).Text;
+                viewModel.ParameterTypes.Add(supportedParameterType);
+
+                // Act
+                var result = controller.Create(viewModel) as ActionResult;
 
                 // Assert
                 Assert.NotNull(result);
             }
         }
 
-        /*
-         * See todo in MessageTypesController
         [Fact]
         public void Edit()
         {
@@ -84,17 +83,15 @@ namespace AdministrationPortal.Tests.Controllers
                 messageTypeRepository.Insert(new MessageType
                 {
                     Name = "RabbitMQ Queue Size Update",
-                    Description = "A message from rabbitmq detailing how many elements are currently enqueued in it.",
-                    Id = 0
+                    Description = "A message from rabbitmq detailing how many elements are currently enqueued in it."
                 });
                 messageTypeRepository.Save();
 
                 // Arrange
-                var controller = new MessageTypesController();
-                kernel.Inject(controller);
+                var controller = kernel.Get<MessageTypesController>();
 
                 // Act
-                var result = controller.Edit(0) as ViewResult;
+                var result = controller.Edit("RabbitMQ Queue Size Update") as ViewResult;
                 
                 // Assert
                 Assert.NotNull(result);
@@ -112,7 +109,6 @@ namespace AdministrationPortal.Tests.Controllers
                 {
                     Name = "RabbitMQ Queue Size Update",
                     Description = "A message from rabbitmq detailing how many elements are currently enqueued in it.",
-                    Id = 0
                 });
                 messageTypeRepository.Save();
 
@@ -121,18 +117,13 @@ namespace AdministrationPortal.Tests.Controllers
                 kernel.Inject(controller);
 
                 // Act
-                var messageType = messageTypeRepository.GetById(0);
-                var result = controller.Edit(new CreateMessageTypeViewModel
-                (
-                    messageType.Name,
-                    messageType.Description,
-                    messageType.MessageTypeParameterTypes.Select(parameter => new CreateMessageTypeParameterTypeViewModel(parameter.Name, parameter.Type, true)).ToList()
-                )) as ViewResult;
+                var messageType = messageTypeRepository.GetByName("RabbitMQ Queue Size Update");
+                var result = controller.Edit(messageType.Name) as ViewResult;
 
                 // Assert
                 Assert.NotNull(result);
             }
-        }*/
+        }
 
 
         [Fact]

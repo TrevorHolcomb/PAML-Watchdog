@@ -10,18 +10,19 @@ namespace WatchdogDatabaseAccessLayer
     {
         public override void Load()
         {
-            Bind<Repository<Alert>>().To<ListAlertRepository>();
-            Bind<Repository<AlertType>>().To<ListAlertTypeRepository>();
-            Bind<Repository<EscalationChainLink>>().To<ListEscalationChainLinkRepository>();
-            Bind<Repository<EscalationChain>>().To<ListEscalationChainRepository>();
-            Bind<Repository<MessageParameter>>().To<ListMessageParameterRepository>();
-            Bind<Repository<Message>>().To<ListMessageRepository>();
-            Bind<Repository<MessageTypeParameterType>>().To<ListMessageTypeParameterTypeRepository>();
-            Bind<Repository<MessageType>>().To<ListMessageTypeRepository>();
-            Bind<Repository<NotifyeeGroup>>().To<ListNotifyeeGroupRepository>();
-            Bind<Repository<Notifyee>>().To<ListNotifyeeRepository>();
-            Bind<Repository<RuleCategory>>().To<ListRuleCategoryRepository>();
-            Bind<Repository<Rule>>().To<ListRuleRepository>();
+            Bind<Repository<Alert>>().To<ListAlertRepository>().InSingletonScope();
+            Bind<Repository<AlertType>>().To<ListAlertTypeRepository>().InSingletonScope();
+            Bind<Repository<Engine>>().To<ListEngineRepository>().InSingletonScope();
+            Bind<Repository<EscalationChainLink>>().To<ListEscalationChainLinkRepository>().InSingletonScope();
+            Bind<Repository<EscalationChain>>().To<ListEscalationChainRepository>().InSingletonScope();
+            Bind<Repository<MessageParameter>>().To<ListMessageParameterRepository>().InSingletonScope();
+            Bind<Repository<Message>>().To<ListMessageRepository>().InSingletonScope();
+            Bind<Repository<MessageTypeParameterType>>().To<ListMessageTypeParameterTypeRepository>().InSingletonScope();
+            Bind<Repository<MessageType>>().To<ListMessageTypeRepository>().InSingletonScope();
+            Bind<Repository<NotifyeeGroup>>().To<ListNotifyeeGroupRepository>().InSingletonScope();
+            Bind<Repository<Notifyee>>().To<ListNotifyeeRepository>().InSingletonScope();
+            Bind<Repository<RuleCategory>>().To<ListRuleCategoryRepository>().InSingletonScope();
+            Bind<Repository<Rule>>().To<ListRuleRepository>().InSingletonScope();
         }
     }
 }

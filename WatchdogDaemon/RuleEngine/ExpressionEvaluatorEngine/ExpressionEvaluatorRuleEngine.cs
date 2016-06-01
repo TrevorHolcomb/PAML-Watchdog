@@ -62,27 +62,34 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
             foreach (MessageParameter messageParameter in message.MessageParameters){
                 alertParams.Add(new AlertParameter
                 {
-                    MessageId = messageParameter.MessageId,
                     MessageTypeParameterTypeId = messageParameter.MessageTypeParameterTypeId,
                     Value = messageParameter.Value,
                     MessageTypeParameterType = messageParameter.MessageTypeParameterType
                 });
             }
 
+            AlertStatus currentStatus = new AlertStatus
+            {
+                ModifiedAt = System.DateTime.Now,
+                ModifiedBy = "Watchdog Daemon",
+                StatusCode = StatusCode.UnAcknowledged,
+                Next = null,
+                Prev = null
+            };
+
             return new Alert
             {
                 AlertParameters = alertParams,
                 AlertType = rule.AlertType,
                 AlertTypeId = rule.AlertTypeId,
-                Engine = rule.Engine,
+                Engine = message.Engine,
                 Notes = " ",
-                Origin = rule.Origin,
+                Origin = message.Origin,
                 Rule = rule,
                 RuleId = rule.Id,
-                Server = rule.Server,
+                Server = message.Server,
                 Severity = rule.DefaultSeverity,
-                TimeCreated = System.DateTime.Now,
-                TimeModified = System.DateTime.Now,
+                AlertStatus = currentStatus,
                 MessageType = message.MessageType,
             };
         }

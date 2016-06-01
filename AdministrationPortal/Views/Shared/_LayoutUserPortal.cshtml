@@ -24,7 +24,7 @@
                     
                     <li>@Html.ActionLink("Active Alerts", "Index", "Alerts")</li>
                     <li>@Html.ActionLink("Archived", "Index", "Alerts", new { ActiveOrArchived = "Resolved" }, null)</li>
-                    <li>@Html.ActionLink("AdminPortal", "IndexAdmin", "Home")</li>
+                    <li>@Html.ActionLink("AdminPortal", "Dashboard", "Home")</li>
                 </ul>
                 
             </div>
@@ -41,5 +41,6 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    @RenderSection("styles", required: false)
 </body>
 </html>

@@ -1,4 +1,5 @@
-﻿using ExpressionEvaluator;
+﻿using System;
+using ExpressionEvaluator;
 
 namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
 {
@@ -6,12 +7,25 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
     {
         public string GetTypeName()
         {
-            return "integer";
+            return "Integer";
+        }
+
+        public bool IsValid(string value)
+        {
+            try
+            {
+                long longTest = System.Int64.Parse(value);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public void RegisterValue(string name, string value, TypeRegistry registry)
         {
-            registry.RegisterSymbol(name, int.Parse(value), typeof(int));
+            registry.RegisterSymbol(name, Int64.Parse(value), typeof(long));
         }
     }
 }

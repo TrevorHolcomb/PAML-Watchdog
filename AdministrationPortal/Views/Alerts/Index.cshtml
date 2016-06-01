@@ -1,6 +1,9 @@
 ﻿@model AdministrationPortal.ViewModels.Alerts.AlertPagingCreateView
 @using PagedList.Mvc;
-<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+@section styles {
+    <link href="~/Content/PagedList.css" rel="stylesheet" />
+}
 
 @{
     ViewBag.Title = "Index";

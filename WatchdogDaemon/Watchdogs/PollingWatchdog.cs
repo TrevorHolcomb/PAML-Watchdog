@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using Ninject.Syntax;
+using Ninject;
 
 namespace WatchdogDaemon.Watchdogs
 {
@@ -10,6 +11,7 @@ namespace WatchdogDaemon.Watchdogs
         private Timer _pollingTimer;
         
         private const int PollingRate = 5*1000;        //5 seconds, for now
+
         
 
         public override void Watch()
@@ -27,17 +29,28 @@ namespace WatchdogDaemon.Watchdogs
 
         protected override void Run(object state)
         {
+
+            //run validator
+            var unvalidatedMessages = UnvalidatedMessageRepository.Get().ToList();
+            foreach(var unvalidatedMessage in unvalidatedMessages)
+            {
+                Validator.Validate(unvalidatedMessage);
+            }//
+
+
+            //run rule engine
             var messages = MessageRepository.Get().Where(msg => !msg.IsProcessed).ToList();
-            var rules = RuleRepository.Get().ToList();
+            var rules = RuleRepository.Get().ToList();           
 
             foreach (var message in messages)
             {
+
                 foreach (var rule in rules)
                 {
                     var alert = RuleEngine.ConsumeMessage(rule, message);
                     if (alert != null)
                     {
-                        AlertRepository.Insert(alert);                        
+                        AlertRepository.Insert(alert);
                     }
                 }
 
