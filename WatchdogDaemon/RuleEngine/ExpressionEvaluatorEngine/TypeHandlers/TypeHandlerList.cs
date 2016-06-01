@@ -6,8 +6,12 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
     {
         public static readonly IEnumerable<ITypeHandler> TypeHandlers = new List<ITypeHandler>
         {
-            new DoubleTypeHandler(),
-            new IntegerTypeHandler()
+            new DecimalTypeHandler(),
+            new IntegerTypeHandler(),
+            new BooleanTypeHandler(),
+            new DateTimeTypeHandler(),
+            new EnumerationTypeHandler(),
+            new ExceptionTypeHandler()
         };
     }
 }

@@ -85,8 +85,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\DoubleTypeHandler.cs" />
+    <Compile Include="Exceptions\WatchdogInvalidMessageTypeExcpetion.cs" />
+    <Compile Include="Exceptions\WatchdogInvalidParameterExcpetion.cs" />
+    <Compile Include="Exceptions\WatchdogInvalidOriginExcpetion.cs" />
+    <Compile Include="Exceptions\WatchdogInvalidEngineExcpetion.cs" />
+    <Compile Include="Exceptions\WatchdogInvalidServerExcpetion.cs" />
+    <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\BooleanTypeHandler.cs" />
+    <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\DateTimeTypeHandler.cs" />
+    <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\DecimalTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\ITypeHandler.cs" />
+    <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\EnumerationTypeHandler.cs" />
+    <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\ExceptionTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\IntegerTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\TypeHandlerList.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypesSupported.cs" />

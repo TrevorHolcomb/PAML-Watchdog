@@ -2,11 +2,11 @@
 
 namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
 {
-    internal class DoubleTypeHandler : ITypeHandler
+    internal class DecimalTypeHandler : ITypeHandler
     {
         public string GetTypeName()
         {
-            return "double";
+            return "Decimal";
         }
 
         public void RegisterValue(string name, string value, TypeRegistry registry)

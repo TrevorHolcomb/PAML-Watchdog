@@ -1,21 +1,24 @@
 ﻿using System;
 using ExpressionEvaluator;
 
+
+//TODO: Implement exception type handler
 namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
 {
-    internal class IntegerTypeHandler : ITypeHandler
+    internal class ExceptionTypeHandler : ITypeHandler
     {
         public string GetTypeName()
         {
-            return "Integer";
+            return "Exception";
         }
 
         public bool IsValid(string value)
         {
             try
             {
-                long longTest = System.Int64.Parse(value);
-                return true;
+                //Exception doubleTest = System.Exception.Parse(value);
+                //return true;
+                return false;
             }
             catch
             {
@@ -25,7 +28,7 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
 
         public void RegisterValue(string name, string value, TypeRegistry registry)
         {
-            registry.RegisterSymbol(name, Int64.Parse(value), typeof(long));
+            throw new NotImplementedException();
         }
     }
 }

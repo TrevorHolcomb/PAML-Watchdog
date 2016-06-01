@@ -2,6 +2,7 @@
 using Ninject;
 using Ninject.Syntax;
 using WatchdogDatabaseAccessLayer.Models;
+using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace WatchdogDaemon.Watchdogs
 {
@@ -10,16 +11,18 @@ namespace WatchdogDaemon.Watchdogs
 
         protected AbstractValidator(IResolutionRoot kernel)
         {
-            MessageRepository = kernel.Get<WatchdogDatabaseAccessLayer.Repositories.Repository<Message>>();
-            MessageTypeRepository = kernel.Get<WatchdogDatabaseAccessLayer.Repositories.Repository<MessageType>>();
-            UnvalidatedMessageRepository = kernel.Get<WatchdogDatabaseAccessLayer.Repositories.Repository<UnvalidatedMessage>>();
+            MessageRepository = kernel.Get<Repository<Message>>();
+            MessageTypeRepository = kernel.Get<Repository<MessageType>>();
+            UnvalidatedMessageRepository = kernel.Get<Repository<UnvalidatedMessage>>();
+            UnvalidatedMessageParameterRepository = kernel.Get<Repository<UnvalidatedMessageParameter>>();
+            EngineRepository = kernel.Get<Repository<Engine>>();
         }
 
-
-        protected readonly WatchdogDatabaseAccessLayer.Repositories.Repository<UnvalidatedMessage> UnvalidatedMessageRepository;
-        protected readonly WatchdogDatabaseAccessLayer.Repositories.Repository<Message> MessageRepository;
-        protected readonly WatchdogDatabaseAccessLayer.Repositories.Repository<MessageType> MessageTypeRepository;
-         
+        protected readonly Repository<UnvalidatedMessageParameter> UnvalidatedMessageParameterRepository;
+        protected readonly Repository<UnvalidatedMessage> UnvalidatedMessageRepository;
+        protected readonly Repository<Message> MessageRepository;
+        protected readonly Repository<MessageType> MessageTypeRepository;
+        protected readonly Repository<Engine> EngineRepository;
 
         public void Dispose()
         {
@@ -27,7 +30,7 @@ namespace WatchdogDaemon.Watchdogs
             MessageRepository.Dispose();
         }
 
-        public abstract bool Validate(Message toValidate);
+        public abstract bool Validate(UnvalidatedMessage toValidate);
 
     }
 }

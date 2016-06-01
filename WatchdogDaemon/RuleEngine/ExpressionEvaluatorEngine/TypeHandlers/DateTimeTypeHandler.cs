@@ -3,18 +3,18 @@ using ExpressionEvaluator;
 
 namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
 {
-    internal class IntegerTypeHandler : ITypeHandler
+    internal class DateTimeTypeHandler : ITypeHandler
     {
         public string GetTypeName()
         {
-            return "Integer";
+            return "DateTime";
         }
 
         public bool IsValid(string value)
         {
             try
             {
-                long longTest = System.Int64.Parse(value);
+                DateTime dateTimeTest = System.DateTime.Parse(value);
                 return true;
             }
             catch
@@ -25,7 +25,7 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
 
         public void RegisterValue(string name, string value, TypeRegistry registry)
         {
-            registry.RegisterSymbol(name, Int64.Parse(value), typeof(long));
+            registry.RegisterSymbol(name, DateTime.Parse(value), typeof(DateTime));
         }
     }
 }

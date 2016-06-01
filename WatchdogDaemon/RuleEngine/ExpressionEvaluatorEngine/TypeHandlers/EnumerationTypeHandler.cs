@@ -1,20 +1,24 @@
 ﻿using System;
 using ExpressionEvaluator;
 
+
+//TODO - Enum will return objects for now
 namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
 {
-    internal class IntegerTypeHandler : ITypeHandler
+    internal class EnumerationTypeHandler : ITypeHandler
     {
         public string GetTypeName()
         {
-            return "Integer";
+            return "Enumeration";
         }
 
         public bool IsValid(string value)
         {
             try
             {
-                long longTest = System.Int64.Parse(value);
+                Object parsedEnum = Enum.Parse(typeof(string),value);
+                if (parsedEnum == null)
+                    return false;
                 return true;
             }
             catch
@@ -25,7 +29,7 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
 
         public void RegisterValue(string name, string value, TypeRegistry registry)
         {
-            registry.RegisterSymbol(name, Int64.Parse(value), typeof(long));
+            registry.RegisterSymbol(name, Enum.Parse(typeof(string), value), typeof(Object));
         }
     }
 }

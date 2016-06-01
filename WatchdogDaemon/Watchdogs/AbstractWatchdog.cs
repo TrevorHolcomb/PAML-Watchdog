@@ -16,6 +16,7 @@ namespace WatchdogDaemon.Watchdogs
             AlertRepository = kernel.Get<Repository<Alert>>();
             RuleEngine = kernel.Get<IRuleEngine>();
             Validator = kernel.Get<AbstractValidator>();
+            UnvalidatedMessageRepository = kernel.Get<Repository<UnvalidatedMessage>>();
         }
 
         protected readonly AbstractValidator Validator;
@@ -23,6 +24,7 @@ namespace WatchdogDaemon.Watchdogs
         protected readonly Repository<Alert> AlertRepository;
         protected readonly Repository<Message> MessageRepository;
         protected readonly Repository<Rule> RuleRepository;
+        protected readonly Repository<UnvalidatedMessage> UnvalidatedMessageRepository;
         protected readonly IRuleEngine RuleEngine;
 
         public void Dispose()
