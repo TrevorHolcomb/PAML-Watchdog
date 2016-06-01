@@ -69,6 +69,10 @@ namespace WatchdogDaemon.Watchdogs
                 //fail safe
                 Console.WriteLine("Unknown error - " + e.ToString());
             }
+            finally
+            {
+                CleanUp(toValidate);
+            }
 
             return false;
 
