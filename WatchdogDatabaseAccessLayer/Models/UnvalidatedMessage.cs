@@ -12,33 +12,22 @@ namespace WatchdogDatabaseAccessLayer.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Alert
+    public partial class UnvalidatedMessage
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Alert()
+        public UnvalidatedMessage()
         {
-            this.Assignee = "N/A";
-            this.AlertParameters = new HashSet<AlertParameter>();
+            this.MessageParameters = new HashSet<UnvalidatedMessageParameter>();
         }
     
         public int Id { get; set; }
-        public int AlertParameterId { get; set; }
-        public int AlertTypeId { get; set; }
-        public string EngineName { get; set; }
         public string MessageTypeName { get; set; }
-        public int RuleId { get; set; }
-        public string Assignee { get; set; }
-        public string Notes { get; set; }
         public string Server { get; set; }
         public string Origin { get; set; }
-        public int Severity { get; set; }
+        public string EngineName { get; set; }
+        public bool IsProcessed { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AlertParameter> AlertParameters { get; set; }
-        public virtual AlertType AlertType { get; set; }
-        public virtual Engine Engine { get; set; }
-        public virtual MessageType MessageType { get; set; }
-        public virtual Rule Rule { get; set; }
-        public virtual AlertStatus AlertStatus { get; set; }
+        public virtual ICollection<UnvalidatedMessageParameter> MessageParameters { get; set; }
     }
 }

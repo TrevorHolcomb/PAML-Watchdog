@@ -68,6 +68,15 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
                 });
             }
 
+            AlertStatus currentStatus = new AlertStatus
+            {
+                ModifiedAt = System.DateTime.Now,
+                ModifiedBy = "Watchdog Daemon",
+                StatusCode = StatusCode.UnAcknowledged,
+                Next = null,
+                Prev = null
+            };
+
             return new Alert
             {
                 AlertParameters = alertParams,
@@ -80,8 +89,7 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
                 RuleId = rule.Id,
                 Server = message.Server,
                 Severity = rule.DefaultSeverity,
-                TimeCreated = System.DateTime.Now,
-                TimeModified = System.DateTime.Now,
+                AlertStatus = currentStatus,
                 MessageType = message.MessageType,
             };
         }

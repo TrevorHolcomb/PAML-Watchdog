@@ -10,11 +10,23 @@
 namespace WatchdogDatabaseAccessLayer.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public enum AlertStatus : int
+    public partial class AlertStatus
     {
-        UnAcknowledged = 0,
-        Acknowledged = 1,
-        Resolved = 2
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public AlertStatus()
+        {
+            this.ModifiedAt = new DateTime(621355968000000000, DateTimeKind.Unspecified);
+        }
+    
+        public int Id { get; set; }
+        public System.DateTime ModifiedAt { get; set; }
+        public string ModifiedBy { get; set; }
+        public StatusCode StatusCode { get; set; }
+    
+        public virtual AlertStatus Next { get; set; }
+        public virtual AlertStatus Prev { get; set; }
+        public virtual Alert Alert { get; set; }
     }
 }

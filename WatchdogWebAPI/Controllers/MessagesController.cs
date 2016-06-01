@@ -2,8 +2,7 @@
 using System.Web.Http;
 using System.Web.Http.Description;
 using Ninject;
-using WatchdogDatabaseAccessLayer;
-using WatchdogDatabaseAccessLayer.Models;
+﻿using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using WatchdogWebAPI.Models;
 
@@ -12,15 +11,11 @@ namespace WatchdogWebAPI.Controllers
     public class MessagesController : ApiController
     {
         [Inject]
-        public Repository<Message> MessageRepository { private get; set; }
-        [Inject]
-        public Repository<MessageParameter> MessageParameterRepository { private get; set; }
+        public Repository<UnvalidatedMessage> UnvalidatedMessageRepository { private get; set; }
         [Inject]
         public Repository<MessageType> MessageTypeRepository { private get; set; }
         [Inject]
         public Repository<MessageTypeParameterType> MessageTypeParameterTypeRepository { private get; set; }
-
-
 
         #region GET
 
@@ -77,38 +72,26 @@ namespace WatchdogWebAPI.Controllers
         [ResponseType(typeof(string))]
         public IHttpActionResult PostMessage(IncomingMessage incomingMessage)
         {
-            
-            var isValidMessage = IsValid(incomingMessage);
-            
-            //if properly formatted message create a new message object to add to database
-            if (!isValidMessage) return Conflict();
-            var toDatabase = new Message
+            if (incomingMessage == null)
+                return Conflict();
+
+            var toDatabase = new UnvalidatedMessage
             {
                 Server = incomingMessage.Server,
-                //Engine = incomingMessage.Engine,
+                EngineName = incomingMessage.Engine,
                 Origin = incomingMessage.Origin,
-                MessageTypeName = incomingMessage.MessageTypeName,
-                IsProcessed = false
+                MessageTypeName = incomingMessage.MessageTypeName
             };
-
-            //insert Message
-            MessageRepository.Insert(toDatabase);
-            MessageRepository.Save();
-
-                           
-            foreach (var param in incomingMessage.Params){
-
-                //validation should catch a fail before this point
-                var toInsert = new MessageParameter
-                {
-                    MessageId = toDatabase.Id,
-                    Value = param.value
-                };
-                //insert parameters
-                MessageParameterRepository.Insert(toInsert);
-                MessageParameterRepository.Save();
+                
+                
+            foreach(var param in incomingMessage.Params)
+            {
+                toDatabase.MessageParameters.Add(new UnvalidatedMessageParameter {Value = param.value, Message = toDatabase, Name = param.name});
             }
 
+
+            UnvalidatedMessageRepository.Insert(toDatabase);
+            UnvalidatedMessageRepository.Save();
 
             //incoming message gets moved to new model for return
             var toReturn = new OutGoingMessage
@@ -120,38 +103,11 @@ namespace WatchdogWebAPI.Controllers
                 Params = incomingMessage.Params
             };
 
+
             return Ok(toReturn);
         }
 
         #endregion
 
-        #region private methods
-
-        private static bool IsValid(IncomingMessage messageToValidate)
-        {
-            if (messageToValidate == null)
-                return false;
-
-            var valid = WatchdogValidator.validateServer(messageToValidate.Server);
-            if (!valid)
-                return false;
-
-            valid = WatchdogValidator.validateEngine(messageToValidate.Engine);
-            if (!valid)
-                return false;
-
-            valid = WatchdogValidator.validateOrigin(messageToValidate.Origin);
-            if (!valid)
-                return false;
-
-            valid = WatchdogValidator.validateParameters(messageToValidate.Params, messageToValidate.MessageTypeName);
-            if (!valid)
-                return false;
-
-
-            return true;
-        }
-
-        #endregion
     }
 }

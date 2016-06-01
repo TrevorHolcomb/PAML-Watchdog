@@ -6,5 +6,6 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
     {
         string GetTypeName();
         void RegisterValue(string name, string value, TypeRegistry registry);
+        bool IsValid(string value);
     }
 }

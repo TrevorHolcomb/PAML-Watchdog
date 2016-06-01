@@ -10,9 +10,6 @@ namespace AdministrationPortal.Controllers
 {
     public class MessageTypesController : Controller
     {
-        //TODO: Add fields dynamically clientside. See: http://formvalidation.io/examples/adding-dynamic-field/
-        private static readonly int NUMBER_OF_PARAMETERS = 5;
-
         [Inject]
         public Repository<MessageType> MessageTypeRepository { get; set; }
         [Inject]
@@ -25,9 +22,9 @@ namespace AdministrationPortal.Controllers
         }
 
         // GET: MessageTypes/Details/5
-        public ActionResult Details(string name)
+        public ActionResult Details(string id)
         {
-            var messageType = MessageTypeRepository.GetByName(name);
+            var messageType = MessageTypeRepository.GetByName(id);
             if (messageType == null)
             {
                 return HttpNotFound();
@@ -38,13 +35,8 @@ namespace AdministrationPortal.Controllers
         // GET: MessageTypes/Create
         public ActionResult Create()
         {
-            var parameters = new List<CreateMessageTypeParameterTypeViewModel>();
-            for (var i = 0; i < NUMBER_OF_PARAMETERS; i++)
-                parameters.Add(new CreateMessageTypeParameterTypeViewModel(null,null,false));
-            var viewModel = new CreateMessageTypeViewModel(null, null, parameters);
-
-            viewModel.SupportedParameterTypes = new SelectList(WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypesSupported.Types);
-            viewModel.ParameterName = new List<string>();
+            CreateMessageTypeViewModel viewModel = new CreateMessageTypeViewModel();
+            
 
             return View(viewModel);
         }
@@ -66,12 +58,18 @@ namespace AdministrationPortal.Controllers
 
                 List<MessageTypeParameterType> messageTypeParameterType = new List<MessageTypeParameterType>();
 
-                for (int i = 0; i < viewModel.ParameterName.Count; i++)
+                for (int i = 0; i < viewModel.ParameterNames.Count; i++)
+                {
+                    if (!viewModel.ParametersEnabled[i])
+                        continue;
+
                     messageTypeParameterType.Add(new MessageTypeParameterType
                     {
-                        Name = viewModel.ParameterName[i],
-                        Type = viewModel.ParameterType[i]
+                        Name = viewModel.ParameterNames[i],
+                        Type = viewModel.ParameterTypes[i],
+                        Required = viewModel.ParametersRequired[i]
                     });
+                }
                 
                 messageType.MessageTypeParameterTypes = messageTypeParameterType;
                 MessageTypeParameterTypeRepository.InsertRange(messageTypeParameterType);
@@ -81,7 +79,7 @@ namespace AdministrationPortal.Controllers
                 return RedirectToAction("Index");
                 
             }
-            viewModel.ParameterName = new List<string>();
+
             return View(viewModel);
         }
         
@@ -119,9 +117,9 @@ namespace AdministrationPortal.Controllers
         }
 
         // GET: Rules/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
-            MessageType messageType = MessageTypeRepository.GetById(id);
+            MessageType messageType = MessageTypeRepository.GetByName(id);
             if (messageType == null)
             {
                 return HttpNotFound();
