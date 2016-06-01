@@ -211,8 +211,6 @@
     <Compile Include="ViewModels\SupportCategories\DeleteSupportCategoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\font-awesome\css\font-awesome.css" />
     <Content Include="Content\font-awesome\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.svg" />
@@ -228,8 +226,7 @@
     <Content Include="Content\img\help\setup-db\step-7.PNG" />
     <Content Include="Content\img\help\setup-db\step-8.PNG" />
     <Content Include="Content\img\help\setup-db\step-9.PNG" />
-    <Content Include="Content\PagedList.css" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Styles\css\PagedList.css" />
     <Content Include="Scripts\bootstrap-multiselect.js" />
     <Content Include="Styles\css\bootstrap.css" />
     <Content Include="Styles\css\bootstrap.min.css" />
@@ -293,6 +290,7 @@
     <Content Include="Scripts\_references.js" />
     <Content Include="Styles\css\site.css" />
     <Content Include="Styles\css\site.min.css" />
+    <Content Include="Styles\css\userPortalSite.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

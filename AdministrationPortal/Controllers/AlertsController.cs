@@ -20,7 +20,7 @@ namespace AdministrationPortal.Controllers
         public Repository<Alert> AlertRepository { private get; set; }
 
         // GET: Alerts
-        public ActionResult Index(string ActiveOrArchived, int? Page_No, String sortOrder)
+        public ActionResult Index(string ActiveOrArchived, int? Page_No, int? sortOrder)
         {
             int Size_Of_Page = 10;
             int No_Of_Page = (Page_No ?? 1);
@@ -41,23 +41,23 @@ namespace AdministrationPortal.Controllers
 
             switch(sortOrder)
             {
-                case "Severity":
+                case 0:
                     alerts = alerts.OrderByDescending(a => a.Severity).ThenByDescending(a => a.TimeCreated);
                     break;
-                case "Time":
-                    alerts = alerts.OrderByDescending(a => a.TimeCreated);
+                case 1:
+                    alerts = alerts.OrderBy(a => a.Status).ThenByDescending(a => a.TimeCreated);
                     break;
-                case "Origin":
+                case 2:
+                    alerts = alerts.OrderBy(a => a.Rule.SupportCategory.Name).ThenByDescending(a => a.TimeCreated);
+                    break;
+                case 3:
+                    alerts = alerts.OrderBy(a => a.AlertType.Name).ThenByDescending(a => a.TimeCreated);
+                    break;
+                case 5:
                     alerts = alerts.OrderBy(a => a.Origin).ThenByDescending(a => a.TimeCreated);
                     break;
-                case "AlertType":
-                    alerts = alerts.OrderBy(a => a.AlertType.Name);
-                    break;
-                case "Group":
-                    alerts = alerts.OrderBy(a => a.Rule.SupportCategory.Name).ThenByDescending(a => a.Severity);
-                    break;
                 default:
-                    alerts = alerts.OrderBy(a => a.Status).ThenByDescending(a => a.Severity).ThenByDescending(a => a.TimeCreated);
+                    alerts = alerts.OrderByDescending(a => a.TimeCreated);
                     break;
             }
 
@@ -68,13 +68,10 @@ namespace AdministrationPortal.Controllers
         public ActionResult Details(int id, int PageNo, String sortOrder)
         {
             var viewModel = new AlertDetailsViewModel(AlertRepository.GetById(id), PageNo, sortOrder);
-            viewModel.Alert = AlertRepository.GetById(id);
             if (viewModel.Alert == null)
             {
                 return HttpNotFound();
             }
-            viewModel.sortOrder = sortOrder;
-            viewModel.PageNo = PageNo;
             return View(viewModel);
         }
 
@@ -143,28 +140,6 @@ namespace AdministrationPortal.Controllers
                 dbAlert.Notes = newAlert.Notes;
             }
             return dbAlert;
-        }
-
-        // GET: Alerts/Delete/5
-        public ActionResult Delete(int id)
-        {
-            var alert = AlertRepository.GetById(id);
-            if (alert == null)
-            {
-                return HttpNotFound();
-            }
-            return View(alert);
-        }
-
-        // POST: Alerts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            var alert = AlertRepository.GetById(id);
-            AlertRepository.Delete(alert);
-            AlertRepository.Save();
-            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
