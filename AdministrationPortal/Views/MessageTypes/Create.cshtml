@@ -38,11 +38,11 @@
             <div class="parameters col-md-10" data-max=@Model.MAX_PARAMETERS>
                 @for (var p = 0; p < Model.MAX_PARAMETERS; p++)
                 {
-                    @*var style = (Model.ParametersEnabled[p]) ? "" : "display:none";*@
-                    <div class="multiple-form-group" style="margin-bottom: 15px; ">
-                        @Html.HiddenFor(model => model.ParametersEnabled[p], htmlAttributes: new { @class = "parameter-enabled", @value="true" })
+                    var style = (Model.ParametersEnabled[p]) ? "" : "display:none";
+                    <div class="multiple-form-group" style="margin-bottom: 15px; @style">
+                        @Html.HiddenFor(model => model.ParametersEnabled[p], htmlAttributes: new { @class = "parameter-enabled" })
                         <div class="input-group">
-                            
+
                             <div class="input-group-addon input-group-select">
                                 @Html.DropDownListFor(model => model.ParameterTypes[p].Value, Model.SupportedParameterTypes, htmlAttributes: new { @role = "menu" })
                             </div>
@@ -55,7 +55,7 @@
                             </span>
 
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-danger btn-remove" disabled="disabled" >-</button>
+                                <button type="button" class="btn btn-danger btn-remove">-</button>
                             </span>
 
                         </div>
@@ -85,15 +85,6 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-
-            //Hide all groups except the first
-            var hideAllControlGroups = function(){
-                var $controlGroups = $('.multiple-form.group');
-                $controlGroups.not($controlGroups.first());
-                $controlGroups.hide();
-                $controlGroups.find('.parameter-enabled').attr('value', 'False');
-                $controlGroups.find('')
-            }
 
             //Toggle last visible button
             var makeLastVisibleButtonGreen = function () {
@@ -132,7 +123,7 @@
 
                 //Always reenable the last button before replacing it
                 var $lastFormGroup = $multipleFormGroup.siblings('.multiple-form-group:last');
-                $lastFormGroup.find('.btn').attr('disabled', false);                   
+                $lastFormGroup.find('.btn').attr('disabled', false);
 
                 //Disable this group and move it to the bottom
                 $multipleFormGroup.fadeOut(300);
