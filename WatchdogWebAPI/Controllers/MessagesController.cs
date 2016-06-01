@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using WatchdogDatabaseAccessLayer;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogWebAPI.Models;
 using Ninject;
@@ -18,9 +13,7 @@ namespace WatchdogWebAPI.Controllers
     public class MessagesController : ApiController
     {
         [Inject]
-        public Repository<Message> messageRepository { private get; set; }
-        [Inject]
-        public Repository<MessageParameter> messageParameterRepository { private get; set; }
+        public Repository<UnvalidatedMessage> UnvalidatedMessageRepository { private get; set; }
         [Inject]
         public Repository<MessageType> messageTypeRepository { private get; set; }
         [Inject]
@@ -83,101 +76,43 @@ namespace WatchdogWebAPI.Controllers
         [ResponseType(typeof(string))]
         public IHttpActionResult PostMessage(IncomingMessage incomingMessage)
         {
-            
-            bool isValidMessage = isValid(incomingMessage);
-            
-            //if properly formatted message create a new message object to add to database
-            if (isValidMessage)
-            {
-                
-                Message toDatabase = new Message
-                {
-                    Server = incomingMessage.Server,
-                    //Engine = incomingMessage.Engine,
-                    Origin = incomingMessage.Origin,
-                    MessageTypeName = incomingMessage.MessageTypeName,
-                    IsProcessed = false
-                };
 
-                //insert Message
-                messageRepository.Insert(toDatabase);
-                messageRepository.Save();
-
-
-                MessageType messageType = messageTypeRepository.GetByName(incomingMessage.MessageTypeName);
-
-                //gets the parameter types of inserted message
-                var parameterTypes = messageTypeParameterTypeRepository.Get().Where(messageTypeParameter => messageTypeParameter.MessageTypeName == incomingMessage.MessageTypeName).AsQueryable();
-                            
-
-                foreach (APIMessageParameter param in incomingMessage.Params){
-
-                    //find the parameter type id
-                    //validation should catch a fail before this point
-                    int paramId = parameterTypes.First(curParam => curParam.Name.Equals(param.name)).Id;
-
-
-                    MessageParameter toInsert = new MessageParameter
-                    {
-                        MessageId = toDatabase.Id,
-                        Value = param.value,
-                    };
-                    //insert parameters
-                    messageParameterRepository.Insert(toInsert);
-                    messageParameterRepository.Save();
-                }
-
-
-                //incoming message gets moved to new model for return
-                OutGoingMessage toReturn = new OutGoingMessage
-                {
-                    Server = incomingMessage.Server,
-                    Engine = incomingMessage.Engine,
-                    Origin = incomingMessage.Origin,
-                    MessageTypeName = incomingMessage.MessageTypeName,
-                    Params = incomingMessage.Params
-                };
-
-                return Ok(toReturn);
-            }
-            //Message was not properly formatted
-            else
-            {
+            if (incomingMessage == null)
                 return Conflict();
+
+            UnvalidatedMessage toDatabase = new UnvalidatedMessage
+            {
+                Server = incomingMessage.Server,
+                EngineName = incomingMessage.Engine,
+                Origin = incomingMessage.Origin,
+                MessageTypeName = incomingMessage.MessageTypeName
+            };
+                
+                
+            foreach(APIMessageParameter param in incomingMessage.Params)
+            {
+                toDatabase.MessageParameters.Add(new UnvalidatedMessageParameter {Value = param.value, Message = toDatabase });
             }
+
+
+            UnvalidatedMessageRepository.Insert(toDatabase);
+            UnvalidatedMessageRepository.Save();
+
+
+            //incoming message gets moved to new model for return
+            OutGoingMessage toReturn = new OutGoingMessage
+            {
+                Server = incomingMessage.Server,
+                Engine = incomingMessage.Engine,
+                Origin = incomingMessage.Origin,
+                MessageTypeName = incomingMessage.MessageTypeName,
+                Params = incomingMessage.Params
+            };
+
+            return Ok(toReturn);
         }
 
         #endregion
 
-        #region private methods
-
-        private bool isValid(IncomingMessage messageToValidate)
-        {
-            bool valid = true;
-
-            if (messageToValidate == null)
-                return false;
-
-            valid = WatchdogValidator.validateServer(messageToValidate.Server);
-            if (!valid)
-                return false;
-
-            valid = WatchdogValidator.validateEngine(messageToValidate.Engine);
-            if (!valid)
-                return false;
-
-            valid = WatchdogValidator.validateOrigin(messageToValidate.Origin);
-            if (!valid)
-                return false;
-
-            valid = WatchdogValidator.validateParameters(messageToValidate.Params, messageToValidate.MessageTypeName);
-            if (!valid)
-                return false;
-
-
-            return valid;
-        }
-
-        #endregion
     }
 }

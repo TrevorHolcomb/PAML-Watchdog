@@ -15,7 +15,7 @@ namespace WatchdogWebAPI.App_Start
 
     using Ninject;
     using Ninject.Web.Common;
-
+    using WatchdogDatabaseAccessLayer;
     public static class NinjectWebCommon 
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
@@ -66,11 +66,7 @@ namespace WatchdogWebAPI.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Bind<Repository<Message>>().To<EFMessageRepository>();
-            kernel.Bind<Repository<MessageType>>().To<EFMessageTypeRepository>();
-            kernel.Bind<Repository<MessageParameter>>().To<EFMessageParameterRepository>();
-            kernel.Bind<Repository<MessageTypeParameterType>>().To<EFMessageTypeParameterTypeRepository>();
-
+            kernel.Load(new EFModule());
         }        
     }
 }

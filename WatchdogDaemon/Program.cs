@@ -6,6 +6,7 @@ using WatchdogDaemon.Watchdogs;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using WatchdogDatabaseAccessLayer.Repositories.Database;
+using WatchdogDatabaseAccessLayer;
 
 namespace WatchdogDaemon
 {
@@ -16,15 +17,14 @@ namespace WatchdogDaemon
             using (var kernel = new StandardKernel())
             {
                 //if we don't instantiate and pass one ourselves, then one will be instantiated one for each binding, which will cause problems
-                WatchdogDatabaseContainer dbContainer = new WatchdogDatabaseContainer();
-                kernel.Bind<Repository<Message>>().To<EFMessageRepository>().WithConstructorArgument("container", dbContainer);
-                kernel.Bind<Repository<Alert>>().To<EFAlertRepository>().WithConstructorArgument("container", dbContainer);
-                kernel.Bind<Repository<Rule>>().To<EFRuleRepository>().WithConstructorArgument("container", dbContainer);
+                kernel.Load(new EFModule());
                 kernel.Bind<IRuleEngine>().To<StandardRuleEngine>();
+                kernel.Bind<AbstractWatchdog>().To<PollingWatchdog>();
+                kernel.Bind<AbstractValidator>().To<WatchdogValidator>();
 
                 Console.WriteLine("Watchdog simulator started");
                 //start consumer
-                using (var rex = new PollingWatchdog(kernel))
+                using (var rex = kernel.Get<AbstractWatchdog>())
                 {
                     rex.Watch();
                     Console.WriteLine("Press \'Q\' to quit");

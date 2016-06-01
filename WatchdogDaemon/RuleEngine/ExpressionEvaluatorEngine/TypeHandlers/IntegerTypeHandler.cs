@@ -1,4 +1,5 @@
-﻿using ExpressionEvaluator;
+﻿using System;
+using ExpressionEvaluator;
 
 namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
 {
@@ -7,6 +8,11 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
         public string GetTypeName()
         {
             return "integer";
+        }
+
+        public bool IsValid(string value)
+        {
+            throw new NotImplementedException();
         }
 
         public void RegisterValue(string name, string value, TypeRegistry registry)

@@ -13,5 +13,19 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
         {
             registry.RegisterSymbol(name, double.Parse(value), typeof(double));
         }
+
+        public bool IsValid(string value)
+        {
+            try
+            {
+                double doubleTest = System.Double.Parse(value);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
     }
 }

@@ -41,5 +41,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public virtual DbSet<SupportCategory> SupportCategories { get; set; }
         public virtual DbSet<Engine> Engines { get; set; }
         public virtual DbSet<AlertStatus> AlertStatuses { get; set; }
+        public virtual DbSet<UnvalidatedMessage> UnvalidatedMessages { get; set; }
+        public virtual DbSet<UnvalidatedMessageParameter> UnvalidatedMessageParameters { get; set; }
     }
 }
