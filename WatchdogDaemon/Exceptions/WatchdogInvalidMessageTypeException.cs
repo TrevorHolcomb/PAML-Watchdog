@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace WatchdogDaemon.Exceptions
 {
-    class WatchdogInvalidParameterExcpetion : Exception
+    class WatchdogInvalidMessageTypeException : Exception
     {
-        public WatchdogInvalidParameterExcpetion()
+        public WatchdogInvalidMessageTypeException()
         {
         }
 
-        public WatchdogInvalidParameterExcpetion(string message)
+        public WatchdogInvalidMessageTypeException(string message)
             : base(message)
         {
         }
 
-        public WatchdogInvalidParameterExcpetion(string message, Exception inner)
+        public WatchdogInvalidMessageTypeException(string message, Exception inner)
             : base(message, inner)
         {
         }

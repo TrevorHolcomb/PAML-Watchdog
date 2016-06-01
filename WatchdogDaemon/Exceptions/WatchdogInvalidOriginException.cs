@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace WatchdogDaemon.Exceptions
 {
-    class WatchdogInvalidOriginExcpetion : Exception
+    class WatchdogInvalidOriginException : Exception
     {
-        public WatchdogInvalidOriginExcpetion()
+        public WatchdogInvalidOriginException()
         {
         }
 
-        public WatchdogInvalidOriginExcpetion(string message)
+        public WatchdogInvalidOriginException(string message)
             : base(message)
         {
         }
 
-        public WatchdogInvalidOriginExcpetion(string message, Exception inner)
+        public WatchdogInvalidOriginException(string message, Exception inner)
             : base(message, inner)
         {
         }
