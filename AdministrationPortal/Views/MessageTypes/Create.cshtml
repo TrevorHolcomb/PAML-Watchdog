@@ -38,9 +38,9 @@
             <div class="parameters col-md-10" data-max=@Model.MAX_PARAMETERS>
                 @for (var p = 0; p < Model.MAX_PARAMETERS; p++)
                 {
-                    var style = (Model.ParametersEnabled[p]) ? "" : "display:none";
-                    <div class="multiple-form-group" style="margin-bottom: 15px; @style">
-                        @Html.HiddenFor(model => model.ParametersEnabled[p], htmlAttributes: new { @class = "parameter-enabled" })
+                    @*var style = (Model.ParametersEnabled[p]) ? "" : "display:none";*@
+                    <div class="multiple-form-group" style="margin-bottom: 15px; ">
+                        @Html.HiddenFor(model => model.ParametersEnabled[p], htmlAttributes: new { @class = "parameter-enabled", @value="true" })
                         <div class="input-group">
                             
                             <div class="input-group-addon input-group-select">
@@ -55,7 +55,7 @@
                             </span>
 
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-danger btn-remove" >-</button>
+                                <button type="button" class="btn btn-danger btn-remove" disabled="disabled" >-</button>
                             </span>
 
                         </div>
@@ -85,6 +85,15 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+
+            //Hide all groups except the first
+            var hideAllControlGroups = function(){
+                var $controlGroups = $('.multiple-form.group');
+                $controlGroups.not($controlGroups.first());
+                $controlGroups.hide();
+                $controlGroups.find('.parameter-enabled').attr('value', 'False');
+                $controlGroups.find('')
+            }
 
             //Toggle last visible button
             var makeLastVisibleButtonGreen = function () {

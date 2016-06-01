@@ -57,7 +57,6 @@ namespace WatchdogMessageGenerator
 
         private static void GenerateMessages(Options options)
         {
-
             if (options.Reset)
             {
                 Reset(options);
@@ -80,23 +79,34 @@ namespace WatchdogMessageGenerator
             MessageRepository.Save();
         }
 
+        //TODO: inform user when couldn't delete something
         private static void Reset(Options options)
         {
-            DeleteMessageType(options);
-            MessageTypeRepository.Save();
-            DeleteEngine();
+            //TODO: Delete MTPT if it won't violate db constraints
+            //if (DeleteMessageTypeParameterType(options))
+                //InsertMessageTypeParameterType(options);
 
-            InsertEngine();
-            InsertMessageType(options);
-            MessageTypeRepository.Save();
+            if (DeleteMessageType(options))
+                InsertMessageType(options);
+
+            if (DeleteEngine())
+                InsertEngine();                
         }
 
-        private static void DeleteEngine()
+        /// <returns>If it's safe to insert the specified Engine</returns>
+        private static bool DeleteEngine()
         {
             Engine engineToRemove = EngineRepository.GetByName(engineName);
-            if (engineToRemove != null)
-                EngineRepository.Delete(engineToRemove);
+            if (engineToRemove == null)
+                return true;
+
+            //Don't delete if anything else references it, else will violate a referential constraint
+            if (engineToRemove.Alerts.Count != 0 || engineToRemove.Messages.Count != 0 || engineToRemove.Rules.Count != 0)
+                return false;
+
+            EngineRepository.Delete(engineToRemove);
             EngineRepository.Save();
+            return true;
         }
 
         private static void InsertEngine()
@@ -105,11 +115,16 @@ namespace WatchdogMessageGenerator
             EngineRepository.Save();
         }
 
-        private static void DeleteMessageType(Options options)
+        /// <returns>If it's safe to insert the specified MessageType</returns>
+        private static bool DeleteMessageType(Options options)
         {
             var messageTypeToRemove = MessageTypeRepository.GetByName(options.QueueSizeMessageTypeName);
             if (messageTypeToRemove == null)
-                return;
+                return true;
+
+            //Don't delete if a Rule is using it, else will violate a referential constraint
+            if (messageTypeToRemove.Rules.Count != 0)
+                return false;
 
             var messagesToRemove = messageTypeToRemove.Messages.ToList();
             var messageParametersToRemove = messagesToRemove.SelectMany(message => message.MessageParameters).ToList();
@@ -119,7 +134,22 @@ namespace WatchdogMessageGenerator
             MessageParameterRepository.DeleteRange(messageParametersToRemove);
             MessageTypeParameterTypeRepository.DeleteRange(messageTypeParameterTypesToRemove);
             MessageTypeRepository.Delete(messageTypeToRemove);
+            MessageTypeRepository.Save();
+            return true;
         }
+
+        /*
+        private static void DeleteMessageTypeParameterType(Options options)
+        {
+            var messageTypeParameterType = new MessageTypeParameterType
+            {
+                Name = "QueueSize",
+                Type = "integer"
+            };
+
+            MessageParameterRepository.GetByName(messageTypeParameterType.Name)
+
+        }*/
 
         private static void InsertMessageType(Options options)
         {
@@ -142,6 +172,7 @@ namespace WatchdogMessageGenerator
             {
                 MessageTypeRepository.Insert(messageType);
                 MessageTypeParameterTypeRepository.Insert(messageTypeParameterType);
+                MessageTypeRepository.Save();
             } else
             {
                 System.Console.WriteLine("Skipping insertion of MessageType " + messageType.Name + " since it already exists.");

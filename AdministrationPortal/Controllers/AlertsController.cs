@@ -30,25 +30,25 @@ namespace AdministrationPortal.Controllers
             switch (ActiveOrArchived)
             {
                 case "Resolved":
-                    alerts = alerts.Where(a => a.Status.ToString() == "Resolved");
-                    status = "Resolved";
+                    alerts = alerts.Where(a => a.AlertStatus.StatusCode == StatusCode.Resolved);
+                    status = StatusCode.Resolved.ToString();
                     break;
                 default:
-                    alerts = alerts.Where(a => a.Status.ToString() == "Acknowledged" || a.Status.ToString() == "UnAcknowledged");
-                    status = "Acknowledged";
+                    alerts = alerts.Where(a => a.AlertStatus.StatusCode == StatusCode.Acknowledged || a.AlertStatus.StatusCode == StatusCode.UnAcknowledged);
+                    status = StatusCode.Acknowledged.ToString();
                     break;
             }
 
             switch(sortOrder)
             {
                 case "Severity":
-                    alerts = alerts.OrderByDescending(a => a.Severity).ThenByDescending(a => a.TimeCreated);
+                    alerts = alerts.OrderByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.ModifiedAt);
                     break;
                 case "Time":
-                    alerts = alerts.OrderByDescending(a => a.TimeCreated);
+                    alerts = alerts.OrderByDescending(a => a.AlertStatus.ModifiedAt);
                     break;
                 case "Origin":
-                    alerts = alerts.OrderBy(a => a.Origin).ThenByDescending(a => a.TimeCreated);
+                    alerts = alerts.OrderBy(a => a.Origin).ThenByDescending(a => a.AlertStatus.ModifiedAt);
                     break;
                 case "AlertType":
                     alerts = alerts.OrderBy(a => a.AlertType.Name);
@@ -57,7 +57,7 @@ namespace AdministrationPortal.Controllers
                     alerts = alerts.OrderBy(a => a.Rule.SupportCategory.Name).ThenByDescending(a => a.Severity);
                     break;
                 default:
-                    alerts = alerts.OrderBy(a => a.Status).ThenByDescending(a => a.Severity).ThenByDescending(a => a.TimeCreated);
+                    alerts = alerts.OrderBy(a => a.AlertStatus.ModifiedAt).ThenByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.ModifiedAt);
                     break;
             }
 
@@ -130,7 +130,7 @@ namespace AdministrationPortal.Controllers
                 }
                 AlertRepository.Update(alertInDb);
                 AlertRepository.Save();
-                return RedirectToAction("Index", new {ActiveOrArchived = alert.Status.ToString() });
+                return RedirectToAction("Index", new {ActiveOrArchived = alert.AlertStatus.StatusCode.ToString() });
             }
 
             return View(alertViewModel);
@@ -141,7 +141,7 @@ namespace AdministrationPortal.Controllers
             Alert dbAlert = AlertRepository.GetById(newAlert.Id);
             if (dbAlert != null)
             {
-                dbAlert.Status = newAlert.Status;
+                dbAlert.AlertStatus = newAlert.AlertStatus;
                 dbAlert.Severity = newAlert.Severity;
                 dbAlert.Notes = newAlert.Notes;
             }

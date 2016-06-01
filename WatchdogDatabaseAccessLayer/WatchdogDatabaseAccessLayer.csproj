@@ -135,13 +135,18 @@
     <Compile Include="Models\RuleCategory.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\StatusCode.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SupportCategory.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Repositories\Database\EFAlertParameterRepository.cs" />
+    <Compile Include="Repositories\Database\EFAlertStatusRepository.cs" />
     <Compile Include="Repositories\Database\EFEngineRepository.cs" />
     <Compile Include="Repositories\Database\EFSupportCategoryRepository.cs" />
     <Compile Include="Repositories\Fake\ListAlertParameterRepository.cs" />
+    <Compile Include="Repositories\Fake\ListAlertStatus.cs" />
     <Compile Include="Repositories\Fake\ListEngineRepository.cs" />
     <Compile Include="Repositories\Fake\ListSupportCategoryRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
