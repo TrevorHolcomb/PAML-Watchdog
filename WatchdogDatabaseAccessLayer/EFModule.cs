@@ -8,7 +8,7 @@ namespace WatchdogDatabaseAccessLayer
     {
         public override void Load()
         {
-            Bind<WatchdogDatabaseContainer>().ToSelf().InSingletonScope();
+            Bind<WatchdogDatabaseContainer>().To<WatchdogDatabaseContainer>().InThreadScope();
 
             Bind<Repository<Alert>>().To<EFAlertRepository>();
             Bind<Repository<AlertType>>().To<EFAlertTypeRepository>();

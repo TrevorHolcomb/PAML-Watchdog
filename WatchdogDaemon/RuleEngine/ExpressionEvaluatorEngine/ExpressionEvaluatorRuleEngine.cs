@@ -62,7 +62,6 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
             foreach (MessageParameter messageParameter in message.MessageParameters){
                 alertParams.Add(new AlertParameter
                 {
-                    MessageId = messageParameter.MessageId,
                     MessageTypeParameterTypeId = messageParameter.MessageTypeParameterTypeId,
                     Value = messageParameter.Value,
                     MessageTypeParameterType = messageParameter.MessageTypeParameterType
@@ -83,12 +82,12 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
                 AlertParameters = alertParams,
                 AlertType = rule.AlertType,
                 AlertTypeId = rule.AlertTypeId,
-                Engine = rule.Engine,
+                Engine = message.Engine,
                 Notes = " ",
-                Origin = rule.Origin,
+                Origin = message.Origin,
                 Rule = rule,
                 RuleId = rule.Id,
-                Server = rule.Server,
+                Server = message.Server,
                 Severity = rule.DefaultSeverity,
                 AlertStatus = currentStatus,
                 MessageType = message.MessageType,

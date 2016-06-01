@@ -17,6 +17,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public int Id { get; set; }
         public string Value { get; set; }
         public int MessageId { get; set; }
+        public string Name { get; set; }
     
         public virtual UnvalidatedMessage Message { get; set; }
     }

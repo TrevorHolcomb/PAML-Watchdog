@@ -29,8 +29,8 @@ namespace WatchdogDatabaseAccessLayer.Models
         public int RuleId { get; set; }
         public string Assignee { get; set; }
         public string Notes { get; set; }
-        public string Origin { get; set; }
         public string Server { get; set; }
+        public string Origin { get; set; }
         public int Severity { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -24,8 +24,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         public System.DateTime ModifiedAt { get; set; }
         public string ModifiedBy { get; set; }
         public StatusCode StatusCode { get; set; }
-        public int AlertId { get; set; }
-        public int AlertAlertStatusId { get; set; }
     
         public virtual AlertStatus Next { get; set; }
         public virtual AlertStatus Prev { get; set; }

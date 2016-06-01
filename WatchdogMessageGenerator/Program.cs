@@ -101,7 +101,7 @@ namespace WatchdogMessageGenerator
                 return true;
 
             //Don't delete if anything else references it, else will violate a referential constraint
-            if (engineToRemove.Alerts.Count != 0 || engineToRemove.Messages.Count != 0 || engineToRemove.Rules.Count != 0)
+            if (engineToRemove.Alerts.Count != 0 || engineToRemove.Messages.Count != 0)
                 return false;
 
             EngineRepository.Delete(engineToRemove);

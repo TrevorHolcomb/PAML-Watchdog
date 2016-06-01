@@ -10,6 +10,9 @@
         <li class="@Html.HighlightIfActive("Home")">
             <a href="@Url.Action("Index", "Home")"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
         </li>
+        <li class="@Html.HighlightIfActive("Reports")">
+            <a href="@Url.Action("Index","Reports")"><i class="fa fa-file-text"></i> Reports</a>
+        </li>
         <li class="@Html.HighlightIfActive("Help")">
             <a href="@Url.Action("Index", "Help")"><i class="fa fa-fw fa-question"></i> Help!</a>
         </li>

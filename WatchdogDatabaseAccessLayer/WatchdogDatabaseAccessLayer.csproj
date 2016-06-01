@@ -95,6 +95,7 @@
     <Compile Include="Models\AlertStatus.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AlertStatusPartial.cs" />
     <Compile Include="Models\AlertType.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>

@@ -1,0 +1,10 @@
+﻿@model AdministrationPortal.ViewModels.Reports.BarChartViewModel
+
+@{
+    var myChart = new Chart(width: 600, height: 400)
+        .AddTitle(Model.Title)
+        .AddSeries(
+            xValue: Model.XAxis,
+            yValues: Model.YAxis)
+        .Write();
+}

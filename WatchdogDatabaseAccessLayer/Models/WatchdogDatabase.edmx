@@ -102,10 +102,6 @@
       <End Role="Engine" EntitySet="Engines" />
       <End Role="Message" EntitySet="Messages" />
     </AssociationSet>
-    <AssociationSet Name="EngineRule" Association="WatchdogDatabase.Store.EngineRule">
-      <End Role="Engine" EntitySet="Engines" />
-      <End Role="Rule" EntitySet="Rules" />
-    </AssociationSet>
     <AssociationSet Name="EngineAlert" Association="WatchdogDatabase.Store.EngineAlert">
       <End Role="Engine" EntitySet="Engines" />
       <End Role="Alert" EntitySet="Alerts" />
@@ -118,13 +114,13 @@
       <End Role="AlertStatus" EntitySet="AlertStatuses" />
       <End Role="AlertStatus1" EntitySet="AlertStatuses" />
     </AssociationSet>
-    <AssociationSet Name="AlertAlertStatus" Association="WatchdogDatabase.Store.AlertAlertStatus">
-      <End Role="Alert" EntitySet="Alerts" />
-      <End Role="AlertStatus" EntitySet="AlertStatuses" />
-	</AssociationSet>
     <AssociationSet Name="MessageMessageColumn1" Association="WatchdogDatabase.Store.MessageMessageColumn1">
       <End Role="Message1" EntitySet="UnvalidatedMessages" />
       <End Role="MessageParameter1" EntitySet="UnvalidatedMessageParameters" />
+    </AssociationSet>
+    <AssociationSet Name="AlertAlertStatus" Association="WatchdogDatabase.Store.AlertAlertStatus">
+      <End Role="Alert" EntitySet="Alerts" />
+      <End Role="AlertStatus" EntitySet="AlertStatuses" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Messages">
@@ -187,15 +183,12 @@
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
     <Property Name="RuleCreator" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="Origin" Type="nvarchar(max)" Nullable="false" DefaultValue="ALL" />
-    <Property Name="Server" Type="nvarchar(max)" Nullable="false" DefaultValue="ALL" />
     <Property Name="Expression" Type="nvarchar(max)" Nullable="false" />
     <Property Name="DefaultSeverity" Type="int" Nullable="false" DefaultValue="1" />
     <Property Name="AlertTypeId" Type="int" Nullable="false" />
     <Property Name="MessageTypeName" Type="nvarchar" Nullable="false" MaxLength="1000" />
     <Property Name="RuleCategoryId" Type="int" Nullable="false" />
     <Property Name="SupportCategoryId" Type="int" Nullable="false" />
-    <Property Name="EngineName" Type="nvarchar" Nullable="false" MaxLength="1000" />
   </EntityType>
   <EntityType Name="AlertTypes">
     <Key>
@@ -217,9 +210,10 @@
     <Property Name="RuleId" Type="int" Nullable="false" />
     <Property Name="Assignee" Type="nvarchar(max)" Nullable="false" DefaultValue="N/A" />
     <Property Name="Notes" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Severity" Type="int" Nullable="false" />
+    <Property Name="AlertStatus_Id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="RuleCategories">
     <Key>
@@ -254,7 +248,6 @@
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Value" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="MessageId" Type="int" Nullable="false" />
     <Property Name="MessageTypeParameterTypeId" Type="int" Nullable="false" />
     <Property Name="AlertId" Type="int" Nullable="false" />
   </EntityType>
@@ -280,8 +273,6 @@
     <Property Name="ModifiedAt" Type="datetime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
     <Property Name="ModifiedBy" Type="nvarchar" Nullable="false" MaxLength="1000" />
     <Property Name="StatusCode" Type="int" Nullable="false" />
-    <Property Name="AlertId" Type="int" Nullable="false" />
-    <Property Name="AlertAlertStatusId" Type="int" Nullable="false" />
     <Property Name="Prev_Id" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="UnvalidatedMessages">
@@ -302,6 +293,7 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Value" Type="nvarchar(max)" Nullable="false" />
     <Property Name="MessageId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="NotifyeeNotifyeeGroup">
     <Key>
@@ -499,18 +491,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="EngineRule">
-    <End Role="Engine" Type="WatchdogDatabase.Store.Engines" Multiplicity="1" />
-    <End Role="Rule" Type="WatchdogDatabase.Store.Rules" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Engine">
-        <PropertyRef Name="Name" />
-      </Principal>
-      <Dependent Role="Rule">
-        <PropertyRef Name="EngineName" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="EngineAlert">
     <End Role="Engine" Type="WatchdogDatabase.Store.Engines" Multiplicity="1" />
     <End Role="Alert" Type="WatchdogDatabase.Store.Alerts" Multiplicity="*" />
@@ -547,18 +527,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="AlertAlertStatus">
-    <End Role="Alert" Type="WatchdogDatabase.Store.Alerts" Multiplicity="1" />
-    <End Role="AlertStatus" Type="WatchdogDatabase.Store.AlertStatuses" Multiplicity="0..1" />
-    <ReferentialConstraint>
-      <Principal Role="Alert">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="AlertStatus">
-        <PropertyRef Name="Id" />
-		</Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="MessageMessageColumn1">
     <End Role="Message1" Type="WatchdogDatabase.Store.UnvalidatedMessages" Multiplicity="1" />
     <End Role="MessageParameter1" Type="WatchdogDatabase.Store.UnvalidatedMessageParameters" Multiplicity="*" />
@@ -568,6 +536,18 @@
       </Principal>
       <Dependent Role="MessageParameter1">
         <PropertyRef Name="MessageId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AlertAlertStatus">
+    <End Role="Alert" Type="WatchdogDatabase.Store.Alerts" Multiplicity="*" />
+    <End Role="AlertStatus" Type="WatchdogDatabase.Store.AlertStatuses" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="AlertStatus">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Alert">
+        <PropertyRef Name="AlertStatus_Id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -686,8 +666,8 @@
             <End Role="MessageTypeParameterType" EntitySet="MessageTypeParameterTypes" />
           </AssociationSet>
           <AssociationSet Name="AlertAlertParameter" Association="WatchdogDatabase.AlertAlertParameter">
-            <End Role="Alert" EntitySet="Alerts" />
-            <End Role="AlertParameter" EntitySet="AlertParameters" />
+            <End EntitySet="Alerts" Role="Alert" />
+            <End EntitySet="AlertParameters" Role="AlertParameter" />
           </AssociationSet>
           <EntitySet Name="SupportCategories" EntityType="WatchdogDatabase.SupportCategory" />
           <AssociationSet Name="RuleSupportCategory" Association="WatchdogDatabase.RuleSupportCategory">
@@ -707,10 +687,6 @@
             <End Role="Engine" EntitySet="Engines" />
             <End Role="Message" EntitySet="Messages" />
           </AssociationSet>
-          <AssociationSet Name="EngineRule" Association="WatchdogDatabase.EngineRule">
-            <End Role="Engine" EntitySet="Engines" />
-            <End Role="Rule" EntitySet="Rules" />
-          </AssociationSet>
           <AssociationSet Name="EngineAlert" Association="WatchdogDatabase.EngineAlert">
             <End Role="Engine" EntitySet="Engines" />
             <End Role="Alert" EntitySet="Alerts" />
@@ -724,15 +700,15 @@
             <End Role="AlertStatus" EntitySet="AlertStatuses" />
             <End Role="AlertStatus1" EntitySet="AlertStatuses" />
           </AssociationSet>
-          <AssociationSet Name="AlertAlertStatus" Association="WatchdogDatabase.AlertAlertStatus">
-            <End Role="Alert" EntitySet="Alerts" />
-            <End Role="AlertStatus" EntitySet="AlertStatuses" />
-		  </AssociationSet>
           <EntitySet Name="UnvalidatedMessages" EntityType="WatchdogDatabase.UnvalidatedMessage" />
           <EntitySet Name="UnvalidatedMessageParameters" EntityType="WatchdogDatabase.UnvalidatedMessageParameter" />
           <AssociationSet Name="MessageMessageColumn1" Association="WatchdogDatabase.MessageMessageColumn1">
             <End Role="Message1" EntitySet="UnvalidatedMessages" />
             <End Role="MessageParameter1" EntitySet="UnvalidatedMessageParameters" />
+          </AssociationSet>
+          <AssociationSet Name="AlertAlertStatus" Association="WatchdogDatabase.AlertAlertStatus">
+            <End Role="Alert" EntitySet="Alerts" />
+            <End Role="AlertStatus" EntitySet="AlertStatuses" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Message">
@@ -835,8 +811,6 @@
               <Summary>Who Created this rule</Summary>
             </Documentation>
           </Property>
-          <Property Name="Origin" Type="String" Nullable="false" DefaultValue="ALL" annotation:StoreGeneratedPattern="None" />
-          <Property Name="Server" Type="String" Nullable="false" DefaultValue="ALL" annotation:StoreGeneratedPattern="None" />
           <Property Name="Expression" Type="String" Nullable="false" />
           <NavigationProperty Name="MessageType" Relationship="WatchdogDatabase.RuleMessageType" FromRole="Rule" ToRole="MessageType" />
           <NavigationProperty Name="AlertType" Relationship="WatchdogDatabase.AlertTypeRule" FromRole="Rule" ToRole="AlertType" />
@@ -848,8 +822,6 @@
           <Property Name="MessageTypeName" Type="String" Nullable="false" MaxLength="1000" />
           <Property Name="RuleCategoryId" Type="Int32" Nullable="false" />
           <Property Name="SupportCategoryId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Engine" Relationship="WatchdogDatabase.EngineRule" FromRole="Rule" ToRole="Engine" />
-          <Property Name="EngineName" Type="String" Nullable="false" MaxLength="1000" />
         </EntityType>
         <EntityType Name="AlertType">
           <Key>
@@ -889,8 +861,8 @@
           <Property Name="RuleId" Type="Int32" Nullable="false" />
           <Property Name="Assignee" Type="String" Nullable="false" DefaultValue="N/A" />
           <Property Name="Notes" Type="String" Nullable="false" />
+          <Property Name="Server" Nullable="false" Type="String" />
           <Property Name="Origin" Type="String" Nullable="false" />
-          <Property Name="Server" Type="String" Nullable="false" />
           <Property Name="Severity" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AlertParameters" Relationship="WatchdogDatabase.AlertAlertParameter" FromRole="Alert" ToRole="AlertParameter" />
           <NavigationProperty Name="AlertType" Relationship="WatchdogDatabase.AlertAlertType" FromRole="Alert" ToRole="AlertType" />
@@ -995,11 +967,10 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Value" Type="String" Nullable="false" />
-          <Property Name="MessageId" Type="Int32" Nullable="false" />
           <Property Name="MessageTypeParameterTypeId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="MessageTypeParameterType" Relationship="WatchdogDatabase.AlertParameterMessageTypeParameterType" FromRole="AlertParameter" ToRole="MessageTypeParameterType" />
           <NavigationProperty Name="Alert" Relationship="WatchdogDatabase.AlertAlertParameter" FromRole="AlertParameter" ToRole="Alert" />
-          <Property Name="AlertId" Type="Int32" Nullable="false" />
+          <Property Name="AlertId" Nullable="false" Type="Int32" />
         </EntityType>
         <Association Name="AlertParameterMessageTypeParameterType">
           <End Type="WatchdogDatabase.AlertParameter" Role="AlertParameter" Multiplicity="*" />
@@ -1014,8 +985,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="AlertAlertParameter">
-          <End Type="WatchdogDatabase.Alert" Role="Alert" Multiplicity="1" />
-          <End Type="WatchdogDatabase.AlertParameter" Role="AlertParameter" Multiplicity="*" />
+          <End Type="WatchdogDatabase.Alert" Multiplicity="1" Role="Alert" />
+          <End Type="WatchdogDatabase.AlertParameter" Multiplicity="*" Role="AlertParameter" />
           <ReferentialConstraint>
             <Principal Role="Alert">
               <PropertyRef Name="Id" />
@@ -1076,7 +1047,6 @@
           </Key>
           <Property Name="Name" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="1000" />
           <NavigationProperty Name="Messages" Relationship="WatchdogDatabase.EngineMessage" FromRole="Engine" ToRole="Message" />
-          <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.EngineRule" FromRole="Engine" ToRole="Rule" />
           <NavigationProperty Name="Alerts" Relationship="WatchdogDatabase.EngineAlert" FromRole="Engine" ToRole="Alert" />
         </EntityType>
         <Association Name="EngineMessage">
@@ -1087,18 +1057,6 @@
               <PropertyRef Name="Name" />
             </Principal>
             <Dependent Role="Message">
-              <PropertyRef Name="EngineName" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="EngineRule">
-          <End Type="WatchdogDatabase.Engine" Role="Engine" Multiplicity="1" />
-          <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Engine">
-              <PropertyRef Name="Name" />
-            </Principal>
-            <Dependent Role="Rule">
               <PropertyRef Name="EngineName" />
             </Dependent>
           </ReferentialConstraint>
@@ -1137,25 +1095,11 @@
           <Property Name="StatusCode" Type="WatchdogDatabase.StatusCode" Nullable="false" />
           <NavigationProperty Name="Next" Relationship="WatchdogDatabase.AlertStatusAlertStatus" FromRole="AlertStatus" ToRole="AlertStatus1" />
           <NavigationProperty Name="Prev" Relationship="WatchdogDatabase.AlertStatusAlertStatus" FromRole="AlertStatus1" ToRole="AlertStatus" />
-          <Property Name="AlertId" Type="Int32" Nullable="false" />
-          <Property Name="AlertAlertStatusId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Alert" Relationship="WatchdogDatabase.AlertAlertStatus" FromRole="AlertStatus" ToRole="Alert" />
         </EntityType>
         <Association Name="AlertStatusAlertStatus">
           <End Type="WatchdogDatabase.AlertStatus" Role="AlertStatus" Multiplicity="0..1" />
           <End Type="WatchdogDatabase.AlertStatus" Role="AlertStatus1" Multiplicity="0..1" />
-        </Association>
-        <Association Name="AlertAlertStatus">
-          <End Type="WatchdogDatabase.Alert" Role="Alert" Multiplicity="1" />
-          <End Type="WatchdogDatabase.AlertStatus" Role="AlertStatus" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Alert">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AlertStatus">
-              <PropertyRef Name="Id" />
-			</Dependent>
-          </ReferentialConstraint>
         </Association>
         <EntityType Name="UnvalidatedMessage">
           <Key>
@@ -1177,6 +1121,7 @@
           <Property Name="Value" Type="String" Nullable="false" />
           <Property Name="MessageId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Message" Relationship="WatchdogDatabase.MessageMessageColumn1" FromRole="MessageParameter1" ToRole="Message1" />
+          <Property Name="Name" Type="String" Nullable="false" />
         </EntityType>
         <Association Name="MessageMessageColumn1">
           <End Type="WatchdogDatabase.UnvalidatedMessage" Role="Message1" Multiplicity="1" />
@@ -1189,6 +1134,10 @@
               <PropertyRef Name="MessageId" />
             </Dependent>
           </ReferentialConstraint>
+        </Association>
+        <Association Name="AlertAlertStatus">
+          <End Type="WatchdogDatabase.Alert" Role="Alert" Multiplicity="0..1" />
+          <End Type="WatchdogDatabase.AlertStatus" Role="AlertStatus" Multiplicity="1" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -1258,15 +1207,12 @@
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="RuleCreator" ColumnName="RuleCreator" />
-          <ScalarProperty Name="Origin" ColumnName="Origin" />
-          <ScalarProperty Name="Server" ColumnName="Server" />
           <ScalarProperty Name="Expression" ColumnName="Expression" />
           <ScalarProperty Name="DefaultSeverity" ColumnName="DefaultSeverity" />
           <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />
           <ScalarProperty Name="MessageTypeName" ColumnName="MessageTypeName" />
           <ScalarProperty Name="RuleCategoryId" ColumnName="RuleCategoryId" />
           <ScalarProperty Name="SupportCategoryId" ColumnName="SupportCategoryId" />
-          <ScalarProperty Name="EngineName" ColumnName="EngineName" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1290,8 +1236,8 @@
           <ScalarProperty Name="RuleId" ColumnName="RuleId" />
           <ScalarProperty Name="Assignee" ColumnName="Assignee" />
           <ScalarProperty Name="Notes" ColumnName="Notes" />
-          <ScalarProperty Name="Origin" ColumnName="Origin" />
           <ScalarProperty Name="Server" ColumnName="Server" />
+          <ScalarProperty Name="Origin" ColumnName="Origin" />
           <ScalarProperty Name="Severity" ColumnName="Severity" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -1331,7 +1277,6 @@
         <MappingFragment StoreEntitySet="AlertParameters">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Value" ColumnName="Value" />
-          <ScalarProperty Name="MessageId" ColumnName="MessageId" />
           <ScalarProperty Name="MessageTypeParameterTypeId" ColumnName="MessageTypeParameterTypeId" />
           <ScalarProperty Name="AlertId" ColumnName="AlertId" />
         </MappingFragment>
@@ -1360,11 +1305,9 @@
           <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
           <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
           <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
-          <ScalarProperty Name="AlertId" ColumnName="AlertId" />
-          <ScalarProperty Name="AlertAlertStatusId" ColumnName="AlertAlertStatusId" />
-		</MappingFragment>
+        </MappingFragment>
       </EntityTypeMapping>
-	</EntitySetMapping>  
+    </EntitySetMapping>
     <EntitySetMapping Name="UnvalidatedMessages">
       <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.UnvalidatedMessage)">
         <MappingFragment StoreEntitySet="UnvalidatedMessages">
@@ -1383,6 +1326,7 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Value" ColumnName="Value" />
           <ScalarProperty Name="MessageId" ColumnName="MessageId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1436,6 +1380,14 @@
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
       <Condition ColumnName="Prev_Id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AlertAlertStatus" TypeName="WatchdogDatabase.AlertAlertStatus" StoreEntitySet="Alerts">
+      <EndProperty Name="AlertStatus">
+        <ScalarProperty Name="Id" ColumnName="AlertStatus_Id" />
+      </EndProperty>
+      <EndProperty Name="Alert">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
     </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>

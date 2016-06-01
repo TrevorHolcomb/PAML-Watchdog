@@ -1,0 +1,30 @@
+﻿@using AdministrationPortal.ViewModels.Reports
+@model ReportViewModel
+
+@{
+    Layout = "";
+}
+
+@{
+    ViewBag.Title = "Report";
+}
+
+<h2>Report</h2>
+<h3>Between @Model.DateTimeRange.Start.ToString() and @Model.DateTimeRange.End.ToString()</h3>
+
+@if (Model.AlertsPerOrigin)
+{
+    <div>
+        <img src="@Url.Action("AlertsPerOrigin", Model.DateTimeRange)" />
+    </div>
+}
+
+@if (Model.AlertsPerServer)
+{
+    <div>
+        <img src="@Url.Action("AlertsPerServer", Model.DateTimeRange)" />
+    </div>
+}
+
+
+     

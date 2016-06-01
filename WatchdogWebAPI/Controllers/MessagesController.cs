@@ -1,12 +1,10 @@
-﻿using System;
-using System.Data;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
-using WatchdogDatabaseAccessLayer.Models;
-using WatchdogWebAPI.Models;
 using Ninject;
+﻿using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
+using WatchdogWebAPI.Models;
 
 namespace WatchdogWebAPI.Controllers
 {
@@ -15,19 +13,17 @@ namespace WatchdogWebAPI.Controllers
         [Inject]
         public Repository<UnvalidatedMessage> UnvalidatedMessageRepository { private get; set; }
         [Inject]
-        public Repository<MessageType> messageTypeRepository { private get; set; }
+        public Repository<MessageType> MessageTypeRepository { private get; set; }
         [Inject]
-        public Repository<MessageTypeParameterType> messageTypeParameterTypeRepository { private get; set; }
-
-
+        public Repository<MessageTypeParameterType> MessageTypeParameterTypeRepository { private get; set; }
 
         #region GET
 
         // GET: api/Messages
         public IQueryable<MessageTypeDTO> GetMessageTypes()
         {
-            var messageTypes = from mt in messageTypeRepository.Get().AsQueryable()
-                        select new MessageTypeDTO()
+            var messageTypes = from mt in MessageTypeRepository.Get().AsQueryable()
+                        select new MessageTypeDTO
                         {
                             Name = mt.Name,
                             Descrpiton = mt.Description
@@ -40,27 +36,27 @@ namespace WatchdogWebAPI.Controllers
         [ResponseType(typeof(MessageTypeDetailDTO))]
         public IHttpActionResult GetMessageType(string name)
         {
-            MessageType messageType = messageTypeRepository.GetByName(name);
+            var messageType = MessageTypeRepository.GetByName(name);
 
-            var param = from messageParameter in messageTypeParameterTypeRepository.Get().Where(messageTypeParameter => messageTypeParameter.MessageTypeName == name).AsQueryable()
-                        select new APIMessageParameter()
+            var param = from messageParameter in MessageTypeParameterTypeRepository.Get().Where(messageTypeParameter => messageTypeParameter.MessageTypeName == name).AsQueryable()
+                        select new APIMessageParameter
                         {
                             name = messageParameter.Name,
                             value = messageParameter.Type
                         };
 
-            APIMessageParameter[] paramsArray = param.ToArray<APIMessageParameter>();
+            var paramsArray = param.ToArray();
 
             if (messageType == null)
             {
                 return NotFound();
             }
 
-            MessageTypeDetailDTO toReturn = new MessageTypeDetailDTO
+            var toReturn = new MessageTypeDetailDTO
             {
                 Name = messageType.Name,
                 Description = messageType.Description,
-                parameters = paramsArray,
+                parameters = paramsArray
             };
 
             return Ok(toReturn);  
@@ -70,17 +66,16 @@ namespace WatchdogWebAPI.Controllers
         #endregion
 
         #region POST
-
+        //TODO: This needs to be cleaned up and broken into multiple methods.
         //POST: api/Messages ---- JSON within body
         //[ResponseType(typeof(OutGoingMessage))]
         [ResponseType(typeof(string))]
         public IHttpActionResult PostMessage(IncomingMessage incomingMessage)
         {
-
             if (incomingMessage == null)
                 return Conflict();
 
-            UnvalidatedMessage toDatabase = new UnvalidatedMessage
+            var toDatabase = new UnvalidatedMessage
             {
                 Server = incomingMessage.Server,
                 EngineName = incomingMessage.Engine,
@@ -89,18 +84,17 @@ namespace WatchdogWebAPI.Controllers
             };
                 
                 
-            foreach(APIMessageParameter param in incomingMessage.Params)
+            foreach(var param in incomingMessage.Params)
             {
-                toDatabase.MessageParameters.Add(new UnvalidatedMessageParameter {Value = param.value, Message = toDatabase });
+                toDatabase.MessageParameters.Add(new UnvalidatedMessageParameter {Value = param.value, Message = toDatabase, Name = param.name});
             }
 
 
             UnvalidatedMessageRepository.Insert(toDatabase);
             UnvalidatedMessageRepository.Save();
 
-
             //incoming message gets moved to new model for return
-            OutGoingMessage toReturn = new OutGoingMessage
+            var toReturn = new OutGoingMessage
             {
                 Server = incomingMessage.Server,
                 Engine = incomingMessage.Engine,
@@ -108,6 +102,7 @@ namespace WatchdogWebAPI.Controllers
                 MessageTypeName = incomingMessage.MessageTypeName,
                 Params = incomingMessage.Params
             };
+
 
             return Ok(toReturn);
         }

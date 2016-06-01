@@ -13,9 +13,6 @@ namespace AdministrationPortal.ViewModels.Rules
         public string Description { get; set; }
         public int DefaultSeverity { get; set; }
         public string Expression { get; set; }
-        public string Origin { get; set; }
-        public string Server { get; set; }
-        public string Engine { get; set; }
         public string RuleCreator { get; set; }
         public int[] RuleCategoryIds { get; set; }
 
@@ -28,13 +25,10 @@ namespace AdministrationPortal.ViewModels.Rules
             rule.AlertTypeId = AlertTypeId;
             rule.DefaultSeverity = DefaultSeverity;
             rule.Description = Description;
-            rule.EngineName = Engine;
             rule.Expression = Expression;
             rule.MessageTypeName = MessageTypeName;
             rule.Name = Name;
-            rule.Origin = Origin;
             rule.RuleCreator = RuleCreator;
-            rule.Server = Server;
             rule.SupportCategoryId = SupportCategoryId;
             rule.RuleCategories = ruleCategories.Where(e => RuleCategoryIds.Contains(e.Id)).ToList();
         }

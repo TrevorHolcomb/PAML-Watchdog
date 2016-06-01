@@ -94,11 +94,8 @@ namespace AdministrationPortal.Controllers
                     SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
                     EngineList = new SelectList(EngineRepository.Get(), "Name", "Name")
                 },
-                Origin = rule.Origin,
                 RuleCreator = rule.RuleCreator,
-                Server = rule.Server,
                 Description = rule.Description,
-                Engine = rule.EngineName,
                 Expression = rule.Expression,
                 Name = rule.Name,
                 MessageTypeName = rule.MessageTypeName,
