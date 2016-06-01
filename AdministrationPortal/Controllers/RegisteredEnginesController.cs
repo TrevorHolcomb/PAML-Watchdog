@@ -106,7 +106,7 @@ namespace AdministrationPortal.Controllers
             }
 
             //TODO: inform user that the engine is in use
-            if (toDelete.Alerts.Count != 0 || toDelete.Messages.Count != 0 || toDelete.Rules.Count != 0)
+            if (toDelete.Alerts.Count != 0 || toDelete.Messages.Count != 0 || toDelete.Alerts.Count != 0)
                 return RedirectToAction("Index");
 
             EngineRepository.Delete(toDelete);

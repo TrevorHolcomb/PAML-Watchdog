@@ -1,30 +1,24 @@
-﻿using System;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Ninject;
 using WatchdogDatabaseAccessLayer;
 using WatchdogDatabaseAccessLayer.Models;
-using WatchdogWebAPI.Models;
-using Ninject;
 using WatchdogDatabaseAccessLayer.Repositories;
+using WatchdogWebAPI.Models;
 
 namespace WatchdogWebAPI.Controllers
 {
     public class MessagesController : ApiController
     {
         [Inject]
-        public Repository<Message> messageRepository { private get; set; }
+        public Repository<Message> MessageRepository { private get; set; }
         [Inject]
-        public Repository<MessageParameter> messageParameterRepository { private get; set; }
+        public Repository<MessageParameter> MessageParameterRepository { private get; set; }
         [Inject]
-        public Repository<MessageType> messageTypeRepository { private get; set; }
+        public Repository<MessageType> MessageTypeRepository { private get; set; }
         [Inject]
-        public Repository<MessageTypeParameterType> messageTypeParameterTypeRepository { private get; set; }
+        public Repository<MessageTypeParameterType> MessageTypeParameterTypeRepository { private get; set; }
 
 
 
@@ -33,8 +27,8 @@ namespace WatchdogWebAPI.Controllers
         // GET: api/Messages
         public IQueryable<MessageTypeDTO> GetMessageTypes()
         {
-            var messageTypes = from mt in messageTypeRepository.Get().AsQueryable()
-                        select new MessageTypeDTO()
+            var messageTypes = from mt in MessageTypeRepository.Get().AsQueryable()
+                        select new MessageTypeDTO
                         {
                             Name = mt.Name,
                             Descrpiton = mt.Description
@@ -47,27 +41,27 @@ namespace WatchdogWebAPI.Controllers
         [ResponseType(typeof(MessageTypeDetailDTO))]
         public IHttpActionResult GetMessageType(string name)
         {
-            MessageType messageType = messageTypeRepository.GetByName(name);
+            var messageType = MessageTypeRepository.GetByName(name);
 
-            var param = from messageParameter in messageTypeParameterTypeRepository.Get().Where(messageTypeParameter => messageTypeParameter.MessageTypeName == name).AsQueryable()
-                        select new APIMessageParameter()
+            var param = from messageParameter in MessageTypeParameterTypeRepository.Get().Where(messageTypeParameter => messageTypeParameter.MessageTypeName == name).AsQueryable()
+                        select new APIMessageParameter
                         {
                             name = messageParameter.Name,
                             value = messageParameter.Type
                         };
 
-            APIMessageParameter[] paramsArray = param.ToArray<APIMessageParameter>();
+            var paramsArray = param.ToArray();
 
             if (messageType == null)
             {
                 return NotFound();
             }
 
-            MessageTypeDetailDTO toReturn = new MessageTypeDetailDTO
+            var toReturn = new MessageTypeDetailDTO
             {
                 Name = messageType.Name,
                 Description = messageType.Description,
-                parameters = paramsArray,
+                parameters = paramsArray
             };
 
             return Ok(toReturn);  
@@ -77,88 +71,68 @@ namespace WatchdogWebAPI.Controllers
         #endregion
 
         #region POST
-
+        //TODO: This needs to be cleaned up and broken into multiple methods.
         //POST: api/Messages ---- JSON within body
         //[ResponseType(typeof(OutGoingMessage))]
         [ResponseType(typeof(string))]
         public IHttpActionResult PostMessage(IncomingMessage incomingMessage)
         {
             
-            bool isValidMessage = isValid(incomingMessage);
+            var isValidMessage = IsValid(incomingMessage);
             
             //if properly formatted message create a new message object to add to database
-            if (isValidMessage)
+            if (!isValidMessage) return Conflict();
+            var toDatabase = new Message
             {
-                
-                Message toDatabase = new Message
+                Server = incomingMessage.Server,
+                //Engine = incomingMessage.Engine,
+                Origin = incomingMessage.Origin,
+                MessageTypeName = incomingMessage.MessageTypeName,
+                IsProcessed = false
+            };
+
+            //insert Message
+            MessageRepository.Insert(toDatabase);
+            MessageRepository.Save();
+
+                           
+            foreach (var param in incomingMessage.Params){
+
+                //validation should catch a fail before this point
+                var toInsert = new MessageParameter
                 {
-                    Server = incomingMessage.Server,
-                    //Engine = incomingMessage.Engine,
-                    Origin = incomingMessage.Origin,
-                    MessageTypeName = incomingMessage.MessageTypeName,
-                    IsProcessed = false
+                    MessageId = toDatabase.Id,
+                    Value = param.value
                 };
-
-                //insert Message
-                messageRepository.Insert(toDatabase);
-                messageRepository.Save();
-
-
-                MessageType messageType = messageTypeRepository.GetByName(incomingMessage.MessageTypeName);
-
-                //gets the parameter types of inserted message
-                var parameterTypes = messageTypeParameterTypeRepository.Get().Where(messageTypeParameter => messageTypeParameter.MessageTypeName == incomingMessage.MessageTypeName).AsQueryable();
-                            
-
-                foreach (APIMessageParameter param in incomingMessage.Params){
-
-                    //find the parameter type id
-                    //validation should catch a fail before this point
-                    int paramId = parameterTypes.First(curParam => curParam.Name.Equals(param.name)).Id;
-
-
-                    MessageParameter toInsert = new MessageParameter
-                    {
-                        MessageId = toDatabase.Id,
-                        Value = param.value,
-                    };
-                    //insert parameters
-                    messageParameterRepository.Insert(toInsert);
-                    messageParameterRepository.Save();
-                }
-
-
-                //incoming message gets moved to new model for return
-                OutGoingMessage toReturn = new OutGoingMessage
-                {
-                    Server = incomingMessage.Server,
-                    Engine = incomingMessage.Engine,
-                    Origin = incomingMessage.Origin,
-                    MessageTypeName = incomingMessage.MessageTypeName,
-                    Params = incomingMessage.Params
-                };
-
-                return Ok(toReturn);
+                //insert parameters
+                MessageParameterRepository.Insert(toInsert);
+                MessageParameterRepository.Save();
             }
-            //Message was not properly formatted
-            else
+
+
+            //incoming message gets moved to new model for return
+            var toReturn = new OutGoingMessage
             {
-                return Conflict();
-            }
+                Server = incomingMessage.Server,
+                Engine = incomingMessage.Engine,
+                Origin = incomingMessage.Origin,
+                MessageTypeName = incomingMessage.MessageTypeName,
+                Params = incomingMessage.Params
+            };
+
+            return Ok(toReturn);
         }
 
         #endregion
 
         #region private methods
 
-        private bool isValid(IncomingMessage messageToValidate)
+        private static bool IsValid(IncomingMessage messageToValidate)
         {
-            bool valid = true;
-
             if (messageToValidate == null)
                 return false;
 
-            valid = WatchdogValidator.validateServer(messageToValidate.Server);
+            var valid = WatchdogValidator.validateServer(messageToValidate.Server);
             if (!valid)
                 return false;
 
@@ -175,7 +149,7 @@ namespace WatchdogWebAPI.Controllers
                 return false;
 
 
-            return valid;
+            return true;
         }
 
         #endregion

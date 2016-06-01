@@ -32,7 +32,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         public string Server { get; set; }
         public string Origin { get; set; }
         public string MessageTypeName { get; set; }
-        public int AlertParameterId { get; set; }
         public string Assignee { get; set; }
         public string EngineName { get; set; }
     

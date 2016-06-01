@@ -11,9 +11,6 @@ namespace AdministrationPortal.ViewModels.Rules
         public string Description { get; set; }
         public int DefaultSeverity { get; set; }
         public string Expression { get; set; }
-        public string Origin { get; set; }
-        public string Server { get; set; }
-        public string Engine { get; set; }
         public string RuleCreator { get; set; }
         public int[] RuleCategoryIds { get; set; }
 
