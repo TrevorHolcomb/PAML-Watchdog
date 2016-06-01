@@ -19,7 +19,7 @@ namespace WatchdogWebAPI.Controllers
 
         #region GET
 
-        // GET: api/Messages
+        // GET: api/Messages/GetMessageTypes
         public IQueryable<MessageTypeDTO> GetMessageTypes()
         {
             var messageTypes = from mt in MessageTypeRepository.Get().AsQueryable()
@@ -32,7 +32,7 @@ namespace WatchdogWebAPI.Controllers
             return messageTypes;
         }
 
-        // GET: api/Messages/id
+        // GET: api/Messages/GetMessageType/id
         [ResponseType(typeof(MessageTypeDetailDTO))]
         public IHttpActionResult GetMessageType(string name)
         {
@@ -66,15 +66,45 @@ namespace WatchdogWebAPI.Controllers
         #endregion
 
         #region POST
-        //TODO: This needs to be cleaned up and broken into multiple methods.
-        //POST: api/Messages ---- JSON within body
-        //[ResponseType(typeof(OutGoingMessage))]
+        //POST: api/Messages/PostMessage ---- JSON within body
         [ResponseType(typeof(string))]
         public IHttpActionResult PostMessage(IncomingMessage incomingMessage)
         {
             if (incomingMessage == null)
                 return Conflict();
 
+            AddToDatabase(incomingMessage);
+            var toReturn = GenerateOutgoingMessage(incomingMessage);
+  
+            return Ok(toReturn);
+        }
+
+        //POST: api/Messages/PostMessageArray ---- JSON within body
+        [ResponseType(typeof(string))]
+        public IHttpActionResult PostMessageArray(IncomingMessage[] incomingMessages)
+        {
+            if (incomingMessages == null)
+                return Conflict();
+
+
+            OutGoingMessage[] toReturn = new OutGoingMessage[incomingMessages.Length];
+
+            for(int x = 0; x < incomingMessages.Length; x++)
+            {
+                AddToDatabase(incomingMessages[x]);
+                toReturn[x] = GenerateOutgoingMessage(incomingMessages[x]);
+            }
+
+            return Ok(toReturn);
+        }
+
+        #endregion
+
+
+        #region private methods
+
+        private void AddToDatabase(IncomingMessage incomingMessage)
+        {
             var toDatabase = new UnvalidatedMessage
             {
                 Server = incomingMessage.Server,
@@ -82,19 +112,21 @@ namespace WatchdogWebAPI.Controllers
                 Origin = incomingMessage.Origin,
                 MessageTypeName = incomingMessage.MessageTypeName
             };
-                
-                
-            foreach(var param in incomingMessage.Params)
+
+
+            foreach (var param in incomingMessage.Params)
             {
-                toDatabase.MessageParameters.Add(new UnvalidatedMessageParameter {Value = param.value, Message = toDatabase, Name = param.name});
+                toDatabase.MessageParameters.Add(new UnvalidatedMessageParameter { Value = param.value, Message = toDatabase, Name = param.name });
             }
 
 
             UnvalidatedMessageRepository.Insert(toDatabase);
             UnvalidatedMessageRepository.Save();
+        }
 
-            //incoming message gets moved to new model for return
-            var toReturn = new OutGoingMessage
+        private OutGoingMessage GenerateOutgoingMessage(IncomingMessage incomingMessage)
+        {
+            OutGoingMessage toReturn = new OutGoingMessage
             {
                 Server = incomingMessage.Server,
                 Engine = incomingMessage.Engine,
@@ -103,8 +135,7 @@ namespace WatchdogWebAPI.Controllers
                 Params = incomingMessage.Params
             };
 
-
-            return Ok(toReturn);
+            return toReturn;
         }
 
         #endregion

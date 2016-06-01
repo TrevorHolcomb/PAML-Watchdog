@@ -132,7 +132,7 @@ namespace WatchdogDaemon.Watchdogs
             if (messageTypeToValidate == null)
                 throw new WatchdogInvalidEngineExcpetion("MessageType is null.");
 
-            //check engine registry
+            //check message type registry
             MessageType messageTypeToValidaate = MessageTypeRepository.GetByName(messageTypeToValidate);
             if (messageTypeToValidate == null)
                 throw new WatchdogInvalidMessageTypeExcpetion("MessageType could not be found in registry.");
