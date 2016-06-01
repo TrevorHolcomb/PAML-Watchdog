@@ -32,12 +32,12 @@ textarea {
 .redTableCell,
 .table-striped > tbody > tr:nth-child(odd) > .redTableCell
 {
-    background-color: #ff0000;
+    background-color: #FF0000;
 }
 
 /* Overrides table-hover to change hover color of the status td*/
 .table-hover > tbody > tr:hover > .redTableCell{
-    background-color: #e60000;
+    background-color: #ED1515;
 }
 
 
@@ -45,50 +45,45 @@ textarea {
 .yellowTableCell,
 .table-striped > tbody > tr:nth-child(odd) > .yellowTableCell
 {
-    background-color: #ffff00;
+    background-color: #FFFB00;
 }
 /* Overrides table-hover to change hover color of the status td*/
 .table-hover > tbody > tr:hover > .yellowTableCell{
-    background-color: #e6e600;
+    background-color: #E3DF07;
 }
 
 /* Overrides bootstra table-striped class to allow for yellow bg color in the status td*/
 .greenTableCell,
 .table-striped > tbody > tr:nth-child(odd) > .greenTableCell
 {
-    background-color: #33cc00;
+    background-color: #09FF00;
 }
 /* Overrides table-hover to change hover color of the status td*/
 .table-hover > tbody > tr:hover > .greenTableCell{
-    background-color: #2db300;
+    background-color: #0FED07;
 }
 .orangeTableCell,
 .table-striped > tbody > tr:nth-child(odd) > .orangeTableCell
 {
-    background-color: #ff9900;
+    background-color: #FFA600;
 }
 /* Overrides table-hover to change hover color of the status td*/
 .table-hover > tbody > tr:hover > .orangeTableCell{
-    background-color: #e68a00;
+    background-color: #F09E07;
 }
 
 .blueTableCell,
 .table-striped > tbody > tr:nth-child(odd) > .blueTableCell
 {
-    background-color: #ace600;
+    background-color: #87D2FA;
 }
 /* Overrides table-hover to change hover color of the status td*/
 .table-hover > tbody > tr:hover > .blueTableCell{
-    background-color: #99cc00;
+    background-color: #58BEF5;
 }
 
 /* Change cursor to pointer when hovering over table row*/
 .table-hover > tbody > tr:hover > td{
     cursor:pointer;
-}
-
-.navbar-inverse {
-  background-color: #373A64 !important;
-  border-color: #080808;
 }
 

@@ -29,9 +29,8 @@ namespace AdministrationPortal
                       "~/Content/font-awesome/css/font-awesome.css"));
 
             bundles.Add(new StyleBundle("~/Content/css/userPortal").Include(
-                      "~/Styles/css/bootstrap.css",
-                      //"~/Content/bootstrap.css",
-                      "~/Styles/css/userPortalSite.css",
+                      "~/Content/bootstrap.css",
+                      "~/Content/Site.css",
                       "~/Content/font-awesome/css/font-awesome.css"));
         }
     }
