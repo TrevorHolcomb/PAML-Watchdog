@@ -27,7 +27,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
 
         public override Notifyee GetByName(string name)
         {
-            return _container.Notifyees.FirstOrDefault(notifyee => notifyee.Name == name);
+            return _container.Notifyees.First(notifyee => notifyee.Name == name);
         }
 
         public override void Insert(Notifyee model)

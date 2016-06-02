@@ -12,6 +12,7 @@ namespace WatchdogDatabaseAccessLayer
 
             Bind<Repository<Alert>>().To<EFAlertRepository>();
             Bind<Repository<AlertType>>().To<EFAlertTypeRepository>();
+            Bind<Repository<AlertStatus>>().To<EFAlertStatusRepository>();
             Bind<Repository<AlertParameter>>().To<EFAlertParameterRepository>();
             Bind<Repository<Engine>>().To<EFEngineRepository>();
             Bind<Repository<EscalationChainLink>>().To<EFEscalationChainLinkRepository>();

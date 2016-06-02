@@ -85,28 +85,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Exceptions\WatchdogInvalidMessageTypeExcpetion.cs" />
-    <Compile Include="Exceptions\WatchdogInvalidParameterExcpetion.cs" />
-    <Compile Include="Exceptions\WatchdogInvalidOriginExcpetion.cs" />
-    <Compile Include="Exceptions\WatchdogInvalidEngineExcpetion.cs" />
-    <Compile Include="Exceptions\WatchdogInvalidServerExcpetion.cs" />
+    <Compile Include="Exceptions\InvalidParameterException.cs" />
+    <Compile Include="Processes\IProcess.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\BooleanTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\DateTimeTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\DecimalTypeHandler.cs" />
-    <Compile Include="RuleEngine\ExpressionEvaluatorEngine\ITypeHandler.cs" />
+    <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\ITypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\EnumerationTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\ExceptionTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\IntegerTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\TypeHandlerList.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypesSupported.cs" />
-    <Compile Include="Watchdogs\AbstractValidator.cs" />
-    <Compile Include="Watchdogs\AbstractWatchdog.cs" />
     <Compile Include="RuleEngine\IRuleEngine.cs" />
-    <Compile Include="Watchdogs\PollingWatchdog.cs" />
+    <Compile Include="Processes\Alerter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\ExpressionEvaluatorRuleEngine.cs" />
-    <Compile Include="Watchdogs\WatchdogValidator.cs" />
+    <Compile Include="Processes\Preprocessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

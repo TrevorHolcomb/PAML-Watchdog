@@ -42,13 +42,13 @@ namespace AdministrationPortal.Controllers
             switch(sortOrder)
             {
                 case "Severity":
-                    alerts = alerts.OrderByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.ModifiedAt);
+                    alerts = alerts.OrderByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.TimeStamp);
                     break;
                 case "Time":
-                    alerts = alerts.OrderByDescending(a => a.AlertStatus.ModifiedAt);
+                    alerts = alerts.OrderByDescending(a => a.AlertStatus.TimeStamp);
                     break;
                 case "Origin":
-                    alerts = alerts.OrderBy(a => a.Origin).ThenByDescending(a => a.AlertStatus.ModifiedAt);
+                    alerts = alerts.OrderBy(a => a.Origin).ThenByDescending(a => a.AlertStatus.TimeStamp);
                     break;
                 case "AlertType":
                     alerts = alerts.OrderBy(a => a.AlertType.Name);
@@ -57,7 +57,7 @@ namespace AdministrationPortal.Controllers
                     alerts = alerts.OrderBy(a => a.Rule.SupportCategory.Name).ThenByDescending(a => a.Severity);
                     break;
                 default:
-                    alerts = alerts.OrderBy(a => a.AlertStatus.ModifiedAt).ThenByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.ModifiedAt);
+                    alerts = alerts.OrderBy(a => a.AlertStatus.TimeStamp).ThenByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.TimeStamp);
                     break;
             }
 

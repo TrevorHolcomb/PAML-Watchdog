@@ -22,7 +22,6 @@ namespace WatchdogDatabaseAccessLayer.Models
     
         public int Id { get; set; }
         public string MessageTypeName { get; set; }
-        public bool IsProcessed { get; set; }
         public string Server { get; set; }
         public string Origin { get; set; }
         public string EngineName { get; set; }

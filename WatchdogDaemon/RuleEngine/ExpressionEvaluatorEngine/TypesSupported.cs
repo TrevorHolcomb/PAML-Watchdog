@@ -6,6 +6,6 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
 {
     public static class TypesSupported
     {
-        public static List<String> Types = TypeHandlers.TypeHandlerList.TypeHandlers.Select(typeHandler => typeHandler.GetTypeName()).ToList();
+        public static List<string> Types = TypeHandlers.TypeHandlerList.TypeHandlers.Select(typeHandler => typeHandler.GetTypeName()).ToList();
     }
 }

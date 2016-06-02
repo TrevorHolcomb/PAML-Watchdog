@@ -24,7 +24,6 @@ namespace WatchdogMessageGenerator
                 Id = GetRandomId(),
                 MessageTypeName = MessageType.Name,
                 MessageType = MessageType,
-                IsProcessed = false,
                 Engine = Engine,
                 EngineName = Engine.Name,
                 Origin = GetRandomOrigin(),

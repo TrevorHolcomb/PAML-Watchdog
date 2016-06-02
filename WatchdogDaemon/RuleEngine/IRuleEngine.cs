@@ -4,6 +4,6 @@ namespace WatchdogDaemon.RuleEngine
 {
     public interface IRuleEngine
     {
-        Alert ConsumeMessage(Rule rule, Message message);
+        bool DoesGenerateAlert(Rule rule, Message message);
     }
 }

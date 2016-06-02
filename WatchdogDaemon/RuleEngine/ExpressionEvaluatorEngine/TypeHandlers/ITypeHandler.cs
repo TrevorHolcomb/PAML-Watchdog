@@ -1,6 +1,6 @@
 ﻿using ExpressionEvaluator;
 
-namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
+namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
 {
     internal interface ITypeHandler
     {

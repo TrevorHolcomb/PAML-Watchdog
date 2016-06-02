@@ -17,11 +17,11 @@ namespace WatchdogDatabaseAccessLayer.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public AlertStatus()
         {
-            this.ModifiedAt = new DateTime(621355968000000000, DateTimeKind.Unspecified);
+            this.TimeStamp = new DateTime(621355968000000000, DateTimeKind.Unspecified);
         }
     
         public int Id { get; set; }
-        public System.DateTime ModifiedAt { get; set; }
+        public System.DateTime TimeStamp { get; set; }
         public string ModifiedBy { get; set; }
         public StatusCode StatusCode { get; set; }
     
