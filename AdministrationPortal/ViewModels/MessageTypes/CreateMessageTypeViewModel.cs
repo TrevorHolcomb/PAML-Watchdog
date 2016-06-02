@@ -40,10 +40,10 @@ namespace AdministrationPortal.ViewModels.MessageTypes
             ParametersRequired = new List<bool>();
             ParametersEnabled = new List<bool>();
 
-            prepopulateLists();
+            PrepopulateLists();
         }
 
-        private void prepopulateLists()
+        private void PrepopulateLists()
         {
             for (int param = 0; param < MAX_PARAMETERS; param++)
             {

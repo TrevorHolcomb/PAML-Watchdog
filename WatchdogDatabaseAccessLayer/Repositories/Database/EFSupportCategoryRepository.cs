@@ -27,7 +27,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
 
         public override SupportCategory GetByName(string name)
         {
-            return _container.SupportCategories.FirstOrDefault(category => category.Name == name);
+            return _container.SupportCategories.First(category => category.Name == name);
         }
 
         public override void Insert(SupportCategory model)

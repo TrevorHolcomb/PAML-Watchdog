@@ -25,7 +25,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         public string Server { get; set; }
         public string Origin { get; set; }
         public string EngineName { get; set; }
-        public bool IsProcessed { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UnvalidatedMessageParameter> MessageParameters { get; set; }

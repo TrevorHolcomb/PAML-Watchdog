@@ -26,7 +26,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
 
         public override MessageTypeParameterType GetByName(string name)
         {
-            return _container.MessageTypeParameterTypes.FirstOrDefault(type => type.Name == name);
+            return _container.MessageTypeParameterTypes.First(type => type.Name == name);
         }
 
         public override void Insert(MessageTypeParameterType model)

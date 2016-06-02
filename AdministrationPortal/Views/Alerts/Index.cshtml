@@ -71,7 +71,7 @@
             @Html.DisplayFor(modelItem => item.Severity)
         </td>
         <td >
-            @Html.DisplayFor(modelItem => item.Status)
+            @Html.DisplayFor(modelItem => item.AlertStatus.MostRecent().StatusCode)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Rule.SupportCategory.Name)
@@ -81,7 +81,7 @@
         </td>
         
         <td>
-            @Html.DisplayFor(modelItem => item.TimeCreated)
+            @Html.DisplayFor(modelItem => item.AlertStatus.FirstStatus().TimeStamp)
         </td>
         
         <td>

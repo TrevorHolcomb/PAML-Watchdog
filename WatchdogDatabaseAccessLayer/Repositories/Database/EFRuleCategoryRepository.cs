@@ -27,7 +27,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
 
         public override RuleCategory GetByName(string name)
         {
-            return _container.RuleCategories.FirstOrDefault(category => category.Name == name);
+            return _container.RuleCategories.First(category => category.Name == name);
         }
 
         public override void Insert(RuleCategory model)

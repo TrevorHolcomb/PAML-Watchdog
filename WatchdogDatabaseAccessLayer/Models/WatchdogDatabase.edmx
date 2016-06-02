@@ -118,9 +118,9 @@
       <End Role="Message1" EntitySet="UnvalidatedMessages" />
       <End Role="MessageParameter1" EntitySet="UnvalidatedMessageParameters" />
     </AssociationSet>
-    <AssociationSet Name="AlertAlertStatus" Association="WatchdogDatabase.Store.AlertAlertStatus">
-      <End Role="Alert" EntitySet="Alerts" />
+    <AssociationSet Name="AlertStatusAlert" Association="WatchdogDatabase.Store.AlertStatusAlert">
       <End Role="AlertStatus" EntitySet="AlertStatuses" />
+      <End Role="Alert" EntitySet="Alerts" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Messages">
@@ -129,7 +129,6 @@
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="MessageTypeName" Type="nvarchar" Nullable="false" MaxLength="1000" />
-    <Property Name="IsProcessed" Type="bit" Nullable="false" />
     <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
     <Property Name="EngineName" Type="nvarchar" Nullable="false" MaxLength="1000" />
@@ -269,8 +268,8 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
-    <Property Name="ModifiedAt" Type="datetime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TimeStamp" Type="datetime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
     <Property Name="ModifiedBy" Type="nvarchar" Nullable="false" MaxLength="1000" />
     <Property Name="StatusCode" Type="int" Nullable="false" />
     <Property Name="Prev_Id" Type="int" Nullable="true" />
@@ -284,7 +283,6 @@
     <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
     <Property Name="EngineName" Type="nvarchar" Nullable="false" MaxLength="1000" />
-    <Property Name="IsProcessed" Type="bit" Nullable="false" />
   </EntityType>
   <EntityType Name="UnvalidatedMessageParameters">
     <Key>
@@ -539,9 +537,9 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="AlertAlertStatus">
-    <End Role="Alert" Type="WatchdogDatabase.Store.Alerts" Multiplicity="*" />
+  <Association Name="AlertStatusAlert">
     <End Role="AlertStatus" Type="WatchdogDatabase.Store.AlertStatuses" Multiplicity="1" />
+    <End Role="Alert" Type="WatchdogDatabase.Store.Alerts" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="AlertStatus">
         <PropertyRef Name="Id" />
@@ -706,9 +704,9 @@
             <End Role="Message1" EntitySet="UnvalidatedMessages" />
             <End Role="MessageParameter1" EntitySet="UnvalidatedMessageParameters" />
           </AssociationSet>
-          <AssociationSet Name="AlertAlertStatus" Association="WatchdogDatabase.AlertAlertStatus">
-            <End Role="Alert" EntitySet="Alerts" />
+          <AssociationSet Name="AlertStatusAlert" Association="WatchdogDatabase.AlertStatusAlert">
             <End Role="AlertStatus" EntitySet="AlertStatuses" />
+            <End Role="Alert" EntitySet="Alerts" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Message">
@@ -718,7 +716,6 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="MessageType" Relationship="WatchdogDatabase.MessageMessageType" FromRole="Message" ToRole="MessageType" />
           <Property Name="MessageTypeName" Type="String" Nullable="false" MaxLength="1000" />
-          <Property Name="IsProcessed" Type="Boolean" Nullable="false" />
           <Property Name="Server" Type="String" Nullable="false" />
           <Property Name="Origin" Type="String" Nullable="false" />
           <NavigationProperty Name="MessageParameters" Relationship="WatchdogDatabase.MessageMessageColumn" FromRole="Message" ToRole="MessageColumn" />
@@ -869,7 +866,7 @@
           <NavigationProperty Name="Engine" Relationship="WatchdogDatabase.EngineAlert" FromRole="Alert" ToRole="Engine" />
           <NavigationProperty Name="MessageType" Relationship="WatchdogDatabase.AlertMessageType" FromRole="Alert" ToRole="MessageType" />
           <NavigationProperty Name="Rule" Relationship="WatchdogDatabase.AlertRule" FromRole="Alert" ToRole="Rule" />
-          <NavigationProperty Name="AlertStatus" Relationship="WatchdogDatabase.AlertAlertStatus" FromRole="Alert" ToRole="AlertStatus" />
+          <NavigationProperty Name="AlertStatus" Relationship="WatchdogDatabase.AlertStatusAlert" FromRole="Alert" ToRole="AlertStatus" />
         </EntityType>
         <Association Name="AlertAlertType">
           <End Type="WatchdogDatabase.Alert" Role="Alert" Multiplicity="*" />
@@ -1089,13 +1086,13 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="None" />
-          <Property Name="ModifiedAt" Type="DateTime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TimeStamp" Type="DateTime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
           <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="1000" />
           <Property Name="StatusCode" Type="WatchdogDatabase.StatusCode" Nullable="false" />
           <NavigationProperty Name="Next" Relationship="WatchdogDatabase.AlertStatusAlertStatus" FromRole="AlertStatus" ToRole="AlertStatus1" />
           <NavigationProperty Name="Prev" Relationship="WatchdogDatabase.AlertStatusAlertStatus" FromRole="AlertStatus1" ToRole="AlertStatus" />
-          <NavigationProperty Name="Alert" Relationship="WatchdogDatabase.AlertAlertStatus" FromRole="AlertStatus" ToRole="Alert" />
+          <NavigationProperty Name="Alert" Relationship="WatchdogDatabase.AlertStatusAlert" FromRole="AlertStatus" ToRole="Alert" />
         </EntityType>
         <Association Name="AlertStatusAlertStatus">
           <End Type="WatchdogDatabase.AlertStatus" Role="AlertStatus" Multiplicity="0..1" />
@@ -1110,7 +1107,6 @@
           <Property Name="Server" Type="String" Nullable="false" />
           <Property Name="Origin" Type="String" Nullable="false" />
           <Property Name="EngineName" Type="String" Nullable="false" MaxLength="1000" />
-          <Property Name="IsProcessed" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="MessageParameters" Relationship="WatchdogDatabase.MessageMessageColumn1" FromRole="Message1" ToRole="MessageParameter1" />
         </EntityType>
         <EntityType Name="UnvalidatedMessageParameter">
@@ -1135,9 +1131,9 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="AlertAlertStatus">
-          <End Type="WatchdogDatabase.Alert" Role="Alert" Multiplicity="0..1" />
+        <Association Name="AlertStatusAlert">
           <End Type="WatchdogDatabase.AlertStatus" Role="AlertStatus" Multiplicity="1" />
+          <End Type="WatchdogDatabase.Alert" Role="Alert" Multiplicity="0..1" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -1150,7 +1146,6 @@
         <MappingFragment StoreEntitySet="Messages">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="MessageTypeName" ColumnName="MessageTypeName" />
-          <ScalarProperty Name="IsProcessed" ColumnName="IsProcessed" />
           <ScalarProperty Name="Server" ColumnName="Server" />
           <ScalarProperty Name="Origin" ColumnName="Origin" />
           <ScalarProperty Name="EngineName" ColumnName="EngineName" />
@@ -1302,7 +1297,7 @@
       <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.AlertStatus)">
         <MappingFragment StoreEntitySet="AlertStatuses">
           <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
+          <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
           <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
           <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
         </MappingFragment>
@@ -1316,7 +1311,6 @@
           <ScalarProperty Name="Server" ColumnName="Server" />
           <ScalarProperty Name="Origin" ColumnName="Origin" />
           <ScalarProperty Name="EngineName" ColumnName="EngineName" />
-          <ScalarProperty Name="IsProcessed" ColumnName="IsProcessed" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1381,7 +1375,7 @@
       </EndProperty>
       <Condition ColumnName="Prev_Id" IsNull="false" />
     </AssociationSetMapping>
-    <AssociationSetMapping Name="AlertAlertStatus" TypeName="WatchdogDatabase.AlertAlertStatus" StoreEntitySet="Alerts">
+    <AssociationSetMapping Name="AlertStatusAlert" TypeName="WatchdogDatabase.AlertStatusAlert" StoreEntitySet="Alerts">
       <EndProperty Name="AlertStatus">
         <ScalarProperty Name="Id" ColumnName="AlertStatus_Id" />
       </EndProperty>

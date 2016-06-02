@@ -63,7 +63,7 @@ namespace WatchdogDaemon.Tests
         public void ShouldGenerateAlertTest(Rule rule, Message message)
         {
             var ruleEngine = new StandardRuleEngine();
-            Assert.NotNull(ruleEngine.ConsumeMessage(rule, message));
+            Assert.True(ruleEngine.DoesGenerateAlert(rule, message));
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace WatchdogDaemon.Tests
         public void ShouldntGenerateAlertTest(Rule rule, Message message)
         {
             var ruleEngine = new StandardRuleEngine();
-            Assert.Null(ruleEngine.ConsumeMessage(rule, message));
+            Assert.False(ruleEngine.DoesGenerateAlert(rule, message));
         }
     }
 }
