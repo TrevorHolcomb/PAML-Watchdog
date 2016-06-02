@@ -18,27 +18,27 @@
             @Html.DisplayFor(model => model.Alert.Severity)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.Status)
+            @Html.DisplayNameFor(model => model.Alert.AlertStatus.MostRecent().StatusCode)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Alert.Status)
+            @Html.DisplayFor(model => model.Alert.AlertStatus.MostRecent().StatusCode)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.TimeCreated)
+            @Html.DisplayNameFor(model => model.Alert.AlertStatus.FirstStatus().TimeStamp)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Alert.TimeCreated)
+            @Html.DisplayFor(model => model.Alert.AlertStatus.FirstStatus().TimeStamp)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.TimeModified)
+            @Html.DisplayNameFor(model => model.Alert.AlertStatus.MostRecent().TimeStamp)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Alert.TimeModified)
+            @Html.DisplayFor(model => model.Alert.AlertStatus.MostRecent().TimeStamp)
         </dd>
 
         <dt>
@@ -74,11 +74,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.Engine)
+            @Html.DisplayNameFor(model => model.Alert.EngineName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Alert.Engine)
+            @Html.DisplayFor(model => model.Alert.EngineName)
         </dd>
 
         <dt>
@@ -120,5 +120,5 @@
 </div>
 <div class="col-md-offset-1">
     @Html.ActionLink("Edit Alert", "Edit", new { id = (int)Model.Alert.Id, Model.PageNo, Model.sortOrder }, new { @class = "btn btn-default" })
-    @Html.ActionLink("Back to List", "Index", new {ActiveOrArchived = Model.Alert.Status.ToString(), Page_No = Model.PageNo, sortOrder = Model.sortOrder }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Back to List", "Index", new {ActiveOrArchived = Model.Alert.AlertStatus.MostRecent().StatusCode.ToString(), Page_No = Model.PageNo, sortOrder = Model.sortOrder }, new { @class = "btn btn-default" })
 </div>
