@@ -19,6 +19,9 @@ namespace AdministrationPortal.Controllers
         [Inject]
         public Repository<Alert> AlertRepository { private get; set; }
 
+        [Inject]
+        public Repository<AlertStatus> AlertStatusRepository { private get; set; }
+
         // GET: Alerts
         public ActionResult Index(string ActiveOrArchived, int? Page_No, String sortOrder)
         {
@@ -30,11 +33,11 @@ namespace AdministrationPortal.Controllers
             switch (ActiveOrArchived)
             {
                 case "Resolved":
-                    alerts = alerts.Where(a => a.AlertStatus.StatusCode == StatusCode.Resolved);
+                    alerts = alerts.Where(a => a.AlertStatus.MostRecent().StatusCode == StatusCode.Resolved);
                     status = StatusCode.Resolved.ToString();
                     break;
                 default:
-                    alerts = alerts.Where(a => a.AlertStatus.StatusCode == StatusCode.Acknowledged || a.AlertStatus.StatusCode == StatusCode.UnAcknowledged);
+                    alerts = alerts.Where(a => a.AlertStatus.MostRecent().StatusCode == StatusCode.Acknowledged || a.AlertStatus.MostRecent().StatusCode == StatusCode.UnAcknowledged);
                     status = StatusCode.Acknowledged.ToString();
                     break;
             }
@@ -126,7 +129,30 @@ namespace AdministrationPortal.Controllers
 
                 if (alertInDb != null)
                 {
-                    alertInDb = mapNewAlertOntoDbAlert(alert);
+                    // create and insert a new AlertStatus
+                    var newStatus = new AlertStatus();
+                    newStatus.ModifiedBy = "N/A";
+                    newStatus.StatusCode = alertViewModel.Alert.AlertStatus.StatusCode;
+                    newStatus.Prev = alertInDb.AlertStatus;
+                   
+
+                    AlertStatusRepository.Insert(newStatus);
+                    AlertStatusRepository.Save();
+
+                    newStatus = AlertStatusRepository.Get().Last();
+                    alertInDb.AlertStatus.Next = newStatus;
+                    var tailAlertStatus = alertInDb.AlertStatus;
+                    alertInDb.AlertStatus = newStatus;
+                    
+                    //newStatus.Prev = tailAlertStatus;
+                   // tailAlertStatus.Next = newStatus;
+                    //AlertStatusRepository.Update(newStatus);
+                    AlertStatusRepository.Update(tailAlertStatus);
+                    AlertStatusRepository.Save();
+                    
+                   
+                    alertInDb.Severity = alertViewModel.Alert.Severity;
+                    alertInDb.Notes = alertViewModel.Alert.Notes;
                 }
                 AlertRepository.Update(alertInDb);
                 AlertRepository.Save();
@@ -139,9 +165,14 @@ namespace AdministrationPortal.Controllers
         private Alert mapNewAlertOntoDbAlert(Alert newAlert)
         {
             Alert dbAlert = AlertRepository.GetById(newAlert.Id);
+            
             if (dbAlert != null)
             {
-                dbAlert.AlertStatus = newAlert.AlertStatus;
+                AlertStatus newStatus = new AlertStatus();
+                newStatus.ModifiedBy = "N/A";
+                
+                
+                //dbAlert.AlertStatus = newAlert.AlertStatus;
                 dbAlert.Severity = newAlert.Severity;
                 dbAlert.Notes = newAlert.Notes;
             }
