@@ -1,4 +1,4 @@
-﻿@model WatchdogDatabaseAccessLayer.MessageType
+﻿@model AdministrationPortal.ViewModels.MessageTypes.CreateMessageTypeViewModel
 
 @{
     ViewBag.Title = "Create";
@@ -7,22 +7,13 @@
 <h2>Create</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "createForm" }))
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>MessageType</h4>
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -40,28 +31,50 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.RequiredParams, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.RequiredParams, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.RequiredParams, "", new { @class = "text-danger" })
+            <div class="control-label col-md-2">
+                @Html.Label("", "Parameters", htmlAttributes: new { @class = "label-parameters" })
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.OptionalParams, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.OptionalParams, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.OptionalParams, "", new { @class = "text-danger" })
+            <div class="parameters col-md-10" data-max=@Model.MAX_PARAMETERS>
+                @for (var p = 0; p < Model.MAX_PARAMETERS; p++)
+                {
+                    var style = (Model.ParametersEnabled[p]) ? "" : "display:none";
+                    <div class="multiple-form-group" style="margin-bottom: 15px; @style">
+                        @Html.HiddenFor(model => model.ParametersEnabled[p], htmlAttributes: new { @class = "parameter-enabled" })
+                        <div class="input-group">
+
+                            <div class="input-group-addon input-group-select">
+                                @Html.DropDownListFor(model => model.ParameterTypes[p].Value, Model.SupportedParameterTypes, htmlAttributes: new { @role = "menu" })
+                            </div>
+
+                            @Html.EditorFor(model => model.ParameterNames[p].Value, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "parameter name" } })
+
+                            <span class="input-group-addon">
+                                <label class="">Required </label>
+                                @Html.CheckBoxFor(model => model.ParametersRequired[p], htmlAttributes: new { @class = "check-box" })
+                            </span>
+
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-danger btn-remove">-</button>
+                            </span>
+
+                        </div>
+                        @Html.ValidationMessageFor(model => model.ParameterNames[p], "", new { @class = "text-danger" })
+                    </div>
+                }
             </div>
         </div>
+        @Html.ValidationSummary("", htmlAttributes: new { @class = "text-danger" })
+
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-default" id="submitButton" />
             </div>
         </div>
     </div>
 }
+
 
 <div>
     @Html.ActionLink("Back to List", "Index")
@@ -69,4 +82,61 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            //Toggle last visible button
+            var makeLastVisibleButtonGreen = function () {
+                var $lastEnabled = $('.parameters').find('.parameter-enabled').filter("[value='True']").last();
+                var $lastButton = $lastEnabled.next('.input-group').find('.btn');
+                $lastButton.removeClass('btn-danger btn-remove');
+                $lastButton.addClass('btn-success btn-add').html('+');
+            }
+
+            //Enables and shows the next invisible control group
+            var addFormGroup = function (event) {
+                event.preventDefault();
+
+                var $multipleFormGroup = $(this).closest('.multiple-form-group');
+
+                //Toggle this button state
+                $(this).toggleClass('btn-success btn-add btn-danger btn-remove').html('–');
+
+                //Enable the next group
+                var $nextGroup = $multipleFormGroup.next('.multiple-form-group');
+                $nextGroup.find('.parameter-enabled').attr('value', 'True');
+                $nextGroup.find('.btn').toggleClass('btn-success btn-add btn-danger btn-remove').html('+');
+                $nextGroup.fadeIn(300);
+
+                //Always disable the last button
+                var $lastFormGroup = $multipleFormGroup.siblings('.multiple-form-group:last');
+                $lastFormGroup.find('.btn').attr('disabled', true);
+                makeLastVisibleButtonGreen();
+            };
+
+            //Disables and hides the selected control group
+            var removeFormGroup = function (event) {
+                event.preventDefault();
+
+                var $multipleFormGroup = $(this).closest('.multiple-form-group');
+
+                //Always reenable the last button before replacing it
+                var $lastFormGroup = $multipleFormGroup.siblings('.multiple-form-group:last');
+                $lastFormGroup.find('.btn').attr('disabled', false);
+
+                //Disable this group and move it to the bottom
+                $multipleFormGroup.fadeOut(300);
+                $multipleFormGroup.find('.text-box').val('');
+                //$multipleFormGroup.find('.check-box').attr('checked', 'checked');
+                $multipleFormGroup.find('.parameter-enabled').attr('value', 'False');
+                $multipleFormGroup.insertAfter($lastFormGroup);
+                makeLastVisibleButtonGreen();
+            };
+
+            makeLastVisibleButtonGreen();
+            $(document).on('click', '.btn-add', addFormGroup);
+            $(document).on('click', '.btn-remove', removeFormGroup);
+        });
+    </script>
 }

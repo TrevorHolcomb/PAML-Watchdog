@@ -1,39 +1,72 @@
 using System;
 using System.Collections.Generic;
 using WatchdogDatabaseAccessLayer;
+using NJsonSchema;
 
 namespace WatchdogDaemon
 {
     public class RuleEngine : IRuleEngine
     {
-        public override void ConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages)
+
+        public override ICollection<Alert> ConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages)
         {
+            var alerts = new List<Alert>();
             foreach (var message in messages)
             {
                 foreach (var rule in rules)
                 {
-                    ConsumeMessage(rule, message);
+                    //if (!(rule.Server == message.Server && rule.Origin == message.Origin))
+                    //continue;
+
+                    //if (rule.MessageType.Id != message.MessageTypeId)
+                        //continue;
+
+                    var alert = ConsumeMessage(rule, message);
+                    if (alert != null)
+                    {
+                        alerts.Add(alert);
+                        Console.WriteLine("Created Alert For: " + message.Id);
+                    }
                 }
-                message.Processed = true;
+                message.IsProcessed = true;
 
                 //for debugging/simulation
                 Console.WriteLine("Consumed: " + message.Id);
             }
+            return alerts;
         }
 
-        public override void ConsumeMessage(Rule rule, Message message)
+        public override Alert ConsumeMessage(Rule rule, Message message)
         {
-            //TODO: use fancy JSON comparator John mentioned
-            //if (rule.RuleTrigger == /*triggered*/)
-            //create a corresponding alert
-            //foreach (Alert alert in rule.Alerts)
-            //alert.Triggered = true;                   
+            //Manatee.Json doesn't properly support "exclusiveMaximum" somehow. Yet, it does support"exclusiveMinimum".
+            //IJsonSchema ruleTriggerSchema = JsonSchemaFactory.FromJson(JsonValue.Parse(rule.RuleTrigger));        
 
-            /*TODO: discuss implementation of alert activation. 
-                We should find out what the Notifier expects as input. 
-                But if we were to redesign that too, I'd propose adding a 
-                boolean field, Alerts.Active, analogous to Messages.Processed
-            */
+            JsonSchema4 ruleTriggerSchema = JsonSchema4.FromJson(rule.RuleTriggerSchema);
+            var result = ruleTriggerSchema.Validate(message.Params);
+
+            if (result.Count != 0)
+                return CreateAlert(rule, message);
+
+            return null;
         }
+
+        #region private methods
+
+        private static Alert CreateAlert(Rule rule, Message message)
+        {
+            return new Alert
+            {
+                AlertTypeId = rule.AlertTypeId,
+                AlertType = rule.AlertType,
+                RuleId = rule.Id,
+                Rule = rule,
+                Payload = message.Params,
+                Notes = "",
+                Timestamp = DateTime.Now,
+                Status = (int)AlertStatus.UnAcknowledged,
+            };
+        }
+       
+        #endregion
     }
 }

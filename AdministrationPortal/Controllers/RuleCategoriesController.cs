@@ -1,34 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using WatchdogDatabaseAccessLayer;
+using Ninject;
+using WatchdogDatabaseAccessLayer.Models;
+using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace AdministrationPortal.Controllers
 {
     public class RuleCategoriesController : Controller
     {
-        private readonly WatchdogDatabaseContext _db = new WatchdogDatabaseContext();
+        [Inject]
+        public Repository<RuleCategory> RuleCategoryRepository { private get; set; }
 
         // GET: RuleCategories
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            return View(await _db.RuleCategories.ToListAsync());
+            return View(RuleCategoryRepository.Get());
         }
 
         // GET: RuleCategories/Details/5
-        public async Task<ActionResult> Details(int? id)
+        public ActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            RuleCategory ruleCategory = await _db.RuleCategories.FindAsync(id);
+            var ruleCategory = RuleCategoryRepository.GetById(id);
             if (ruleCategory == null)
             {
                 return HttpNotFound();
@@ -36,6 +31,7 @@ namespace AdministrationPortal.Controllers
             return View(ruleCategory);
         }
 
+        
         // GET: RuleCategories/Create
         public ActionResult Create()
         {
@@ -47,12 +43,12 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Name,Description")] RuleCategory ruleCategory)
+        public ActionResult Create([Bind(Include = "Id, Name, Description")] RuleCategory ruleCategory)
         {
             if (ModelState.IsValid)
             {
-                _db.RuleCategories.Add(ruleCategory);
-                await _db.SaveChangesAsync();
+                RuleCategoryRepository.Insert(ruleCategory);
+                RuleCategoryRepository.Save();
                 return RedirectToAction("Index");
             }
 
@@ -60,13 +56,9 @@ namespace AdministrationPortal.Controllers
         }
 
         // GET: RuleCategories/Edit/5
-        public async Task<ActionResult> Edit(int? id)
+        public ActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            RuleCategory ruleCategory = await _db.RuleCategories.FindAsync(id);
+            var ruleCategory = RuleCategoryRepository.GetById(id);
             if (ruleCategory == null)
             {
                 return HttpNotFound();
@@ -75,29 +67,25 @@ namespace AdministrationPortal.Controllers
         }
 
         // POST: RuleCategories/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Description")] RuleCategory ruleCategory)
+        public ActionResult Edit([Bind(Include = "Id, Name, Description")] RuleCategory ruleCategory)
         {
             if (ModelState.IsValid)
             {
-                _db.Entry(ruleCategory).State = EntityState.Modified;
-                await _db.SaveChangesAsync();
+                RuleCategoryRepository.Update(ruleCategory);
+                RuleCategoryRepository.Save();
                 return RedirectToAction("Index");
             }
+
             return View(ruleCategory);
         }
 
+        //TODO: don't allow deletion if in use
         // GET: RuleCategories/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public ActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            RuleCategory ruleCategory = await _db.RuleCategories.FindAsync(id);
+            var ruleCategory = RuleCategoryRepository.GetById(id);
             if (ruleCategory == null)
             {
                 return HttpNotFound();
@@ -108,11 +96,12 @@ namespace AdministrationPortal.Controllers
         // POST: RuleCategories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id)
         {
-            RuleCategory ruleCategory = await _db.RuleCategories.FindAsync(id);
-            _db.RuleCategories.Remove(ruleCategory);
-            await _db.SaveChangesAsync();
+            var ruleCategory = RuleCategoryRepository.GetById(id);
+            RuleCategoryRepository.Delete(ruleCategory);
+            RuleCategoryRepository.Save();
+
             return RedirectToAction("Index");
         }
 
@@ -120,7 +109,7 @@ namespace AdministrationPortal.Controllers
         {
             if (disposing)
             {
-                _db.Dispose();
+                RuleCategoryRepository.Dispose();
             }
             base.Dispose(disposing);
         }

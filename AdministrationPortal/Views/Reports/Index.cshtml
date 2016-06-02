@@ -1,0 +1,40 @@
+﻿@model AdministrationPortal.ViewModels.Reports.ReportViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@using (Html.BeginForm("Report","Reports"))
+{
+    <div>
+        @Html.LabelFor(model => model.DateTimeRange.Start)
+        @Html.TextBoxFor(model => model.DateTimeRange.Start, new
+        {
+            @class = "form-control",
+            type = "date"
+        })
+    </div>
+
+    <div>
+        @Html.LabelFor(model => model.DateTimeRange.End)
+        @Html.TextBoxFor(model => model.DateTimeRange.End, new
+        {
+            @class = "form-control",
+            type = "date"
+        })
+    </div>
+
+    <div>
+        @Html.LabelFor(model => model.AlertsPerOrigin)
+        @Html.CheckBoxFor(model => model.AlertsPerOrigin)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.AlertsPerServer)
+        @Html.CheckBoxFor(model => model.AlertsPerServer)
+    </div>
+
+    <div>
+        <input type="submit" />
+    </div>
+}

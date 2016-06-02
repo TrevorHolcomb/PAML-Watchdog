@@ -1,30 +1,37 @@
-﻿using System.Data.Entity;
-using System.Net;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using WatchdogDatabaseAccessLayer;
+﻿using System.Web.Mvc;
+using Ninject;
+using AdministrationPortal.ViewModels.Rules;
+using WatchdogDatabaseAccessLayer.Models;
+using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace AdministrationPortal.Controllers
 {
     public class RulesController : Controller
     {
-        private WatchdogDatabaseContext db = new WatchdogDatabaseContext();
+        [Inject]
+        public Repository<Rule> RuleRepository { get; set; }
+        [Inject]
+        public Repository<RuleCategory> RuleCategoryRepository { get; set; }
+        [Inject]
+        public Repository<AlertType> AlertTypeRepository { get; set; }
+        [Inject]
+        public Repository<MessageType> MessageTypeRepository { get; set; }
+        [Inject]
+        public Repository<SupportCategory> SupportCategoryRepository { get; set; }
+        [Inject]
+        public Repository<Engine> EngineRepository { get; set; }
 
         // GET: Rules
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            var rules = db.Rules.Include(r => r.RuleCategory);
-            return View(await rules.ToListAsync());
+            var rules = RuleRepository.Get();
+            return View(rules);
         }
 
         // GET: Rules/Details/5
-        public async Task<ActionResult> Details(int? id)
+        public ActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Rule rule = await db.Rules.FindAsync(id);
+            var rule = RuleRepository.GetById(id);
             if (rule == null)
             {
                 return HttpNotFound();
@@ -35,45 +42,68 @@ namespace AdministrationPortal.Controllers
         // GET: Rules/Create
         public ActionResult Create()
         {
-            ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name");
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name");
-            return View();
+            //intialize the dropdowns
+            var viewModel = new RuleCreateViewModel
+            {
+                RuleOptions = new RuleOptionsViewModel()
+                {
+                    AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
+                    MessageTypes = new SelectList(MessageTypeRepository.Get(), "Name", "Name"),
+                    RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
+                    SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
+                    EngineList = new SelectList(EngineRepository.Get(), "Name", "Name")
+                }
+            };
+            
+            return View(viewModel);
         }
 
+        
+        
         // POST: Rules/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Name,RuleCategoryId,RuleTrigger,EscalationChainId,AlertTypeId")] Rule rule)
+        public ActionResult Create(RuleCreateViewModel ruleViewModel)
         {
-            if (ModelState.IsValid)
-            {
-                db.Rules.Add(rule);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
+            var ruleToCreate = new Rule();
+            ruleViewModel.Map(ruleToCreate, RuleCategoryRepository.Get());
+            RuleRepository.Insert(ruleToCreate);
+            RuleRepository.Save();
 
-            ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategoryId);
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
-            return View(rule);
+            return RedirectToAction("Index");
         }
 
         // GET: Rules/Edit/5
-        public async Task<ActionResult> Edit(int? id)
+        public ActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Rule rule = await db.Rules.FindAsync(id);
+            var rule = RuleRepository.GetById(id);
             if (rule == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategoryId);
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
-            return View(rule);
+
+            var viewModel = new RuleEditViewModel
+            {
+                RuleOptions = new RuleOptionsViewModel
+                {
+                    AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
+                    MessageTypes = new SelectList(MessageTypeRepository.Get(), "Name", "Name"),
+                    RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
+                    SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
+                    EngineList = new SelectList(EngineRepository.Get(), "Name", "Name")
+                },
+                RuleCreator = rule.RuleCreator,
+                Description = rule.Description,
+                Expression = rule.Expression,
+                Name = rule.Name,
+                MessageTypeName = rule.MessageTypeName,
+                Id = id
+            };
+
+
+            return View(viewModel);
         }
 
         // POST: Rules/Edit/5
@@ -81,29 +111,35 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,RuleCategoryId,RuleTrigger,EscalationChainId,AlertTypeId")] Rule rule)
+        public ActionResult Edit(RuleEditViewModel ruleViewModel)
         {
+            
             if (ModelState.IsValid)
             {
-                db.Entry(rule).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                var rule = RuleRepository.GetById(ruleViewModel.Id);
+                ruleViewModel.Map(rule);
+                RuleRepository.Update(rule);
+                RuleRepository.Save();
+
                 return RedirectToAction("Index");
             }
 
-            ViewBag.RuleCategoryId = new SelectList(db.RuleCategories, "Id", "Name", rule.RuleCategoryId);
-            ViewBag.AlertTypeId = new SelectList(db.AlertTypes, "Id", "Name", rule.AlertTypeId);
+            ruleViewModel.RuleOptions = new RuleOptionsViewModel
+            {
+                AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
+                MessageTypes = new SelectList(MessageTypeRepository.Get(), "Name", "Name"),
+                RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
+                SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
+                EngineList = new SelectList(EngineRepository.Get(), "Name", "Name")
+            };
 
-            return View(rule);
+            return View(ruleViewModel);
         }
 
         // GET: Rules/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public ActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Rule rule = await db.Rules.FindAsync(id);
+            var rule = RuleRepository.GetById(id);
             if (rule == null)
             {
                 return HttpNotFound();
@@ -114,11 +150,11 @@ namespace AdministrationPortal.Controllers
         // POST: Rules/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id)
         {
-            Rule rule = await db.Rules.FindAsync(id);
-            db.Rules.Remove(rule);
-            await db.SaveChangesAsync();
+            var rule = RuleRepository.GetById(id);
+            RuleRepository.Delete(rule);
+            RuleRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -126,7 +162,10 @@ namespace AdministrationPortal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                RuleRepository.Dispose();
+                RuleCategoryRepository.Dispose();
+                AlertTypeRepository.Dispose();
+                MessageTypeRepository.Dispose();
             }
             base.Dispose(disposing);
         }

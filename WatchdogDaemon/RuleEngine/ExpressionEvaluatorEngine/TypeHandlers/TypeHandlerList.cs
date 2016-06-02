@@ -1,0 +1,17 @@
+﻿using System.Collections.Generic;
+
+namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
+{
+    internal class TypeHandlerList
+    {
+        public static readonly IEnumerable<ITypeHandler> TypeHandlers = new List<ITypeHandler>
+        {
+            new DecimalTypeHandler(),
+            new IntegerTypeHandler(),
+            new BooleanTypeHandler(),
+            new DateTimeTypeHandler(),
+            new EnumerationTypeHandler(),
+            new ExceptionTypeHandler()
+        };
+    }
+}

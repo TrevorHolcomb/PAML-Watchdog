@@ -279,5 +279,4 @@ $RECYCLE.BIN/
 
 ### VisualStudioCode ###
 .vscode
-
-
+WatchdogDatabaseAccessLayer/Models/WatchdogDatabase.edmx.sql

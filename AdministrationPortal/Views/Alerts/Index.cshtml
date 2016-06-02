@@ -1,0 +1,98 @@
+﻿@model AdministrationPortal.ViewModels.Alerts.AlertPagingCreateView
+@using PagedList.Mvc;
+
+@section styles {
+    <link href="~/Content/PagedList.css" rel="stylesheet" />
+}
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutUserPortal.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<table class="table table-striped table-hover">
+    <tr class="noHover">
+        <th>
+            @Html.ActionLink("Severity", "Index", new { ActiveOrArchived = Model.status, sortOrder = "Severity" })    
+        </th>
+        
+        <th>
+            @Html.ActionLink("Status", "Index", new { ActiveOrArchived = Model.status, sortOrder = "Status" })
+        </th>
+        <th>
+            @Html.ActionLink("Group", "Index", new { ActiveOrArchived = Model.status, sortOrder = "Group" })
+        </th>
+        <th>
+            @Html.ActionLink("AlertType", "Index", new { ActiveOrArchived = Model.status, sortOrder = "AlertType" })
+        </th>
+
+        <th>
+            @Html.ActionLink("Time", "Index", new { ActiveOrArchived = Model.status, sortOrder = "Time" })
+        </th>
+        
+        <th>
+            @Html.ActionLink("Origin", "Index", new { ActiveOrArchived = Model.status, sortOrder = "Origin" })
+        </th>
+       
+    </tr>
+
+@foreach (var item in Model.pagedList)
+{
+    string cssClass = "";
+    switch (item.Severity)
+    {
+        case 5:
+            cssClass = "redTableCell";
+            break;
+        case 4:
+            cssClass = "orangeTableCell";
+            break;
+        case 3:
+            cssClass = "yellowTableCell";
+            break;
+        case 2:
+            cssClass = "blueTableCell";
+            break;
+        default:
+            cssClass = "greenTableCell";
+            break;
+    }
+
+
+    <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id, Model.PageNo, Model.sortOrder}))'" >
+        
+        <td class="@cssClass">
+            @Html.DisplayFor(modelItem => item.Severity)
+        </td>
+        <td >
+            @Html.DisplayFor(modelItem => item.AlertStatus.MostRecent().StatusCode)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Rule.SupportCategory.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AlertType.Name)
+        </td>
+        
+        <td>
+            @Html.DisplayFor(modelItem => item.AlertStatus.FirstStatus().TimeStamp)
+        </td>
+        
+        <td>
+            @Html.DisplayFor(modelItem => item.Origin)
+        </td>
+        
+    </tr>
+}
+
+</table>
+<br />
+Page @(Model.pagedList.PageCount < Model.pagedList.PageNumber ? 0 : Model.pagedList.PageNumber) of @Model.pagedList.PageCount
+@Html.PagedListPager(Model.pagedList, Page_No => Url.Action("Index",
+    new { ActiveOrArchived = Model.status,  Page_No, Model.sortOrder  })) 

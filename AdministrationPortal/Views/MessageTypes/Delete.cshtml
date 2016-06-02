@@ -1,47 +1,47 @@
-﻿@model WatchdogDatabaseAccessLayer.MessageType
+﻿@model AdministrationPortal.ViewModels.MessageTypes.DeleteMessageTypeViewModel
 
-@{
-    ViewBag.Title = "Delete";
-}
+@Model.PageTitle
 
 <h2>Delete</h2>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>
+    @Model.PageHeaderMessage
+</h3>
 <div>
     <h4>MessageType</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.MessageType.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.MessageType.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.MessageType.Description)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.MessageType.Description)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.RequiredParams)
+            Parameters
         </dt>
-
+        <dd>Type, Name, Required</dd>
         <dd>
-            @Html.DisplayFor(model => model.RequiredParams)
+            <ul>
+                @foreach (var parameter in Model.MessageType.MessageTypeParameterTypes)
+                {
+                    <li>
+                        @parameter.Type, @parameter.Name, @parameter.Required
+                    </li>
+                }
+            </ul>
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.OptionalParams)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.OptionalParams)
-        </dd>
 
     </dl>
 
@@ -49,7 +49,7 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <input type="submit" value="Delete" class="btn btn-default @Model.ButtonClass()" @Model.ButtonState()/>
             @Html.ActionLink("Back to List", "Index")
         </div>
     }

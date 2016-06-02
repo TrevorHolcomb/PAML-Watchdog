@@ -1,24 +1,26 @@
-﻿@model WatchdogDatabaseAccessLayer.Rule
+﻿@using AdministrationPortal.Helpers
+@model AdministrationPortal.ViewModels.Rules.RuleEditViewModel
 
 @{
     ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit</h2>
+<h2>Create</h2>
 
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Rule</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <hr/>
         @Html.HiddenFor(model => model.Id)
 
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Name, "Rule Name", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
@@ -26,40 +28,73 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.RuleCategoryId, "RuleCategoryId", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("RuleCategoryId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.RuleCategoryId, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.RuleTrigger, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.RuleCreator, "Created by", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.RuleTrigger, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.RuleTrigger, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.RuleCreator, new { htmlAttributes = new { @class = "form-control", @disabled = true } })
+                @Html.ValidationMessageFor(model => model.RuleCreator, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.EscalationChainId, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Expression, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.EscalationChainId, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.EscalationChainId, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Expression, new { htmlAttributes = new { @class = "form-control", @id = "Expression" } })
+                @Html.ValidationMessageFor(model => model.Expression, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.AlertTypeId, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.DefaultSeverity, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.AlertTypeId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.DefaultSeverity, new { htmlAttributes = new { @class = "form-control", @disabled = true } })
+                @Html.ValidationMessageFor(model => model.DefaultSeverity, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AlertTypeId, "Alert Type", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.AlertTypeId, Model.RuleOptions.AlertTypes, htmlAttributes: new { @class = "form-control", @disabled = true })
                 @Html.ValidationMessageFor(model => model.AlertTypeId, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
+            @Html.LabelFor(model => model.MessageTypeName, "Message Type", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.MessageTypeName, Model.RuleOptions.MessageTypes, htmlAttributes: new { @class = "form-control", @disabled = true })
+                @Html.ValidationMessageFor(model => model.MessageTypeName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RuleCategoryIds, "RuleCategoryIds", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.MultiSelectDropDown("RuleCategoryIds", Model.RuleOptions.RuleCategories, Model.RuleOptions.RuleCategories.Select(e => e.Value.AsInt()), "form-control")
+
+                @Html.ValidationMessageFor(model => model.RuleOptions.RuleCategories, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SupportCategoryId, "Support Category", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.SupportCategoryId, Model.RuleOptions.SupportCategories, htmlAttributes: new { @class = "form-control", @disabled = true })
+                @Html.ValidationMessageFor(model => model.SupportCategoryId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Save Changes" class="btn btn-default" />
             </div>
         </div>
     </div>

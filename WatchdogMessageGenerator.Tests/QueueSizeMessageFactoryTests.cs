@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using WatchdogDatabaseAccessLayer.Models;
 using Xunit;
 
 namespace WatchdogMessageGenerator.Tests
@@ -12,16 +13,15 @@ namespace WatchdogMessageGenerator.Tests
         [MemberData(nameof(TestBuildData))]
         public void TestBuild(string[] origins, string[] servers)
         {
-            var factory = new QueueSizeMessageFactory(servers, origins, 0);
+            Engine engine = new Engine() { Name = "Test Engine"};
+            MessageType queueSizeMessageType = new MessageType() { Name = "queueSizeMessage", Description = "a message indicating the size of some queue" };
+            var factory = new QueueSizeMessageFactory(engine, servers, origins, queueSizeMessageType);
             for (var i = 0; i < 10; i++)
             {
                 var message = factory.Build();
 
                 Assert.Contains(message.Origin, origins);
                 Assert.Contains(message.Server, servers);
-
-                var size = int.Parse(message.Params.Replace("size=", ""));
-                Assert.InRange(size, 0, QueueSizeMessageFactory.MaxSize);
             }
         }
 

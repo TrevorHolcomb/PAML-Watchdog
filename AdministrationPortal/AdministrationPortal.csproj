@@ -87,10 +87,54 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.Web.Common, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.Common.3.2.0.0\lib\net45-full\Ninject.Web.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.Web.Mvc, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.MVC5.3.2.1.0\lib\net45-full\Ninject.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.Web.WebApi, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.WebApi.3.2.4.0\lib\net45-full\Ninject.Web.WebApi.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.Web.WebApi.WebHost, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.WebApi.WebHost.3.2.4.0\lib\net45-full\Ninject.Web.WebApi.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.3.4\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PdfSharp, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PdfSharp.Charting, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.Charting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -98,7 +142,16 @@
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
@@ -139,6 +192,10 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -156,28 +213,69 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AlertsController.cs" />
     <Compile Include="Controllers\AlertTypesController.cs" />
-    <Compile Include="Controllers\EscalationChainLinksController.cs" />
-    <Compile Include="Controllers\EscalationChainsController.cs" />
+    <Compile Include="Controllers\RegisteredEnginesController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\RuleCategoriesController.cs" />
+    <Compile Include="Controllers\SupportCategoriesController.cs" />
+    <Compile Include="ViewModels\Alerts\AlertDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Alerts\AlertPagingCreateView.cs" />
+    <Compile Include="ViewModels\MessageTypes\CreateMessageTypeViewModel.cs" />
+    <Compile Include="ViewModels\MessageTypes\DeleteMessageTypeViewModel.cs" />
+    <Compile Include="ViewModels\Reports\BarChartViewModel.cs" />
+    <Compile Include="ViewModels\Reports\DateTimeRangeViewModel.cs" />
+    <Compile Include="ViewModels\Reports\ReportViewModel.cs" />
+    <Compile Include="ViewModels\Rules\RuleEditViewModel.cs" />
+    <Compile Include="ViewModels\Rules\RuleCreateViewModel.cs" />
+    <Compile Include="ViewModels\EscalationChains\EscalationChainsEditLinkViewModel.cs" />
+    <Compile Include="Controllers\HelpController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MessageTypesController.cs" />
-    <Compile Include="Controllers\NotifyeeGroupsController.cs" />
-    <Compile Include="Controllers\NotifyeesController.cs" />
-    <Compile Include="Controllers\RuleCategoriesController.cs" />
     <Compile Include="Controllers\RulesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\MenuLinkHelper.cs" />
+    <Compile Include="Helpers\MultiSelectHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\Alerts\AlertCreateViewModel.cs" />
+    <Compile Include="ViewModels\EscalationChains\EscalationChainCreateViewModel.cs" />
+    <Compile Include="ViewModels\EscalationChains\EscalationChainLinksCreateViewModel.cs" />
+    <Compile Include="ViewModels\NotifyeesIndexViewModel.cs" />
+    <Compile Include="ViewModels\Rules\RuleOptionsViewModel.cs" />
+    <Compile Include="ViewModels\SupportCategories\DeleteSupportCategoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\font-awesome\css\font-awesome.css" />
+    <Content Include="Content\font-awesome\css\font-awesome.min.css" />
+    <Content Include="Content\font-awesome\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\img\help\setup-db\step-10.PNG" />
+    <Content Include="Content\img\help\setup-db\step-11.PNG" />
+    <Content Include="Content\img\help\setup-db\step-12.PNG" />
+    <Content Include="Content\img\help\setup-db\step-2.PNG" />
+    <Content Include="Content\img\help\setup-db\step-3.PNG" />
+    <Content Include="Content\img\help\setup-db\step-4.PNG" />
+    <Content Include="Content\img\help\setup-db\step-5.PNG" />
+    <Content Include="Content\img\help\setup-db\step-6.PNG" />
+    <Content Include="Content\img\help\setup-db\step-7.PNG" />
+    <Content Include="Content\img\help\setup-db\step-8.PNG" />
+    <Content Include="Content\img\help\setup-db\step-9.PNG" />
+    <Content Include="Content\PagedList.css" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Scripts\bootstrap-multiselect.js" />
+    <Content Include="Styles\css\bootstrap.css" />
+    <Content Include="Styles\css\bootstrap.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="gulpfile.js" />
     <Content Include="Scripts\ai.0.15.0-build58334.js" />
     <Content Include="Scripts\ai.0.15.0-build58334.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -185,6 +283,41 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="package.json" />
+    <Content Include="Content\font-awesome\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\font-awesome\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\font-awesome\fonts\FontAwesome.otf" />
+    <Content Include="Content\font-awesome\less\bordered-pulled.less" />
+    <Content Include="Content\font-awesome\less\core.less" />
+    <Content Include="Content\font-awesome\less\fixed-width.less" />
+    <Content Include="Content\font-awesome\less\font-awesome.less" />
+    <Content Include="Content\font-awesome\less\icons.less" />
+    <Content Include="Content\font-awesome\less\larger.less" />
+    <Content Include="Content\font-awesome\less\list.less" />
+    <Content Include="Content\font-awesome\less\mixins.less" />
+    <Content Include="Content\font-awesome\less\path.less" />
+    <Content Include="Content\font-awesome\less\rotated-flipped.less" />
+    <Content Include="Content\font-awesome\less\spinning.less" />
+    <Content Include="Content\font-awesome\less\stacked.less" />
+    <Content Include="Content\font-awesome\less\variables.less" />
+    <Content Include="Content\font-awesome\scss\font-awesome.scss" />
+    <Content Include="Content\font-awesome\scss\_bordered-pulled.scss" />
+    <Content Include="Content\font-awesome\scss\_core.scss" />
+    <Content Include="Content\font-awesome\scss\_fixed-width.scss" />
+    <Content Include="Content\font-awesome\scss\_icons.scss" />
+    <Content Include="Content\font-awesome\scss\_larger.scss" />
+    <Content Include="Content\font-awesome\scss\_list.scss" />
+    <Content Include="Content\font-awesome\scss\_mixins.scss" />
+    <Content Include="Content\font-awesome\scss\_path.scss" />
+    <Content Include="Content\font-awesome\scss\_rotated-flipped.scss" />
+    <Content Include="Content\font-awesome\scss\_spinning.scss" />
+    <Content Include="Content\font-awesome\scss\_stacked.scss" />
+    <Content Include="Content\font-awesome\scss\_variables.scss" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -197,6 +330,8 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Styles\css\site.css" />
+    <Content Include="Styles\css\site.min.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -212,46 +347,67 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Service References\Application Insights\ConnectedService.json" />
-    <Content Include="Views\MessageTypes\Create.cshtml" />
     <Content Include="Views\MessageTypes\Delete.cshtml" />
     <Content Include="Views\MessageTypes\Details.cshtml" />
-    <Content Include="Views\MessageTypes\Edit.cshtml" />
     <Content Include="Views\MessageTypes\Index.cshtml" />
-    <Content Include="Views\Rules\Create.cshtml" />
-    <Content Include="Views\Rules\Delete.cshtml" />
-    <Content Include="Views\Rules\Details.cshtml" />
-    <Content Include="Views\Rules\Edit.cshtml" />
     <Content Include="Views\Rules\Index.cshtml" />
-    <Content Include="Views\RuleCategories\Create.cshtml" />
-    <Content Include="Views\RuleCategories\Delete.cshtml" />
-    <Content Include="Views\RuleCategories\Details.cshtml" />
-    <Content Include="Views\RuleCategories\Edit.cshtml" />
-    <Content Include="Views\RuleCategories\Index.cshtml" />
-    <Content Include="Views\NotifyeeGroups\Create.cshtml" />
-    <Content Include="Views\NotifyeeGroups\Delete.cshtml" />
-    <Content Include="Views\NotifyeeGroups\Details.cshtml" />
-    <Content Include="Views\NotifyeeGroups\Edit.cshtml" />
-    <Content Include="Views\NotifyeeGroups\Index.cshtml" />
-    <Content Include="Views\Notifyees\Create.cshtml" />
-    <Content Include="Views\Notifyees\Delete.cshtml" />
-    <Content Include="Views\Notifyees\Details.cshtml" />
-    <Content Include="Views\Notifyees\Edit.cshtml" />
-    <Content Include="Views\Notifyees\Index.cshtml" />
-    <Content Include="Views\EscalationChains\Create.cshtml" />
-    <Content Include="Views\EscalationChains\Delete.cshtml" />
-    <Content Include="Views\EscalationChains\Details.cshtml" />
-    <Content Include="Views\EscalationChains\Edit.cshtml" />
-    <Content Include="Views\EscalationChains\Index.cshtml" />
     <Content Include="Views\AlertTypes\Create.cshtml" />
     <Content Include="Views\AlertTypes\Delete.cshtml" />
     <Content Include="Views\AlertTypes\Details.cshtml" />
     <Content Include="Views\AlertTypes\Edit.cshtml" />
     <Content Include="Views\AlertTypes\Index.cshtml" />
-    <Content Include="Views\EscalationChainLinks\Create.cshtml" />
-    <Content Include="Views\EscalationChainLinks\Delete.cshtml" />
-    <Content Include="Views\EscalationChainLinks\Details.cshtml" />
-    <Content Include="Views\EscalationChainLinks\Edit.cshtml" />
-    <Content Include="Views\EscalationChainLinks\Index.cshtml" />
+    <Content Include="Styles\scss\mixins\_position.scss" />
+    <Content Include="Styles\scss\modules\_app.scss" />
+    <Content Include="Styles\scss\modules\_breakpoints.scss" />
+    <Content Include="Styles\scss\modules\_buttons.scss" />
+    <Content Include="Styles\scss\modules\_clearfix.scss" />
+    <Content Include="Styles\scss\modules\_defaults.scss" />
+    <Content Include="Styles\scss\modules\_inputs.scss" />
+    <Content Include="Styles\scss\modules\_lists.scss" />
+    <Content Include="Styles\scss\modules\_misc.scss" />
+    <Content Include="Styles\scss\modules\_normalize.scss" />
+    <Content Include="Styles\scss\modules\_print.scss" />
+    <Content Include="Styles\scss\modules\_typography.scss" />
+    <Content Include="Styles\scss\modules\_vars.scss" />
+    <Content Include="Styles\scss\partials\_footer.scss" />
+    <Content Include="Styles\scss\partials\_header.scss" />
+    <Content Include="Styles\scss\partials\_main.scss" />
+    <Content Include="Styles\scss\partials\_nav.scss" />
+    <Content Include="Styles\scss\partials\_sidebar.scss" />
+    <Content Include="Styles\scss\vendor\_external.scss" />
+    <Content Include="Views\Shared\_Sidebar.cshtml" />
+    <Content Include="Styles\scss\site.scss" />
+    <Content Include="Views\Help\Index.cshtml" />
+    <Content Include="Views\RuleCategories\Index.cshtml" />
+    <Content Include="Views\SupportCategories\Index.cshtml" />
+    <Content Include="Views\RuleCategories\Create.cshtml" />
+    <Content Include="Views\RuleCategories\Details.cshtml" />
+    <Content Include="Views\RuleCategories\Edit.cshtml" />
+    <Content Include="Views\RuleCategories\Delete.cshtml" />
+    <Content Include="Views\SupportCategories\Create.cshtml" />
+    <Content Include="Views\SupportCategories\Details.cshtml" />
+    <Content Include="Views\SupportCategories\Delete.cshtml" />
+    <Content Include="Views\SupportCategories\Edit.cshtml" />
+    <Content Include="Views\Rules\Create.cshtml" />
+    <Content Include="Views\MessageTypes\Edit.cshtml" />
+    <Content Include="Views\Alerts\Create.cshtml" />
+    <Content Include="Views\Alerts\Delete.cshtml" />
+    <Content Include="Views\Alerts\Details.cshtml" />
+    <Content Include="Views\Alerts\Edit.cshtml" />
+    <Content Include="Views\Alerts\Index.cshtml" />
+    <Content Include="Views\Shared\_LayoutUserPortal.cshtml" />
+    <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="Views\RegisteredEngines\Index.cshtml" />
+    <Content Include="Views\RegisteredEngines\Edit.cshtml" />
+    <Content Include="Views\RegisteredEngines\Delete.cshtml" />
+    <Content Include="Views\RegisteredEngines\Create.cshtml" />
+    <Content Include="Views\MessageTypes\Create.cshtml" />
+    <Content Include="Views\Rules\Edit.cshtml" />
+    <Content Include="Views\Rules\Details.cshtml" />
+    <Content Include="Views\Rules\Delete.cshtml" />
+    <Content Include="Views\Reports\Report.cshtml" />
+    <Content Include="Views\Reports\BarChart.cshtml" />
+    <Content Include="Views\Reports\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -266,6 +422,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WatchdogDaemon\WatchdogDaemon.csproj">
+      <Project>{a8db6220-0361-47cd-8f1d-2287f74b54cd}</Project>
+      <Name>WatchdogDaemon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WatchdogDatabaseAccessLayer\WatchdogDatabaseAccessLayer.csproj">
       <Project>{b46ab31a-997a-4786-9966-43ffe91b1909}</Project>
       <Name>WatchdogDatabaseAccessLayer</Name>

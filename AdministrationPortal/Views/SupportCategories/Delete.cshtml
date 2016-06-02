@@ -1,0 +1,43 @@
+﻿@model AdministrationPortal.ViewModels.SupportCategories.DeleteSupportCategoryViewModel
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>
+    @Model.PageHeaderMessage
+</h3>
+<div>
+    <h4>SupportCategory</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.SupportCategory.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SupportCategory.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SupportCategory.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SupportCategory.Description)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default @Model.ButtonClass()" @Model.ButtonState() />
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

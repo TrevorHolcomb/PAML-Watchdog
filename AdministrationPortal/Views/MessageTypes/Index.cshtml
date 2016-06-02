@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WatchdogDatabaseAccessLayer.MessageType>
+﻿@model IEnumerable<WatchdogDatabaseAccessLayer.Models.MessageType>
 
 @{
     ViewBag.Title = "Index";
@@ -17,12 +17,6 @@
         <th>
             @Html.DisplayNameFor(model => model.Description)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RequiredParams)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.OptionalParams)
-        </th>
         <th></th>
     </tr>
 
@@ -35,15 +29,9 @@
             @Html.DisplayFor(modelItem => item.Description)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.RequiredParams)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OptionalParams)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @Html.ActionLink("Edit", "Edit", new { id=item.Name }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Name }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Name })
         </td>
     </tr>
 }

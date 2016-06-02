@@ -17,6 +17,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogDaemon.Tests", "Wat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogMessageGenerator.Tests", "WatchdogMessageGenerator.Tests\WatchdogMessageGenerator.Tests.csproj", "{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogWebAPI", "WatchdogWebAPI\WatchdogWebAPI.csproj", "{A4B4D3E1-7044-4659-B976-65F815D13F7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogWebAPI.Tests", "WatchdogWebAPI.Tests\WatchdogWebAPI.Tests.csproj", "{1CE31166-DF32-443C-8C16-6022C2159E98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogUserPortal", "WatchdogUserPortal\WatchdogUserPortal.csproj", "{D13A62E7-B5A0-40ED-81C3-5147232E922A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B46AB31A-997A-4786-9966-43FFE91B1909} = {B46AB31A-997A-4786-9966-43FFE91B1909}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogUserPortal.Tests", "WatchdogUserPortal.Tests\WatchdogUserPortal.Tests.csproj", "{9C7ABE8C-C2B3-46E9-8B2E-BB16F7DB6DB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogDatabaseAccessLayer.Tests", "WatchdogDatabaseAccessLayer.Tests\WatchdogDatabaseAccessLayer.Tests.csproj", "{55D7B80C-5E00-488F-AA00-385F0407FE13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +64,26 @@ Global
 		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4B4D3E1-7044-4659-B976-65F815D13F7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4B4D3E1-7044-4659-B976-65F815D13F7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4B4D3E1-7044-4659-B976-65F815D13F7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4B4D3E1-7044-4659-B976-65F815D13F7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CE31166-DF32-443C-8C16-6022C2159E98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CE31166-DF32-443C-8C16-6022C2159E98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CE31166-DF32-443C-8C16-6022C2159E98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CE31166-DF32-443C-8C16-6022C2159E98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D13A62E7-B5A0-40ED-81C3-5147232E922A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D13A62E7-B5A0-40ED-81C3-5147232E922A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D13A62E7-B5A0-40ED-81C3-5147232E922A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D13A62E7-B5A0-40ED-81C3-5147232E922A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C7ABE8C-C2B3-46E9-8B2E-BB16F7DB6DB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C7ABE8C-C2B3-46E9-8B2E-BB16F7DB6DB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C7ABE8C-C2B3-46E9-8B2E-BB16F7DB6DB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C7ABE8C-C2B3-46E9-8B2E-BB16F7DB6DB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55D7B80C-5E00-488F-AA00-385F0407FE13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55D7B80C-5E00-488F-AA00-385F0407FE13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55D7B80C-5E00-488F-AA00-385F0407FE13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55D7B80C-5E00-488F-AA00-385F0407FE13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

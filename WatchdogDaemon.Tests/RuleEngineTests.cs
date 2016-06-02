@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using WatchdogDaemon.RuleEngine;
+using WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine;
 using WatchdogDatabaseAccessLayer;
+using WatchdogDatabaseAccessLayer.Models;
 using Xunit;
 
 namespace WatchdogDaemon.Tests
@@ -8,68 +11,67 @@ namespace WatchdogDaemon.Tests
 
     public class RuleEngineTests
     {
-        #region setup
-
-        public static TheoryData<ICollection<Rule>, ICollection<Message>> TestData => new TheoryData
-            <ICollection<Rule>, ICollection<Message>>
+        public static TheoryData<Rule, Message> ShouldGenerateAlertData = new TheoryData<Rule, Message>
         {
-            {
-                Rules1,
-                Messages1
-            }
-        };
-
-        public static ICollection<Rule> Rules1 = new[]
             {
                 new Rule
                 {
-                    Id = 0,
-                    Name = "QueueTooSmall",
-                    RuleTrigger = "size < 100"
-                }
-            };
-
-        public static ICollection<Message> Messages1 = new[]
-            {
-                new Message
+                    Expression = "queueSize > 1000"
+                }, new Message
+                {
+                    MessageParameters = new List<MessageParameter>
                     {
-                        Id = 1,
-                        MessageTypeId = 0,
-                        Origin = "Athens",
-                        Params = "size=1",
-                        Processed = false,
-                        Server = "Homer"
-                    },
-
-                    new Message
-                    {
-                        Id = 2,
-                        MessageTypeId = 0,
-                        Origin = "Delphi",
-                        Params = "size=3",
-                        Processed = false,
-                        Server = "TheOracle"
-                    },
-
-                    new Message
-                    {
-                        Id = 3,
-                        MessageTypeId = 0,
-                        Origin = "Macedonia",
-                        Params = "size=5",
-                        Processed = false,
-                        Server = "Alexander"
+                        new MessageParameter
+                        {
+                            Value = "10000", MessageTypeParameterType = new MessageTypeParameterType
+                            {
+                                Name = "queueSize",
+                                Type = "integer"
+                            }
+                        }
                     }
-            };
-#endregion 
+                }
+            }
+        };
+
+        public static TheoryData<Rule, Message> ShouldntGenerateAlertData = new TheoryData<Rule, Message>
+        {
+            {
+                new Rule
+                {
+                    Expression = "queueSize > 1000"
+                }, new Message
+                {
+                    MessageParameters = new List<MessageParameter>
+                    {
+                        new MessageParameter
+                        {
+                            Value = "100", MessageTypeParameterType = new MessageTypeParameterType
+                            {
+                                Name = "queueSize",
+                                Type = "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
 
         [Theory]
-        [MemberData(nameof(TestData))]
-        public void TestConsumeMessages(ICollection<Rule> rules, ICollection<Message> messages)
+        [MemberData(nameof(ShouldGenerateAlertData))]
+        public void ShouldGenerateAlertTest(Rule rule, Message message)
         {
-            var ruleEngine = new RuleEngine();
-            ruleEngine.ConsumeMessages(rules, messages);
-            Assert.Empty(messages.Where(e => e.Processed == false));
+            var ruleEngine = new StandardRuleEngine();
+            Assert.True(ruleEngine.DoesGenerateAlert(rule, message));
+        }
+
+        [Theory]
+        [MemberData(nameof(ShouldntGenerateAlertData))]
+        public void ShouldntGenerateAlertTest(Rule rule, Message message)
+        {
+            var ruleEngine = new StandardRuleEngine();
+            Assert.False(ruleEngine.DoesGenerateAlert(rule, message));
         }
     }
 }

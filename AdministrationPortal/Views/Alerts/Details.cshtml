@@ -1,0 +1,124 @@
+﻿@model AdministrationPortal.ViewModels.Alerts.AlertDetailsViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutUserPortal.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.Severity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Alert.Severity)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Alert.Status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.TimeCreated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Alert.TimeCreated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.TimeModified)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Alert.TimeModified)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.AlertType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Alert.AlertType.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.Rule)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Alert.Rule.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.Server)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Alert.Server)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.Origin)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Alert.Origin)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.Engine)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Alert.Engine)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.MessageType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Alert.MessageType.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.AlertParameters)
+        </dt>
+@foreach (var item in Model.Alert.AlertParameters)
+{
+    <dd>
+        @Html.DisplayFor(model => item.Value)
+    </dd>
+}
+        
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.Assignee)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Alert.Assignee)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.Notes)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Alert.Notes)
+        </dd>
+
+    </dl>
+</div>
+<div class="col-md-offset-1">
+    @Html.ActionLink("Edit Alert", "Edit", new { id = (int)Model.Alert.Id, Model.PageNo, Model.sortOrder }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Back to List", "Index", new {ActiveOrArchived = Model.Alert.Status.ToString(), Page_No = Model.PageNo, sortOrder = Model.sortOrder }, new { @class = "btn btn-default" })
+</div>

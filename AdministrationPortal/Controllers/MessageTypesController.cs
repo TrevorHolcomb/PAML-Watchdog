@@ -1,34 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using WatchdogDatabaseAccessLayer;
+using AdministrationPortal.ViewModels.MessageTypes;
+using Ninject;
+using WatchdogDatabaseAccessLayer.Models;
+using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace AdministrationPortal.Controllers
 {
     public class MessageTypesController : Controller
     {
-        private readonly WatchdogDatabaseContext _db = new WatchdogDatabaseContext();
+        [Inject]
+        public Repository<MessageType> MessageTypeRepository { get; set; }
+        [Inject]
+        public Repository<MessageTypeParameterType> MessageTypeParameterTypeRepository { get; set; }
 
         // GET: MessageTypes
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            return View(await _db.MessageTypes.ToListAsync());
+            return View(MessageTypeRepository.Get());
         }
 
         // GET: MessageTypes/Details/5
-        public async Task<ActionResult> Details(int? id)
+        public ActionResult Details(string id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            MessageType messageType = await _db.MessageTypes.FindAsync(id);
+            var messageType = MessageTypeRepository.GetByName(id);
             if (messageType == null)
             {
                 return HttpNotFound();
@@ -39,7 +35,10 @@ namespace AdministrationPortal.Controllers
         // GET: MessageTypes/Create
         public ActionResult Create()
         {
-            return View();
+            CreateMessageTypeViewModel viewModel = new CreateMessageTypeViewModel();
+            
+
+            return View(viewModel);
         }
 
         // POST: MessageTypes/Create
@@ -47,80 +46,128 @@ namespace AdministrationPortal.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Name,Description,RequiredParams,OptionalParams")] MessageType messageType)
+        public ActionResult Create(CreateMessageTypeViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                _db.MessageTypes.Add(messageType);
-                await _db.SaveChangesAsync();
+                var messageType = new MessageType
+                {
+                    Name = viewModel.Name,
+                    Description = viewModel.Description,
+                };
+
+                List<MessageTypeParameterType> messageTypeParameterType = new List<MessageTypeParameterType>();
+
+                for (int i = 0; i < viewModel.ParameterNames.Count; i++)
+                {
+                    if (!viewModel.ParametersEnabled[i])
+                        continue;
+
+                    messageTypeParameterType.Add(new MessageTypeParameterType
+                    {
+                        Name = viewModel.ParameterNames[i],
+                        Type = viewModel.ParameterTypes[i],
+                        Required = viewModel.ParametersRequired[i]
+                    });
+                }
+                
+                messageType.MessageTypeParameterTypes = messageTypeParameterType;
+                MessageTypeParameterTypeRepository.InsertRange(messageTypeParameterType);
+                MessageTypeRepository.Insert(messageType);
+                MessageTypeRepository.Save();
+                MessageTypeParameterTypeRepository.Save();
                 return RedirectToAction("Index");
+                
             }
 
-            return View(messageType);
+            return View(viewModel);
         }
-
-        // GET: MessageTypes/Edit/5
-        public async Task<ActionResult> Edit(int? id)
+        
+        // GET: MessageTypes/Delete/1
+        public ActionResult Delete(string id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            MessageType messageType = await _db.MessageTypes.FindAsync(id);
+            var messageType = MessageTypeRepository.GetByName(id);
+            DeleteMessageTypeViewModel viewModel = new DeleteMessageTypeViewModel();
+            viewModel.MessageType = messageType;
+
             if (messageType == null)
             {
                 return HttpNotFound();
             }
-            return View(messageType);
-        }
 
-        // POST: MessageTypes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Description,RequiredParams,OptionalParams")] MessageType messageType)
-        {
-            if (ModelState.IsValid)
-            {
-                _db.Entry(messageType).State = EntityState.Modified;
-                await _db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            return View(messageType);
-        }
-
-        // GET: MessageTypes/Delete/5
-        public async Task<ActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            MessageType messageType = await _db.MessageTypes.FindAsync(id);
-            if (messageType == null)
-            {
-                return HttpNotFound();
-            }
-            return View(messageType);
+            bool notSafeToDelete = (messageType.Alerts.Count != 0) || (messageType.Rules.Count != 0) || (messageType.Messages.Count != 0);
+            return View(viewModel.canDeleteThisMessageType(!notSafeToDelete));
         }
 
         // POST: MessageTypes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(string id)
         {
-            MessageType messageType = await _db.MessageTypes.FindAsync(id);
-            _db.MessageTypes.Remove(messageType);
-            await _db.SaveChangesAsync();
+            var messageType = MessageTypeRepository.GetByName(id);
+            var messageTypeParameterTypes =
+                MessageTypeParameterTypeRepository.Get().Where(parameter => parameter.MessageTypeName == messageType.Name);
+
+            MessageTypeParameterTypeRepository.DeleteRange(messageTypeParameterTypes);
+            MessageTypeParameterTypeRepository.Save();
+
+            MessageTypeRepository.Delete(messageType);
+            MessageTypeRepository.Save();
             return RedirectToAction("Index");
+        }
+
+        // GET: Rules/Edit/5
+        public ActionResult Edit(string id)
+        {
+            MessageType messageType = MessageTypeRepository.GetByName(id);
+            if (messageType == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(messageType);
+        }
+
+        // POST: Rules/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Name, Description")] MessageType messageType)
+        {
+
+            if (ModelState.IsValid)
+            {
+                MessageType messageInDb = MessageTypeRepository.GetByName(messageType.Name);
+                if (messageInDb != null)
+                {
+                    messageInDb = mapNewMessageTypeOntoDbMessageType(messageType);
+                }
+
+                MessageTypeRepository.Update(messageInDb);
+                MessageTypeRepository.Save();
+                return RedirectToAction("Index");
+            }
+
+            return View(messageType);
+        }
+
+        private MessageType mapNewMessageTypeOntoDbMessageType(MessageType newMessageType)
+        {
+            MessageType dbMessageType = MessageTypeRepository.GetByName(newMessageType.Name);
+            if (dbMessageType != null)
+            {
+                dbMessageType.Name = newMessageType.Name;
+                dbMessageType.Description = newMessageType.Description;
+            }
+            return dbMessageType;
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _db.Dispose();
+                MessageTypeRepository.Dispose();
             }
             base.Dispose(disposing);
         }

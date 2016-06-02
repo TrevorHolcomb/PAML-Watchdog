@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using WatchdogDatabaseAccessLayer;
+using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogMessageGenerator
 {
     public class QueueSizeMessageFactory : AbstractMessageFactory
     {
         public const int MaxSize = 100000;
-        public QueueSizeMessageFactory(string[] servers, string[] origins, int messageTypeId) : base(servers, origins, messageTypeId)
+        public QueueSizeMessageFactory(Engine engine, string[] servers, string[] origins, MessageType messageType) : base(engine, servers, origins, messageType)
         {
-            
         }
 
         public int GetRandomQueueSize()
@@ -23,22 +19,26 @@ namespace WatchdogMessageGenerator
 
         public override Message Build()
         {
-            return new Message
+            var message = new Message
             {
                 Id = GetRandomId(),
-                MessageTypeId = MessageTypeId,
+                MessageTypeName = MessageType.Name,
+                MessageType = MessageType,
+                Engine = Engine,
+                EngineName = Engine.Name,
                 Origin = GetRandomOrigin(),
-                Params = GetParams(),
-                Processed = false,
                 Server = GetRandomServer()
+                
             };
-        }
 
-        public override string GetParams()
-        {
-            return "size=" + GetRandomQueueSize();
+            var dictionary = new Dictionary<string, MessageParameterFactory.RawMessageParameter>
+            {
+                {MessageType.Name, MessageParameterFactory.WrapParameter("integer", GetRandomQueueSize().ToString())}
+            };
+            
+            message.MessageParameters = MessageParameterFactory.BuildParameters(message, dictionary);
+
+            return message;
         }
     }
-
-
 }

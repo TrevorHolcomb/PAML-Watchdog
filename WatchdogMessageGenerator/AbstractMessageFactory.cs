@@ -4,25 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WatchdogDatabaseAccessLayer;
+using WatchdogDatabaseAccessLayer.Models;
 
 namespace WatchdogMessageGenerator
 {
     public abstract class AbstractMessageFactory
     {
+        public Engine Engine { get; }
         public string[] Servers { get; }
         public string[] Origins { get; }
-        public int MessageTypeId { get; }
+        public MessageType MessageType { get; set; }
 
         internal readonly Random Random;
 
-        protected AbstractMessageFactory(string[] servers, string[] origins, int messageTypeId)
+        protected AbstractMessageFactory(Engine engine, string[] servers, string[] origins, MessageType messageType)
         {
+            Engine = engine;
             Servers = servers;
             Origins = origins;
-            MessageTypeId = messageTypeId;
+            MessageType = messageType;
 
             Random = new Random();
-    }
+        }
 
         public int GetRandomId()
         {
@@ -45,8 +48,6 @@ namespace WatchdogMessageGenerator
         }
 
         public abstract Message Build();
-
-        public abstract string GetParams();
     }
 
     
