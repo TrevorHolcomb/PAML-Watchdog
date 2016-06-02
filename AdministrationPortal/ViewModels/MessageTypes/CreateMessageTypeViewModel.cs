@@ -63,7 +63,12 @@ namespace AdministrationPortal.ViewModels.MessageTypes
                     results.Add(new ValidationResult("Parameters must have Names."));
             }
 
-            var duplicateKeys = ParameterNames.GroupBy(x => x.Value)
+            var inputParameterNames = new List<ParameterName>();
+            for (int i = 0; i < ParametersEnabled.Count; i++)
+                if (ParametersEnabled[i])
+                    inputParameterNames.Add(ParameterNames[i]);
+
+            var duplicateKeys = inputParameterNames.GroupBy(x => x.Value)
                     .Where(group => group.Count() > 1)
                     .Select(group => group.Key);
 
