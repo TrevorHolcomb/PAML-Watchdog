@@ -29,7 +29,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 
         public override RuleCategory GetByName(string name)
         {
-            return _ruleCategories.FirstOrDefault(category => category.Name == name);
+            return _ruleCategories.Where(category => category.Name == name).DefaultIfEmpty(null).First();
         }
 
         public override void Insert(RuleCategory model)

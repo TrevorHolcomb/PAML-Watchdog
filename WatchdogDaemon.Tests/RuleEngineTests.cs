@@ -26,7 +26,7 @@ namespace WatchdogDaemon.Tests
                             Value = "10000", MessageTypeParameterType = new MessageTypeParameterType
                             {
                                 Name = "queueSize",
-                                Type = "integer"
+                                Type = "Integer"
                             }
                         }
                     }
@@ -49,7 +49,7 @@ namespace WatchdogDaemon.Tests
                             Value = "100", MessageTypeParameterType = new MessageTypeParameterType
                             {
                                 Name = "queueSize",
-                                Type = "integer"
+                                Type = "Integer"
                             }
                         }
                     }

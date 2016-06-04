@@ -26,7 +26,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
 
         public override EscalationChain GetByName(string name)
         {
-            return _container.EscalationChains.First(chain => chain.Name == name);
+            return _container.EscalationChains.Where(chain => chain.Name == name).DefaultIfEmpty(null).First();
         }
 
         public override void Insert(EscalationChain model)

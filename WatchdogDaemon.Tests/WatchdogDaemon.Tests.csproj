@@ -104,10 +104,6 @@
       <Project>{B46AB31A-997A-4786-9966-43FFE91B1909}</Project>
       <Name>WatchdogDatabaseAccessLayer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WatchdogMessageGenerator\WatchdogMessageGenerator.csproj">
-      <Project>{3b6725a3-7c5a-47f4-acf8-21dd60e86304}</Project>
-      <Name>WatchdogMessageGenerator</Name>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

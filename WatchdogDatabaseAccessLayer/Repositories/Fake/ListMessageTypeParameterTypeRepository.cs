@@ -32,7 +32,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 
         public override MessageTypeParameterType GetByName(string name)
         {
-            return _messageTypeParameterTypes.FirstOrDefault(type => type.Name == name);
+            return _messageTypeParameterTypes.Where(type => type.Name == name).DefaultIfEmpty(null).First();
         }
 
         public override void Insert(MessageTypeParameterType model)
