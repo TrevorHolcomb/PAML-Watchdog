@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
+using AdministrationPortal.ViewModels.RuleCategories;
 
 namespace AdministrationPortal.Controllers
 {
@@ -71,17 +68,23 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id, Name, Description")] RuleCategory ruleCategory)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                RuleCategoryRepository.Update(ruleCategory);
-                RuleCategoryRepository.Save();
-                return RedirectToAction("Index");
+                return View(ruleCategory);
             }
 
-            return View(ruleCategory);
+            RuleCategory ruleCategoryInDb = RuleCategoryRepository.GetById(ruleCategory.Id);
+            if (ruleCategory == null)
+            {
+                return HttpNotFound();
+            }
+
+            ruleCategoryInDb.Description = ruleCategory.Description;
+            RuleCategoryRepository.Update(ruleCategoryInDb);
+            RuleCategoryRepository.Save();
+            return RedirectToAction("Index");
         }
 
-        //TODO: don't allow deletion if in use
         // GET: RuleCategories/Delete/5
         public ActionResult Delete(int id)
         {
@@ -90,7 +93,10 @@ namespace AdministrationPortal.Controllers
             {
                 return HttpNotFound();
             }
-            return View(ruleCategory);
+
+            bool safeToDelete = (ruleCategory.Rules.Count == 0);
+            var viewModel = new DeleteRuleCategoryViewModel(ruleCategory, safeToDelete);
+            return View(viewModel);
         }
 
         // POST: RuleCategories/Delete/5
@@ -99,6 +105,18 @@ namespace AdministrationPortal.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             var ruleCategory = RuleCategoryRepository.GetById(id);
+            if (ruleCategory == null)
+            {
+                return HttpNotFound();
+            }
+
+            bool safeToDelete = (ruleCategory.Rules.Count == 0);
+            if (!safeToDelete)
+            {
+                var viewModel = new DeleteRuleCategoryViewModel(ruleCategory, safeToDelete);
+                return View(viewModel);
+            }
+
             RuleCategoryRepository.Delete(ruleCategory);
             RuleCategoryRepository.Save();
 

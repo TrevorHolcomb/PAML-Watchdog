@@ -16,7 +16,7 @@
         <AssociationConnector Association="WatchdogDatabase.NotifyeeNotifyeeGroup" />
         <AssociationConnector Association="WatchdogDatabase.EscalationChainLinkNotifyeeGroup" />
         <EntityTypeShape EntityType="WatchdogDatabase.Rule" Width="2" PointX="10.375" PointY="6.625" FillColor="0, 204, 133" />
-        <EntityTypeShape EntityType="WatchdogDatabase.AlertType" Width="1.5" PointX="19.75" PointY="15.125" FillColor="31, 0, 204" />
+        <EntityTypeShape EntityType="WatchdogDatabase.AlertType" Width="1.5" PointX="11.375" PointY="11.5" FillColor="31, 0, 204" />
         <AssociationConnector Association="WatchdogDatabase.EscalationChainLinkEscalationChainLink" />
         <AssociationConnector Association="WatchdogDatabase.RuleMessageType" />
         <EntityTypeShape EntityType="WatchdogDatabase.Alert" Width="2.75" PointX="16.25" PointY="9" FillColor="31, 0, 204" />

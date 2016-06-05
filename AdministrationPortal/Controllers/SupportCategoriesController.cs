@@ -69,12 +69,13 @@ namespace AdministrationPortal.Controllers
         {
             if (ModelState.IsValid)
             {
-                SupportCategory supportCategoryInDb = mapNewCategoryOntoDbCategory(supportCategory);
+                SupportCategory supportCategoryInDb = SupportCategoryRepository.GetById(supportCategory.Id);
                 if(supportCategoryInDb == null)
                 {
                     return HttpNotFound();
                 }
 
+                supportCategoryInDb.Description = supportCategory.Description;
                 SupportCategoryRepository.Update(supportCategoryInDb);
                 SupportCategoryRepository.Save();
                 return RedirectToAction("Index");
@@ -86,17 +87,15 @@ namespace AdministrationPortal.Controllers
         // GET: SupportCategories/Delete/1
         public ActionResult Delete(int id)
         {
-            var supportCategory = SupportCategoryRepository.GetById(id);
-            DeleteSupportCategoryViewModel viewModel = new DeleteSupportCategoryViewModel();
-            viewModel.SupportCategory = supportCategory;
-               
+            var supportCategory = SupportCategoryRepository.GetById(id);              
             if (supportCategory == null)
             {
                 return HttpNotFound();
             }
 
             bool safeToDelete = (supportCategory.Rules.Count == 0);
-            return View(viewModel.canDeleteThisSupportCategory(safeToDelete));
+            var viewModel = new DeleteSupportCategoryViewModel(supportCategory, safeToDelete);
+            return View(viewModel);
         }
 
         // POST: SupportCategories/Delete/5
@@ -105,9 +104,20 @@ namespace AdministrationPortal.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             var supportCategory = SupportCategoryRepository.GetById(id);
+            if (supportCategory == null)
+            {
+                return HttpNotFound();
+            }
+
+            bool safeToDelete = (supportCategory.Rules.Count == 0);
+            if (!safeToDelete)
+            {
+                var viewModel = new DeleteSupportCategoryViewModel(supportCategory, safeToDelete);
+                return View(viewModel);
+            }
+
             SupportCategoryRepository.Delete(supportCategory);
             SupportCategoryRepository.Save();
-
             return RedirectToAction("Index");
         }
 
@@ -118,17 +128,6 @@ namespace AdministrationPortal.Controllers
                 SupportCategoryRepository.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        private SupportCategory mapNewCategoryOntoDbCategory(SupportCategory newSupportCategory)
-        {
-            SupportCategory dbSupportCategory = SupportCategoryRepository.GetById(newSupportCategory.Id);
-            if (dbSupportCategory != null)
-            {
-                dbSupportCategory.Name = newSupportCategory.Name;
-                dbSupportCategory.Description = newSupportCategory.Description;
-            }
-            return dbSupportCategory;
         }
     }
 }
