@@ -34,7 +34,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
 
         public override AlertType GetByName(string name)
         {
-            return _container.AlertTypes.Where(alertType => alertType.Name == name).DefaultIfEmpty(null).First();
+            return _container.AlertTypes.First(alertType => alertType.Name == name);
         }
 
         public override void Insert(AlertType model)

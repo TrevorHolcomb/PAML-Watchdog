@@ -26,7 +26,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
 
         public override Engine GetByName(string name)
         {
-            return _container.Engines.Find(name);
+            return _container.Engines.First(engine => engine.Name == name);
         }
 
         public override void Insert(Engine model)

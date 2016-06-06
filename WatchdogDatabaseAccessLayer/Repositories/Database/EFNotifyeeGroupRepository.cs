@@ -27,7 +27,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
 
         public override NotifyeeGroup GetByName(string name)
         {
-            return _container.NotifyeeGroups.Where(group => group.Name == name).DefaultIfEmpty(null).First();
+            return _container.NotifyeeGroups.First(group => group.Name == name);
         }
 
         public override void Insert(NotifyeeGroup model)
