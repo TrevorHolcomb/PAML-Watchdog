@@ -146,9 +146,9 @@ namespace AdministrationPortal.Controllers
                     
                    
                     tailAlertStatus.Next = newStatus;
-                    
+                    tailAlertStatus.Alert = null;
                     alertInDb.AlertStatus = newStatus;
-
+                    newStatus.Alert = alertInDb;
                     AlertStatusRepository.Update(newStatus);
                     AlertStatusRepository.Save();
                     
