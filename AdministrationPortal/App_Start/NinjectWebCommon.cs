@@ -65,7 +65,7 @@ namespace AdministrationPortal.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Load(new EFModule());
+            kernel.Load(new EFWebModule());
         }        
     }
 }

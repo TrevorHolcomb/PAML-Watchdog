@@ -85,7 +85,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Exceptions\InvalidEngineException.cs" />
     <Compile Include="Exceptions\InvalidParameterException.cs" />
     <Compile Include="Processes\IProcess.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\BooleanTypeHandler.cs" />

@@ -1,4 +1,5 @@
-﻿using WatchdogDatabaseAccessLayer.Models;
+﻿using Ninject.Web.Common;
+using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using WatchdogDatabaseAccessLayer.Repositories.Database;
 
@@ -8,7 +9,7 @@ namespace WatchdogDatabaseAccessLayer
     {
         public override void Load()
         {
-            Bind<WatchdogDatabaseContainer>().To<WatchdogDatabaseContainer>().InThreadScope();
+            Bind<WatchdogDatabaseContainer>().To<WatchdogDatabaseContainer>();
 
             Bind<Repository<Alert>>().To<EFAlertRepository>();
             Bind<Repository<AlertType>>().To<EFAlertTypeRepository>();
@@ -29,5 +30,34 @@ namespace WatchdogDatabaseAccessLayer
             Bind<Repository<UnvalidatedMessage>>().To<EFUnvalidatedMessageRepository>();
             Bind<Repository<UnvalidatedMessageParameter>>().To<EFUnvalidatedMessageParameterRepository>();
         }
+    }
+
+    public class EFWebModule : Ninject.Modules.NinjectModule
+    {
+        public override void Load()
+        {
+            Bind<WatchdogDatabaseContainer>().To<WatchdogDatabaseContainer>().InRequestScope();
+
+            Bind<Repository<Alert>>().To<EFAlertRepository>().InRequestScope();
+            Bind<Repository<AlertType>>().To<EFAlertTypeRepository>().InRequestScope();
+            Bind<Repository<AlertStatus>>().To<EFAlertStatusRepository>().InRequestScope();
+            Bind<Repository<AlertParameter>>().To<EFAlertParameterRepository>().InRequestScope();
+            Bind<Repository<Engine>>().To<EFEngineRepository>().InRequestScope();
+            Bind<Repository<EscalationChainLink>>().To<EFEscalationChainLinkRepository>().InRequestScope();
+            Bind<Repository<EscalationChain>>().To<EFEscalationChainRepository>().InRequestScope();
+            Bind<Repository<MessageParameter>>().To<EFMessageParameterRepository>().InRequestScope();
+            Bind<Repository<Message>>().To<EFMessageRepository>().InRequestScope();
+            Bind<Repository<MessageTypeParameterType>>().To<EFMessageTypeParameterTypeRepository>().InRequestScope();
+            Bind<Repository<MessageType>>().To<EFMessageTypeRepository>().InRequestScope();
+            Bind<Repository<NotifyeeGroup>>().To<EFNotifyeeGroupRepository>().InRequestScope();
+            Bind<Repository<Notifyee>>().To<EFNotifyeeRepository>().InRequestScope();
+            Bind<Repository<RuleCategory>>().To<EFRuleCategoryRepository>().InRequestScope();
+            Bind<Repository<Rule>>().To<EFRuleRepository>().InRequestScope();
+            Bind<Repository<SupportCategory>>().To<EFSupportCategoryRepository>().InRequestScope();
+            Bind<Repository<UnvalidatedMessage>>().To<EFUnvalidatedMessageRepository>().InRequestScope();
+            Bind<Repository<UnvalidatedMessageParameter>>().To<EFUnvalidatedMessageParameterRepository>().InRequestScope();
+        }
+
+
     }
 }
