@@ -33,11 +33,11 @@ namespace AdministrationPortal.Controllers
             switch (ActiveOrArchived)
             {
                 case "Resolved":
-                    alerts = alerts.Where(a => a.AlertStatus.MostRecent().StatusCode == StatusCode.Resolved);
+                    alerts = alerts.Where(a => a.AlertStatus.StatusCode == StatusCode.Resolved);
                     status = StatusCode.Resolved.ToString();
                     break;
                 default:
-                    alerts = alerts.Where(a => a.AlertStatus.MostRecent().StatusCode == StatusCode.Acknowledged || a.AlertStatus.MostRecent().StatusCode == StatusCode.UnAcknowledged);
+                    alerts = alerts.Where(a => a.AlertStatus.StatusCode == StatusCode.Acknowledged || a.AlertStatus.StatusCode == StatusCode.UnAcknowledged);
                     status = StatusCode.Acknowledged.ToString();
                     break;
             }
@@ -132,30 +132,36 @@ namespace AdministrationPortal.Controllers
                     // create and insert a new AlertStatus
                     var newStatus = new AlertStatus();
                     newStatus.ModifiedBy = "N/A";
-                    newStatus.StatusCode = alertViewModel.Alert.AlertStatus.StatusCode;
-                    newStatus.Prev = alertInDb.AlertStatus;
+                    newStatus.StatusCode = alert.AlertStatus.StatusCode;
+                    newStatus.Prev = AlertStatusRepository.GetById(alertInDb.AlertStatus.Id);
                    
 
                     AlertStatusRepository.Insert(newStatus);
                     AlertStatusRepository.Save();
 
                     newStatus = AlertStatusRepository.Get().Last();
-                    alertInDb.AlertStatus.Next = newStatus;
-                    var tailAlertStatus = alertInDb.AlertStatus;
-                    alertInDb.AlertStatus = newStatus;
                     
-                    //newStatus.Prev = tailAlertStatus;
-                   // tailAlertStatus.Next = newStatus;
-                    //AlertStatusRepository.Update(newStatus);
+                    var tailAlertStatus = AlertStatusRepository.GetById(alertInDb.AlertStatus.Id);
+                    
+                    
+                   
+                    tailAlertStatus.Next = newStatus;
+                    
+                    alertInDb.AlertStatus = newStatus;
+
+                    AlertStatusRepository.Update(newStatus);
+                    AlertStatusRepository.Save();
+                    
                     AlertStatusRepository.Update(tailAlertStatus);
                     AlertStatusRepository.Save();
                     
-                   
-                    alertInDb.Severity = alertViewModel.Alert.Severity;
-                    alertInDb.Notes = alertViewModel.Alert.Notes;
+                    
+                    alertInDb.Severity = alert.Severity;
+                    alertInDb.Notes = alert.Notes;
+                    AlertRepository.Update(alertInDb);
+                    AlertRepository.Save();
                 }
-                AlertRepository.Update(alertInDb);
-                AlertRepository.Save();
+                
                 return RedirectToAction("Index", new {ActiveOrArchived = alert.AlertStatus.StatusCode.ToString() });
             }
 

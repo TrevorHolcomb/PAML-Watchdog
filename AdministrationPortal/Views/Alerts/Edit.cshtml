@@ -30,10 +30,10 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Alert.AlertStatus.MostRecent().TimeStamp, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Alert.AlertStatus.TimeStamp, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Alert.AlertStatus.MostRecent().TimeStamp, new { @readonly = "readonly", @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Alert.AlertStatus.MostRecent().TimeStamp, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(model => model.Alert.AlertStatus.TimeStamp, new { @readonly = "readonly", @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Alert.AlertStatus.TimeStamp, "", new { @class = "text-danger" })
             </div>
         </div>
 
