@@ -9,7 +9,7 @@ namespace WatchdogDatabaseAccessLayer
     {
         public override void Load()
         {
-            Bind<WatchdogDatabaseContainer>().To<WatchdogDatabaseContainer>();
+            Bind<WatchdogDatabaseContainer>().To<WatchdogDatabaseContainer>().InThreadScope();
 
             Bind<Repository<Alert>>().To<EFAlertRepository>();
             Bind<Repository<AlertType>>().To<EFAlertTypeRepository>();
