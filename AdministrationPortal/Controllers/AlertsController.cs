@@ -23,7 +23,7 @@ namespace AdministrationPortal.Controllers
         public Repository<AlertStatus> AlertStatusRepository { private get; set; }
 
         // GET: Alerts
-        public ActionResult Index(string ActiveOrArchived, int? Page_No, String sortOrder)
+        public ActionResult Index(string ActiveOrArchived, int? Page_No, String sortSelect, String searchString)
         {
             int Size_Of_Page = 10;
             int No_Of_Page = (Page_No ?? 1);
@@ -42,29 +42,45 @@ namespace AdministrationPortal.Controllers
                     break;
             }
 
-            switch(sortOrder)
+            var searchStringExists = !String.IsNullOrEmpty(searchString);
+            switch (sortSelect)
             {
-                case "Severity":
+                case "0":
+                    if (searchStringExists)
+                        alerts = alerts.Where(a => Convert.ToString(a.Severity).Contains(searchString));
                     alerts = alerts.OrderByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.TimeStamp);
                     break;
-                case "Time":
-                    alerts = alerts.OrderByDescending(a => a.AlertStatus.TimeStamp);
+                case "1":
+                    if(searchStringExists)
+                        alerts = alerts.Where(a => a.AlertStatus.StatusCode.ToString().ToLower().Contains(searchString.ToLower()));
+                    alerts = alerts.OrderBy(a => a.AlertStatus.StatusCode).ThenByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.TimeStamp);
                     break;
-                case "Origin":
-                    alerts = alerts.OrderBy(a => a.Origin).ThenByDescending(a => a.AlertStatus.TimeStamp);
+                case "2":
+                    if(searchStringExists)
+                        alerts = alerts.Where(a => a.Rule.SupportCategory.Name.ToLower().Contains(searchString.ToLower()));
+                    alerts = alerts.OrderBy(a => a.Rule.SupportCategory.Name).ThenByDescending(a => a.Severity);
                     break;
-                case "AlertType":
+                case "3":
+                    if(searchStringExists)
+                        alerts = alerts.Where(a => a.AlertType.Name.ToLower().Contains(searchString.ToLower()));
                     alerts = alerts.OrderBy(a => a.AlertType.Name);
                     break;
-                case "Group":
-                    alerts = alerts.OrderBy(a => a.Rule.SupportCategory.Name).ThenByDescending(a => a.Severity);
+                case "4":
+                    if(searchStringExists)
+                        alerts = alerts.Where(a => a.AlertStatus.TimeStamp.ToString().Contains(searchString));
+                    alerts = alerts.OrderByDescending(a => a.AlertStatus.TimeStamp);
+                    break;
+                case "5":
+                    if(searchStringExists)
+                        alerts = alerts.Where(a => a.Origin.ToLower().Contains(searchString.ToLower()));
+                    alerts = alerts.OrderBy(a => a.Origin).ThenByDescending(a => a.AlertStatus.TimeStamp);
                     break;
                 default:
                     alerts = alerts.OrderBy(a => a.AlertStatus.TimeStamp).ThenByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.TimeStamp);
                     break;
             }
-
-            return View(new AlertPagingCreateView(alerts.ToPagedList(No_Of_Page, Size_Of_Page), status, sortOrder, No_Of_Page));
+           
+            return View(new AlertPagingCreateView(alerts.ToPagedList(No_Of_Page, Size_Of_Page), status, No_Of_Page));
         }
 
         // GET: Alerts/Details/5
