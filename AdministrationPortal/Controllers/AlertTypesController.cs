@@ -23,7 +23,7 @@ namespace AdministrationPortal.Controllers
             var alertType = AlertTypeRepository.GetById(id);
             if (alertType == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No AlertType found with Id " + id);
             }
             return View(alertType);
         }
@@ -57,7 +57,7 @@ namespace AdministrationPortal.Controllers
             var alertType = AlertTypeRepository.GetById(id);
             if (alertType == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No AlertType found with Id " + id);
             }
 
             return View(alertType);
@@ -76,7 +76,7 @@ namespace AdministrationPortal.Controllers
             AlertType alertTypeInDb = AlertTypeRepository.GetById(alertType.Id);
             if (alertTypeInDb == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No AlertType found with Id " + alertType.Id);
             }
 
             alertTypeInDb.Description = alertType.Description;
@@ -108,7 +108,7 @@ namespace AdministrationPortal.Controllers
             var alertType = AlertTypeRepository.GetById(id);
             if (alertType == null )
             {
-                return HttpNotFound();
+                return HttpNotFound("No AlertType found with ID " + id);
             }
 
             bool safeToDelete = (alertType.Alerts.Count == 0 && alertType.Rules.Count == 0);

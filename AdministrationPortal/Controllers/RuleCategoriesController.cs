@@ -23,7 +23,7 @@ namespace AdministrationPortal.Controllers
             var ruleCategory = RuleCategoryRepository.GetById(id);
             if (ruleCategory == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No RuleCategory found with Id " + id);
             }
             return View(ruleCategory);
         }
@@ -58,7 +58,7 @@ namespace AdministrationPortal.Controllers
             var ruleCategory = RuleCategoryRepository.GetById(id);
             if (ruleCategory == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No RuleCategory found with Id " + id);
             }
             return View(ruleCategory);
         }
@@ -76,7 +76,7 @@ namespace AdministrationPortal.Controllers
             RuleCategory ruleCategoryInDb = RuleCategoryRepository.GetById(ruleCategory.Id);
             if (ruleCategory == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No RuleCategory found with Id " + ruleCategory.Id);
             }
 
             ruleCategoryInDb.Description = ruleCategory.Description;
@@ -91,7 +91,7 @@ namespace AdministrationPortal.Controllers
             var ruleCategory = RuleCategoryRepository.GetById(id);
             if (ruleCategory == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No RuleCategory found with Id " + id);
             }
 
             bool safeToDelete = (ruleCategory.Rules.Count == 0);
@@ -107,7 +107,7 @@ namespace AdministrationPortal.Controllers
             var ruleCategory = RuleCategoryRepository.GetById(id);
             if (ruleCategory == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No RuleCategory found with Id " + id);
             }
 
             bool safeToDelete = (ruleCategory.Rules.Count == 0);

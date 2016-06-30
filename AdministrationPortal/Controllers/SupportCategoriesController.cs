@@ -23,7 +23,7 @@ namespace AdministrationPortal.Controllers
             var supportCategory = SupportCategoryRepository.GetById(id);
             if (supportCategory == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No SupportCategory found with Id " + id);
             }
             return View(supportCategory);
         }
@@ -57,7 +57,7 @@ namespace AdministrationPortal.Controllers
             var supportCategory = SupportCategoryRepository.GetById(id);
             if (supportCategory == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No SupportCategory found with Id " + id);
             }
             return View(supportCategory);
         }
@@ -72,7 +72,7 @@ namespace AdministrationPortal.Controllers
                 SupportCategory supportCategoryInDb = SupportCategoryRepository.GetById(supportCategory.Id);
                 if(supportCategoryInDb == null)
                 {
-                    return HttpNotFound();
+                    return HttpNotFound("No SupportCategory found with Id " + supportCategory.Id);
                 }
 
                 supportCategoryInDb.Description = supportCategory.Description;
@@ -90,7 +90,7 @@ namespace AdministrationPortal.Controllers
             var supportCategory = SupportCategoryRepository.GetById(id);              
             if (supportCategory == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No SupportCategory found with Id " + id);
             }
 
             bool safeToDelete = (supportCategory.Rules.Count == 0);
@@ -106,7 +106,7 @@ namespace AdministrationPortal.Controllers
             var supportCategory = SupportCategoryRepository.GetById(id);
             if (supportCategory == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No SupportCategory found with Id " + id);
             }
 
             bool safeToDelete = (supportCategory.Rules.Count == 0);

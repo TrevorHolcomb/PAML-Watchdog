@@ -24,11 +24,16 @@ namespace AdministrationPortal.Controllers
         // GET: MessageTypes/Details/5
         public ActionResult Details(string id)
         {
-            var messageType = MessageTypeRepository.GetByName(id);
-            if (messageType == null)
+            MessageType messageType;
+            try
             {
-                return HttpNotFound();
+                messageType = MessageTypeRepository.GetByName(id);
             }
+            catch (System.InvalidOperationException)
+            {
+                return HttpNotFound("No MessageType found with Name: " + id);
+            }
+            
             return View(messageType);
         }
 
@@ -90,10 +95,13 @@ namespace AdministrationPortal.Controllers
         // GET: MessageTypes/Delete/1
         public ActionResult Delete(string id)
         {
-            var messageType = MessageTypeRepository.GetByName(id);
-            if (messageType == null)
+            MessageType messageType;
+            try
             {
-                return HttpNotFound();
+                messageType = MessageTypeRepository.GetByName(id);
+            }
+            catch (System.InvalidOperationException) {
+                return HttpNotFound("No MessageType found with Name: " + id);
             }
 
             bool safeToDelete = (messageType.Alerts.Count == 0 && messageType.Rules.Count == 0 && messageType.Messages.Count == 0);
@@ -106,10 +114,14 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string id)
         {
-            var messageType = MessageTypeRepository.GetByName(id);
-            if (messageType == null)
+            MessageType messageType;
+            try
             {
-                return HttpNotFound();
+                messageType = MessageTypeRepository.GetByName(id);
+            }
+            catch (System.InvalidOperationException)
+            { 
+                return HttpNotFound("No MessageType found with Name: " + id);
             }
 
             bool safeToDelete = (messageType.Alerts.Count == 0 && messageType.Rules.Count == 0 && messageType.Messages.Count == 0);
@@ -133,10 +145,14 @@ namespace AdministrationPortal.Controllers
         // GET: Rules/Edit/5
         public ActionResult Edit(string id)
         {
-            MessageType messageType = MessageTypeRepository.GetByName(id);
-            if (messageType == null)
+            MessageType messageType;
+            try
             {
-                return HttpNotFound();
+                messageType = MessageTypeRepository.GetByName(id);
+            }
+            catch (System.InvalidOperationException)
+            {
+                return HttpNotFound("No MessageType found with Name: " + id);
             }
 
             return View(messageType);
@@ -154,14 +170,18 @@ namespace AdministrationPortal.Controllers
                 return View(messageType);
             }
 
-            MessageType messageInDb = MessageTypeRepository.GetByName(messageType.Name);
-            if (messageInDb == null)
+            MessageType messageTypeInDb;
+            try
             {
-                return HttpNotFound();
+                messageTypeInDb = MessageTypeRepository.GetByName(messageType.Name);
+            }
+            catch (System.InvalidOperationException)
+            { 
+                return HttpNotFound("No MessageType found with Name: " + messageType.Name);
             }
 
-            messageInDb.Description = messageType.Description;
-            MessageTypeRepository.Update(messageInDb);
+            messageTypeInDb.Description = messageType.Description;
+            MessageTypeRepository.Update(messageTypeInDb);
             MessageTypeRepository.Save();
             return RedirectToAction("Index");
         }

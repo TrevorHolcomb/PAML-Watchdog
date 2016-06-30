@@ -35,8 +35,12 @@ namespace AdministrationPortal.Controllers
                 return View(engine);
             }
 
-            if (EngineRepository.GetByName(engine.Name) == null)
+            try
             {
+                EngineRepository.GetByName(engine.Name);
+            }
+            catch (System.InvalidOperationException)
+            { 
                 EngineRepository.Insert(engine);
                 EngineRepository.Save();
             }
@@ -47,10 +51,14 @@ namespace AdministrationPortal.Controllers
         // GET: RegisteredEngines/Delete/5
         public ActionResult Delete(string id)
         {
-            var engine = EngineRepository.GetByName(id);
-            if (engine == null)
+            Engine engine;
+            try
             {
-                return HttpNotFound();
+                engine = EngineRepository.GetByName(id);
+            }
+            catch (System.InvalidOperationException)
+            {
+                return HttpNotFound("No Engine found with Name: " + id);
             }
 
             bool safeToDelete = (engine.Alerts.Count == 0 && engine.Messages.Count == 0);
@@ -63,10 +71,14 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string id)
         {
-            Engine engineToDelete = EngineRepository.GetByName(id);
-            if (engineToDelete == null)
+            Engine engineToDelete;
+            try
             {
-                return HttpNotFound();
+                engineToDelete = EngineRepository.GetByName(id);
+            }
+            catch (System.InvalidOperationException)
+            {
+                return HttpNotFound("No Engine found with Name: " + id);
             }
 
             bool safeToDelete = (engineToDelete.Alerts.Count == 0 && engineToDelete.Messages.Count == 0);

@@ -34,7 +34,7 @@ namespace AdministrationPortal.Controllers
             var rule = RuleRepository.GetById(id);
             if (rule == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No Rule found with id " + id);
             }
             return View(rule);
         }
@@ -81,7 +81,7 @@ namespace AdministrationPortal.Controllers
             var rule = RuleRepository.GetById(id);
             if (rule == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No Rule found with Id " + id);
             }
 
             var viewModel = new RuleEditViewModel
@@ -142,7 +142,7 @@ namespace AdministrationPortal.Controllers
             var rule = RuleRepository.GetById(id);
             if (rule == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No Rule found with Id " + id);
             }
             return View(rule);
         }
@@ -153,6 +153,11 @@ namespace AdministrationPortal.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             var rule = RuleRepository.GetById(id);
+            if (rule == null)
+            {
+                return HttpNotFound("No Rule found with Id " + id);
+            }
+
             RuleRepository.Delete(rule);
             RuleRepository.Save();
             return RedirectToAction("Index");
