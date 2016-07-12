@@ -708,6 +708,11 @@
             <End Role="AlertStatus" EntitySet="AlertStatuses" />
             <End Role="Alert" EntitySet="Alerts" />
           </AssociationSet>
+          <EntitySet Name="AlertGroups" EntityType="WatchdogDatabase.AlertGroup" />
+          <AssociationSet Name="AlertGroupAlert" Association="WatchdogDatabase.AlertGroupAlert">
+            <End Role="AlertGroup" EntitySet="AlertGroups" />
+            <End Role="Alert" EntitySet="Alerts" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Message">
           <Key>
@@ -867,6 +872,8 @@
           <NavigationProperty Name="MessageType" Relationship="WatchdogDatabase.AlertMessageType" FromRole="Alert" ToRole="MessageType" />
           <NavigationProperty Name="Rule" Relationship="WatchdogDatabase.AlertRule" FromRole="Alert" ToRole="Rule" />
           <NavigationProperty Name="AlertStatus" Relationship="WatchdogDatabase.AlertStatusAlert" FromRole="Alert" ToRole="AlertStatus" />
+          <NavigationProperty Name="AlertGroup" Relationship="WatchdogDatabase.AlertGroupAlert" FromRole="Alert" ToRole="AlertGroup" />
+          <Property Name="AlertGroupId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="AlertAlertType">
           <End Type="WatchdogDatabase.Alert" Role="Alert" Multiplicity="*" />
@@ -1134,6 +1141,30 @@
         <Association Name="AlertStatusAlert">
           <End Type="WatchdogDatabase.AlertStatus" Role="AlertStatus" Multiplicity="1" />
           <End Type="WatchdogDatabase.Alert" Role="Alert" Multiplicity="0..1" />
+        </Association>
+        <EntityType Name="AlertGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Server" Type="String" Nullable="false" />
+          <Property Name="Engine" Type="String" Nullable="false" />
+          <Property Name="Origin" Type="String" Nullable="false" />
+          <Property Name="AlertType" Type="String" Nullable="false" />
+          <Property Name="Resolved" Type="Boolean" Nullable="false" DefaultValue="False" />
+          <NavigationProperty Name="Alerts" Relationship="WatchdogDatabase.AlertGroupAlert" FromRole="AlertGroup" ToRole="Alert" />
+        </EntityType>
+        <Association Name="AlertGroupAlert">
+          <End Type="WatchdogDatabase.AlertGroup" Role="AlertGroup" Multiplicity="1" />
+          <End Type="WatchdogDatabase.Alert" Role="Alert" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AlertGroup">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Alert">
+              <PropertyRef Name="AlertGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
       </Schema>
     </edmx:ConceptualModels>
