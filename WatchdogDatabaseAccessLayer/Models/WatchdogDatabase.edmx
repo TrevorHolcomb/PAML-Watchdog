@@ -24,6 +24,7 @@
     <EntitySet Name="AlertStatuses" EntityType="WatchdogDatabase.Store.AlertStatuses" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="UnvalidatedMessages" EntityType="WatchdogDatabase.Store.UnvalidatedMessages" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="UnvalidatedMessageParameters" EntityType="WatchdogDatabase.Store.UnvalidatedMessageParameters" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AlertGroups" EntityType="WatchdogDatabase.Store.AlertGroups" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="NotifyeeNotifyeeGroup" EntityType="WatchdogDatabase.Store.NotifyeeNotifyeeGroup" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="RuleRuleCategory" EntityType="WatchdogDatabase.Store.RuleRuleCategory" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="MessageMessageType" Association="WatchdogDatabase.Store.MessageMessageType">
@@ -122,6 +123,10 @@
       <End Role="AlertStatus" EntitySet="AlertStatuses" />
       <End Role="Alert" EntitySet="Alerts" />
     </AssociationSet>
+    <AssociationSet Name="AlertGroupAlert" Association="WatchdogDatabase.Store.AlertGroupAlert">
+      <End Role="AlertGroup" EntitySet="AlertGroups" />
+      <End Role="Alert" EntitySet="Alerts" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="Messages">
     <Key>
@@ -212,6 +217,7 @@
     <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Severity" Type="int" Nullable="false" />
+    <Property Name="AlertGroupId" Type="int" Nullable="false" />
     <Property Name="AlertStatus_Id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="RuleCategories">
@@ -292,6 +298,17 @@
     <Property Name="Value" Type="nvarchar(max)" Nullable="false" />
     <Property Name="MessageId" Type="int" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AlertGroups">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Engine" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="AlertType" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Resolved" Type="bit" Nullable="false" DefaultValue="false" />
   </EntityType>
   <EntityType Name="NotifyeeNotifyeeGroup">
     <Key>
@@ -546,6 +563,18 @@
       </Principal>
       <Dependent Role="Alert">
         <PropertyRef Name="AlertStatus_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AlertGroupAlert">
+    <End Role="AlertGroup" Type="WatchdogDatabase.Store.AlertGroups" Multiplicity="1" />
+    <End Role="Alert" Type="WatchdogDatabase.Store.Alerts" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AlertGroup">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Alert">
+        <PropertyRef Name="AlertGroupId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1265,6 +1294,7 @@
           <ScalarProperty Name="Server" ColumnName="Server" />
           <ScalarProperty Name="Origin" ColumnName="Origin" />
           <ScalarProperty Name="Severity" ColumnName="Severity" />
+          <ScalarProperty Name="AlertGroupId" ColumnName="AlertGroupId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1352,6 +1382,18 @@
           <ScalarProperty Name="Value" ColumnName="Value" />
           <ScalarProperty Name="MessageId" ColumnName="MessageId" />
           <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AlertGroups">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.AlertGroup)">
+        <MappingFragment StoreEntitySet="AlertGroups">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Server" ColumnName="Server" />
+          <ScalarProperty Name="Engine" ColumnName="Engine" />
+          <ScalarProperty Name="Origin" ColumnName="Origin" />
+          <ScalarProperty Name="AlertType" ColumnName="AlertType" />
+          <ScalarProperty Name="Resolved" ColumnName="Resolved" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

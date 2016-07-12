@@ -43,5 +43,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         public virtual DbSet<AlertStatus> AlertStatuses { get; set; }
         public virtual DbSet<UnvalidatedMessage> UnvalidatedMessages { get; set; }
         public virtual DbSet<UnvalidatedMessageParameter> UnvalidatedMessageParameters { get; set; }
+        public virtual DbSet<AlertGroup> AlertGroups { get; set; }
     }
 }
