@@ -156,6 +156,7 @@
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UnvalidatedMessageParameterPartial.cs" />
+    <Compile Include="Repositories\Database\EFAlertGroupRepository.cs" />
     <Compile Include="Repositories\Database\EFAlertParameterRepository.cs" />
     <Compile Include="Repositories\Database\EFAlertStatusRepository.cs" />
     <Compile Include="Repositories\Database\EFEngineRepository.cs" />

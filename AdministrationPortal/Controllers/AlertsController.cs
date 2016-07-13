@@ -23,6 +23,9 @@ namespace AdministrationPortal.Controllers
         [Inject]
         public Repository<AlertStatus> AlertStatusRepository { private get; set; }
 
+        [Inject]
+        public Repository<AlertGroup> AlertGroupRepository { private get; set; }
+
         // GET: Alerts
         public ActionResult Index(string ActiveOrArchived, int? Page_No, String sortSelect, String searchString)
         {
@@ -169,16 +172,12 @@ namespace AdministrationPortal.Controllers
                         newStatus.StatusCode = editedAlert.AlertStatus.StatusCode;
                         newStatus.Prev = AlertStatusRepository.GetById(alertInDb.AlertStatus.Id);
 
-
                         AlertStatusRepository.Insert(newStatus);
                         AlertStatusRepository.Save();
 
                         newStatus = AlertStatusRepository.Get().Last();
 
                         var tailAlertStatus = AlertStatusRepository.GetById(alertInDb.AlertStatus.Id);
-
-
-
                         tailAlertStatus.Next = newStatus;
                         tailAlertStatus.Alert = null;
                         alertInDb.AlertStatus = newStatus;
@@ -190,7 +189,7 @@ namespace AdministrationPortal.Controllers
                         AlertStatusRepository.Save();
 
 
-                        
+
                         if (alertInDb.Id == editedAlert.Id)
                         {
                             alertInDb.Severity = editedAlert.Severity;
@@ -200,6 +199,15 @@ namespace AdministrationPortal.Controllers
                         AlertRepository.Save();
                     }
                 }
+                var group = AlertGroupRepository.GetById(editedAlert.AlertGroupId);
+                if (editedAlert.AlertStatus.StatusCode.ToString().CompareTo("Resolved") == 0)
+                {
+                    group.Resolved = true;
+                }
+                else
+                    group.Resolved = false;
+                AlertGroupRepository.Update(group);
+                AlertGroupRepository.Save();
                 return RedirectToAction("Index", new {ActiveOrArchived = editedAlert.AlertStatus.StatusCode.ToString() });
             }
 
