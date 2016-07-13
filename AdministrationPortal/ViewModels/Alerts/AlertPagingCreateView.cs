@@ -21,11 +21,11 @@ namespace AdministrationPortal.ViewModels.Alerts
             this.status = status;
             this.PageNo = PageNo;
             this.sortSelect = new List<SelectListItem>();
+            sortSelect.Add(new SelectListItem { Text = "Time", Value = "4", Selected = true });
             sortSelect.Add(new SelectListItem { Text = "Severity", Value = "0"});
             sortSelect.Add(new SelectListItem { Text = "Status", Value = "1" });
             sortSelect.Add(new SelectListItem { Text = "Group", Value = "2" });
             sortSelect.Add(new SelectListItem { Text = "AlertType", Value = "3" });
-            sortSelect.Add(new SelectListItem { Text = "Time", Value = "4", Selected = true });
             sortSelect.Add(new SelectListItem { Text = "Origin", Value = "5" });
         }
     }

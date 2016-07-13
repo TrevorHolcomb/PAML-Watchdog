@@ -11,6 +11,7 @@ namespace AdministrationPortal.ViewModels.Alerts
         public String sortOrder { get; set; }
         public int? PageNo { get; set; }
         public Alert Alert { get; set; }
+        public List<Alert> groupedAlerts { get; set; }
 
         public AlertDetailsViewModel() : this(null, null, null) { }
 

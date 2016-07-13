@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
@@ -76,24 +77,37 @@ namespace AdministrationPortal.Controllers
                     alerts = alerts.OrderBy(a => a.Origin).ThenByDescending(a => a.AlertStatus.TimeStamp);
                     break;
                 default:
-                    alerts = alerts.OrderBy(a => a.AlertStatus.TimeStamp).ThenByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.TimeStamp);
+                    alerts = alerts.OrderByDescending(a => a.AlertStatus.TimeStamp).ThenByDescending(a => a.Severity);
                     break;
             }
-           
-            return View(new AlertPagingCreateView(alerts.ToPagedList(No_Of_Page, Size_Of_Page), status, No_Of_Page));
+            Hashtable checkGroup = new Hashtable();
+            List<Alert> groupedAlerts = new List<Alert>();
+            foreach (Alert a in alerts)
+            {
+                if(!checkGroup.Contains(a.AlertGroupId))
+                {
+                    groupedAlerts.Add(a);
+                    checkGroup.Add(a.AlertGroupId, a.AlertGroupId);
+                }
+            }
+            
+            return View(new AlertPagingCreateView(groupedAlerts.ToPagedList(No_Of_Page, Size_Of_Page), status, No_Of_Page));
         }
 
         // GET: Alerts/Details/5
         public ActionResult Details(int id, int PageNo, String sortOrder)
         {
             var viewModel = new AlertDetailsViewModel(AlertRepository.GetById(id), PageNo, sortOrder);
+            var groupedAlerts = AlertRepository.Get();
             viewModel.Alert = AlertRepository.GetById(id);
+            groupedAlerts = groupedAlerts.Where(a => a.AlertGroupId == viewModel.Alert.AlertGroupId && a.Id != viewModel.Alert.Id);
             if (viewModel.Alert == null)
             {
                 return HttpNotFound();
             }
             viewModel.sortOrder = sortOrder;
             viewModel.PageNo = PageNo;
+            viewModel.groupedAlerts = groupedAlerts.ToList();
             return View(viewModel);
         }
 
@@ -140,45 +154,53 @@ namespace AdministrationPortal.Controllers
         {
             if (ModelState.IsValid)
             {
-                var alert = alertViewModel.Alert;
-                var alertInDb = AlertRepository.GetById(alert.Id);
-
-                if (alertInDb != null)
+                var editedAlert = alertViewModel.Alert;
+                var groupedAlerts = AlertRepository.Get();
+                groupedAlerts = groupedAlerts.Where(a => a.AlertGroupId == editedAlert.AlertGroupId);
+                foreach (var alert in groupedAlerts)
                 {
-                    // create and insert a new AlertStatus
-                    var newStatus = new AlertStatus();
-                    newStatus.ModifiedBy = "N/A";
-                    newStatus.StatusCode = alert.AlertStatus.StatusCode;
-                    newStatus.Prev = AlertStatusRepository.GetById(alertInDb.AlertStatus.Id);
-                   
+                    var alertInDb = AlertRepository.GetById(alert.Id);
 
-                    AlertStatusRepository.Insert(newStatus);
-                    AlertStatusRepository.Save();
+                    if (alertInDb != null)
+                    {
+                        // create and insert a new AlertStatus
+                        var newStatus = new AlertStatus();
+                        newStatus.ModifiedBy = "N/A";
+                        newStatus.StatusCode = editedAlert.AlertStatus.StatusCode;
+                        newStatus.Prev = AlertStatusRepository.GetById(alertInDb.AlertStatus.Id);
 
-                    newStatus = AlertStatusRepository.Get().Last();
-                    
-                    var tailAlertStatus = AlertStatusRepository.GetById(alertInDb.AlertStatus.Id);
-                    
-                    
-                   
-                    tailAlertStatus.Next = newStatus;
-                    tailAlertStatus.Alert = null;
-                    alertInDb.AlertStatus = newStatus;
-                    newStatus.Alert = alertInDb;
-                    AlertStatusRepository.Update(newStatus);
-                    AlertStatusRepository.Save();
-                    
-                    AlertStatusRepository.Update(tailAlertStatus);
-                    AlertStatusRepository.Save();
-                    
-                    
-                    alertInDb.Severity = alert.Severity;
-                    alertInDb.Notes = alert.Notes;
-                    AlertRepository.Update(alertInDb);
-                    AlertRepository.Save();
+
+                        AlertStatusRepository.Insert(newStatus);
+                        AlertStatusRepository.Save();
+
+                        newStatus = AlertStatusRepository.Get().Last();
+
+                        var tailAlertStatus = AlertStatusRepository.GetById(alertInDb.AlertStatus.Id);
+
+
+
+                        tailAlertStatus.Next = newStatus;
+                        tailAlertStatus.Alert = null;
+                        alertInDb.AlertStatus = newStatus;
+                        newStatus.Alert = alertInDb;
+                        AlertStatusRepository.Update(newStatus);
+                        AlertStatusRepository.Save();
+
+                        AlertStatusRepository.Update(tailAlertStatus);
+                        AlertStatusRepository.Save();
+
+
+                        
+                        if (alertInDb.Id == editedAlert.Id)
+                        {
+                            alertInDb.Severity = editedAlert.Severity;
+                            alertInDb.Notes = editedAlert.Notes;
+                        }
+                        AlertRepository.Update(alertInDb);
+                        AlertRepository.Save();
+                    }
                 }
-                
-                return RedirectToAction("Index", new {ActiveOrArchived = alert.AlertStatus.StatusCode.ToString() });
+                return RedirectToAction("Index", new {ActiveOrArchived = editedAlert.AlertStatus.StatusCode.ToString() });
             }
 
             return View(alertViewModel);
