@@ -26,6 +26,8 @@ namespace WatchdogDaemon.Processes
         [Inject]
         public Repository<AlertStatus> AlertStatusRepository { set; get; }
         [Inject]
+        public Repository<AlertGroup> AlertGroupRepository { set; get; }
+        [Inject]
         public IRuleEngine RuleEngine { set; get; }
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -64,7 +66,8 @@ namespace WatchdogDaemon.Processes
                     if (!RuleEngine.DoesGenerateAlert(rule, message))
                         continue;
 
-                    var alert = BuildAlert(rule, message);
+                    var alertGroup = GetAlertGroup(rule, message);                      
+                    var alert = BuildAlert(rule, message, alertGroup);
                     AlertRepository.Insert(alert);
                     AlertStatusRepository.Insert(alert.AlertStatus);
                     AlertParameterRepository.InsertRange(alert.AlertParameters);
@@ -86,7 +89,23 @@ namespace WatchdogDaemon.Processes
             }
         }
 
-        private Alert BuildAlert(Rule rule, Message message)
+        private AlertGroup GetAlertGroup(Rule rule, Message message)
+        {
+            var alertGroup =  AlertGroupRepository.Get().FirstOrDefault(ag => ag.Server == message.Server && ag.Engine == message.EngineName && ag.Origin == message.Origin && ag.AlertType == rule.AlertType);
+
+            if(alertGroup == null)
+            {
+                alertGroup = BuildAlertGroup(rule, message);
+
+                AlertGroupRepository.Insert(alertGroup);
+                AlertGroupRepository.Save();
+            }
+
+            return alertGroup;
+
+        }
+
+        private Alert BuildAlert(Rule rule, Message message, AlertGroup alertGroup)
         {
             ICollection<AlertParameter> alertParams = new List<AlertParameter>();
 
@@ -123,6 +142,19 @@ namespace WatchdogDaemon.Processes
                 Severity = rule.DefaultSeverity,
                 AlertStatus = currentStatus,
                 MessageType = message.MessageType,
+                AlertGroup = alertGroup
+            };
+        }
+
+        private AlertGroup BuildAlertGroup(Rule rule, Message message)
+        {
+            return new AlertGroup 
+            {
+                Server = message.Server,
+                Engine = message.EngineName,
+                Origin = message.Origin,
+                AlertType = rule.AlertType,
+                Resolved = false
             };
         }
     }

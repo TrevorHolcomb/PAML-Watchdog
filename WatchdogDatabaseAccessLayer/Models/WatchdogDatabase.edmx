@@ -127,6 +127,10 @@
       <End Role="AlertGroup" EntitySet="AlertGroups" />
       <End Role="Alert" EntitySet="Alerts" />
     </AssociationSet>
+    <AssociationSet Name="AlertGroupAlertType" Association="WatchdogDatabase.Store.AlertGroupAlertType">
+      <End Role="AlertGroup" EntitySet="AlertGroups" />
+      <End Role="AlertType" EntitySet="AlertTypes" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="Messages">
     <Key>
@@ -307,8 +311,8 @@
     <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Engine" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="AlertType" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Resolved" Type="bit" Nullable="false" DefaultValue="false" />
+    <Property Name="AlertTypeId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="NotifyeeNotifyeeGroup">
     <Key>
@@ -578,6 +582,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="AlertGroupAlertType">
+    <End Role="AlertGroup" Type="WatchdogDatabase.Store.AlertGroups" Multiplicity="*" />
+    <End Role="AlertType" Type="WatchdogDatabase.Store.AlertTypes" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="AlertType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AlertGroup">
+        <PropertyRef Name="AlertTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_NotifyeeNotifyeeGroup_Notifyee">
     <End Role="Notifyee" Type="WatchdogDatabase.Store.Notifyees" Multiplicity="1" />
     <End Role="NotifyeeNotifyeeGroup" Type="WatchdogDatabase.Store.NotifyeeNotifyeeGroup" Multiplicity="*" />
@@ -742,6 +758,10 @@
             <End Role="AlertGroup" EntitySet="AlertGroups" />
             <End Role="Alert" EntitySet="Alerts" />
           </AssociationSet>
+          <AssociationSet Name="AlertGroupAlertType" Association="WatchdogDatabase.AlertGroupAlertType">
+            <End Role="AlertGroup" EntitySet="AlertGroups" />
+            <End Role="AlertType" EntitySet="AlertTypes" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Message">
           <Key>
@@ -863,6 +883,7 @@
           <Property Name="Description" Type="String" Nullable="true" />
           <NavigationProperty Name="Alerts" Relationship="WatchdogDatabase.AlertAlertType" FromRole="AlertType" ToRole="Alert" />
           <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.AlertTypeRule" FromRole="AlertType" ToRole="Rule" />
+          <NavigationProperty Name="AlertGroups" Relationship="WatchdogDatabase.AlertGroupAlertType" FromRole="AlertType" ToRole="AlertGroup" />
         </EntityType>
         <Association Name="EscalationChainLinkEscalationChainLink">
           <End Type="WatchdogDatabase.EscalationChainLink" Role="EscalationChainLink" Multiplicity="0..1" />
@@ -1179,9 +1200,10 @@
           <Property Name="Server" Type="String" Nullable="false" />
           <Property Name="Engine" Type="String" Nullable="false" />
           <Property Name="Origin" Type="String" Nullable="false" />
-          <Property Name="AlertType" Type="String" Nullable="false" />
           <Property Name="Resolved" Type="Boolean" Nullable="false" DefaultValue="False" />
           <NavigationProperty Name="Alerts" Relationship="WatchdogDatabase.AlertGroupAlert" FromRole="AlertGroup" ToRole="Alert" />
+          <NavigationProperty Name="AlertType" Relationship="WatchdogDatabase.AlertGroupAlertType" FromRole="AlertGroup" ToRole="AlertType" />
+          <Property Name="AlertTypeId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="AlertGroupAlert">
           <End Type="WatchdogDatabase.AlertGroup" Role="AlertGroup" Multiplicity="1" />
@@ -1192,6 +1214,18 @@
             </Principal>
             <Dependent Role="Alert">
               <PropertyRef Name="AlertGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AlertGroupAlertType">
+          <End Type="WatchdogDatabase.AlertGroup" Role="AlertGroup" Multiplicity="*" />
+          <End Type="WatchdogDatabase.AlertType" Role="AlertType" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="AlertType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AlertGroup">
+              <PropertyRef Name="AlertTypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1392,8 +1426,8 @@
           <ScalarProperty Name="Server" ColumnName="Server" />
           <ScalarProperty Name="Engine" ColumnName="Engine" />
           <ScalarProperty Name="Origin" ColumnName="Origin" />
-          <ScalarProperty Name="AlertType" ColumnName="AlertType" />
           <ScalarProperty Name="Resolved" ColumnName="Resolved" />
+          <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
