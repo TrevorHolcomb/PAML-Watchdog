@@ -91,7 +91,7 @@ namespace WatchdogDaemon.Processes
 
         private AlertGroup GetAlertGroup(Rule rule, Message message)
         {
-            var alertGroup =  AlertGroupRepository.Get().FirstOrDefault(ag => ag.Server == message.Server && ag.Engine == message.EngineName && ag.Origin == message.Origin && ag.AlertType == rule.AlertType);
+            var alertGroup =  AlertGroupRepository.Get().FirstOrDefault(ag => ag.Server == message.Server && ag.Engine == message.EngineName && ag.Origin == message.Origin && ag.AlertType == rule.AlertType && ag.Resolved == false);
 
             if(alertGroup == null)
             {
