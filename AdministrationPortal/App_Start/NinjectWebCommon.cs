@@ -1,6 +1,4 @@
 using WatchdogDatabaseAccessLayer;
-using WatchdogDatabaseAccessLayer.Repositories;
-using WatchdogDatabaseAccessLayer.Repositories.Database;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(AdministrationPortal.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(AdministrationPortal.App_Start.NinjectWebCommon), "Stop")]

@@ -26,7 +26,9 @@ namespace WatchdogDatabaseAccessLayer
             Bind<Repository<Notifyee>>().To<EFNotifyeeRepository>();
             Bind<Repository<RuleCategory>>().To<EFRuleCategoryRepository>();
             Bind<Repository<Rule>>().To<EFRuleRepository>();
+            Bind<Repository<RuleTemplate>>().To<EFRuleTemplateRepository>();
             Bind<Repository<SupportCategory>>().To<EFSupportCategoryRepository>();
+            Bind<Repository<TemplatedRule>>().To<EFTemplatedRuleRepository>();
             Bind<Repository<UnvalidatedMessage>>().To<EFUnvalidatedMessageRepository>();
             Bind<Repository<UnvalidatedMessageParameter>>().To<EFUnvalidatedMessageParameterRepository>();
             Bind<Repository<AlertGroup>>().To<EFAlertGroupRepository>();
@@ -54,12 +56,12 @@ namespace WatchdogDatabaseAccessLayer
             Bind<Repository<Notifyee>>().To<EFNotifyeeRepository>().InRequestScope();
             Bind<Repository<RuleCategory>>().To<EFRuleCategoryRepository>().InRequestScope();
             Bind<Repository<Rule>>().To<EFRuleRepository>().InRequestScope();
+            Bind<Repository<RuleTemplate>>().To<EFRuleTemplateRepository>().InRequestScope();
             Bind<Repository<SupportCategory>>().To<EFSupportCategoryRepository>().InRequestScope();
+            Bind<Repository<TemplatedRule>>().To<EFTemplatedRuleRepository>().InRequestScope();
             Bind<Repository<UnvalidatedMessage>>().To<EFUnvalidatedMessageRepository>().InRequestScope();
             Bind<Repository<UnvalidatedMessageParameter>>().To<EFUnvalidatedMessageParameterRepository>().InRequestScope();
             Bind<Repository<AlertGroup>>().To<EFAlertGroupRepository>().InRequestScope();
         }
-
-
     }
 }

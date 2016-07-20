@@ -1,0 +1,92 @@
+﻿@model AdministrationPortal.ViewModels.RuleTemplates.EditRuleTemplateViewModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>RuleTemplate</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Description, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">Rules to include in this template</div>
+
+                <table class="table">
+                    <tr>
+                        <th> <b>Name</b> </th>
+                        <th> <b>Description</b> </th>
+                        <th> <b>Expression</b> </th>
+                        <th> <b>AlertType</b> </th>
+                        <th> <b>Message Type</b> </th>
+                        <th> <b>Support Category</b> </th>
+                        <th> <b>Include in Template</b> </th>
+                    </tr>
+                    @for (int tr = 0; tr < Model.TemplatedRules.Count; tr++)
+                    {
+                        @Html.HiddenFor(model => model.TemplatedRules[tr].Id);
+                        <tr class="active">
+                            <td> @Html.DisplayFor(model => model.TemplatedRules.ElementAt(tr).Name) </td>
+                            <td> @Html.DisplayFor(model => model.TemplatedRules.ElementAt(tr).Description) </td>
+                            <td> @Html.DisplayFor(model => model.TemplatedRules.ElementAt(tr).Expression) </td>
+                            <td> @Html.DisplayFor(model => model.TemplatedRules.ElementAt(tr).AlertTypeId) </td>
+                            <td> @Html.DisplayFor(model => model.TemplatedRules.ElementAt(tr).MessageTypeName) </td>
+                            <td> @Html.DisplayFor(model => model.TemplatedRules.ElementAt(tr).SupportCategoryId) </td>
+                            <td> @Html.CheckBoxFor(model => model.TemplatedRulesIncluded[tr], htmlAttributes: new { @class = "checkbox", @id = "checkbox-" + tr }) </td>
+                        </tr>
+                    }
+
+                    @for (int r = 0; r < Model.Rules.Count; r++)
+                    {
+                        @Html.HiddenFor(model => model.Rules[r].Id)
+                        <tr>
+                            <td> @Html.DisplayFor(model => model.Rules[r].Name) </td>
+                            <td> @Html.DisplayFor(model => model.Rules[r].Description) </td>
+                            <td> @Html.DisplayFor(model => model.Rules[r].Expression) </td>
+                            <td> @Html.DisplayFor(model => model.Rules[r].AlertType.Name) </td>
+                            <td> @Html.DisplayFor(model => model.Rules[r].MessageType.Name) </td>
+                            <td> @Html.DisplayFor(model => model.Rules[r].SupportCategory.Name) </td>
+                            <td> @Html.CheckBoxFor(model => model.RulesIncluded[r], htmlAttributes: new { @class = "checkbox", @id = "checkbox-" + r }) </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

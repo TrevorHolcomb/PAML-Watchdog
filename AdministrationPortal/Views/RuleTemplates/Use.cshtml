@@ -1,0 +1,47 @@
+﻿@model AdministrationPortal.ViewModels.RuleTemplates.DetailsRuleTemplateViewModel
+
+@{
+    ViewBag.Title = "Use RuleTemplate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Instantiate a RuleTemplate</h2>
+
+<div>
+    <hr/>
+    <h4>RuleTemplate</h4>
+    @Html.Partial("PartialDetails", Model)
+    <hr/>
+
+    <div class="alert alert-info">
+        Enter comma-separated lists of Origins and Servers. You can instantiate <b>N</b> Rules by specifying <b>1</b> Origin and <b>N</b> Servers, or <b>N</b> Origins and <b>1</b> Server, or <b>N</b> Origins with <b>N</b> Servers. This last case will match Origins with Servers by index.
+    </div>
+
+    @using (Html.BeginForm(null, null, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary(true)
+
+        @Html.HiddenFor(model => model.RuleTemplateId)
+
+        <dl class="dl-horizontal">
+            
+            <dt>@Html.LabelFor(model => model.Engine)</dt> <dd>@Html.DropDownListFor(model => model.Engine, Model.RegisteredEngines, htmlAttributes: new { @class="btn btn-default dropdown-toggle", @title = "Select an engine"})</dd>
+            <dt>@Html.LabelFor(model => model.OriginsString)</dt> <dd>@Html.EditorFor(model => model.OriginsString, new {htmlAttributes = new {@class = "form-control", @title = "Enter a comma-separated list of origins", placeholder = "O1, O2, O3", required = "required"}})</dd>
+            <dt></dt> <dd>@Html.ValidationMessageFor(model => model.OriginsString, "", new { @class = "text-danger" })</dd>
+            
+            <dt>@Html.LabelFor(model => model.ServersString)</dt> <dd>@Html.EditorFor(model => model.ServersString, new {htmlAttributes = new {@class = "form-control", @title = "Enter a comma-separated list of servers", placeholder = "S1, S2, S3", required = "required"}})</dd>
+            <dt></dt> <dd>@Html.ValidationMessageFor(model => model.ServersString, "", new { @class = "text-danger" })</dd>
+            
+        </dl>
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Instantiate" class="btn btn-default" />
+        </div>
+    }
+</div>
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.RuleTemplate.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

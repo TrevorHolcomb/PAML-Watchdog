@@ -44,5 +44,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public virtual DbSet<UnvalidatedMessage> UnvalidatedMessages { get; set; }
         public virtual DbSet<UnvalidatedMessageParameter> UnvalidatedMessageParameters { get; set; }
         public virtual DbSet<AlertGroup> AlertGroups { get; set; }
+        public virtual DbSet<TemplatedRule> TemplatedRules { get; set; }
+        public virtual DbSet<RuleTemplate> RuleTemplates { get; set; }
     }
 }

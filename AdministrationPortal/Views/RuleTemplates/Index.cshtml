@@ -1,0 +1,74 @@
+﻿@model AdministrationPortal.ViewModels.RuleTemplates.ViewRuleTemplateViewModel
+
+@{
+    ViewBag.Title = "View Rule Templates";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts
+{
+    @Scripts.Render("~/bundles/jquery-ajax")
+}
+
+@{
+    var ajaxOptions = new AjaxOptions()
+    {
+        HttpMethod = "POST",
+        UpdateTargetId = "divAlert",
+        InsertionMode = InsertionMode.Replace
+    };
+}
+
+<h2>Rule Templates</h2>
+
+@using (Ajax.BeginForm("Undo", "RuleTemplates", new { id=Model.RuleTemplateInstantiated.Id }, ajaxOptions))
+{
+<div class="alert alert-info" role="alert" style="@Model.InfoMessageStyle" id="divAlert">
+    @Model.NumberOfRulesInstantiated Rules were instantiated with
+    <b>@Model.RuleTemplateInstantiated.Name</b> using <br/>
+    &emsp;Engine: <b>@Model.RuleTemplateInstantiated.LastEngine</b> <br/>
+    &emsp;Origins: <b>@Model.RuleTemplateInstantiated.LastOrigins</b> <br/>
+    &emsp;Servers: <b>@Model.RuleTemplateInstantiated.LastServers</b>
+    <br/>
+    <button type="submit" id="btnUndo" class="btn btn-info">Undo</button>
+</div>
+}
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Description
+        </th>
+        <th>
+            Number of Rules
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var ruleTemplate in Model.RuleTemplates)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => ruleTemplate.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => ruleTemplate.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => ruleTemplate.TemplatedRules.Count)
+        </td>
+        <td>
+            @Html.ActionLink("Use", "Use", new { id = ruleTemplate.Id }) |
+            @Html.ActionLink("Edit", "Edit", new { id = ruleTemplate.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = ruleTemplate.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = ruleTemplate.Id })
+        </td>
+    </tr>
+}
+
+</table>

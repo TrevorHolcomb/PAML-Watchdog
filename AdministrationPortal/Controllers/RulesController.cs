@@ -67,8 +67,7 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(RuleCreateViewModel ruleViewModel)
         {
-            var ruleToCreate = new Rule();
-            ruleViewModel.Map(ruleToCreate, RuleCategoryRepository.Get());
+            var ruleToCreate = ruleViewModel.BuildRule(RuleCategoryRepository.Get());
             RuleRepository.Insert(ruleToCreate);
             RuleRepository.Save();
 
@@ -99,6 +98,10 @@ namespace AdministrationPortal.Controllers
                 Expression = rule.Expression,
                 Name = rule.Name,
                 MessageTypeName = rule.MessageTypeName,
+                Engine = rule.Engine,
+                Origin = rule.Origin,
+                Server = rule.Server,
+                DefaultSeverity = rule.DefaultSeverity,
                 Id = id
             };
 

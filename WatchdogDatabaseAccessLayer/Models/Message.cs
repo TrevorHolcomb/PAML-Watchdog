@@ -25,6 +25,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public string Server { get; set; }
         public string Origin { get; set; }
         public string EngineName { get; set; }
+        public int RuleTemplateId { get; set; }
     
         public virtual MessageType MessageType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

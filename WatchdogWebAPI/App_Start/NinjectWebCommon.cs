@@ -1,8 +1,3 @@
-
-using WatchdogDatabaseAccessLayer.Repositories;
-using WatchdogDatabaseAccessLayer.Repositories.Database;
-using WatchdogDatabaseAccessLayer.Models;
-
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(WatchdogWebAPI.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(WatchdogWebAPI.App_Start.NinjectWebCommon), "Stop")]
 
@@ -15,7 +10,7 @@ namespace WatchdogWebAPI.App_Start
 
     using Ninject;
     using Ninject.Web.Common;
-    using WatchdogDatabaseAccessLayer;
+
     public static class NinjectWebCommon 
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
@@ -66,7 +61,6 @@ namespace WatchdogWebAPI.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Load(new EFModule());
         }        
     }
 }

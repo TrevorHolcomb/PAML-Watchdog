@@ -32,7 +32,7 @@ namespace AdministrationPortal.Controllers
             int Size_Of_Page = 10;
             int No_Of_Page = (Page_No ?? 1);
             var alerts = AlertRepository.Get();
-            String status;
+            string status;
 
             switch (ActiveOrArchived)
             {
@@ -52,12 +52,12 @@ namespace AdministrationPortal.Controllers
                 case "0":
                     if (searchStringExists)
                         alerts = alerts.Where(a => Convert.ToString(a.Severity).Contains(searchString));
-                    alerts = alerts.OrderByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.TimeStamp);
+                    alerts = alerts.OrderByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.Timestamp);
                     break;
                 case "1":
                     if(searchStringExists)
                         alerts = alerts.Where(a => a.AlertStatus.StatusCode.ToString().ToLower().Contains(searchString.ToLower()));
-                    alerts = alerts.OrderBy(a => a.AlertStatus.StatusCode).ThenByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.TimeStamp);
+                    alerts = alerts.OrderBy(a => a.AlertStatus.StatusCode).ThenByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.Timestamp);
                     break;
                 case "2":
                     if(searchStringExists)
@@ -71,16 +71,16 @@ namespace AdministrationPortal.Controllers
                     break;
                 case "4":
                     if(searchStringExists)
-                        alerts = alerts.Where(a => a.AlertStatus.TimeStamp.ToString().Contains(searchString));
-                    alerts = alerts.OrderByDescending(a => a.AlertStatus.TimeStamp);
+                        alerts = alerts.Where(a => a.AlertStatus.Timestamp.ToString().Contains(searchString));
+                    alerts = alerts.OrderByDescending(a => a.AlertStatus.Timestamp);
                     break;
                 case "5":
                     if(searchStringExists)
                         alerts = alerts.Where(a => a.Origin.ToLower().Contains(searchString.ToLower()));
-                    alerts = alerts.OrderBy(a => a.Origin).ThenByDescending(a => a.AlertStatus.TimeStamp);
+                    alerts = alerts.OrderBy(a => a.Origin).ThenByDescending(a => a.AlertStatus.Timestamp);
                     break;
                 default:
-                    alerts = alerts.OrderByDescending(a => a.AlertStatus.TimeStamp).ThenByDescending(a => a.Severity);
+                    alerts = alerts.OrderByDescending(a => a.AlertStatus.Timestamp).ThenByDescending(a => a.Severity);
                     break;
             }
             Hashtable checkGroup = new Hashtable();

@@ -111,7 +111,7 @@ namespace WatchdogDaemon.Processes
 
             var currentStatus = new AlertStatus
             {
-                TimeStamp = System.DateTime.Now,
+                Timestamp = System.DateTime.Now,
                 ModifiedBy = "Watchdog Daemon",
                 StatusCode = StatusCode.UnAcknowledged,
                 Next = null,
