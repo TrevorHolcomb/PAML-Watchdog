@@ -34,6 +34,9 @@ namespace AdministrationPortal.ViewModels.Rules
         [Required]
         public int SupportCategoryId { get; set; }
 
+        public int DefaultNoteId { get; set; } 
+        public string DefaultNoteText { get; set; }
+
         public RuleOptionsViewModel RuleOptions { get; set; }
 
         public Rule BuildRule(IEnumerable<RuleCategory> ruleCategories)
@@ -52,7 +55,8 @@ namespace AdministrationPortal.ViewModels.Rules
                 RuleCreator = RuleCreator,
                 SupportCategoryId = SupportCategoryId,
                 RuleCategories = ruleCategories.Where(e => RuleCategoryIds.Contains(e.Id)).ToList(),
-                Timestamp = DateTime.Now
+                Timestamp = DateTime.Now,
+                DefaultNoteId = DefaultNoteId
             };
         }
     }

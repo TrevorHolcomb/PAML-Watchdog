@@ -82,6 +82,16 @@
             </div>
         </div>
 
+        <!--NOTES HERE-->
+        <div class="form-group">
+            <label class = "control-label col-md-2">Default Note</label>
+            <div class="col-md-10">
+               <button id="selectNote" type="button" class="btn btn-default">Select Existing Note</button>
+               <button id="addNote" type="button" class="btn btn-default">Add New Note</button>
+               <label id="noteText"/>
+            </div>
+        </div>
+
         <div class="form-group">
             @Html.LabelFor(model => model.AlertTypeId, "Alert Type", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -116,7 +126,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.SupportCategoryId, "Support Category", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.SupportCategoryId, Model.RuleOptions.SupportCategories, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.SupportCategoryId, Model.RuleOptions.SupportCategories, htmlAttributes: new { @class = "form-control" } )
                 @Html.ValidationMessageFor(model => model.SupportCategoryId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -127,6 +137,49 @@
             </div>
         </div>
     </div>
+
+
+    <!--Modals for notes-->
+        <div class="modal fade" id="selectNoteModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="padding:20px 50px;">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4><span class="glyphicon glyphicon-hand-up"></span> Select Note</h4>
+                    </div>
+                    <div class="modal-body" style="padding:50px 50px;">
+                        <form role="form">
+                            <div class="form-group">
+                                <label for="note"><span class="glyphicon glyphicon-pencil"></span> Note</label>
+                                @Html.DropDownListFor(model => model.DefaultNoteId, Model.RuleOptions.DefaultNotes, htmlAttributes: new { @class = "form-control", @style = "overflow:scroll;text-overflow:ellipsis;", @id="selectNoteText" })
+                            </div>
+                            <button id="btnSelectNote" type="button" class="btn btn-success btn-default pull-right"><span class="glyphicon glyphicon-ok"></span>Select</button>
+                            <button class="btn btn-danger btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        
+        <div class="modal fade" id="addNoteModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="padding:20px 50px;">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4><span class="glyphicon glyphicon-plus"></span> Add New Note</h4>
+                    </div>
+                    <div class="modal-body" style="padding:50px 50px;">
+                        <div class="form-group">
+                            <label for="note"><span class="glyphicon glyphicon-pencil"></span> Note</label>
+                            @Html.EditorFor(model => model.DefaultNoteText,new { htmlAttributes = new { @class = "form-control", @id="addNoteText"} })
+                        </div>
+                        <button id="btnAddNewNote" type="button" class="btn btn-success btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-ok"></span>Save</button>
+                        <button  class="btn btn-danger btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 }
 
 <div>
@@ -164,6 +217,19 @@
                 buttonWidth: '100%',
                 enableCaseInsensitiveFiltering: true,
                 disableIfEmpty: true
+            });
+            $("#selectNote").click(function () {
+                $("#selectNoteModal").modal();
+            });
+            $("#addNote").click(function () {
+                $("#addNoteModal").modal();
+            });
+            $("#btnAddNewNote").click(function () {
+                $("#noteText").text($("#addNoteText").val());
+            });
+            $("#btnSelectNote").click(function () {
+                $("#selectNoteModal").modal('hide');
+                $("#noteText").text($("#selectNoteText").find("option:selected").text());
             });
         });
     </script>

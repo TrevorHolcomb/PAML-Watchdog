@@ -9,6 +9,7 @@ namespace AdministrationPortal.ViewModels.Rules
         public MultiSelectList RuleCategories { get; set; }
         public SelectList SupportCategories { get; set; }
         public SelectList EngineList { get; set; }
+        public SelectList DefaultNotes { get; set; }
         public readonly SelectList DefaultSeverityList = new SelectList(new [] {1,2,3,4,5});
     }
 }

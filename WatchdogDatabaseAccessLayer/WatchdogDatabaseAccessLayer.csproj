@@ -87,6 +87,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Repositories\Database\EFDefaultNoteRepositroy.cs" />
     <Compile Include="EFModule.cs" />
     <Compile Include="FormattedDbEntityValidationException.cs" />
     <Compile Include="MessageParameterFactory.cs" />
@@ -107,6 +108,9 @@
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\APIMessageParameter.cs" />
+    <Compile Include="Models\DefaultNote.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Engine.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>

@@ -37,6 +37,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public string Origin { get; set; }
         public string Server { get; set; }
         public System.DateTime Timestamp { get; set; }
+        public Nullable<int> DefaultNoteId { get; set; }
     
         public virtual MessageType MessageType { get; set; }
         public virtual AlertType AlertType { get; set; }
@@ -45,5 +46,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RuleCategory> RuleCategories { get; set; }
         public virtual SupportCategory SupportCategory { get; set; }
+        public virtual DefaultNote DefaultNote { get; set; }
     }
 }

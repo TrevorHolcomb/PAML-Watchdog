@@ -20,6 +20,8 @@ namespace AdministrationPortal.Controllers
         public Repository<SupportCategory> SupportCategoryRepository { get; set; }
         [Inject]
         public Repository<Engine> EngineRepository { get; set; }
+        [Inject]
+        public Repository<DefaultNote> DefaultNoteRepository { get; set; }
 
         // GET: Rules
         public ActionResult Index()
@@ -51,7 +53,9 @@ namespace AdministrationPortal.Controllers
                     MessageTypes = new SelectList(MessageTypeRepository.Get(), "Name", "Name"),
                     RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
                     SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
-                    EngineList = new SelectList(EngineRepository.Get(), "Name", "Name")
+                    EngineList = new SelectList(EngineRepository.Get(), "Name", "Name"),
+                    DefaultNotes = new SelectList(DefaultNoteRepository.Get(), "Id", "Text")
+
                 }
             };
             
@@ -67,6 +71,15 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(RuleCreateViewModel ruleViewModel)
         {
+            /*if (ruleViewModel.DefaultNoteText != null)
+            {
+                DefaultNoteRepository.Insert(new DefaultNote{ Text = ruleViewModel.DefaultNoteText });
+                DefaultNoteRepository.Save();
+                ruleViewModel.DefaultNoteId = DefaultNoteRepository.GetByName(ruleViewModel.DefaultNoteText).Id;
+            }*/
+
+            
+
             var ruleToCreate = ruleViewModel.BuildRule(RuleCategoryRepository.Get());
             RuleRepository.Insert(ruleToCreate);
             RuleRepository.Save();
@@ -91,7 +104,8 @@ namespace AdministrationPortal.Controllers
                     MessageTypes = new SelectList(MessageTypeRepository.Get(), "Name", "Name"),
                     RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
                     SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
-                    EngineList = new SelectList(EngineRepository.Get(), "Name", "Name")
+                    EngineList = new SelectList(EngineRepository.Get(), "Name", "Name"),
+                    DefaultNotes = new SelectList(DefaultNoteRepository.Get(),"Id","Name")
                 },
                 RuleCreator = rule.RuleCreator,
                 Description = rule.Description,
@@ -165,6 +179,7 @@ namespace AdministrationPortal.Controllers
             RuleRepository.Save();
             return RedirectToAction("Index");
         }
+
 
         protected override void Dispose(bool disposing)
         {
