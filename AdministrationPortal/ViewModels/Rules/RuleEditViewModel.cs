@@ -31,6 +31,11 @@ namespace AdministrationPortal.ViewModels.Rules
         [Required]
         public int SupportCategoryId { get; set; }
 
+        public int DefaultNoteId { get; set; }
+        public string DefaultNoteText { get; set; }
+        public string DefualtNoteTextEdited { get; set; }
+
+
         public RuleOptionsViewModel RuleOptions { get; set; }
 
         public void Map(Rule rule)

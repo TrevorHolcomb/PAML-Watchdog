@@ -87,8 +87,22 @@
             <label class = "control-label col-md-2">Default Note</label>
             <div class="col-md-10">
                <button id="selectNote" type="button" class="btn btn-default">Select Existing Note</button>
-               <button id="addNote" type="button" class="btn btn-default">Add New Note</button>
+               <button id="addNote" type="button" class="btn btn-default" data-toggle="collapse" data-target="#addNotePanel">Add New Note</button>
                <label id="noteText"/>
+                <p/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div id="addNotePanel" class="collapse">
+                @Html.LabelFor(model => model.DefaultNoteText, "Note Text", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DefaultNoteText, new { htmlAttributes = new { @class = "form-control", @id = "addNoteText" } })
+                </div>
+                <div class="col-md-12">
+                    <button id="btnSaveNewNote" type="button" class="btn btn-success btn-default pull-right"><span class="glyphicon glyphicon-ok"></span>Save</button>
+                    <button type="button" id="btnCancelAdd" class="btn btn-danger btn-default pull-right" data-toggle="collapse" data-target="#addNotePanel"><span class="glyphicon glyphicon-remove" ></span> Cancel</button>
+                </div>
             </div>
         </div>
 
@@ -152,6 +166,7 @@
                             <div class="form-group">
                                 <label for="note"><span class="glyphicon glyphicon-pencil"></span> Note</label>
                                 @Html.DropDownListFor(model => model.DefaultNoteId, Model.RuleOptions.DefaultNotes, htmlAttributes: new { @class = "form-control", @style = "overflow:scroll;text-overflow:ellipsis;", @id="selectNoteText" })
+                                
                             </div>
                             <button id="btnSelectNote" type="button" class="btn btn-success btn-default pull-right"><span class="glyphicon glyphicon-ok"></span>Select</button>
                             <button class="btn btn-danger btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
@@ -160,26 +175,7 @@
                 </div>
             </div>
         </div>
-       
-        
-        <div class="modal fade" id="addNoteModal" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header" style="padding:20px 50px;">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4><span class="glyphicon glyphicon-plus"></span> Add New Note</h4>
-                    </div>
-                    <div class="modal-body" style="padding:50px 50px;">
-                        <div class="form-group">
-                            <label for="note"><span class="glyphicon glyphicon-pencil"></span> Note</label>
-                            @Html.EditorFor(model => model.DefaultNoteText,new { htmlAttributes = new { @class = "form-control", @id="addNoteText"} })
-                        </div>
-                        <button id="btnAddNewNote" type="button" class="btn btn-success btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-ok"></span>Save</button>
-                        <button  class="btn btn-danger btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 }
 
 <div>
@@ -212,25 +208,33 @@
     </script>-->
 
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
+            $("#selectNoteText").prop("selectedIndex", -1);
+            $("#addNotePanel").collapse({ toggle: false });
             $('#RuleCategoryIds').multiselect({
                 buttonWidth: '100%',
                 enableCaseInsensitiveFiltering: true,
                 disableIfEmpty: true
             });
-            $("#selectNote").click(function () {
+            $("#selectNote").click(function () {                
+                $("#addNotePanel").collapse('hide');
                 $("#selectNoteModal").modal();
-            });
-            $("#addNote").click(function () {
-                $("#addNoteModal").modal();
-            });
-            $("#btnAddNewNote").click(function () {
-                $("#noteText").text($("#addNoteText").val());
             });
             $("#btnSelectNote").click(function () {
                 $("#selectNoteModal").modal('hide');
                 $("#noteText").text($("#selectNoteText").find("option:selected").text());
+                $("#addNoteText").val("");
             });
+            $("#btnSaveNewNote").click(function () {
+                $("#noteText").text($("#addNoteText").val());
+                $("#addNotePanel").collapse('hide');
+            });
+            $("#btnCancelNewNote").click(function () {
+                $("#noteText").text("");
+                $("#addNoteText").val("");
+                $("#addNotePanel").collapse('hide');
+            });
+
         });
     </script>
 }
