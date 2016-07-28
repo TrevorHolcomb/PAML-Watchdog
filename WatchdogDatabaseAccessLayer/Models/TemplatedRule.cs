@@ -35,5 +35,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RuleCategory> RuleCategories { get; set; }
         public virtual RuleTemplate RuleTemplate { get; set; }
+        public virtual Rule Rule { get; set; }
     }
 }

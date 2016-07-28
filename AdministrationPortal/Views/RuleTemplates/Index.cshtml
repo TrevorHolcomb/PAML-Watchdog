@@ -20,14 +20,14 @@
 
 <h2>Rule Templates</h2>
 
-@using (Ajax.BeginForm("Undo", "RuleTemplates", new { id=Model.RuleTemplateInstantiated.Id }, ajaxOptions))
+@using (Ajax.BeginForm("Undo", "RuleTemplates", new { id=Model.RuleTemplateInstantiated.Id, timestamp=Model.Timestamp }, ajaxOptions))
 {
 <div class="alert alert-info" role="alert" style="@Model.InfoMessageStyle" id="divAlert">
     @Model.NumberOfRulesInstantiated Rules were instantiated with
     <b>@Model.RuleTemplateInstantiated.Name</b> using <br/>
-    &emsp;Engine: <b>@Model.RuleTemplateInstantiated.LastEngine</b> <br/>
-    &emsp;Origins: <b>@Model.RuleTemplateInstantiated.LastOrigins</b> <br/>
-    &emsp;Servers: <b>@Model.RuleTemplateInstantiated.LastServers</b>
+    &emsp;Engine: <b>@Model.EngineUsed</b> <br/>
+    &emsp;Origins: <b>@Model.OriginsUsed</b> <br/>
+    &emsp;Servers: <b>@Model.ServersUsed</b>
     <br/>
     <button type="submit" id="btnUndo" class="btn btn-info">Undo</button>
 </div>

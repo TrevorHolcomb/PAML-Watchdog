@@ -254,10 +254,13 @@
     <Compile Include="ViewModels\RuleTemplates\CreateRuleTemplateViewModel.cs" />
     <Compile Include="ViewModels\RuleTemplates\DetailsRuleTemplateViewModel.cs" />
     <Compile Include="ViewModels\RuleTemplates\EditRuleTemplateViewModel.cs" />
+    <Compile Include="ViewModels\RuleTemplates\UseRuleTemplateViewModel.cs" />
     <Compile Include="ViewModels\RuleTemplates\ViewRuleTemplateViewModel.cs" />
     <Compile Include="ViewModels\SupportCategories\DeleteSupportCategoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-tokenfield\bootstrap-tokenfield.css" />
+    <Content Include="Content\bootstrap-tokenfield\tokenfield-typeahead.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\font-awesome\css\font-awesome.css" />
@@ -278,7 +281,11 @@
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap-multiselect.js" />
+    <Content Include="Content\bootstrap-tokenfield\tokenfield-typeahead.less" />
+    <Content Include="Content\bootstrap-tokenfield\bootstrap-tokenfield.less" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\bootstrap-tokenfield.js" />
+    <None Include="Scripts\jquery-1.10.2-vsdoc.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />

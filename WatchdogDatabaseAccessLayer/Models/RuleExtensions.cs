@@ -4,16 +4,18 @@
     {
         public static TemplatedRule ToTemplate(this Rule rule)
         {
-            var templatedRule = new TemplatedRule();
-            templatedRule.Name = rule.Name;
-            templatedRule.Description = rule.Description;            
-            templatedRule.AlertTypeId = rule.AlertTypeId;
-            templatedRule.DefaultSeverity = rule.DefaultSeverity;
-            templatedRule.Expression = rule.Expression;
-            templatedRule.MessageTypeName = rule.MessageTypeName;
-            templatedRule.SupportCategoryId = rule.SupportCategoryId;
-            templatedRule.RuleCreator = "template; TODO: replace me";
-            return templatedRule;
+            return new TemplatedRule()
+            {
+                Name = rule.Name,
+                Description = rule.Description,
+                AlertTypeId = rule.AlertTypeId,
+                DefaultSeverity = rule.DefaultSeverity,
+                Expression = rule.Expression,
+                MessageTypeName = rule.MessageTypeName,
+                SupportCategoryId = rule.SupportCategoryId,
+                RuleCategories = rule.RuleCategories,
+                RuleCreator = "template; TODO: replace me"
+            };
         }
 
         public static bool EqualsTemplatedRule(this Rule rule, TemplatedRule templatedRule)

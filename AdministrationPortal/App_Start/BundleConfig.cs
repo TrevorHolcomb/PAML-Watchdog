@@ -17,6 +17,12 @@ namespace AdministrationPortal
             bundles.Add(new ScriptBundle("~/bundles/jquery-ajax").Include(
                         "~/Scripts/jquery.unobtrusive-ajax.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap-tokenfield").Include(
+                        "~/Scripts/bootstrap-tokenfield.js"));
+
+            bundles.Add(new StyleBundle("~/Content/css/bootstrap-tokenfield").Include(
+                        "~/Content/bootstrap-tokenfield/bootstrap-tokenfield.css"));
+
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(

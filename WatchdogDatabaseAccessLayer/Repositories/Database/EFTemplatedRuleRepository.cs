@@ -43,6 +43,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Database
 
         public override void Delete(TemplatedRule model)
         {
+            _container.Entry(model).Collection<RuleCategory>("RuleCategories").Load();
             _container.TemplatedRules.Remove(model);
         }
 
