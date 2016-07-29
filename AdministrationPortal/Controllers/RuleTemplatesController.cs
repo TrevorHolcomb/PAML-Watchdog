@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using AdministrationPortal.ViewModels.RuleTemplates;
 using Ninject;
+using AdministrationPortal.Extensions;
 using WatchdogDatabaseAccessLayer;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
@@ -68,9 +69,14 @@ namespace AdministrationPortal.Controllers
         // GET: RuleTemplates/Create
         public ActionResult Create()
         {
-            var viewModel = new CreateRuleTemplateViewModel();
             var rules = RuleRepository.Get().ToList();
-            viewModel.Rules = GetUniqueRules(rules).ToList();
+            var viewModel = new CreateRuleTemplateViewModel()
+            {
+                Rules = GetUniqueRules(rules).ToList(),
+                Engines = rules.Select(r => r.Engine).ToCSV(),
+                Origins = rules.Select(r => r.Origin).ToCSV(),
+                Servers = rules.Select(r => r.Server).ToCSV()               
+            };
 
             return View(viewModel);
         }
@@ -261,11 +267,9 @@ namespace AdministrationPortal.Controllers
             RuleTemplateRepository.Update(ruleTemplate);
             RuleTemplateRepository.Save();
 
-            var lastOrigins = DetailsRuleTemplateViewModel.FormatInputString(
-                viewModel.OriginServerTuples.Select(kvp => kvp.Key));
+            var lastOrigins = viewModel.OriginServerTuples.Select(kvp => kvp.Key).ToCSV();
 
-            var lastServers = DetailsRuleTemplateViewModel.FormatInputString(
-                viewModel.OriginServerTuples.Select(kvp => kvp.Value));
+            var lastServers = viewModel.OriginServerTuples.Select(kvp => kvp.Value).ToCSV();
 
             var dictionary = new
             {
@@ -357,7 +361,7 @@ namespace AdministrationPortal.Controllers
 
             var ruleIdToRuleCategoryNames = ruleTemplate.TemplatedRules.ToDictionary(
                 tr => tr.Id,
-                tr => DetailsRuleTemplateViewModel.FormatInputString(tr.RuleCategories.Select(rc => RuleCategoryRepository.GetById(rc.Id).Name))
+                tr => tr.RuleCategories.Select(rc => RuleCategoryRepository.GetById(rc.Id).Name).ToCSV()
                 );
 
             var viewModel = new UseRuleTemplateViewModel()

@@ -6,6 +6,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
 <h2>Create</h2>
 
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "createForm" })) 
@@ -16,6 +18,7 @@
         <h4>RuleTemplate</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -32,8 +35,32 @@
             </div>
         </div>
 
+        <hr />
+        <h3>Search Rules</h3>
+
         <div class="form-group">
-            <table class="table">
+            @Html.LabelFor(model => model.Engines, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input class="autocomplete" id="searchEngines" data-search-for="engineName" data-autocomplete-source="@Model.Engines">                
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Origins, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input class="autocomplete" id="searchOrigins" data-search-for="originName" data-autocomplete-source="@Model.Origins">
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Servers, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input class="autocomplete" id="searchServers" data-search-for="serverName" data-autocomplete-source="@Model.Servers">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <table class="table" id="tblRules">
                 <tr>
                     <th> @Html.DisplayName("Name") </th>
                     <th> @Html.DisplayName("Description") </th>
@@ -46,8 +73,8 @@
 
                 @for (int r = 0; r < Model.Rules.Count; r++)
                 {
-                    @Html.HiddenFor(model => model.Rules[r].Id)
                     <tr>
+                        @Html.HiddenFor(model => model.Rules[r].Id)
                         <td> @Html.DisplayFor(model => model.Rules[r].Name) </td>
                         <td> @Html.DisplayFor(model => model.Rules[r].Description) </td>
                         <td> @Html.DisplayFor(model => model.Rules[r].Expression) </td>
@@ -55,6 +82,9 @@
                         <td> @Html.DisplayFor(model => model.Rules[r].MessageType.Name) </td>
                         <td> @Html.DisplayFor(model => model.Rules[r].SupportCategory.Name) </td>
                         <td> @Html.CheckBoxFor(model => model.RulesIncluded[r], htmlAttributes: new { @class = "checkbox", @id="checkbox-" + r }) </td>
+                        @Html.HiddenFor(model => model.Rules[r].Engine, htmlAttributes: new { @class = "engineName" })
+                        @Html.HiddenFor(model => model.Rules[r].Origin, htmlAttributes: new { @class = "originName" })
+                        @Html.HiddenFor(model => model.Rules[r].Server, htmlAttributes: new { @class = "serverName" })
                     </tr>
                 }
             </table>
@@ -72,4 +102,35 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jquery-ui")
+<script>
+    $(document).ready(function () {
+
+        function hideNonmatchingRules(event, ui, $searchfield) {
+            var rulePropertyName = $searchfield.data("search-for");
+            var searchQuery = $searchfield.val().toLowerCase();
+            var $matching = $("#tblRules ." + rulePropertyName).filter(function(){
+                return $(this).val().toLowerCase().indexOf(searchQuery) > -1;
+            });
+            $matching.closest("tr").fadeIn("slow");
+
+            $("#tblRules ." + rulePropertyName).not($matching).closest("tr").fadeOut("slow");
+        }
+
+        var searchfieldIds = ["searchEngines", "searchOrigins", "searchServers"];
+
+        //TODO: fix closure resulting in only last handler set
+
+        for (var i = 0; i < searchfieldIds.length; i++) {
+            var $searchfield = $("#"+searchfieldIds[i]);
+            var datasource = $.map($searchfield.data("autocomplete-source").split(","), $.trim).sort();
+
+            $searchfield.autocomplete({
+                source: datasource,
+                search: function(event, ui){hideNonmatchingRules(event, ui, $searchfield)},
+                select: function(event, ui){hideNonmatchingRules(event, ui, $searchfield)}
+            });
+        }        
+    });
+</script>
 }
