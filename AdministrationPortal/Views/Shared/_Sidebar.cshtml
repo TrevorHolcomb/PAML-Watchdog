@@ -35,10 +35,13 @@
                     <a href="@Url.Action("Index","RegisteredEngines")"><i class="fa fa-fw fa-cog"></i> Registered Engines</a>
                 </li>
                 <li class="@Html.HighlightIfActive("RuleCategories")">
-                    <a href="@Url.Action("Index","RuleCategories")"><i class="fa fa-fw fa-gavel"></i> Rule Categories</a>
+                    <a href="@Url.Action("Index", "RuleCategories")"><i class="fa fa-fw fa-gavel"></i> Rule Categories</a>
+                </li>
+                <li class="@Html.HighlightIfActive("RuleTemplates")">
+                    <a href="@Url.Action("Index","RuleTemplates")"><i class="fa-fw glyphicon glyphicon-list-alt"></i> Rule Templates</a>
                 </li>
                 <li class="@Html.HighlightIfActive("SupportCategories")">
-                    <a href="@Url.Action("Index","SupportCategories")"><i class="fa fa-fw fa-life-ring"></i> Support Categories</a>
+                    <a href="@Url.Action("Index", "SupportCategories")"><i class="fa fa-fw fa-life-ring"></i> Support Categories</a>
                 </li>
             </ul>
         </li>

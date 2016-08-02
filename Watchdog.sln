@@ -3,25 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogDaemon", "WatchdogDaemon\WatchdogDaemon.csproj", "{A8DB6220-0361-47CD-8F1D-2287F74B54CD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdministrationPortal", "AdministrationPortal\AdministrationPortal.csproj", "{733C4714-656A-4BFE-9126-D1580DA9BDD7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdministrationPortal.Tests", "AdministrationPortal.Tests\AdministrationPortal.Tests.csproj", "{F3A55EC5-1921-4F13-AA9C-79DB877EE60D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogDaemon.Tests", "WatchdogDaemon.Tests\WatchdogDaemon.Tests.csproj", "{A4B9776D-E1FF-4042-844E-252C87E1D0E2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogDatabaseAccessLayer", "WatchdogDatabaseAccessLayer\WatchdogDatabaseAccessLayer.csproj", "{B46AB31A-997A-4786-9966-43FFE91B1909}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogDatabaseAccessLayer.Tests", "WatchdogDatabaseAccessLayer.Tests\WatchdogDatabaseAccessLayer.Tests.csproj", "{55D7B80C-5E00-488F-AA00-385F0407FE13}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogDaemon", "WatchdogDaemon\WatchdogDaemon.csproj", "{A8DB6220-0361-47CD-8F1D-2287F74B54CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogMessageGenerator", "WatchdogMessageGenerator\WatchdogMessageGenerator.csproj", "{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogMessageGenerator.Tests", "WatchdogMessageGenerator.Tests\WatchdogMessageGenerator.Tests.csproj", "{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogDaemon.Tests", "WatchdogDaemon.Tests\WatchdogDaemon.Tests.csproj", "{A4B9776D-E1FF-4042-844E-252C87E1D0E2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogWebAPI", "WatchdogWebAPI\WatchdogWebAPI.csproj", "{A4B4D3E1-7044-4659-B976-65F815D13F7B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogWebAPI.Tests", "WatchdogWebAPI.Tests\WatchdogWebAPI.Tests.csproj", "{1CE31166-DF32-443C-8C16-6022C2159E98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchdogDatabaseAccessLayer.Tests", "WatchdogDatabaseAccessLayer.Tests\WatchdogDatabaseAccessLayer.Tests.csproj", "{55D7B80C-5E00-488F-AA00-385F0407FE13}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +25,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A8DB6220-0361-47CD-8F1D-2287F74B54CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8DB6220-0361-47CD-8F1D-2287F74B54CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A8DB6220-0361-47CD-8F1D-2287F74B54CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A8DB6220-0361-47CD-8F1D-2287F74B54CD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{733C4714-656A-4BFE-9126-D1580DA9BDD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{733C4714-656A-4BFE-9126-D1580DA9BDD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{733C4714-656A-4BFE-9126-D1580DA9BDD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -41,26 +33,18 @@ Global
 		{F3A55EC5-1921-4F13-AA9C-79DB877EE60D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3A55EC5-1921-4F13-AA9C-79DB877EE60D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3A55EC5-1921-4F13-AA9C-79DB877EE60D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4B9776D-E1FF-4042-844E-252C87E1D0E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4B9776D-E1FF-4042-844E-252C87E1D0E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4B9776D-E1FF-4042-844E-252C87E1D0E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4B9776D-E1FF-4042-844E-252C87E1D0E2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B46AB31A-997A-4786-9966-43FFE91B1909}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B46AB31A-997A-4786-9966-43FFE91B1909}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B46AB31A-997A-4786-9966-43FFE91B1909}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B46AB31A-997A-4786-9966-43FFE91B1909}.Release|Any CPU.Build.0 = Release|Any CPU
-		{55D7B80C-5E00-488F-AA00-385F0407FE13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{55D7B80C-5E00-488F-AA00-385F0407FE13}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{55D7B80C-5E00-488F-AA00-385F0407FE13}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{55D7B80C-5E00-488F-AA00-385F0407FE13}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B6725A3-7C5A-47F4-ACF8-21DD60E86304}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8DB6220-0361-47CD-8F1D-2287F74B54CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8DB6220-0361-47CD-8F1D-2287F74B54CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8DB6220-0361-47CD-8F1D-2287F74B54CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8DB6220-0361-47CD-8F1D-2287F74B54CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4B9776D-E1FF-4042-844E-252C87E1D0E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4B9776D-E1FF-4042-844E-252C87E1D0E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4B9776D-E1FF-4042-844E-252C87E1D0E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4B9776D-E1FF-4042-844E-252C87E1D0E2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A4B4D3E1-7044-4659-B976-65F815D13F7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A4B4D3E1-7044-4659-B976-65F815D13F7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4B4D3E1-7044-4659-B976-65F815D13F7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,6 +53,10 @@ Global
 		{1CE31166-DF32-443C-8C16-6022C2159E98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CE31166-DF32-443C-8C16-6022C2159E98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CE31166-DF32-443C-8C16-6022C2159E98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55D7B80C-5E00-488F-AA00-385F0407FE13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55D7B80C-5E00-488F-AA00-385F0407FE13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55D7B80C-5E00-488F-AA00-385F0407FE13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55D7B80C-5E00-488F-AA00-385F0407FE13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

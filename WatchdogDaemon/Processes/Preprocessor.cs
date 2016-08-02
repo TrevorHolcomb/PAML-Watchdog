@@ -1,16 +1,18 @@
-﻿using WatchdogDatabaseAccessLayer.Models;
-using Ninject.Syntax;
-using WatchdogDaemon.Exceptions;
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ninject;
 using NLog;
+using WatchdogDaemon.Exceptions;
 using WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers;
+using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 
-namespace WatchdogDaemon.Watchdogs
+namespace WatchdogDaemon.Processes
 {
+    /// <summary>
+    /// The Preprocessor takes the raw unvalidated input from the database and maps the input to valid message types. 
+    /// </summary>
     public class Preprocessor : IProcess
     {
         [Inject]
@@ -64,15 +66,15 @@ namespace WatchdogDaemon.Watchdogs
                 MessageRepository.Save();
                 MessageParameterRepository.Save();
 
-                Logger.Info("Message Successfully Preprocessed Of Type {0}", message.MessageType.Name);
+                Logger.Info($"Message Successfully Preprocessed Of Type {message.MessageType.Name}");
             }
             catch (InvalidParameterException e)
             {
-                Logger.Warn(e, "Invalid Parameters {0}", e);
+                Logger.Warn(e, $"Invalid Parameters {e}");
             }
             catch(Exception e)
             {
-                Logger.Error(e, "Uncaught Exception {0}", e);
+                Logger.Error(e, $"Uncaught Exception {e}");
             }
             finally
             {
@@ -110,17 +112,17 @@ namespace WatchdogDaemon.Watchdogs
             return MessageTypeRepository.GetByName(message.MessageTypeName);
         }
         
-        private string PreprocessOrigin(UnvalidatedMessage message)
+        private static string PreprocessOrigin(UnvalidatedMessage message)
         {
             return message.Origin;
         }
 
-        private string PreprocessServer(UnvalidatedMessage message)
+        private static string PreprocessServer(UnvalidatedMessage message)
         {
             return message.Server;
         }
 
-        private ICollection<MessageParameter> GetValidParameters(UnvalidatedMessage unvalidatedMessage)
+        private IEnumerable<MessageParameter> GetValidParameters(UnvalidatedMessage unvalidatedMessage)
         {
             var messageTypeToValidateAgainst = MessageTypeRepository.GetByName(unvalidatedMessage.MessageTypeName);
             var parameterTypes =  messageTypeToValidateAgainst.MessageTypeParameterTypes;

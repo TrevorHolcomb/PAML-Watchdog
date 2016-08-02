@@ -1,6 +1,4 @@
 using WatchdogDatabaseAccessLayer;
-using WatchdogDatabaseAccessLayer.Repositories;
-using WatchdogDatabaseAccessLayer.Repositories.Database;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(AdministrationPortal.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(AdministrationPortal.App_Start.NinjectWebCommon), "Stop")]
@@ -65,7 +63,7 @@ namespace AdministrationPortal.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Load(new EFModule());
+            kernel.Load(new EFWebModule());
         }        
     }
 }

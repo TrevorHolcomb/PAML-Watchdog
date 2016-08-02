@@ -83,6 +83,13 @@
             @Html.DisplayFor(model => model.SupportCategory.Name)
         </div>
     </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.DefaultNote, "Default Note", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.DefaultNote.Text)
+        </div>
+    </div>
 </div>
 
 @using (Html.BeginForm())

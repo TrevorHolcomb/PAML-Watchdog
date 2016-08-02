@@ -5,7 +5,6 @@ using NLog;
 using WatchdogDaemon.Processes;
 using WatchdogDaemon.RuleEngine;
 using WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine;
-using WatchdogDaemon.Watchdogs;
 using WatchdogDatabaseAccessLayer;
 
 namespace WatchdogDaemon
@@ -21,6 +20,10 @@ namespace WatchdogDaemon
         private volatile bool _working;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly Barrier _cleanup;
+        
+        /// <summary>
+        /// Starts the Alerter, and Preprocessor in thier own threads and waits for the user to press q to quit the program.
+        /// </summary>
         public Program()
         {
             _working = true;
@@ -45,6 +48,9 @@ namespace WatchdogDaemon
             _kernel.Dispose();
         }
 
+        /// <summary>
+        /// StartAlerter instantiates a new Alerter and injects it with the required dependencies.
+        /// </summary>
         public void StartAlerter()
         {
             Logger.Info("Starting Alerter Thread");
@@ -61,6 +67,10 @@ namespace WatchdogDaemon
                 Logger.Info("Alerter Thread Exiting");
             }
         }
+
+        /// <summary>
+        /// StartPreprocessor instantiates a new Preprocessor and injects it with the required dependencies.
+        /// </summary>
         public void StartPreprocessor()
         {
             Logger.Info("Starting Preprocessor Thread");

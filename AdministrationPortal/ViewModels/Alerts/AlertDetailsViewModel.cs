@@ -9,11 +9,13 @@ namespace AdministrationPortal.ViewModels.Alerts
     public class AlertDetailsViewModel
     {
         public String sortOrder { get; set; }
-        public int PageNo { get; set; }
+        public int? PageNo { get; set; }
         public Alert Alert { get; set; }
+        public List<Alert> groupedAlerts { get; set; }
 
+        public AlertDetailsViewModel() : this(null, null, null) { }
 
-        public AlertDetailsViewModel(Alert Alert, int PageNo, String sortOrder)
+        public AlertDetailsViewModel(Alert Alert, int? PageNo, String sortOrder)
         {
             this.Alert = Alert;
             this.PageNo = PageNo;

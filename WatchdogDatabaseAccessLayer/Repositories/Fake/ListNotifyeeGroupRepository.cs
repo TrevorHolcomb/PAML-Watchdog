@@ -32,7 +32,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 
         public override NotifyeeGroup GetByName(string name)
         {
-            return _notifyeeGroups.FirstOrDefault(group => group.Name == name);
+            return _notifyeeGroups.Where(group => group.Name == name).DefaultIfEmpty(null).First();
         }
 
         public override void Insert(NotifyeeGroup model)

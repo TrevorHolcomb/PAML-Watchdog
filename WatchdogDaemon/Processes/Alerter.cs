@@ -9,6 +9,9 @@ using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace WatchdogDaemon.Processes
 {
+    /// <summary>
+    /// The Alerter reads messages and rules from the database and evaluates the messages using the rules. If the rule evaluates to true then it creates a new alert.
+    /// </summary>
     public class Alerter : IProcess
     {
         [Inject]
@@ -25,6 +28,8 @@ namespace WatchdogDaemon.Processes
         public Repository<AlertParameter> AlertParameterRepository { set; get; }
         [Inject]
         public Repository<AlertStatus> AlertStatusRepository { set; get; }
+        [Inject]
+        public Repository<AlertGroup> AlertGroupRepository { set; get; }
         [Inject]
         public IRuleEngine RuleEngine { set; get; }
 
@@ -52,7 +57,7 @@ namespace WatchdogDaemon.Processes
             AlertRepository.Save();
         }
 
-        private void ProcessMessage(List<Rule> rules, Message message)
+        private void ProcessMessage(IEnumerable<Rule> rules, Message message)
         {
             try
             {
@@ -64,7 +69,8 @@ namespace WatchdogDaemon.Processes
                     if (!RuleEngine.DoesGenerateAlert(rule, message))
                         continue;
 
-                    var alert = BuildAlert(rule, message);
+                    var alertGroup = GetAlertGroup(rule, message);                      
+                    var alert = BuildAlert(rule, message, alertGroup);
                     AlertRepository.Insert(alert);
                     AlertStatusRepository.Insert(alert.AlertStatus);
                     AlertParameterRepository.InsertRange(alert.AlertParameters);
@@ -73,26 +79,40 @@ namespace WatchdogDaemon.Processes
                     AlertStatusRepository.Save();
                     AlertParameterRepository.Save();
 
-                    Logger.Info("Generating Alert For Rule '{0}' ", rule.Name);
+                    Logger.Info($"Generating Alert For Rule '{rule.Name}' ");
                 }
 
-                Logger.Info("Removing Message Of Type {0}", message.MessageType.Name);
+                Logger.Info($"Removing Message Of Type {message.MessageType.Name}");
                 MessageParameterRepository.DeleteRange(message.MessageParameters.ToList());
                 MessageRepository.Delete(message);
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Uncaught Exception {0}", e);
+                Logger.Error(e, $"Uncaught Exception {e}");
             }
         }
 
-        private Alert BuildAlert(Rule rule, Message message)
+        private AlertGroup GetAlertGroup(Rule rule, Message message)
         {
-            ICollection<AlertParameter> alertParams = new List<AlertParameter>();
+            var alertGroup =  AlertGroupRepository.Get().FirstOrDefault(ag => ag.Server == message.Server && ag.Engine == message.EngineName && ag.Origin == message.Origin && ag.AlertType == rule.AlertType && ag.Resolved == false);
 
+            if(alertGroup == null)
+            {
+                alertGroup = BuildAlertGroup(rule, message);
+
+                AlertGroupRepository.Insert(alertGroup);
+                AlertGroupRepository.Save();
+            }
+
+            return alertGroup;
+
+        }
+
+        private static Alert BuildAlert(Rule rule, Message message, AlertGroup alertGroup)
+        {
             var currentStatus = new AlertStatus
             {
-                TimeStamp = System.DateTime.Now,
+                Timestamp = System.DateTime.Now,
                 ModifiedBy = "Watchdog Daemon",
                 StatusCode = StatusCode.UnAcknowledged,
                 Next = null,
@@ -100,14 +120,10 @@ namespace WatchdogDaemon.Processes
             };
 
 
-            foreach (var messageParameter in message.MessageParameters)
+            ICollection<AlertParameter> alertParams = message.MessageParameters.Select(messageParameter => new AlertParameter
             {
-                alertParams.Add(new AlertParameter
-                {
-                    Value = messageParameter.Value,
-                    MessageTypeParameterType = messageParameter.MessageTypeParameterType,
-                });
-            }
+                Value = messageParameter.Value, MessageTypeParameterType = messageParameter.MessageTypeParameterType,
+            }).ToList();
 
             return new Alert
             {
@@ -123,6 +139,19 @@ namespace WatchdogDaemon.Processes
                 Severity = rule.DefaultSeverity,
                 AlertStatus = currentStatus,
                 MessageType = message.MessageType,
+                AlertGroup = alertGroup
+            };
+        }
+
+        private static AlertGroup BuildAlertGroup(Rule rule, Message message)
+        {
+            return new AlertGroup 
+            {
+                Server = message.Server,
+                Engine = message.EngineName,
+                Origin = message.Origin,
+                AlertType = rule.AlertType,
+                Resolved = false
             };
         }
     }

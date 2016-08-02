@@ -32,6 +32,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public string Server { get; set; }
         public string Origin { get; set; }
         public int Severity { get; set; }
+        public int AlertGroupId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AlertParameter> AlertParameters { get; set; }
@@ -40,5 +41,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         public virtual MessageType MessageType { get; set; }
         public virtual Rule Rule { get; set; }
         public virtual AlertStatus AlertStatus { get; set; }
+        public virtual AlertGroup AlertGroup { get; set; }
     }
 }

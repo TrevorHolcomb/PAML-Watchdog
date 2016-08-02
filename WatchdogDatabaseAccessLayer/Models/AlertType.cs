@@ -19,6 +19,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         {
             this.Alerts = new HashSet<Alert>();
             this.Rules = new HashSet<Rule>();
+            this.AlertGroups = new HashSet<AlertGroup>();
         }
     
         public int Id { get; set; }
@@ -29,5 +30,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public virtual ICollection<Alert> Alerts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Rule> Rules { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AlertGroup> AlertGroups { get; set; }
     }
 }

@@ -1,12 +1,14 @@
 ﻿@model AdministrationPortal.ViewModels.MessageTypes.DeleteMessageTypeViewModel
 
-@Model.PageTitle
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 <h2>Delete</h2>
 
-<h3>
-    @Model.PageHeaderMessage
-</h3>
+<h3> @Model.PageHeaderMessage </h3>
+
 <div>
     <h4>MessageType</h4>
     <hr />

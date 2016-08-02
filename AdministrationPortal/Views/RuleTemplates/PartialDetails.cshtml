@@ -1,0 +1,45 @@
+﻿@model AdministrationPortal.ViewModels.RuleTemplates.DetailsRuleTemplateViewModel
+
+<dl class="dl-horizontal">
+    <dt> @Html.DisplayNameFor(model => model.RuleTemplate.Name) </dt>
+    <dd> @Html.DisplayFor(model => model.RuleTemplate.Name) </dd>
+
+    <dt> @Html.DisplayNameFor(model => model.RuleTemplate.Description) </dt>
+    <dd> @Html.DisplayFor(model => model.RuleTemplate.Description) </dd>
+
+    <dt> @Html.DisplayNameFor(model => model.RuleTemplate.LastUsedOn) </dt>
+    <dd> @Html.DisplayFor(model => model.RuleTemplate.LastUsedOn) </dd>
+
+    <!--alt+0160 in tags for fake <br//>-->
+    <dt> </dt>
+    <dd> </dd>
+
+    <dt>Templated Rules</dt>
+    <dd>
+        <table class="table">
+            <tr>
+                <td><b>#</b></td>
+                <td><b>Name</b></td>
+                <td><b>Description</b></td>
+                <td><b>Expression</b></td>
+                <td><b>MessageType</b></td>
+                <td><b>AlertType</b></td>
+                <td><b>RuleCategory</b></td>
+            </tr>
+
+            @for (var i = 0; i < Model.RuleTemplate.TemplatedRules.Count; i++)
+            {
+                var templatedRule = Model.RuleTemplate.TemplatedRules.ElementAt(i);
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@templatedRule.Name</td>
+                    <td>@templatedRule.Description</td>
+                    <td>@templatedRule.Expression</td>
+                    <td>@templatedRule.MessageTypeName</td>
+                    <td>@Model.RuleAlertTypeNames.ElementAt(i)</td>
+                    <td>@Model.RuleRuleCategoryNames.ElementAt(i)</td>
+                </tr>
+            }
+        </table>
+    </dd>
+</dl>

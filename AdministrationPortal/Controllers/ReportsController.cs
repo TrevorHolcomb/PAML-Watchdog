@@ -37,7 +37,7 @@ namespace AdministrationPortal.Controllers
         
         public ActionResult AlertsPerOrigin(DateTimeRangeViewModel range)
         {
-            var alerts = AlertRepository.Get().Where(alert => InRange(alert.AlertStatus.MostRecent().TimeStamp, range.Start, range.End)).ToList();
+            var alerts = AlertRepository.Get().Where(alert => InRange(alert.AlertStatus.MostRecent().Timestamp, range.Start, range.End)).ToList();
 
             var origins = alerts.Select(e => e.Origin).Distinct().ToArray();
             var values = new int[origins.Length];
@@ -51,7 +51,7 @@ namespace AdministrationPortal.Controllers
 
         public ActionResult AlertsPerServer(DateTimeRangeViewModel range)
         {
-            var alerts = AlertRepository.Get().Where(alert => InRange(alert.AlertStatus.MostRecent().TimeStamp, range.Start, range.End)).ToList();
+            var alerts = AlertRepository.Get().Where(alert => InRange(alert.AlertStatus.MostRecent().Timestamp, range.Start, range.End)).ToList();
 
             var servers = alerts.Select(e => e.Server).Distinct().ToArray();
             var values = new int[servers.Length];

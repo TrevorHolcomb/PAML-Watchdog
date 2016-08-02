@@ -28,7 +28,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 
         public override Engine GetByName(string name)
         {
-            return _engines.FirstOrDefault(engine =>engine.Name == name);
+            return _engines.Where(engine =>engine.Name == name).DefaultIfEmpty(null).First();
         }
 
         public override void Insert(Engine model)

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
+using AdministrationPortal.ViewModels.RegisteredEngines;
 
 namespace AdministrationPortal.Controllers
 {
@@ -33,65 +30,40 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Name")] Engine engine)
         {
-            if (ModelState.IsValid)
-            {
-                if (EngineRepository.GetByName(engine.Name) == null)
-                {
-                    EngineRepository.Insert(engine);
-                    EngineRepository.Save();
-                }
-                return RedirectToAction("Index");
-            }
-            return View(engine);
-        }
-
-        // GET: RegisteredEngines/Edit/5
-        public ActionResult Edit(string name)
-        {
-            Engine engine = EngineRepository.GetByName(name);
-
-            if (engine == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(engine);
-        }
-
-        // POST: RegisteredEngines/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        /*
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Name")] Engine engine)
-        {
-            if (ModelState.IsValid)
-            {
-                Engine toUpdate = EngineRepository.GetByName(engine.Name);
-
-                if (toUpdate == null)
-                {
-                    return HttpNotFound();
-                }
-
-                
-                EngineRepository.Update()
-            }
-            
-            return View("Create", engine);
-        }*/
-
-        // GET: RegisteredEngines/Delete/5
-        public ActionResult Delete(string name)
-        {
-            Engine engine = EngineRepository.GetByName(name);
-            if (engine == null)
+            if (!ModelState.IsValid)
             {
                 return View(engine);
-                //return HttpNotFound();
             }
-            return View(engine);
+
+            try
+            {
+                EngineRepository.GetByName(engine.Name);
+            }
+            catch (System.InvalidOperationException)
+            { 
+                EngineRepository.Insert(engine);
+                EngineRepository.Save();
+            }
+            return RedirectToAction("Index");
+
+        }
+
+        // GET: RegisteredEngines/Delete/5
+        public ActionResult Delete(string id)
+        {
+            Engine engine;
+            try
+            {
+                engine = EngineRepository.GetByName(id);
+            }
+            catch (System.InvalidOperationException)
+            {
+                return HttpNotFound("No Engine found with Name: " + id);
+            }
+
+            bool safeToDelete = (engine.Alerts.Count == 0 && engine.Messages.Count == 0);
+            var viewModel = new DeleteRegisteredEngineViewModel(engine, safeToDelete);
+            return View(viewModel);
         }
 
         // POST: RegisteredEngines/Delete/5
@@ -99,17 +71,23 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string id)
         {
-            Engine toDelete = EngineRepository.GetByName(id);
-            if (toDelete == null)
+            Engine engineToDelete;
+            try
             {
-                return HttpNotFound();
+                engineToDelete = EngineRepository.GetByName(id);
+            }
+            catch (System.InvalidOperationException)
+            {
+                return HttpNotFound("No Engine found with Name: " + id);
             }
 
-            //TODO: inform user that the engine is in use
-            if (toDelete.Alerts.Count != 0 || toDelete.Messages.Count != 0 || toDelete.Alerts.Count != 0)
-                return RedirectToAction("Index");
+            bool safeToDelete = (engineToDelete.Alerts.Count == 0 && engineToDelete.Messages.Count == 0);
+            if (!safeToDelete)
+            {
+                var viewModel = new DeleteRegisteredEngineViewModel(engineToDelete, safeToDelete);
+            }
 
-            EngineRepository.Delete(toDelete);
+            EngineRepository.Delete(engineToDelete);
             EngineRepository.Save();
 
             return RedirectToAction("Index");

@@ -1,30 +1,16 @@
-﻿using System;
-using WatchdogDatabaseAccessLayer.Models;
+﻿using WatchdogDatabaseAccessLayer.Models;
 
 namespace AdministrationPortal.ViewModels.SupportCategories
 {
-    public class DeleteSupportCategoryViewModel
+    public class DeleteSupportCategoryViewModel : AbstractDeleteViewModel
     {
-        public readonly string PageTitle = "Delete";
+        public DeleteSupportCategoryViewModel(SupportCategory supportCategoryToDelete, bool safeToDelete)
+        {
+            SupportCategory = supportCategoryToDelete;
+            canDeleteThisModel(safeToDelete);
+        }
+
+        public override string ModelTypeName { get { return "SupportCategory"; } }
         public SupportCategory SupportCategory{ get; set; }
-        public string PageHeaderMessage { get; set; }
-        private bool deleteButtonIsEnabled;
-
-        public string ButtonClass()
-        {
-            return (deleteButtonIsEnabled) ? "active" : "disabled";
-        }
-
-        public string ButtonState()
-        {
-            return (deleteButtonIsEnabled) ? "" : "disabled=\"disabled\"";
-        }
-
-        public DeleteSupportCategoryViewModel canDeleteThisSupportCategory(Boolean canDelete)
-        {
-            PageHeaderMessage = (canDelete) ? "Are you sure you want to delete this?" : "This SupportCategory is in use and cannot be deleted.";
-            deleteButtonIsEnabled = canDelete;
-            return this;
-        }
     }
 }

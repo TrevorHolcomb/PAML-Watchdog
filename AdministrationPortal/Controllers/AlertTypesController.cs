@@ -1,10 +1,8 @@
-﻿using System.Data.Entity;
-using System.Threading.Tasks;
-using System.Net;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
+using AdministrationPortal.ViewModels.AlertTypes;
 
 namespace AdministrationPortal.Controllers
 {
@@ -25,7 +23,7 @@ namespace AdministrationPortal.Controllers
             var alertType = AlertTypeRepository.GetById(id);
             if (alertType == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No AlertType found with Id " + id);
             }
             return View(alertType);
         }
@@ -59,8 +57,9 @@ namespace AdministrationPortal.Controllers
             var alertType = AlertTypeRepository.GetById(id);
             if (alertType == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No AlertType found with Id " + id);
             }
+
             return View(alertType);
         }
 
@@ -69,13 +68,21 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Name,Description")] AlertType alertType)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                AlertTypeRepository.Update(alertType);
-                AlertTypeRepository.Save();
-                return RedirectToAction("Index");
+                return View(alertType);
             }
-            return View(alertType);
+            
+            AlertType alertTypeInDb = AlertTypeRepository.GetById(alertType.Id);
+            if (alertTypeInDb == null)
+            {
+                return HttpNotFound("No AlertType found with Id " + alertType.Id);
+            }
+
+            alertTypeInDb.Description = alertType.Description;
+            AlertTypeRepository.Update(alertTypeInDb);
+            AlertTypeRepository.Save();
+            return RedirectToAction("Index");
         }
 
         // GET: AlertTypes/Delete/5
@@ -86,7 +93,11 @@ namespace AdministrationPortal.Controllers
             {
                 return HttpNotFound();
             }
-            return View(alertType);
+
+            bool safeToDelete = (alertType.Alerts.Count == 0 && alertType.Rules.Count == 0);
+            var viewModel = new DeleteAlertTypeViewModel(alertType, safeToDelete);
+
+            return View(viewModel);
         }
 
         // POST: AlertTypes/Delete/5
@@ -95,6 +106,18 @@ namespace AdministrationPortal.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             var alertType = AlertTypeRepository.GetById(id);
+            if (alertType == null )
+            {
+                return HttpNotFound("No AlertType found with ID " + id);
+            }
+
+            bool safeToDelete = (alertType.Alerts.Count == 0 && alertType.Rules.Count == 0);
+            if (!safeToDelete)
+            {
+                var viewModel = new DeleteAlertTypeViewModel(alertType, safeToDelete);
+                return View(viewModel);
+            }
+
             AlertTypeRepository.Delete(alertType);
             AlertTypeRepository.Save();
 

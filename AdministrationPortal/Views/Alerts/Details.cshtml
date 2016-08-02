@@ -13,32 +13,37 @@
         <dt>
             @Html.DisplayNameFor(model => model.Alert.Severity)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.Alert.Severity)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.Status)
+            @Html.DisplayNameFor(model => model.Alert.AlertGroupId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Alert.AlertGroupId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Alert.AlertStatus.StatusCode)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Alert.Status)
+            @Html.DisplayFor(model => model.Alert.AlertStatus.StatusCode)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.TimeCreated)
+            @Html.DisplayNameFor(model => model.Alert.AlertStatus.FirstStatus().Timestamp)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Alert.TimeCreated)
+            @Html.DisplayFor(model => model.Alert.AlertStatus.FirstStatus().Timestamp)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.TimeModified)
+            @Html.DisplayNameFor(model => model.Alert.AlertStatus.Timestamp)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Alert.TimeModified)
+            @Html.DisplayFor(model => model.Alert.AlertStatus.Timestamp)
         </dd>
 
         <dt>
@@ -74,11 +79,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.Engine)
+            @Html.DisplayNameFor(model => model.Alert.EngineName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Alert.Engine)
+            @Html.DisplayFor(model => model.Alert.EngineName)
         </dd>
 
         <dt>
@@ -89,16 +94,17 @@
             @Html.DisplayFor(model => model.Alert.MessageType.Name)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Alert.AlertParameters)
-        </dt>
-@foreach (var item in Model.Alert.AlertParameters)
-{
-    <dd>
-        @Html.DisplayFor(model => item.Value)
-    </dd>
-}
-        
+
+        @foreach (var item in Model.Alert.AlertParameters)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Alert.AlertParameters)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => item.Value)
+            </dd>
+        }
+
 
         <dt>
             @Html.DisplayNameFor(model => model.Alert.Assignee)
@@ -120,5 +126,57 @@
 </div>
 <div class="col-md-offset-1">
     @Html.ActionLink("Edit Alert", "Edit", new { id = (int)Model.Alert.Id, Model.PageNo, Model.sortOrder }, new { @class = "btn btn-default" })
-    @Html.ActionLink("Back to List", "Index", new {ActiveOrArchived = Model.Alert.Status.ToString(), Page_No = Model.PageNo, sortOrder = Model.sortOrder }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Back to List", "Index", new { ActiveOrArchived = Model.Alert.AlertStatus.MostRecent().StatusCode.ToString(), Page_No = Model.PageNo, sortOrder = Model.sortOrder }, new { @class = "btn btn-default" })
 </div>
+<br />
+<div class="row">
+    <div class="col-xs-12 col-md-8">
+        <table class="table table-striped table-hover table-responsive">
+            @foreach (var item in Model.groupedAlerts)
+            {
+                string cssClass = "";
+                switch (item.Severity)
+                {
+                    case 5:
+                        cssClass = "redTableCell";
+                        break;
+                    case 4:
+                        cssClass = "orangeTableCell";
+                        break;
+                    case 3:
+                        cssClass = "yellowTableCell";
+                        break;
+                    case 2:
+                        cssClass = "blueTableCell";
+                        break;
+                    default:
+                        cssClass = "greenTableCell";
+                        break;
+                }
+
+
+                <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id, Model.PageNo}))'">
+
+                    <td class="@cssClass ">
+                        @Html.DisplayFor(modelItem => item.Severity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AlertStatus.StatusCode)<br />
+                        @Html.DisplayFor(modelItem => item.Rule.SupportCategory.Name)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AlertType.Name)<br />
+                        @Html.DisplayFor(modelItem => item.AlertStatus.TimeStamp)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Origin)
+                    </td>
+
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>
+

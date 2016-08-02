@@ -24,20 +24,23 @@ namespace AdministrationPortal.Controllers
         // GET: MessageTypes/Details/5
         public ActionResult Details(string id)
         {
-            var messageType = MessageTypeRepository.GetByName(id);
-            if (messageType == null)
+            MessageType messageType;
+            try
             {
-                return HttpNotFound();
+                messageType = MessageTypeRepository.GetByName(id);
             }
+            catch (System.InvalidOperationException)
+            {
+                return HttpNotFound("No MessageType found with Name: " + id);
+            }
+            
             return View(messageType);
         }
 
         // GET: MessageTypes/Create
         public ActionResult Create()
         {
-            CreateMessageTypeViewModel viewModel = new CreateMessageTypeViewModel();
-            
-
+            var viewModel = new CreateMessageTypeViewModel();
             return View(viewModel);
         }
 
@@ -48,55 +51,62 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreateMessageTypeViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var messageType = new MessageType
-                {
-                    Name = viewModel.Name,
-                    Description = viewModel.Description,
-                };
-
-                List<MessageTypeParameterType> messageTypeParameterType = new List<MessageTypeParameterType>();
-
-                for (int i = 0; i < viewModel.ParameterNames.Count; i++)
-                {
-                    if (!viewModel.ParametersEnabled[i])
-                        continue;
-
-                    messageTypeParameterType.Add(new MessageTypeParameterType
-                    {
-                        Name = viewModel.ParameterNames[i],
-                        Type = viewModel.ParameterTypes[i],
-                        Required = viewModel.ParametersRequired[i]
-                    });
-                }
-                
-                messageType.MessageTypeParameterTypes = messageTypeParameterType;
-                MessageTypeParameterTypeRepository.InsertRange(messageTypeParameterType);
-                MessageTypeRepository.Insert(messageType);
-                MessageTypeRepository.Save();
-                MessageTypeParameterTypeRepository.Save();
-                return RedirectToAction("Index");
-                
+                return View(viewModel);
             }
 
-            return View(viewModel);
+            var messageType = new MessageType
+            {
+                Name = viewModel.Name,
+                Description = viewModel.Description,
+            };
+
+            var messageTypeParameterTypes = GetParameterTypes(viewModel);
+
+            messageType.MessageTypeParameterTypes = messageTypeParameterTypes;
+            MessageTypeParameterTypeRepository.InsertRange(messageTypeParameterTypes);
+            MessageTypeRepository.Insert(messageType);
+            MessageTypeRepository.Save();
+            MessageTypeParameterTypeRepository.Save();
+            return RedirectToAction("Index");
         }
-        
+
+        private List<MessageTypeParameterType> GetParameterTypes(CreateMessageTypeViewModel viewModel)
+        {
+            List<MessageTypeParameterType> messageTypeParameterTypes = new List<MessageTypeParameterType>();
+
+            for (int i = 0; i < viewModel.ParameterNames.Count; i++)
+            {
+                if (!viewModel.ParametersEnabled[i])
+                    continue;
+
+                messageTypeParameterTypes.Add(new MessageTypeParameterType
+                {
+                    Name = viewModel.ParameterNames[i],
+                    Type = viewModel.ParameterTypes[i],
+                    Required = viewModel.ParametersRequired[i]
+                });
+            }
+
+            return messageTypeParameterTypes;
+        }
+
         // GET: MessageTypes/Delete/1
         public ActionResult Delete(string id)
         {
-            var messageType = MessageTypeRepository.GetByName(id);
-            DeleteMessageTypeViewModel viewModel = new DeleteMessageTypeViewModel();
-            viewModel.MessageType = messageType;
-
-            if (messageType == null)
+            MessageType messageType;
+            try
             {
-                return HttpNotFound();
+                messageType = MessageTypeRepository.GetByName(id);
+            }
+            catch (System.InvalidOperationException) {
+                return HttpNotFound("No MessageType found with Name: " + id);
             }
 
-            bool notSafeToDelete = (messageType.Alerts.Count != 0) || (messageType.Rules.Count != 0) || (messageType.Messages.Count != 0);
-            return View(viewModel.canDeleteThisMessageType(!notSafeToDelete));
+            bool safeToDelete = (messageType.Alerts.Count == 0 && messageType.Rules.Count == 0 && messageType.Messages.Count == 0);
+            var viewModel = new DeleteMessageTypeViewModel(messageType, safeToDelete);
+            return View(viewModel);
         }
 
         // POST: MessageTypes/Delete/5
@@ -104,7 +114,23 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string id)
         {
-            var messageType = MessageTypeRepository.GetByName(id);
+            MessageType messageType;
+            try
+            {
+                messageType = MessageTypeRepository.GetByName(id);
+            }
+            catch (System.InvalidOperationException)
+            { 
+                return HttpNotFound("No MessageType found with Name: " + id);
+            }
+
+            bool safeToDelete = (messageType.Alerts.Count == 0 && messageType.Rules.Count == 0 && messageType.Messages.Count == 0);
+            if (!safeToDelete)
+            {
+                var viewModel = new DeleteMessageTypeViewModel(messageType, safeToDelete);
+                return View(viewModel);
+            }
+
             var messageTypeParameterTypes =
                 MessageTypeParameterTypeRepository.Get().Where(parameter => parameter.MessageTypeName == messageType.Name);
 
@@ -119,10 +145,14 @@ namespace AdministrationPortal.Controllers
         // GET: Rules/Edit/5
         public ActionResult Edit(string id)
         {
-            MessageType messageType = MessageTypeRepository.GetByName(id);
-            if (messageType == null)
+            MessageType messageType;
+            try
             {
-                return HttpNotFound();
+                messageType = MessageTypeRepository.GetByName(id);
+            }
+            catch (System.InvalidOperationException)
+            {
+                return HttpNotFound("No MessageType found with Name: " + id);
             }
 
             return View(messageType);
@@ -135,32 +165,25 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Name, Description")] MessageType messageType)
         {
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                MessageType messageInDb = MessageTypeRepository.GetByName(messageType.Name);
-                if (messageInDb != null)
-                {
-                    messageInDb = mapNewMessageTypeOntoDbMessageType(messageType);
-                }
-
-                MessageTypeRepository.Update(messageInDb);
-                MessageTypeRepository.Save();
-                return RedirectToAction("Index");
+                return View(messageType);
             }
 
-            return View(messageType);
-        }
-
-        private MessageType mapNewMessageTypeOntoDbMessageType(MessageType newMessageType)
-        {
-            MessageType dbMessageType = MessageTypeRepository.GetByName(newMessageType.Name);
-            if (dbMessageType != null)
+            MessageType messageTypeInDb;
+            try
             {
-                dbMessageType.Name = newMessageType.Name;
-                dbMessageType.Description = newMessageType.Description;
+                messageTypeInDb = MessageTypeRepository.GetByName(messageType.Name);
             }
-            return dbMessageType;
+            catch (System.InvalidOperationException)
+            { 
+                return HttpNotFound("No MessageType found with Name: " + messageType.Name);
+            }
+
+            messageTypeInDb.Description = messageType.Description;
+            MessageTypeRepository.Update(messageTypeInDb);
+            MessageTypeRepository.Save();
+            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
@@ -19,13 +20,19 @@ namespace AdministrationPortal.Controllers
         [Inject]
         public Repository<Alert> AlertRepository { private get; set; }
 
+        [Inject]
+        public Repository<AlertStatus> AlertStatusRepository { private get; set; }
+
+        [Inject]
+        public Repository<AlertGroup> AlertGroupRepository { private get; set; }
+
         // GET: Alerts
-        public ActionResult Index(string ActiveOrArchived, int? Page_No, String sortOrder)
+        public ActionResult Index(string ActiveOrArchived, int? Page_No, String sortSelect, String searchString)
         {
             int Size_Of_Page = 10;
             int No_Of_Page = (Page_No ?? 1);
             var alerts = AlertRepository.Get();
-            String status;
+            string status;
 
             switch (ActiveOrArchived)
             {
@@ -39,42 +46,71 @@ namespace AdministrationPortal.Controllers
                     break;
             }
 
-            switch(sortOrder)
+            var searchStringExists = !String.IsNullOrEmpty(searchString);
+            switch (sortSelect)
             {
-                case "Severity":
-                    alerts = alerts.OrderByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.TimeStamp);
+                case "0":
+                    if (searchStringExists)
+                        alerts = alerts.Where(a => Convert.ToString(a.Severity).Contains(searchString));
+                    alerts = alerts.OrderByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.Timestamp);
                     break;
-                case "Time":
-                    alerts = alerts.OrderByDescending(a => a.AlertStatus.TimeStamp);
+                case "1":
+                    if(searchStringExists)
+                        alerts = alerts.Where(a => a.AlertStatus.StatusCode.ToString().ToLower().Contains(searchString.ToLower()));
+                    alerts = alerts.OrderBy(a => a.AlertStatus.StatusCode).ThenByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.Timestamp);
                     break;
-                case "Origin":
-                    alerts = alerts.OrderBy(a => a.Origin).ThenByDescending(a => a.AlertStatus.TimeStamp);
-                    break;
-                case "AlertType":
-                    alerts = alerts.OrderBy(a => a.AlertType.Name);
-                    break;
-                case "Group":
+                case "2":
+                    if(searchStringExists)
+                        alerts = alerts.Where(a => a.Rule.SupportCategory.Name.ToLower().Contains(searchString.ToLower()));
                     alerts = alerts.OrderBy(a => a.Rule.SupportCategory.Name).ThenByDescending(a => a.Severity);
                     break;
+                case "3":
+                    if(searchStringExists)
+                        alerts = alerts.Where(a => a.AlertType.Name.ToLower().Contains(searchString.ToLower()));
+                    alerts = alerts.OrderBy(a => a.AlertType.Name);
+                    break;
+                case "4":
+                    if(searchStringExists)
+                        alerts = alerts.Where(a => a.AlertStatus.Timestamp.ToString().Contains(searchString));
+                    alerts = alerts.OrderByDescending(a => a.AlertStatus.Timestamp);
+                    break;
+                case "5":
+                    if(searchStringExists)
+                        alerts = alerts.Where(a => a.Origin.ToLower().Contains(searchString.ToLower()));
+                    alerts = alerts.OrderBy(a => a.Origin).ThenByDescending(a => a.AlertStatus.Timestamp);
+                    break;
                 default:
-                    alerts = alerts.OrderBy(a => a.AlertStatus.TimeStamp).ThenByDescending(a => a.Severity).ThenByDescending(a => a.AlertStatus.TimeStamp);
+                    alerts = alerts.OrderByDescending(a => a.AlertStatus.Timestamp).ThenByDescending(a => a.Severity);
                     break;
             }
-
-            return View(new AlertPagingCreateView(alerts.ToPagedList(No_Of_Page, Size_Of_Page), status, sortOrder, No_Of_Page));
+            Hashtable checkGroup = new Hashtable();
+            List<Alert> groupedAlerts = new List<Alert>();
+            foreach (Alert a in alerts)
+            {
+                if(!checkGroup.Contains(a.AlertGroupId))
+                {
+                    groupedAlerts.Add(a);
+                    checkGroup.Add(a.AlertGroupId, a.AlertGroupId);
+                }
+            }
+            
+            return View(new AlertPagingCreateView(groupedAlerts.ToPagedList(No_Of_Page, Size_Of_Page), status, No_Of_Page));
         }
 
         // GET: Alerts/Details/5
         public ActionResult Details(int id, int PageNo, String sortOrder)
         {
             var viewModel = new AlertDetailsViewModel(AlertRepository.GetById(id), PageNo, sortOrder);
+            var groupedAlerts = AlertRepository.Get();
             viewModel.Alert = AlertRepository.GetById(id);
+            groupedAlerts = groupedAlerts.Where(a => a.AlertGroupId == viewModel.Alert.AlertGroupId && a.Id != viewModel.Alert.Id);
             if (viewModel.Alert == null)
             {
                 return HttpNotFound();
             }
             viewModel.sortOrder = sortOrder;
             viewModel.PageNo = PageNo;
+            viewModel.groupedAlerts = groupedAlerts.ToList();
             return View(viewModel);
         }
 
@@ -121,16 +157,58 @@ namespace AdministrationPortal.Controllers
         {
             if (ModelState.IsValid)
             {
-                var alert = alertViewModel.Alert;
-                var alertInDb = AlertRepository.GetById(alert.Id);
-
-                if (alertInDb != null)
+                var editedAlert = alertViewModel.Alert;
+                var groupedAlerts = AlertRepository.Get();
+                groupedAlerts = groupedAlerts.Where(a => a.AlertGroupId == editedAlert.AlertGroupId);
+                foreach (var alert in groupedAlerts)
                 {
-                    alertInDb = mapNewAlertOntoDbAlert(alert);
+                    var alertInDb = AlertRepository.GetById(alert.Id);
+
+                    if (alertInDb != null)
+                    {
+                        // create and insert a new AlertStatus
+                        var newStatus = new AlertStatus();
+                        newStatus.ModifiedBy = "N/A";
+                        newStatus.StatusCode = editedAlert.AlertStatus.StatusCode;
+                        newStatus.Prev = AlertStatusRepository.GetById(alertInDb.AlertStatus.Id);
+
+                        AlertStatusRepository.Insert(newStatus);
+                        AlertStatusRepository.Save();
+
+                        newStatus = AlertStatusRepository.Get().Last();
+
+                        var tailAlertStatus = AlertStatusRepository.GetById(alertInDb.AlertStatus.Id);
+                        tailAlertStatus.Next = newStatus;
+                        tailAlertStatus.Alert = null;
+                        alertInDb.AlertStatus = newStatus;
+                        newStatus.Alert = alertInDb;
+                        AlertStatusRepository.Update(newStatus);
+                        AlertStatusRepository.Save();
+
+                        AlertStatusRepository.Update(tailAlertStatus);
+                        AlertStatusRepository.Save();
+
+
+
+                        if (alertInDb.Id == editedAlert.Id)
+                        {
+                            alertInDb.Severity = editedAlert.Severity;
+                            alertInDb.Notes = editedAlert.Notes;
+                        }
+                        AlertRepository.Update(alertInDb);
+                        AlertRepository.Save();
+                    }
                 }
-                AlertRepository.Update(alertInDb);
-                AlertRepository.Save();
-                return RedirectToAction("Index", new {ActiveOrArchived = alert.AlertStatus.StatusCode.ToString() });
+                var group = AlertGroupRepository.GetById(editedAlert.AlertGroupId);
+                if (editedAlert.AlertStatus.StatusCode.ToString().CompareTo("Resolved") == 0)
+                {
+                    group.Resolved = true;
+                }
+                else
+                    group.Resolved = false;
+                AlertGroupRepository.Update(group);
+                AlertGroupRepository.Save();
+                return RedirectToAction("Index", new {ActiveOrArchived = editedAlert.AlertStatus.StatusCode.ToString() });
             }
 
             return View(alertViewModel);
@@ -139,9 +217,14 @@ namespace AdministrationPortal.Controllers
         private Alert mapNewAlertOntoDbAlert(Alert newAlert)
         {
             Alert dbAlert = AlertRepository.GetById(newAlert.Id);
+            
             if (dbAlert != null)
             {
-                dbAlert.AlertStatus = newAlert.AlertStatus;
+                AlertStatus newStatus = new AlertStatus();
+                newStatus.ModifiedBy = "N/A";
+                
+                
+                //dbAlert.AlertStatus = newAlert.AlertStatus;
                 dbAlert.Severity = newAlert.Severity;
                 dbAlert.Notes = newAlert.Notes;
             }

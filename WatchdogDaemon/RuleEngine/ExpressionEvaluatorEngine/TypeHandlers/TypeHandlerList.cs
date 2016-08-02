@@ -2,6 +2,9 @@
 
 namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
 {
+    /// <summary>
+    /// Contains the list of all the TypeHandlers to be used.
+    /// </summary>
     internal class TypeHandlerList
     {
         public static readonly IEnumerable<ITypeHandler> TypeHandlers = new List<ITypeHandler>

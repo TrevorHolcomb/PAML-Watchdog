@@ -32,7 +32,7 @@ namespace WatchdogDatabaseAccessLayer.Repositories.Fake
 
         public override Rule GetByName(string name)
         {
-            return _rules.FirstOrDefault(rule => rule.Name == name);
+            return _rules.Where(rule => rule.Name == name).DefaultIfEmpty(null).First();
         }
 
         public override void Insert(Rule model)

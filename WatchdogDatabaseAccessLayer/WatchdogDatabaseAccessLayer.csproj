@@ -50,7 +50,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.3.2.3-unstable-012\lib\net45-full\Ninject.dll</HintPath>
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.Web.Common, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.Common.3.2.3.0\lib\net45-full\Ninject.Web.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -83,10 +87,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Repositories\Database\EFDefaultNoteRepositroy.cs" />
     <Compile Include="EFModule.cs" />
     <Compile Include="FormattedDbEntityValidationException.cs" />
     <Compile Include="MessageParameterFactory.cs" />
     <Compile Include="Models\Alert.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AlertGroup.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AlertParameter.cs">
@@ -100,6 +108,9 @@
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\APIMessageParameter.cs" />
+    <Compile Include="Models\DefaultNote.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Engine.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
@@ -136,10 +147,17 @@
     <Compile Include="Models\RuleCategory.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RuleExtensions.cs" />
+    <Compile Include="Models\RuleTemplate.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\StatusCode.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SupportCategory.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TemplatedRule.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UnvalidatedMessage.cs">
@@ -149,9 +167,12 @@
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UnvalidatedMessageParameterPartial.cs" />
+    <Compile Include="Repositories\Database\EFAlertGroupRepository.cs" />
     <Compile Include="Repositories\Database\EFAlertParameterRepository.cs" />
     <Compile Include="Repositories\Database\EFAlertStatusRepository.cs" />
     <Compile Include="Repositories\Database\EFEngineRepository.cs" />
+    <Compile Include="Repositories\Database\EFRuleTemplateRepository.cs" />
+    <Compile Include="Repositories\Database\EFTemplatedRuleRepository.cs" />
     <Compile Include="Repositories\Database\EFUnvalidatedMessageParameterRepository.cs" />
     <Compile Include="Repositories\Database\EFUnvalidatedMessageRepository.cs" />
     <Compile Include="Repositories\Database\EFSupportCategoryRepository.cs" />
