@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using WatchdogDaemon.RuleEngine;
 using WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine;
-using WatchdogDatabaseAccessLayer;
 using WatchdogDatabaseAccessLayer.Models;
 using Xunit;
 
@@ -11,22 +9,40 @@ namespace WatchdogDaemon.Tests
 
     public class RuleEngineTests
     {
-        public static TheoryData<Rule, Message> ShouldGenerateAlertData = new TheoryData<Rule, Message>
+        public static TheoryData<IRuleEngine, Rule, IEnumerable<Message>> ShouldGenerateAlertData = new TheoryData<IRuleEngine, Rule, IEnumerable<Message>>
         {
             {
+                new StandardRuleEngine(),
                 new Rule
                 {
                     Expression = "queueSize > 1000"
-                }, new Message
-                {
-                    MessageParameters = new List<MessageParameter>
+                },
+                new List<Message> {
+                    new Message
                     {
-                        new MessageParameter
+                        MessageParameters = new List<MessageParameter>
                         {
-                            Value = "10000", MessageTypeParameterType = new MessageTypeParameterType
+                            new MessageParameter
                             {
-                                Name = "queueSize",
-                                Type = "Integer"
+                                Value = "10000", MessageTypeParameterType = new MessageTypeParameterType
+                                {
+                                    Name = "queueSize",
+                                    Type = "Integer"
+                                }
+                            }
+                        }
+                    },
+                        new Message
+                    {
+                        MessageParameters = new List<MessageParameter>
+                        {
+                            new MessageParameter
+                            {
+                                Value = "19900", MessageTypeParameterType = new MessageTypeParameterType
+                                {
+                                    Name = "queueSize",
+                                    Type = "Integer"
+                                }
                             }
                         }
                     }
@@ -34,25 +50,42 @@ namespace WatchdogDaemon.Tests
             }
         };
 
-        public static TheoryData<Rule, Message> ShouldntGenerateAlertData = new TheoryData<Rule, Message>
+        public static TheoryData<IRuleEngine, Rule, IEnumerable<Message>> ShouldntGenerateAlertData = new TheoryData<IRuleEngine, Rule, IEnumerable<Message>>
         {
             {
+                new StandardRuleEngine(),
                 new Rule
                 {
                     Expression = "queueSize > 1000"
-                }, new Message
-                {
-                    MessageParameters = new List<MessageParameter>
+                },
+                new List<Message> {
+                    new Message
                     {
-                        new MessageParameter
+                        MessageParameters = new List<MessageParameter>
                         {
-                            Value = "100", MessageTypeParameterType = new MessageTypeParameterType
+                            new MessageParameter
                             {
-                                Name = "queueSize",
-                                Type = "Integer"
-                            }
+                                Value = "100", MessageTypeParameterType = new MessageTypeParameterType
+                                {
+                                    Name = "queueSize",
+                                    Type = "Integer"
+                                }
+                            },
                         }
-                    }
+                    }, new Message
+                    {
+                        MessageParameters = new List<MessageParameter>
+                        {
+                            new MessageParameter
+                            {
+                                Value = "100", MessageTypeParameterType = new MessageTypeParameterType
+                                {
+                                    Name = "queueSize",
+                                    Type = "Integer"
+                                }
+                            },
+                        }
+                    },
                 }
             }
         };
@@ -60,18 +93,18 @@ namespace WatchdogDaemon.Tests
 
         [Theory]
         [MemberData(nameof(ShouldGenerateAlertData))]
-        public void ShouldGenerateAlertTest(Rule rule, Message message)
+        public void ShouldGenerateAlertTest(IRuleEngine ruleEngine, Rule rule, IEnumerable<Message> messages)
         {
-            var ruleEngine = new StandardRuleEngine();
-            Assert.True(ruleEngine.DoesGenerateAlert(rule, message));
+            foreach(var message in messages)
+                Assert.True(ruleEngine.DoesGenerateAlert(rule, message));
         }
 
         [Theory]
         [MemberData(nameof(ShouldntGenerateAlertData))]
-        public void ShouldntGenerateAlertTest(Rule rule, Message message)
+        public void ShouldntGenerateAlertTest(IRuleEngine ruleEngine, Rule rule, IEnumerable<Message> messages)
         {
-            var ruleEngine = new StandardRuleEngine();
-            Assert.False(ruleEngine.DoesGenerateAlert(rule, message));
+            foreach(var message in messages)
+                Assert.False(ruleEngine.DoesGenerateAlert(rule, message));
         }
     }
 }
