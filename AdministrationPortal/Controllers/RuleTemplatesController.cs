@@ -348,7 +348,6 @@ namespace AdministrationPortal.Controllers
                     Name = template.Name,
                     RuleCreator = template.RuleCreator,                         //TODO: set to creator of template
                     SupportCategoryId = template.SupportCategoryId,
-                    TemplatedRule = template,
                     Timestamp = timestamp
                 });
             return rules;

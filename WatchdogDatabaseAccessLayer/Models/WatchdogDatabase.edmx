@@ -1013,7 +1013,6 @@
               <LongDescription>Primarily for use when undoing Template instantiation</LongDescription>
             </Documentation>
           </Property>
-          <NavigationProperty Name="TemplatedRule" Relationship="WatchdogDatabase.LastInstantiatedRule" FromRole="Rule" ToRole="TemplatedRule" />
           <NavigationProperty Name="DefaultNote" Relationship="WatchdogDatabase.DefaultNoteRule" FromRole="Rule" ToRole="DefaultNote" />
           <Property Name="DefaultNoteId" Type="Int32" Nullable="true" />
         </EntityType>
@@ -1391,7 +1390,6 @@
           <NavigationProperty Name="RuleCategories" Relationship="WatchdogDatabase.TemplatedRuleRuleCategory" FromRole="TemplatedRule" ToRole="RuleCategory" />
           <NavigationProperty Name="RuleTemplate" Relationship="WatchdogDatabase.RuleTemplateTemplatedRule" FromRole="TemplatedRule" ToRole="RuleTemplate" />
           <Property Name="RuleTemplateId" Nullable="false" Type="Int32" />
-          <NavigationProperty Name="Rule" Relationship="WatchdogDatabase.LastInstantiatedRule" FromRole="TemplatedRule" ToRole="Rule" />
         </EntityType>
         <EntityType Name="RuleTemplate">
           <Key>
