@@ -15,20 +15,5 @@ namespace AdministrationPortal.ViewModels.RuleTemplates
         public RuleTemplate RuleTemplate { get; set; }
         public Dictionary<int, string> AlertTypeIdToName { get; set; }
         public Dictionary<int, string> RuleIdToRuleCategoryNames { get; set; }
-
-        public static string FormatInputString(IEnumerable<string> stringList)
-        {
-
-            var inputFromForm = "";
-            if (stringList != null && stringList.Any())
-            {
-                foreach (var str in stringList)
-                {
-                    inputFromForm += str + ", ";
-                }
-                inputFromForm = inputFromForm.Remove(inputFromForm.LastIndexOf(','), 1);
-            }
-            return inputFromForm;
-        }
     }
 }

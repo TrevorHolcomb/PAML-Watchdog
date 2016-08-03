@@ -14,6 +14,9 @@ namespace AdministrationPortal
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 
+            bundles.Add(new ScriptBundle("~/bundles/jquery-ui").Include(
+                "~/Scripts/jquery-ui-{version}.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jquery-ajax").Include(
                         "~/Scripts/jquery.unobtrusive-ajax.js"));
 

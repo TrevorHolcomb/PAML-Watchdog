@@ -134,7 +134,6 @@
     <Compile Include="Models\MessageTypeParameterType.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\MessageTypePartial.cs" />
     <Compile Include="Models\Notifyee.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>

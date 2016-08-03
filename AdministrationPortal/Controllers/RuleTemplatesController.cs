@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using AdministrationPortal.ViewModels.RuleTemplates;
 using Ninject;
+using AdministrationPortal.Extensions;
 using WatchdogDatabaseAccessLayer;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
@@ -68,9 +69,14 @@ namespace AdministrationPortal.Controllers
         // GET: RuleTemplates/Create
         public ActionResult Create()
         {
-            var viewModel = new CreateRuleTemplateViewModel();
             var rules = RuleRepository.Get().ToList();
-            viewModel.Rules = GetUniqueRules(rules).ToList();
+            var viewModel = new CreateRuleTemplateViewModel()
+            {
+                Rules = GetUniqueRules(rules).ToList(),
+                Engines = rules.Select(r => r.Engine).GetUnique().ToCSV(),
+                Origins = rules.Select(r => r.Origin).GetUnique().ToCSV(),
+                Servers = rules.Select(r => r.Server).GetUnique().ToCSV()               
+            };
 
             return View(viewModel);
         }
@@ -235,7 +241,7 @@ namespace AdministrationPortal.Controllers
             if (ruleTemplate == null)
                 return HttpNotFound("No RuleTemplate found with id " + id);
 
-            var viewModel = (UseRuleTemplateViewModel)BuildDetailsViewModel(ruleTemplate);
+            var viewModel = BuildDetailsViewModel(ruleTemplate);
             viewModel.RegisteredEngines = new SelectList(EngineRepository.Get().Select(e => e.Name).ToList());
             viewModel.OriginServerTuples = new List<KeyValuePair<string, string>>();
 
@@ -261,11 +267,9 @@ namespace AdministrationPortal.Controllers
             RuleTemplateRepository.Update(ruleTemplate);
             RuleTemplateRepository.Save();
 
-            var lastOrigins = DetailsRuleTemplateViewModel.FormatInputString(
-                viewModel.OriginServerTuples.Select(kvp => kvp.Key));
+            var lastOrigins = viewModel.OriginServerTuples.Select(kvp => kvp.Key).ToCSV();
 
-            var lastServers = DetailsRuleTemplateViewModel.FormatInputString(
-                viewModel.OriginServerTuples.Select(kvp => kvp.Value));
+            var lastServers = viewModel.OriginServerTuples.Select(kvp => kvp.Value).ToCSV();
 
             var dictionary = new
             {
@@ -342,7 +346,7 @@ namespace AdministrationPortal.Controllers
                     Expression = template.Expression,
                     MessageTypeName = template.MessageTypeName,
                     Name = template.Name,
-                    RuleCreator = template.RuleCreator,                         //TODO: set to creator of template?
+                    RuleCreator = template.RuleCreator,                         //TODO: set to creator of template
                     SupportCategoryId = template.SupportCategoryId,
                     TemplatedRule = template,
                     Timestamp = timestamp
@@ -357,7 +361,7 @@ namespace AdministrationPortal.Controllers
 
             var ruleIdToRuleCategoryNames = ruleTemplate.TemplatedRules.ToDictionary(
                 tr => tr.Id,
-                tr => DetailsRuleTemplateViewModel.FormatInputString(tr.RuleCategories.Select(rc => RuleCategoryRepository.GetById(rc.Id).Name))
+                tr => tr.RuleCategories.Select(rc => RuleCategoryRepository.GetById(rc.Id).Name).ToCSV()
                 );
 
             var viewModel = new UseRuleTemplateViewModel()
@@ -370,9 +374,6 @@ namespace AdministrationPortal.Controllers
             return viewModel;
         }
 
-        /// <summary>
-        /// TODO: O(n^2), improve with hashmap
-        /// </summary>
         private static IEnumerable<Rule> GetUniqueRules(IEnumerable<Rule> rules)
         {
             var uniqueRules = new List<Rule>();
