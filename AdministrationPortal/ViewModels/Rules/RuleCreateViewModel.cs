@@ -34,26 +34,54 @@ namespace AdministrationPortal.ViewModels.Rules
         [Required]
         public int SupportCategoryId { get; set; }
 
+        public int DefaultNoteId { get; set; } 
+        public string DefaultNoteText { get; set; }
+
         public RuleOptionsViewModel RuleOptions { get; set; }
 
         public Rule BuildRule(IEnumerable<RuleCategory> ruleCategories)
         {
-            return new Rule()
+            if(DefaultNoteId != 0)
             {
-                Engine = Engine,
-                Origin = Origin,
-                Server = Server,
-                AlertTypeId = AlertTypeId,
-                DefaultSeverity = DefaultSeverity,
-                Description = Description,
-                Expression = Expression,
-                MessageTypeName = MessageTypeName,
-                Name = Name,
-                RuleCreator = RuleCreator,
-                SupportCategoryId = SupportCategoryId,
-                RuleCategories = ruleCategories.Where(e => RuleCategoryIds.Contains(e.Id)).ToList(),
-                Timestamp = DateTime.Now
-            };
+                return new Rule()
+                {
+                    Engine = Engine,
+                    Origin = Origin,
+                    Server = Server,
+                    AlertTypeId = AlertTypeId,
+                    DefaultSeverity = DefaultSeverity,
+                    Description = Description,
+                    Expression = Expression,
+                    MessageTypeName = MessageTypeName,
+                    Name = Name,
+                    RuleCreator = RuleCreator,
+                    SupportCategoryId = SupportCategoryId,
+                    RuleCategories = ruleCategories.Where(e => RuleCategoryIds.Contains(e.Id)).ToList(),
+                    Timestamp = DateTime.Now,
+                    DefaultNoteId = DefaultNoteId
+                };
+            }
+            else
+            {
+                return new Rule()
+                {
+                    Engine = Engine,
+                    Origin = Origin,
+                    Server = Server,
+                    AlertTypeId = AlertTypeId,
+                    DefaultSeverity = DefaultSeverity,
+                    Description = Description,
+                    Expression = Expression,
+                    MessageTypeName = MessageTypeName,
+                    Name = Name,
+                    RuleCreator = RuleCreator,
+                    SupportCategoryId = SupportCategoryId,
+                    RuleCategories = ruleCategories.Where(e => RuleCategoryIds.Contains(e.Id)).ToList(),
+                    Timestamp = DateTime.Now,
+                    DefaultNoteId = null
+                };
+            }
+            
         }
     }
 }

@@ -9,6 +9,9 @@ using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace WatchdogDaemon.Processes
 {
+    /// <summary>
+    /// The Alerter reads messages and rules from the database and evaluates the messages using the rules. If the rule evaluates to true then it creates a new alert.
+    /// </summary>
     public class Alerter : IProcess
     {
         [Inject]
@@ -54,7 +57,7 @@ namespace WatchdogDaemon.Processes
             AlertRepository.Save();
         }
 
-        private void ProcessMessage(List<Rule> rules, Message message)
+        private void ProcessMessage(IEnumerable<Rule> rules, Message message)
         {
             try
             {
@@ -76,16 +79,16 @@ namespace WatchdogDaemon.Processes
                     AlertStatusRepository.Save();
                     AlertParameterRepository.Save();
 
-                    Logger.Info("Generating Alert For Rule '{0}' ", rule.Name);
+                    Logger.Info($"Generating Alert For Rule '{rule.Name}' ");
                 }
 
-                Logger.Info("Removing Message Of Type {0}", message.MessageType.Name);
+                Logger.Info($"Removing Message Of Type {message.MessageType.Name}");
                 MessageParameterRepository.DeleteRange(message.MessageParameters.ToList());
                 MessageRepository.Delete(message);
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Uncaught Exception {0}", e);
+                Logger.Error(e, $"Uncaught Exception {e}");
             }
         }
 
@@ -105,10 +108,8 @@ namespace WatchdogDaemon.Processes
 
         }
 
-        private Alert BuildAlert(Rule rule, Message message, AlertGroup alertGroup)
+        private static Alert BuildAlert(Rule rule, Message message, AlertGroup alertGroup)
         {
-            ICollection<AlertParameter> alertParams = new List<AlertParameter>();
-
             var currentStatus = new AlertStatus
             {
                 Timestamp = System.DateTime.Now,
@@ -119,14 +120,10 @@ namespace WatchdogDaemon.Processes
             };
 
 
-            foreach (var messageParameter in message.MessageParameters)
+            ICollection<AlertParameter> alertParams = message.MessageParameters.Select(messageParameter => new AlertParameter
             {
-                alertParams.Add(new AlertParameter
-                {
-                    Value = messageParameter.Value,
-                    MessageTypeParameterType = messageParameter.MessageTypeParameterType,
-                });
-            }
+                Value = messageParameter.Value, MessageTypeParameterType = messageParameter.MessageTypeParameterType,
+            }).ToList();
 
             return new Alert
             {
@@ -146,7 +143,7 @@ namespace WatchdogDaemon.Processes
             };
         }
 
-        private AlertGroup BuildAlertGroup(Rule rule, Message message)
+        private static AlertGroup BuildAlertGroup(Rule rule, Message message)
         {
             return new AlertGroup 
             {

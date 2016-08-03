@@ -83,6 +83,32 @@
             </div>
         </div>
 
+        <!--NOTES HERE-->
+        <div class="form-group">
+            <label class="control-label col-md-2">Default Note</label>
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.DefaultNoteText)
+                <p/>
+                <button id="selectNote" type="button" class="btn btn-default">Select New Existing Note</button>
+                <button id="editNote" type="button" class="btn btn-default">Edit Existing Note</button>
+                <button id="addNote" type="button" class="btn btn-default" data-toggle="collapse" data-target="#addNotePanel">Add New Note</button>
+                <label id="noteText" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div id="addNotePanel" class="collapse">
+                @Html.LabelFor(model => model.DefaultNoteText, "Note Text", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DefaultNoteText, new { htmlAttributes = new { @class = "form-control", @id = "addNoteText" } })
+                </div>
+                <div class="col-md-12">
+                    <button id="btnSaveNewNote" type="button" class="btn btn-success btn-default pull-right"><span class="glyphicon glyphicon-ok"></span>Save</button>
+                    <button type="button" id="btnCancelAdd" class="btn btn-danger btn-default pull-right" data-toggle="collapse" data-target="#addNotePanel"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                </div>
+            </div>
+        </div>
+
         <div class="form-group">
             @Html.LabelFor(model => model.AlertTypeId, "Alert Type", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -122,6 +148,32 @@
             </div>
         </div>
     </div>
+
+
+
+    <!--Modals for notes-->
+    <div class="modal fade" id="selectNoteModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="padding:20px 50px;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4><span class="glyphicon glyphicon-hand-up"></span> Select Note</h4>
+                </div>
+                <div class="modal-body" style="padding:50px 50px;">
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="note"><span class="glyphicon glyphicon-pencil"></span> Note</label>
+                            @Html.DropDownListFor(model => model.DefaultNoteId, Model.RuleOptions.DefaultNotes, htmlAttributes: new { @class = "form-control", @style = "overflow:scroll;text-overflow:ellipsis;", @id = "selectNoteText" })
+
+                        </div>
+                        <button id="btnSelectNote" type="button" class="btn btn-success btn-default pull-right"><span class="glyphicon glyphicon-ok"></span>Select</button>
+                        <button class="btn btn-danger btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 }
 
 <div>
@@ -130,4 +182,35 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+                $("#addNotePanel").collapse({ toggle: false });
+                $("#selectNote").click(function(){
+                    $("#addNotePanel").collapse('hide');
+                    $("#selectNoteModal").modal();
+                });
+                $("#editNote").click(function () {
+                    
+                });
+                $("#addNote").click(function () {
+
+                });
+                $("#btnSelectNote").click(function () {
+                    $("#selectNoteModal").modal('hide');
+                    $("#noteText").text($("#selectNoteText").find("option:selected").text());
+                    $("#addNoteText").val("");
+                });
+                $("#btnSaveNewNote").click(function () {
+                    $("#noteText").text($("#addNoteText").val());
+                    $("#addNotePanel").collapse('hide');
+                });
+                $("#btnCancelNewNote").click(function () {
+                    $("#noteText").text("");
+                    $("#addNoteText").val("");
+                    $("#addNotePanel").collapse('hide');
+                });
+            });
+    </script>
 }

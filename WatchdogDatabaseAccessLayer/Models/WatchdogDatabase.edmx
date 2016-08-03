@@ -27,6 +27,7 @@
     <EntitySet Name="AlertGroups" EntityType="WatchdogDatabase.Store.AlertGroups" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="TemplatedRules" EntityType="WatchdogDatabase.Store.TemplatedRules" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="RuleTemplates" EntityType="WatchdogDatabase.Store.RuleTemplates" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="DefaultNotes" EntityType="WatchdogDatabase.Store.DefaultNotes" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="NotifyeeNotifyeeGroup" EntityType="WatchdogDatabase.Store.NotifyeeNotifyeeGroup" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="RuleRuleCategory" EntityType="WatchdogDatabase.Store.RuleRuleCategory" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="TemplatedRuleRuleCategory" EntityType="WatchdogDatabase.Store.TemplatedRuleRuleCategory" store:Type="Tables" Schema="dbo" />
@@ -146,9 +147,9 @@
       <End Role="RuleTemplate" EntitySet="RuleTemplates" />
       <End Role="TemplatedRule" EntitySet="TemplatedRules" />
     </AssociationSet>
-    <AssociationSet Name="LastInstantiatedRule" Association="WatchdogDatabase.Store.LastInstantiatedRule">
-      <End Role="TemplatedRule" EntitySet="TemplatedRules" />
+    <AssociationSet Name="DefaultNoteRule" Association="WatchdogDatabase.Store.DefaultNoteRule">
       <End Role="Rule" EntitySet="Rules" />
+      <End Role="DefaultNote" EntitySet="DefaultNotes" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Messages">
@@ -222,6 +223,7 @@
     <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Timestamp" Type="datetime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
     <Property Name="TemplatedRule_Id" Type="int" Nullable="true" />
+    <Property Name="DefaultNoteId" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="AlertTypes">
     <Key>
@@ -363,6 +365,13 @@
     <Property Name="Description" Type="nvarchar" Nullable="false" MaxLength="1000" />
     <Property Name="LastUsedOn" Type="datetime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
     <Property Name="RuleTemplateId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DefaultNotes">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Text" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="NotifyeeNotifyeeGroup">
     <Key>
@@ -664,15 +673,15 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="LastInstantiatedRule">
-    <End Role="TemplatedRule" Type="WatchdogDatabase.Store.TemplatedRules" Multiplicity="0..1" />
+  <Association Name="DefaultNoteRule">
     <End Role="Rule" Type="WatchdogDatabase.Store.Rules" Multiplicity="*" />
+    <End Role="DefaultNote" Type="WatchdogDatabase.Store.DefaultNotes" Multiplicity="0..1" />
     <ReferentialConstraint>
-      <Principal Role="TemplatedRule">
+      <Principal Role="DefaultNote">
         <PropertyRef Name="Id" />
       </Principal>
       <Dependent Role="Rule">
-        <PropertyRef Name="TemplatedRule_Id" />
+        <PropertyRef Name="DefaultNoteId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -878,9 +887,10 @@
             <End Role="RuleTemplate" EntitySet="RuleTemplates" />
             <End Role="TemplatedRule" EntitySet="TemplatedRules" />
           </AssociationSet>
-          <AssociationSet Name="LastInstantiatedRule" Association="WatchdogDatabase.LastInstantiatedRule">
-            <End Role="TemplatedRule" EntitySet="TemplatedRules" />
+          <EntitySet Name="DefaultNotes" EntityType="WatchdogDatabase.DefaultNote" />
+          <AssociationSet Name="DefaultNoteRule" Association="WatchdogDatabase.DefaultNoteRule">
             <End Role="Rule" EntitySet="Rules" />
+            <End Role="DefaultNote" EntitySet="DefaultNotes" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Message">
@@ -1004,6 +1014,8 @@
             </Documentation>
           </Property>
           <NavigationProperty Name="TemplatedRule" Relationship="WatchdogDatabase.LastInstantiatedRule" FromRole="Rule" ToRole="TemplatedRule" />
+          <NavigationProperty Name="DefaultNote" Relationship="WatchdogDatabase.DefaultNoteRule" FromRole="Rule" ToRole="DefaultNote" />
+          <Property Name="DefaultNoteId" Type="Int32" Nullable="true" />
         </EntityType>
         <EntityType Name="AlertType">
           <Key>
@@ -1412,9 +1424,25 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="LastInstantiatedRule">
-          <End Type="WatchdogDatabase.TemplatedRule" Role="TemplatedRule" Multiplicity="0..1" />
-          <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="0..1" />
+        <EntityType Name="DefaultNote">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="String" Nullable="false" />
+          <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.DefaultNoteRule" FromRole="DefaultNote" ToRole="Rule" />
+        </EntityType>
+        <Association Name="DefaultNoteRule">
+          <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="*" />
+          <End Type="WatchdogDatabase.DefaultNote" Role="DefaultNote" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="DefaultNote">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Rule">
+              <PropertyRef Name="DefaultNoteId" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -1494,6 +1522,7 @@
           <ScalarProperty Name="Origin" ColumnName="Origin" />
           <ScalarProperty Name="Server" ColumnName="Server" />
           <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+          <ScalarProperty Name="DefaultNoteId" ColumnName="DefaultNoteId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1647,6 +1676,14 @@
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="LastUsedOn" ColumnName="LastUsedOn" />
           <ScalarProperty Name="RuleTemplateId" ColumnName="RuleTemplateId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DefaultNotes">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.DefaultNote)">
+        <MappingFragment StoreEntitySet="DefaultNotes">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Text" ColumnName="Text" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

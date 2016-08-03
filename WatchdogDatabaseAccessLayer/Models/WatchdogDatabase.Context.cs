@@ -46,5 +46,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         public virtual DbSet<AlertGroup> AlertGroups { get; set; }
         public virtual DbSet<TemplatedRule> TemplatedRules { get; set; }
         public virtual DbSet<RuleTemplate> RuleTemplates { get; set; }
+        public virtual DbSet<DefaultNote> DefaultNotes { get; set; }
     }
 }
