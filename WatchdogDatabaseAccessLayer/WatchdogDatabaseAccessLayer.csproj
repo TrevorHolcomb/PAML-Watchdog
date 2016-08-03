@@ -93,6 +93,8 @@
     <Compile Include="Models\AlertCategoryItem.cs">
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Repositories\Database\EFAlertCategoryItemRepository.cs" />
+    <Compile Include="Repositories\Database\EFAlertCategoryRepository.cs" />
     <Compile Include="Repositories\Database\EFDefaultNoteRepositroy.cs" />
     <Compile Include="EFModule.cs" />
     <Compile Include="FormattedDbEntityValidationException.cs" />
