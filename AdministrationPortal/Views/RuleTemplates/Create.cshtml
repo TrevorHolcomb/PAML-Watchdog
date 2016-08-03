@@ -13,6 +13,7 @@
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "createForm" })) 
 {
     @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
 
     <div class="form-horizontal">
         <h4>RuleTemplate</h4>
@@ -37,31 +38,32 @@
 
         <hr />
         <h3>Search Rules</h3>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Engines, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <input class="autocomplete" id="searchEngines" data-search-for="engineName" data-autocomplete-source="@Model.Engines">                
+        <div class="container-fluid">
+            <div class="form-group form-horizontal">
+                @Html.LabelFor(model => model.Engines, htmlAttributes: new {@class = "control-label col-md-2"})
+                <div class="col-md-10">
+                    <input class="autocomplete form-control" id="searchEngines" data-search-for="engineName" data-autocomplete-source="@Model.Engines">
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Origins, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <input class="autocomplete" id="searchOrigins" data-search-for="originName" data-autocomplete-source="@Model.Origins">
+            <div class="form-group form-horizontal">
+                @Html.LabelFor(model => model.Origins, htmlAttributes: new {@class = "control-label col-md-2"})
+                <div class="col-md-10">
+                    <input class="autocomplete form-control" id="searchOrigins" data-search-for="originName" data-autocomplete-source="@Model.Origins">
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Servers, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <input class="autocomplete" id="searchServers" data-search-for="serverName" data-autocomplete-source="@Model.Servers">
+            <div class="form-group form-horizontal">
+                @Html.LabelFor(model => model.Servers, htmlAttributes: new {@class = "control-label col-md-2"})
+                <div class="col-md-10">
+                    <input class="autocomplete form-control" id="searchServers" data-search-for="serverName" data-autocomplete-source="@Model.Servers">
+                </div>
             </div>
         </div>
 
         <div class="form-group">
             <table class="table" id="tblRules">
-                <tr>
+                <tr id="trHeader">
                     <th> @Html.DisplayName("Name") </th>
                     <th> @Html.DisplayName("Description") </th>
                     <th> @Html.DisplayName("Expression") </th>
@@ -73,7 +75,7 @@
 
                 @for (int r = 0; r < Model.Rules.Count; r++)
                 {
-                    <tr>
+                    <tr id="trRule-@r">
                         @Html.HiddenFor(model => model.Rules[r].Id)
                         <td> @Html.DisplayFor(model => model.Rules[r].Name) </td>
                         <td> @Html.DisplayFor(model => model.Rules[r].Description) </td>
@@ -103,34 +105,74 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/jquery-ui")
-<script>
-    $(document).ready(function () {
-
-        function hideNonmatchingRules(event, ui, $searchfield) {
-            var rulePropertyName = $searchfield.data("search-for");
-            var searchQuery = $searchfield.val().toLowerCase();
-            var $matching = $("#tblRules ." + rulePropertyName).filter(function(){
-                return $(this).val().toLowerCase().indexOf(searchQuery) > -1;
+    <script>
+        $(document)
+            .ready(function() {
+                setHandlersForSearchboxes();
             });
-            $matching.closest("tr").fadeIn("slow");
-
-            $("#tblRules ." + rulePropertyName).not($matching).closest("tr").fadeOut("slow");
-        }
 
         var searchfieldIds = ["searchEngines", "searchOrigins", "searchServers"];
 
-        //TODO: fix closure resulting in only last handler set
+        function setHandlersForSearchboxes() {
+            console.log("sHFS()");
+            for (var id in searchfieldIds) {
+                if (!searchfieldIds.hasOwnProperty(id))
+                    continue;
 
-        for (var i = 0; i < searchfieldIds.length; i++) {
-            var $searchfield = $("#"+searchfieldIds[i]);
-            var datasource = $.map($searchfield.data("autocomplete-source").split(","), $.trim).sort();
+                var searchfield = $("#" + searchfieldIds[id]);
+                var datasource = $.map(searchfield.data("autocomplete-source").split(","), $.trim).sort();
 
-            $searchfield.autocomplete({
-                source: datasource,
-                search: function(event, ui){hideNonmatchingRules(event, ui, $searchfield)},
-                select: function(event, ui){hideNonmatchingRules(event, ui, $searchfield)}
-            });
-        }        
-    });
-</script>
+                searchfield.autocomplete({
+                    source: datasource,
+                    change: function(event, ui) { onAutocomplete(event, ui, this) },
+                    search: function(event, ui) { onAutocomplete(event, ui, this) },
+                    select: function(event, ui) { onAutocomplete(event, ui, this) }
+                });
+            }
+        }
+
+        function onAutocomplete() {
+
+            var nonmatchingRows = {};
+
+            //check all fields for matches
+            for (var id in searchfieldIds) {
+                if (!searchfieldIds.hasOwnProperty(id))
+                    continue;
+
+                var $searchfield = $("#" + searchfieldIds[id]);
+                var rulePropertyName = $searchfield.data("search-for");
+                var searchQuery = $searchfield.val().toLowerCase();
+                if (searchQuery === "")
+                    continue;
+
+                console.log(searchQuery);
+                var $matchingRules = $("#tblRules ." + rulePropertyName)
+                    .filter(function() {
+                        return $(this).val().toLowerCase().indexOf(searchQuery) > -1;
+                    });
+
+                $("#tblRules ." + rulePropertyName)
+                    .not($matchingRules)
+                    .closest("tr")
+                    .each(function(index, element) {
+                        nonmatchingRows[element.id] = 1;
+                    });
+            }
+            fadeRows(nonmatchingRows);
+        }
+
+        function fadeRows(nonmatchingRows) {
+            $("#tblRules tr").not("#tblHeader")
+                .each(function (index, element) {
+                    console.log(element);
+                    if (nonmatchingRows[element.id])
+                        $(element).fadeOut();
+                    else {
+                        $(element).fadeIn();
+                    }
+                });
+        }
+
+    </script>
 }

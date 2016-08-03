@@ -73,9 +73,9 @@ namespace AdministrationPortal.Controllers
             var viewModel = new CreateRuleTemplateViewModel()
             {
                 Rules = GetUniqueRules(rules).ToList(),
-                Engines = rules.Select(r => r.Engine).ToCSV(),
-                Origins = rules.Select(r => r.Origin).ToCSV(),
-                Servers = rules.Select(r => r.Server).ToCSV()               
+                Engines = rules.Select(r => r.Engine).GetUnique().ToCSV(),
+                Origins = rules.Select(r => r.Origin).GetUnique().ToCSV(),
+                Servers = rules.Select(r => r.Server).GetUnique().ToCSV()               
             };
 
             return View(viewModel);
@@ -241,7 +241,7 @@ namespace AdministrationPortal.Controllers
             if (ruleTemplate == null)
                 return HttpNotFound("No RuleTemplate found with id " + id);
 
-            var viewModel = (UseRuleTemplateViewModel)BuildDetailsViewModel(ruleTemplate);
+            var viewModel = BuildDetailsViewModel(ruleTemplate);
             viewModel.RegisteredEngines = new SelectList(EngineRepository.Get().Select(e => e.Name).ToList());
             viewModel.OriginServerTuples = new List<KeyValuePair<string, string>>();
 
@@ -346,7 +346,7 @@ namespace AdministrationPortal.Controllers
                     Expression = template.Expression,
                     MessageTypeName = template.MessageTypeName,
                     Name = template.Name,
-                    RuleCreator = template.RuleCreator,                         //TODO: set to creator of template?
+                    RuleCreator = template.RuleCreator,                         //TODO: set to creator of template
                     SupportCategoryId = template.SupportCategoryId,
                     TemplatedRule = template,
                     Timestamp = timestamp
@@ -374,9 +374,6 @@ namespace AdministrationPortal.Controllers
             return viewModel;
         }
 
-        /// <summary>
-        /// TODO: O(n^2), improve with hashmap
-        /// </summary>
         private static IEnumerable<Rule> GetUniqueRules(IEnumerable<Rule> rules)
         {
             var uniqueRules = new List<Rule>();

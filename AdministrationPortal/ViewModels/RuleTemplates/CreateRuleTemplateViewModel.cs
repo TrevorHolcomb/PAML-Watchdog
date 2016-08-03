@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -10,7 +11,9 @@ namespace AdministrationPortal.ViewModels.RuleTemplates
     public class CreateRuleTemplateViewModel
     {
         public List<Rule> Rules { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Description { get; set; }
 
         public List<bool> RulesIncluded{ get; set; }

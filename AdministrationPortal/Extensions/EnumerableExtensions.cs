@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace AdministrationPortal.Extensions
 {
-    public static class IEnumerableExtensions
+    public static class EnumerableExtensions
     {
 
         /// <summary>
@@ -23,6 +22,17 @@ namespace AdministrationPortal.Extensions
                 csv = csv.Remove(csv.LastIndexOf(','), 1);
             }
             return csv;
+        }
+
+        /// <summary>
+        /// Gets the unique elements in an Enumerable
+        /// </summary>
+        public static IEnumerable<T> GetUnique<T>(this IEnumerable<T> t)
+        {
+            var uniqueThings = new HashSet<T>();
+            foreach (var thing in t)
+                uniqueThings.Add(thing);
+            return uniqueThings;
         }
     }
 }

@@ -222,7 +222,7 @@
     <Compile Include="Controllers\RuleCategoriesController.cs" />
     <Compile Include="Controllers\RuleTemplatesController.cs" />
     <Compile Include="Controllers\SupportCategoriesController.cs" />
-    <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="ViewModels\Alerts\AlertDetailsViewModel.cs" />
     <Compile Include="ViewModels\Alerts\AlertPagingCreateView.cs" />
     <Compile Include="ViewModels\AbstractDeleteViewModel.cs" />
