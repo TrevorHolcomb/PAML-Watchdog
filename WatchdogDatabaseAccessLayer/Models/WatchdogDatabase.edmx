@@ -222,7 +222,6 @@
     <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Timestamp" Type="datetime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
-    <Property Name="TemplatedRule_Id" Type="int" Nullable="true" />
     <Property Name="DefaultNoteId" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="AlertTypes">
@@ -1751,15 +1750,6 @@
       <EndProperty Name="RuleCategory">
         <ScalarProperty Name="Id" ColumnName="RuleCategories_Id" />
       </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="LastInstantiatedRule" TypeName="WatchdogDatabase.LastInstantiatedRule" StoreEntitySet="Rules">
-      <EndProperty Name="TemplatedRule">
-        <ScalarProperty Name="Id" ColumnName="TemplatedRule_Id" />
-      </EndProperty>
-      <EndProperty Name="Rule">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
-      <Condition ColumnName="TemplatedRule_Id" IsNull="false" />
     </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>

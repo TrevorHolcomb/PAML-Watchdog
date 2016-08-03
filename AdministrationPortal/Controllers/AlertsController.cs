@@ -171,7 +171,7 @@ namespace AdministrationPortal.Controllers
                         newStatus.ModifiedBy = "N/A";
                         newStatus.StatusCode = editedAlert.AlertStatus.StatusCode;
                         newStatus.Prev = AlertStatusRepository.GetById(alertInDb.AlertStatus.Id);
-
+                        newStatus.Timestamp = DateTime.Now;
                         AlertStatusRepository.Insert(newStatus);
                         AlertStatusRepository.Save();
 
