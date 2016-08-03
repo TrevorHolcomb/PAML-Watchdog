@@ -21,6 +21,7 @@ namespace WatchdogDatabaseAccessLayer.Models
             this.Timestamp = new DateTime(621355968000000000, DateTimeKind.Unspecified);
             this.Alerts = new HashSet<Alert>();
             this.RuleCategories = new HashSet<RuleCategory>();
+            this.DefaultNotes = new HashSet<DefaultNote>();
         }
     
         public int Id { get; set; }
@@ -47,7 +48,8 @@ namespace WatchdogDatabaseAccessLayer.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RuleCategory> RuleCategories { get; set; }
         public virtual SupportCategory SupportCategory { get; set; }
-        public virtual DefaultNote DefaultNote { get; set; }
         public virtual TemplatedRule TemplatedRule { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DefaultNote> DefaultNotes { get; set; }
     }
 }

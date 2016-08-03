@@ -9,6 +9,9 @@ namespace AdministrationPortal.ViewModels.Rules
 {
     public class RuleCreateViewModel
     {
+
+        public readonly int MAX_DEFAULTNOTES = 5;
+
         [Required]
         public int AlertTypeId { get; set; }
         [Required]
@@ -34,54 +37,59 @@ namespace AdministrationPortal.ViewModels.Rules
         [Required]
         public int SupportCategoryId { get; set; }
 
-        public int DefaultNoteId { get; set; } 
-        public string DefaultNoteText { get; set; }
 
-        public RuleOptionsViewModel RuleOptions { get; set; }
+        //multiple message support
+        public List<bool> SelectedNotesEnabled { get; set; }
+        public List<int> SelectedNoteIds { get; set; }
+        public List<bool> NewNotesEnabled { get; set; }
+        public List<string> NewDefualtNotes { get; set; }
+        public RuleOptionsViewModel RuleOptions { get; internal set; }
+
+
+
+        public RuleCreateViewModel()
+        {
+            SelectedNotesEnabled = new List<bool>();
+            SelectedNoteIds = new List<int>();
+            NewNotesEnabled = new List<bool>();
+            NewDefualtNotes = new List<string>();
+
+            PrepopulateLists();
+        }
+
+        private void PrepopulateLists()
+        {
+            for (int note = 0; note < MAX_DEFAULTNOTES; note++)
+            {
+                NewDefualtNotes.Add("");
+                SelectedNoteIds.Add(0);
+                NewNotesEnabled.Add(false);
+                SelectedNotesEnabled.Add(false);
+            }
+            NewNotesEnabled[0] = true;
+            SelectedNotesEnabled[0] = true;
+           
+        }
 
         public Rule BuildRule(IEnumerable<RuleCategory> ruleCategories)
         {
-            if(DefaultNoteId != 0)
-            {
-                return new Rule()
-                {
-                    Engine = Engine,
-                    Origin = Origin,
-                    Server = Server,
-                    AlertTypeId = AlertTypeId,
-                    DefaultSeverity = DefaultSeverity,
-                    Description = Description,
-                    Expression = Expression,
-                    MessageTypeName = MessageTypeName,
-                    Name = Name,
-                    RuleCreator = RuleCreator,
-                    SupportCategoryId = SupportCategoryId,
-                    RuleCategories = ruleCategories.Where(e => RuleCategoryIds.Contains(e.Id)).ToList(),
-                    Timestamp = DateTime.Now,
-                    DefaultNoteId = DefaultNoteId
-                };
-            }
-            else
-            {
-                return new Rule()
-                {
-                    Engine = Engine,
-                    Origin = Origin,
-                    Server = Server,
-                    AlertTypeId = AlertTypeId,
-                    DefaultSeverity = DefaultSeverity,
-                    Description = Description,
-                    Expression = Expression,
-                    MessageTypeName = MessageTypeName,
-                    Name = Name,
-                    RuleCreator = RuleCreator,
-                    SupportCategoryId = SupportCategoryId,
-                    RuleCategories = ruleCategories.Where(e => RuleCategoryIds.Contains(e.Id)).ToList(),
-                    Timestamp = DateTime.Now,
-                    DefaultNoteId = null
-                };
-            }
             
+            return new Rule()
+            {
+                Engine = Engine,
+                Origin = Origin,
+                Server = Server,
+                AlertTypeId = AlertTypeId,
+                DefaultSeverity = DefaultSeverity,
+                Description = Description,
+                Expression = Expression,
+                MessageTypeName = MessageTypeName,
+                Name = Name,
+                RuleCreator = RuleCreator,
+                SupportCategoryId = SupportCategoryId,
+                RuleCategories = ruleCategories.Where(e => RuleCategoryIds.Contains(e.Id)).ToList(),
+                Timestamp = DateTime.Now
+            };
         }
     }
 }

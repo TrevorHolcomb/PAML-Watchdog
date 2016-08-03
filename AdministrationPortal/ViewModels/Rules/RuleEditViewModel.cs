@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WatchdogDatabaseAccessLayer.Models;
 
@@ -5,6 +6,8 @@ namespace AdministrationPortal.ViewModels.Rules
 {
     public class RuleEditViewModel
     {
+        public readonly int MAX_DEFAULTNOTES = 5;
+
         public int Id { get; set; }
         [Required]
         public int AlertTypeId { get; set; }
@@ -31,12 +34,39 @@ namespace AdministrationPortal.ViewModels.Rules
         [Required]
         public int SupportCategoryId { get; set; }
 
-        public int DefaultNoteId { get; set; }
-        public string DefaultNoteText { get; set; }
-        public string DefualtNoteTextEdited { get; set; }
+        //multiple note support
+        public List<bool> SelectedNotesEnabled { get; set; }
+        public List<int> SelectedNoteIds { get; set; }
+        public List<bool> NewNotesEnabled { get; set; }
+        public List<string> NewDefualtNotes { get; set; }
+        public RuleOptionsViewModel RuleOptions { get; internal set; }
 
+        //default note edit support
+        public List<DefaultNote> DefaultNotes { get; set; }
 
-        public RuleOptionsViewModel RuleOptions { get; set; }
+        public RuleEditViewModel()
+        {
+            SelectedNotesEnabled = new List<bool>();
+            SelectedNoteIds = new List<int>();
+            NewNotesEnabled = new List<bool>();
+            NewDefualtNotes = new List<string>();
+
+            PrepopulateLists();
+        }
+
+        private void PrepopulateLists()
+        {
+            for (int note = 0; note < MAX_DEFAULTNOTES; note++)
+            {
+                NewDefualtNotes.Add("");
+                SelectedNoteIds.Add(0);
+                NewNotesEnabled.Add(false);
+                SelectedNotesEnabled.Add(false);
+            }
+            NewNotesEnabled[0] = true;
+            SelectedNotesEnabled[0] = true;
+
+        }
 
         public void Map(Rule rule)
         {

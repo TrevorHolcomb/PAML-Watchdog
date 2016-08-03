@@ -22,10 +22,18 @@
         <EntityTypeShape EntityType="WatchdogDatabase.Alert" Width="2.75" PointX="16.25" PointY="9" FillColor="31, 0, 204" />
         <AssociationConnector Association="WatchdogDatabase.AlertAlertType" ManuallyRouted="true" >
           <ConnectorPoint PointX="16.25" PointY="13.672506510416666" />
-          <ConnectorPoint PointX="15.5625" PointY="168.73261338644872" />
-          <ConnectorPoint PointX="15.5625" PointY="7.5105499289855775" />
-          <ConnectorPoint PointX="13.688459859562986" PointY="11.982247439143231" />
-          <ConnectorPoint PointX="13.624040140437014" PointY="12.135961061068903" />
+          <ConnectorPoint PointX="15.5625" PointY="12.117031711709657" />
+          <ConnectorPoint PointX="15.802471500518539" PointY="12.117031711709657" />
+          <ConnectorPoint PointX="15.802471500518539" PointY="11.561090827777964" />
+          <ConnectorPoint PointX="16.059028319324586" PointY="11.561090827777964" />
+          <ConnectorPoint PointX="16.059028319324586" PointY="7.5105499289855775" />
+          <ConnectorPoint PointX="17.4598776822595" PointY="7.5105499289855775" />
+          <ConnectorPoint PointX="16.091238178887572" PointY="10.776297405506798" />
+          <ConnectorPoint PointX="16.0268184597616" PointY="10.930011027432469" />
+          <ConnectorPoint PointX="15.585837541822485" PointY="11.982247439143231" />
+          <ConnectorPoint PointX="14.530668439128803" PointY="11.982247439143231" />
+          <ConnectorPoint PointX="13.842208579565817" PointY="13.082891654917265" />
+          <ConnectorPoint PointX="13" PointY="13.082891654917265" />
           <ConnectorPoint PointX="13" PointY="13.625" />
         </AssociationConnector>
         <AssociationConnector Association="WatchdogDatabase.AlertTypeRule" ManuallyRouted="true" >
@@ -64,13 +72,13 @@
         <AssociationConnector Association="WatchdogDatabase.TemplatedRuleRuleCategory" />
         <AssociationConnector Association="WatchdogDatabase.RuleTemplateTemplatedRule" />
         <EntityTypeShape EntityType="WatchdogDatabase.DefaultNote" Width="1.5" PointX="8" PointY="8.625" FillColor="0, 204, 133" />
-        <AssociationConnector Association="WatchdogDatabase.DefaultNoteRule" />
         <AssociationConnector Association="WatchdogDatabase.TemplatedRuleRule" />
         <EntityTypeShape EntityType="WatchdogDatabase.AlertCategoryItem" Width="1.5" PointX="18" PointY="17.375" FillColor="31, 0, 204" />
         <AssociationConnector Association="WatchdogDatabase.AlertCategoryAlertType" />
         <EntityTypeShape EntityType="WatchdogDatabase.AlertCategory" Width="1.5" PointX="20.875" PointY="17.75" FillColor="31, 0, 204" />
         <AssociationConnector Association="WatchdogDatabase.AlertCategoryItemAlertCategory" />
         <AssociationConnector Association="WatchdogDatabase.AlertCategoryAlertGroup" />
+        <AssociationConnector Association="WatchdogDatabase.RuleDefaultNote" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
