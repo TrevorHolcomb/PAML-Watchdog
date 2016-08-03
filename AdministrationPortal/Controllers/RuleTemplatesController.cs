@@ -37,12 +37,16 @@ namespace AdministrationPortal.Controllers
                 RuleTemplates = RuleTemplateRepository.Get()
             };
 
-            var ruleTemplateUsed = RuleTemplateRepository.GetById(id);
-            if (id > 0 && ruleTemplateUsed != null)
+            if (id > 0)
             {
+                var ruleTemplateUsed = RuleTemplateRepository.GetById(id);
+                var setsOfRules = ruleTemplateUsed.TemplatedRules.Select(tr => tr.Rules);
+                int i = 0;
+                foreach (var rules in setsOfRules)
+                    i += rules.Count;
                 viewModel.RuleTemplateInstantiated = ruleTemplateUsed;
                 viewModel.InfoMessageHidden = false;
-                viewModel.NumberOfRulesInstantiated = ruleTemplateUsed.TemplatedRules.Select(tr => tr.Rule).Count();
+                viewModel.NumberOfRulesInstantiated = i;
                 viewModel.EngineUsed = engine;
                 viewModel.OriginsUsed = origins;
                 viewModel.ServersUsed = servers;
@@ -86,6 +90,8 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreateRuleTemplateViewModel viewModel)
         {
+            if (viewModel.RulesIncluded == null)
+                return RedirectToAction("Create");
             var ruleIdsToAdd = viewModel.Rules.Where((r, index) => viewModel.RulesIncluded.ElementAt(index)).Select(r => r.Id);
             var templatedRulesToAdd = ruleIdsToAdd.Select(id => RuleRepository.GetById(id).ToTemplate());
 
@@ -296,16 +302,19 @@ namespace AdministrationPortal.Controllers
                 return "RuleTemplate not found";
 
             var rulesToDelete = ruleTemplateToUndo.TemplatedRules
-                .Select(tr => tr.Rule)
-                .Where(r => r.Timestamp.ToLongTimeString() + r.Timestamp.Millisecond == timestamp)
-                .ToList();
+                .Select(tr => tr.Rules);
+                //.Where(r => r.Timestamp.ToLongTimeString() + r.Timestamp.Millisecond == timestamp)
+                //.ToList();
+            var rulesToActuallyDelete = new List<Rule>();
+            foreach (var rules in rulesToDelete)
+                rulesToActuallyDelete.AddRange(rules);
 
-            if (rulesToDelete.Count == 0)
+            if (!rulesToDelete.Any())
                 return "Undo was unsuccessful";
 
-            RuleRepository.DeleteRange(rulesToDelete);
+            RuleRepository.DeleteRange(rulesToActuallyDelete);
             RuleRepository.Save();
-            return "" + rulesToDelete.Count + " Rules were deleted.";
+            return "" + rulesToDelete.Count() + " Rules were deleted.";
         }
 
         #region private helper methods

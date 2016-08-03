@@ -61,6 +61,7 @@
         <AssociationConnector Association="WatchdogDatabase.RuleTemplateTemplatedRule" />
         <EntityTypeShape EntityType="WatchdogDatabase.DefaultNote" Width="1.5" PointX="8" PointY="8.625" FillColor="0, 204, 133" />
         <AssociationConnector Association="WatchdogDatabase.DefaultNoteRule" />
+        <AssociationConnector Association="WatchdogDatabase.TemplatedRuleRule" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

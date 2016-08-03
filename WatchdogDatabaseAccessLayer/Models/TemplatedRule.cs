@@ -19,6 +19,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         {
             this.DefaultSeverity = 1;
             this.RuleCategories = new HashSet<RuleCategory>();
+            this.Rules = new HashSet<Rule>();
         }
     
         public int Id { get; set; }
@@ -35,5 +36,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RuleCategory> RuleCategories { get; set; }
         public virtual RuleTemplate RuleTemplate { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Rule> Rules { get; set; }
     }
 }

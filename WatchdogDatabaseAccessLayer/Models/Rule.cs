@@ -38,6 +38,7 @@ namespace WatchdogDatabaseAccessLayer.Models
         public string Server { get; set; }
         public System.DateTime Timestamp { get; set; }
         public Nullable<int> DefaultNoteId { get; set; }
+        public Nullable<int> TemplatedRuleId { get; set; }
     
         public virtual MessageType MessageType { get; set; }
         public virtual AlertType AlertType { get; set; }
@@ -47,5 +48,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         public virtual ICollection<RuleCategory> RuleCategories { get; set; }
         public virtual SupportCategory SupportCategory { get; set; }
         public virtual DefaultNote DefaultNote { get; set; }
+        public virtual TemplatedRule TemplatedRule { get; set; }
     }
 }

@@ -151,6 +151,10 @@
       <End Role="Rule" EntitySet="Rules" />
       <End Role="DefaultNote" EntitySet="DefaultNotes" />
     </AssociationSet>
+    <AssociationSet Name="TemplatedRuleRule" Association="WatchdogDatabase.Store.TemplatedRuleRule">
+      <End Role="TemplatedRule" EntitySet="TemplatedRules" />
+      <End Role="Rule" EntitySet="Rules" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="Messages">
     <Key>
@@ -223,6 +227,7 @@
     <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Timestamp" Type="datetime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
     <Property Name="DefaultNoteId" Type="int" Nullable="true" />
+    <Property Name="TemplatedRuleId" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="AlertTypes">
     <Key>
@@ -684,6 +689,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="TemplatedRuleRule">
+    <End Role="TemplatedRule" Type="WatchdogDatabase.Store.TemplatedRules" Multiplicity="0..1" />
+    <End Role="Rule" Type="WatchdogDatabase.Store.Rules" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TemplatedRule">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Rule">
+        <PropertyRef Name="TemplatedRuleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_NotifyeeNotifyeeGroup_Notifyee">
     <End Role="Notifyee" Type="WatchdogDatabase.Store.Notifyees" Multiplicity="1" />
     <End Role="NotifyeeNotifyeeGroup" Type="WatchdogDatabase.Store.NotifyeeNotifyeeGroup" Multiplicity="*" />
@@ -891,6 +908,10 @@
             <End Role="Rule" EntitySet="Rules" />
             <End Role="DefaultNote" EntitySet="DefaultNotes" />
           </AssociationSet>
+          <AssociationSet Name="TemplatedRuleRule" Association="WatchdogDatabase.TemplatedRuleRule">
+            <End Role="TemplatedRule" EntitySet="TemplatedRules" />
+            <End Role="Rule" EntitySet="Rules" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Message">
           <Key>
@@ -1014,6 +1035,8 @@
           </Property>
           <NavigationProperty Name="DefaultNote" Relationship="WatchdogDatabase.DefaultNoteRule" FromRole="Rule" ToRole="DefaultNote" />
           <Property Name="DefaultNoteId" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="TemplatedRule" Relationship="WatchdogDatabase.TemplatedRuleRule" FromRole="Rule" ToRole="TemplatedRule" />
+          <Property Name="TemplatedRuleId" Type="Int32" Nullable="true" />
         </EntityType>
         <EntityType Name="AlertType">
           <Key>
@@ -1389,6 +1412,7 @@
           <NavigationProperty Name="RuleCategories" Relationship="WatchdogDatabase.TemplatedRuleRuleCategory" FromRole="TemplatedRule" ToRole="RuleCategory" />
           <NavigationProperty Name="RuleTemplate" Relationship="WatchdogDatabase.RuleTemplateTemplatedRule" FromRole="TemplatedRule" ToRole="RuleTemplate" />
           <Property Name="RuleTemplateId" Nullable="false" Type="Int32" />
+          <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.TemplatedRuleRule" FromRole="TemplatedRule" ToRole="Rule" />
         </EntityType>
         <EntityType Name="RuleTemplate">
           <Key>
@@ -1438,6 +1462,18 @@
             </Principal>
             <Dependent Role="Rule">
               <PropertyRef Name="DefaultNoteId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TemplatedRuleRule">
+          <End Type="WatchdogDatabase.TemplatedRule" Role="TemplatedRule" Multiplicity="0..1" />
+          <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TemplatedRule">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Rule">
+              <PropertyRef Name="TemplatedRuleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1520,6 +1556,7 @@
           <ScalarProperty Name="Server" ColumnName="Server" />
           <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
           <ScalarProperty Name="DefaultNoteId" ColumnName="DefaultNoteId" />
+          <ScalarProperty Name="TemplatedRuleId" ColumnName="TemplatedRuleId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
