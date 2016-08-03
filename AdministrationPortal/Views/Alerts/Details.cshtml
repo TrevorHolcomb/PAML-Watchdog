@@ -17,7 +17,7 @@
             @Html.DisplayFor(model => model.Alert.Severity)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.AlertGroupId)
+            @Html.DisplayNameFor(model => model.Alert.AlertGroup)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Alert.AlertGroupId)
@@ -31,7 +31,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.AlertStatus.FirstStatus().Timestamp)
+            Time Created
         </dt>
 
         <dd>
@@ -39,7 +39,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.AlertStatus.Timestamp)
+            Last Modified
         </dt>
 
         <dd>
@@ -167,7 +167,7 @@
 
                     <td>
                         @Html.DisplayFor(modelItem => item.AlertType.Name)<br />
-                        @Html.DisplayFor(modelItem => item.AlertStatus.TimeStamp)
+                        @Html.DisplayFor(modelItem => item.AlertStatus.Timestamp)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Origin)
