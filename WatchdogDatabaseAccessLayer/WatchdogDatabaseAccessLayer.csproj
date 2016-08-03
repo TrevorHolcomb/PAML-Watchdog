@@ -87,6 +87,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\AlertCategory.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AlertCategoryItem.cs">
+      <DependentUpon>WatchdogDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Repositories\Database\EFDefaultNoteRepositroy.cs" />
     <Compile Include="EFModule.cs" />
     <Compile Include="FormattedDbEntityValidationException.cs" />
@@ -223,7 +229,9 @@
     <Compile Include="TestingModule.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <EntityDeploy Include="Models\WatchdogDatabase.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>WatchdogDatabase.Designer.cs</LastGenOutput>

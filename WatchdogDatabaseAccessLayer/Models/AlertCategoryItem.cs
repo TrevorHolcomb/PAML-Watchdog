@@ -12,25 +12,15 @@ namespace WatchdogDatabaseAccessLayer.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AlertGroup
+    public partial class AlertCategoryItem
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public AlertGroup()
-        {
-            this.Resolved = false;
-            this.Alerts = new HashSet<Alert>();
-        }
-    
         public int Id { get; set; }
         public string Server { get; set; }
         public string Engine { get; set; }
         public string Origin { get; set; }
-        public bool Resolved { get; set; }
         public int AlertTypeId { get; set; }
-        public Nullable<int> AlertCategoryId { get; set; }
+        public int AlertCategoryId { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Alert> Alerts { get; set; }
         public virtual AlertType AlertType { get; set; }
         public virtual AlertCategory AlertCategory { get; set; }
     }

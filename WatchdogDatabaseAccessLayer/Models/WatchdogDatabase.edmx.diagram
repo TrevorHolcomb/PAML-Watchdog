@@ -21,8 +21,12 @@
         <AssociationConnector Association="WatchdogDatabase.RuleMessageType" />
         <EntityTypeShape EntityType="WatchdogDatabase.Alert" Width="2.75" PointX="16.25" PointY="9" FillColor="31, 0, 204" />
         <AssociationConnector Association="WatchdogDatabase.AlertAlertType" ManuallyRouted="true" >
-          <ConnectorPoint PointX="16.25" PointY="13.273204676931652" />
-          <ConnectorPoint PointX="14.875" PointY="13.273204676931652" />
+          <ConnectorPoint PointX="16.25" PointY="13.672506510416666" />
+          <ConnectorPoint PointX="15.5625" PointY="168.73261338644872" />
+          <ConnectorPoint PointX="15.5625" PointY="7.5105499289855775" />
+          <ConnectorPoint PointX="13.688459859562986" PointY="11.982247439143231" />
+          <ConnectorPoint PointX="13.624040140437014" PointY="12.135961061068903" />
+          <ConnectorPoint PointX="13" PointY="13.625" />
         </AssociationConnector>
         <AssociationConnector Association="WatchdogDatabase.AlertTypeRule" ManuallyRouted="true" >
           <ConnectorPoint PointX="13.953125" PointY="12.875" />
@@ -62,6 +66,11 @@
         <EntityTypeShape EntityType="WatchdogDatabase.DefaultNote" Width="1.5" PointX="8" PointY="8.625" FillColor="0, 204, 133" />
         <AssociationConnector Association="WatchdogDatabase.DefaultNoteRule" />
         <AssociationConnector Association="WatchdogDatabase.TemplatedRuleRule" />
+        <EntityTypeShape EntityType="WatchdogDatabase.AlertCategoryItem" Width="1.5" PointX="18" PointY="17.375" FillColor="31, 0, 204" />
+        <AssociationConnector Association="WatchdogDatabase.AlertCategoryAlertType" />
+        <EntityTypeShape EntityType="WatchdogDatabase.AlertCategory" Width="1.5" PointX="20.875" PointY="17.75" FillColor="31, 0, 204" />
+        <AssociationConnector Association="WatchdogDatabase.AlertCategoryItemAlertCategory" />
+        <AssociationConnector Association="WatchdogDatabase.AlertCategoryAlertGroup" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
