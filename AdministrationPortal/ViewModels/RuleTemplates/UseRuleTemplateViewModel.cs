@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
-using System.Web.WebPages;
 
 namespace AdministrationPortal.ViewModels.RuleTemplates
 {
@@ -18,6 +16,10 @@ namespace AdministrationPortal.ViewModels.RuleTemplates
         public List<string> Origins { get; set; }
         public List<string> Servers { get; set; }
         public List<KeyValuePair<string, string>> OriginServerTuples { get; set; }
+        //Who instantiated this template?
+        [DisplayName("Your name")]
+        public string TemplateInstantiator { get; set; }
+
         
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
@@ -28,7 +30,9 @@ namespace AdministrationPortal.ViewModels.RuleTemplates
                 foreach (var o in Origins.Where(o => o.Trim() != "").Select(o => o.Trim()))
                     foreach (var kvp in Servers.Where(s => s.Trim() != "").Select(s => s.Trim()).Select(s => new KeyValuePair<string,string>(o,s)))
                         if (!OriginServerTuples.Contains(kvp))
-                            OriginServerTuples.Add(kvp);        
+                            OriginServerTuples.Add(kvp);
+            if (TemplateInstantiator == null || TemplateInstantiator.Trim() == "")
+                TemplateInstantiator = "n/a";
             return results;
         }
         

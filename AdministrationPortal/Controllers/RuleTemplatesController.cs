@@ -40,13 +40,12 @@ namespace AdministrationPortal.Controllers
             if (id > 0)
             {
                 var ruleTemplateUsed = RuleTemplateRepository.GetById(id);
-                var setsOfRules = ruleTemplateUsed.TemplatedRules.Select(tr => tr.Rules);
-                int i = 0;
-                foreach (var rules in setsOfRules)
-                    i += rules.Count;
+                var numRulesUsed = RuleRepository.Get()
+                    .Count(r => ConcatTimeEquals(ConcatTime(r.Timestamp), timestamp));
+
                 viewModel.RuleTemplateInstantiated = ruleTemplateUsed;
                 viewModel.InfoMessageHidden = false;
-                viewModel.NumberOfRulesInstantiated = i;
+                viewModel.NumberOfRulesInstantiated = numRulesUsed;
                 viewModel.EngineUsed = engine;
                 viewModel.OriginsUsed = origins;
                 viewModel.ServersUsed = servers;
@@ -250,6 +249,7 @@ namespace AdministrationPortal.Controllers
             var viewModel = BuildDetailsViewModel(ruleTemplate);
             viewModel.RegisteredEngines = new SelectList(EngineRepository.Get().Select(e => e.Name).ToList());
             viewModel.OriginServerTuples = new List<KeyValuePair<string, string>>();
+            viewModel.TemplateInstantiator = viewModel.RuleTemplate.Name;
 
             return View(viewModel);
         }
@@ -265,7 +265,7 @@ namespace AdministrationPortal.Controllers
                 return View(viewModel);
 
             var ruleTemplate = viewModel.RuleTemplate;
-            var rules = BuildRulesFromTemplate(ref ruleTemplate, viewModel.Engine, viewModel.OriginServerTuples);
+            var rules = BuildRulesFromTemplate(ref ruleTemplate, viewModel.Engine, viewModel.OriginServerTuples, viewModel.TemplateInstantiator);
 
             RuleRepository.InsertRange(rules);
             RuleRepository.Save();
@@ -283,8 +283,7 @@ namespace AdministrationPortal.Controllers
                 engine = viewModel.Engine,
                 origins = lastOrigins,
                 servers = lastServers,
-                timestamp = ruleTemplate.LastUsedOn.ToLongTimeString() 
-                    + ruleTemplate.LastUsedOn.Millisecond
+                timestamp = ConcatTime(ruleTemplate.LastUsedOn)
             };
 
             return RedirectToAction("Index", dictionary);
@@ -301,18 +300,14 @@ namespace AdministrationPortal.Controllers
             if (ruleTemplateToUndo == null)
                 return "RuleTemplate not found";
 
-            var rulesToDelete = ruleTemplateToUndo.TemplatedRules
-                .Select(tr => tr.Rules);
-                //.Where(r => r.Timestamp.ToLongTimeString() + r.Timestamp.Millisecond == timestamp)
-                //.ToList();
-            var rulesToActuallyDelete = new List<Rule>();
-            foreach (var rules in rulesToDelete)
-                rulesToActuallyDelete.AddRange(rules);
+            var rulesToDelete = RuleRepository.Get()
+                .Where(r => ConcatTimeEquals(ConcatTime(r.Timestamp), timestamp))
+                .ToList();
 
             if (!rulesToDelete.Any())
                 return "Undo was unsuccessful";
 
-            RuleRepository.DeleteRange(rulesToActuallyDelete);
+            RuleRepository.DeleteRange(rulesToDelete);
             RuleRepository.Save();
             return "" + rulesToDelete.Count() + " Rules were deleted.";
         }
@@ -322,8 +317,12 @@ namespace AdministrationPortal.Controllers
         /// <summary>
         /// Builds a set of rules from all TemplatedRules in a RuleTemplate, and a collection of origin/server tuples
         /// </summary>
-        private static IEnumerable<Rule> BuildRulesFromTemplate(ref RuleTemplate template,
-            string engine, IEnumerable<KeyValuePair<string, string>> originServerTuples)
+        private static IEnumerable<Rule> BuildRulesFromTemplate(
+            ref RuleTemplate template,
+            string engine, 
+            IEnumerable<KeyValuePair<string, string>> originServerTuples,
+            string ruleCreator
+            )
         {
             var timestamp = DateTime.Now;
             template.LastUsedOn = timestamp;
@@ -331,7 +330,7 @@ namespace AdministrationPortal.Controllers
             var rules = new List<Rule>();
             originServerTuples = originServerTuples.ToList();
             foreach (var rule in template.TemplatedRules)
-                rules.AddRange(BuildRuleFromTemplate(rule, engine, originServerTuples, timestamp));
+                rules.AddRange(BuildRuleFromTemplate(rule, engine, originServerTuples, timestamp, ruleCreator));
 
             return rules;
         }
@@ -339,8 +338,12 @@ namespace AdministrationPortal.Controllers
         /// <summary>
         /// Build a set of Rules from a single TemplatedRule and collection of origin/server tuples
         /// </summary>
-        private static IEnumerable<Rule> BuildRuleFromTemplate(TemplatedRule template,
-            string engine, IEnumerable<KeyValuePair<string, string>> originServerTuples, DateTime timestamp)
+        private static IEnumerable<Rule> BuildRuleFromTemplate(
+            TemplatedRule template,
+            string engine, 
+            IEnumerable<KeyValuePair<string, string>> originServerTuples, 
+            DateTime timestamp,
+            string ruleCreator)
         {
             var rules = new List<Rule>();
             foreach (var tuple in originServerTuples)
@@ -355,7 +358,7 @@ namespace AdministrationPortal.Controllers
                     Expression = template.Expression,
                     MessageTypeName = template.MessageTypeName,
                     Name = template.Name,
-                    RuleCreator = template.RuleCreator,                         //TODO: set to creator of template
+                    RuleCreator = ruleCreator.Trim(),
                     SupportCategoryId = template.SupportCategoryId,
                     Timestamp = timestamp
                 });
@@ -382,6 +385,30 @@ namespace AdministrationPortal.Controllers
             return viewModel;
         }
 
+        /// <summary>
+        /// for passing datetimes as strings
+        /// </summary>
+        private static string ConcatTime(DateTime dateTime)
+        {
+            return "" + dateTime.Day + dateTime.Hour + dateTime.Minute + dateTime.Second + dateTime.Millisecond;
+        }
+
+        /// <summary>
+        /// for comparing products of ConcatTime
+        /// </summary>
+        private static bool ConcatTimeEquals(string a, string b)
+        {
+            var timeA = Int64.Parse(a);
+            var timeB = Int64.Parse(b);
+            int fiveMilliseconds = 5;
+
+            return Math.Abs(timeA - timeB) < fiveMilliseconds;
+        }
+
+        /// <summary>
+        /// Used to filter Rules of an arbitrary "sameness" defined by the Rule 
+        /// extension method EqualsRule
+        /// </summary>
         private static IEnumerable<Rule> GetUniqueRules(IEnumerable<Rule> rules)
         {
             var uniqueRules = new List<Rule>();

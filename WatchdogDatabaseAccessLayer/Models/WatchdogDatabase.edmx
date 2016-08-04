@@ -150,10 +150,6 @@
       <End Role="RuleTemplate" EntitySet="RuleTemplates" />
       <End Role="TemplatedRule" EntitySet="TemplatedRules" />
     </AssociationSet>
-    <AssociationSet Name="TemplatedRuleRule" Association="WatchdogDatabase.Store.TemplatedRuleRule">
-      <End Role="TemplatedRule" EntitySet="TemplatedRules" />
-      <End Role="Rule" EntitySet="Rules" />
-    </AssociationSet>
     <AssociationSet Name="AlertCategoryAlertType" Association="WatchdogDatabase.Store.AlertCategoryAlertType">
       <End Role="AlertCategory" EntitySet="AlertCategoryItems" />
       <End Role="AlertType" EntitySet="AlertTypes" />
@@ -372,7 +368,6 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
-    <Property Name="RuleCreator" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Expression" Type="nvarchar(max)" Nullable="false" />
     <Property Name="DefaultSeverity" Type="int" Nullable="false" DefaultValue="1" />
     <Property Name="AlertTypeId" Type="int" Nullable="false" />
@@ -723,18 +718,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="TemplatedRuleRule">
-    <End Role="TemplatedRule" Type="WatchdogDatabase.Store.TemplatedRules" Multiplicity="0..1" />
-    <End Role="Rule" Type="WatchdogDatabase.Store.Rules" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="TemplatedRule">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Rule">
-        <PropertyRef Name="TemplatedRuleId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="AlertCategoryAlertType">
     <End Role="AlertCategory" Type="WatchdogDatabase.Store.AlertCategoryItems" Multiplicity="*" />
     <End Role="AlertType" Type="WatchdogDatabase.Store.AlertTypes" Multiplicity="1" />
@@ -906,8 +889,8 @@
           </AssociationSet>
           <EntitySet Name="Alerts" EntityType="WatchdogDatabase.Alert" />
           <AssociationSet Name="AlertAlertType" Association="WatchdogDatabase.AlertAlertType">
-            <End Role="Alert" EntitySet="Alerts" />
-            <End Role="AlertType" EntitySet="AlertTypes" />
+            <End EntitySet="Alerts" Role="Alert" />
+            <End EntitySet="AlertTypes" Role="AlertType" />
           </AssociationSet>
           <AssociationSet Name="AlertTypeRule" Association="WatchdogDatabase.AlertTypeRule">
             <End Role="AlertType" EntitySet="AlertTypes" />
@@ -998,10 +981,6 @@
             <End Role="TemplatedRule" EntitySet="TemplatedRules" />
           </AssociationSet>
           <EntitySet Name="DefaultNotes" EntityType="WatchdogDatabase.DefaultNote" />
-          <AssociationSet Name="TemplatedRuleRule" Association="WatchdogDatabase.TemplatedRuleRule">
-            <End Role="TemplatedRule" EntitySet="TemplatedRules" />
-            <End Role="Rule" EntitySet="Rules" />
-          </AssociationSet>
           <EntitySet Name="AlertCategoryItems" EntityType="WatchdogDatabase.AlertCategoryItem" />
           <AssociationSet Name="AlertCategoryAlertType" Association="WatchdogDatabase.AlertCategoryAlertType">
             <End Role="AlertCategory" EntitySet="AlertCategoryItems" />
@@ -1142,7 +1121,6 @@
             </Documentation>
           </Property>
           <Property Name="DefaultNoteId" Type="Int32" Nullable="true" />
-          <NavigationProperty Name="TemplatedRule" Relationship="WatchdogDatabase.TemplatedRuleRule" FromRole="Rule" ToRole="TemplatedRule" />
           <Property Name="TemplatedRuleId" Type="Int32" Nullable="true" />
           <NavigationProperty Name="DefaultNotes" Relationship="WatchdogDatabase.RuleDefaultNote" FromRole="Rule" ToRole="DefaultNote" />
         </EntityType>
@@ -1198,8 +1176,8 @@
           <Property Name="AlertGroupId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="AlertAlertType">
-          <End Type="WatchdogDatabase.Alert" Role="Alert" Multiplicity="*" />
-          <End Type="WatchdogDatabase.AlertType" Role="AlertType" Multiplicity="1" />
+          <End Type="WatchdogDatabase.Alert" Multiplicity="*" Role="Alert" />
+          <End Type="WatchdogDatabase.AlertType" Multiplicity="1" Role="AlertType" />
           <ReferentialConstraint>
             <Principal Role="AlertType">
               <PropertyRef Name="Id" />
@@ -1513,7 +1491,6 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="Description" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="RuleCreator" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="Expression" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="DefaultSeverity" Type="Int32" Nullable="false" DefaultValue="1" annotation:StoreGeneratedPattern="None" />
           <Property Name="AlertTypeId" Type="Int32" Nullable="false" />
@@ -1522,7 +1499,6 @@
           <NavigationProperty Name="RuleCategories" Relationship="WatchdogDatabase.TemplatedRuleRuleCategory" FromRole="TemplatedRule" ToRole="RuleCategory" />
           <NavigationProperty Name="RuleTemplate" Relationship="WatchdogDatabase.RuleTemplateTemplatedRule" FromRole="TemplatedRule" ToRole="RuleTemplate" />
           <Property Name="RuleTemplateId" Nullable="false" Type="Int32" />
-          <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.TemplatedRuleRule" FromRole="TemplatedRule" ToRole="Rule" />
         </EntityType>
         <EntityType Name="RuleTemplate">
           <Key>
@@ -1563,18 +1539,6 @@
           <Property Name="Text" Type="String" Nullable="false" />
           <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.RuleDefaultNote" FromRole="DefaultNote" ToRole="Rule" />
         </EntityType>
-        <Association Name="TemplatedRuleRule">
-          <End Type="WatchdogDatabase.TemplatedRule" Role="TemplatedRule" Multiplicity="0..1" />
-          <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TemplatedRule">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Rule">
-              <PropertyRef Name="TemplatedRuleId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="AlertCategoryItem">
           <Key>
             <PropertyRef Name="Id" />
@@ -1851,7 +1815,6 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
-          <ScalarProperty Name="RuleCreator" ColumnName="RuleCreator" />
           <ScalarProperty Name="Expression" ColumnName="Expression" />
           <ScalarProperty Name="DefaultSeverity" ColumnName="DefaultSeverity" />
           <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />

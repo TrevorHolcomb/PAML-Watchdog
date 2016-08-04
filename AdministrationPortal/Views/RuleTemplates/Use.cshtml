@@ -11,14 +11,9 @@
     <hr />
     <h4>RuleTemplate</h4>
     @Html.Partial("PartialDetails", Model)
+
     <hr />
-    @if (ViewData.ModelState.IsValid)
-    {
-        <div class="alert alert-info">
-            You can instantiate <b>N</b> Rules by specifying <b>1</b> Origin and <b>N</b> Servers, or <b>N</b> Origins and <b>1</b> Server.
-        </div>
-    }
-    else
+    @if (!ViewData.ModelState.IsValid)
     {
         <div class="alert alert-warning">
             @Html.ValidationSummary();
@@ -51,10 +46,23 @@
                 <div class="col-md-10 col-sm-10 col-xs-10" style="padding-right: 0;">
                     <div class="row">
                         <div class="col-md-2 col-md-offset-1">
+                            @Html.LabelFor(model => model.TemplateInstantiator)
+                        </div>
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.TemplateInstantiator, new { htmlAttributes = new { @class = "form-control", title = "Enter your name (optional)", placeholder="Enter your name (optional)", value='\"'+@Model.RuleTemplate.Name+'\"'}})
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-10 col-sm-10 col-xs-10" style="padding-right: 0;">
+                    <div class="row">
+                        <div class="col-md-2 col-md-offset-1">
                             @Html.LabelFor(model => model.Engine)
                         </div>
                         <div class="col-md-4">
-                            @Html.DropDownListFor(model => model.Engine, Model.RegisteredEngines, htmlAttributes: new {@class = "btn btn-default dropdown-toggle", title = "Select an engine"})
+                            @Html.DropDownListFor(model => model.Engine, Model.RegisteredEngines, new {@class = "btn btn-default dropdown-toggle", title = "Select an engine"})
                         </div>
                     </div>
                 </div>
@@ -67,7 +75,7 @@
                             <label for="txtOrigins">Origins</label>
                         </div>
                         <div class="col-md-9">
-                            <input type="text" id="txtOrigins" class="form-control" placeholder="Enter Origin names" />
+                            <input type="text" id="txtOrigins" class="form-control" placeholder="Enter Origin names"/>
                         </div>
                     </div>
                     <div class="row">
@@ -75,11 +83,11 @@
                             <label for="txtServers">Servers</label>
                         </div>
                         <div class="col-md-9">
-                            <input type="text" id="txtServers" class="form-control" placeholder="Enter Server names" />
+                            <input type="text" id="txtServers" class="form-control" placeholder="Enter Server names"/>
                         </div>
                     </div>
                 </div>
-                <input type="button" value="Build" class="btn btn-primary" id="btnBuild" style="min-height: 5em;" />
+                <input type="button" value="Build" class="btn btn-primary" id="btnBuild" style="min-height: 5em;"/>
             </div>
             <br/>
 
@@ -114,132 +122,138 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-
-            function onBuild() {
-                var originPropertyName = "txtOrigins";
-                var serverPropertyName = "txtServers";
-
-                if (!validateUserInput(originPropertyName, serverPropertyName))
-                    return;
-
-                var origins = grabTokensFromInput(originPropertyName);
-                var servers = grabTokensFromInput(serverPropertyName);
-                var tuples = makeTupleList(origins, servers);
-
-                insertTokens(tuples);
-
-                if ($("#txtBuiltTuples-tokenfield").tokenfield('getTokens').length > 0)
-                    $("#btnSubmit").removeAttr("disabled");
-            }
-
-            function validateUserInput(originPropertyName, serverPropertyName) {
-                //bypass short-circuit evaluation
-                var bValid = setInputFieldFeedback(originPropertyName, "Origins");
-                bValid &= setInputFieldFeedback(serverPropertyName, "Servers");
-                return bValid;
-            }
-
-            function setInputFieldFeedback(propertyName, fieldname) {
-                var $validationElement = $(".text-danger[data-valmsg-for='" + propertyName + "']");
-                var $inputField = $("#" + propertyName);
-
-                if ($inputField.val().length === 0) {
-                    $validationElement
-                        .removeClass("field-validation-valid")
-                        .addClass("field-validation-error")
-                        .html("<span for=\"" + propertyName + "\">The " + fieldname + " field is required.</span>");
-                    $inputField.closest("dd").removeClass("has-success").addClass("has-error");
-                    return false;
-                }
-
-                $validationElement
-                    .removeClass("field-validation-error")
-                    .addClass("field-validation-valid")
-                    .html("");
-                $inputField.closest("dd").removeClass("has-error").addClass("has-success");
-                return true;
-            }
-
-            function grabTokensFromInput(propertyName) {
-                var $inputField = $("#" + propertyName);
-                $inputField.siblings(".token").fadeOut("fast", function () { $(this).remove(); });
-                return $inputField.val();
-            }
-
-            function makeTupleList(origins, servers) {
-                var originTokens = $.map(origins.split(","), $.trim);
-                var serverTokens = $.map(servers.split(","), $.trim);
-
-                var tuples = [];
-                for (var i = 0; i < originTokens.length; i++)
-                    for (var j = 0; j < serverTokens.length; j++)
-                        tuples.push(originTokens[i] + ", " + serverTokens[j]);
-                return tuples;
-            }
-
-            //only insert unique tuples/tokens
-            function insertTokens(strArr) {
-                var $tokens = getTokensArray();
-
-                for (var i = 0; i < strArr.length; i++)
-                    if ($.inArray(strArr[i], $tokens) === -1)
-                        $("#txtBuiltTuples").tokenfield('createToken', strArr[i]);
-
-            }
-
-            function getTokensArray() {
-                return $.map($("#txtBuiltTuples")
-                        .tokenfield('getTokens'),
-                        function (value) {
-                            return value.value;
-                        });
-            }
-
-            //manually create a list to be bound to the ViewModel by IIS
-            function onSubmit(event) {
-                event.preventDefault();
-
-                var tokens = getTokensArray();
-                for (var i = 0; i < tokens.length; i++) {
-                    var tuple = $.map(tokens[i].split(','), $.trim);
-                    var originsName = '@Html.NameFor(m => m.Origins)';
-                    var serversName = '@Html.NameFor(m => m.Servers)';
-
-                    var hiddenInputOriginIndex = "<input name=\"" + originsName + ".Index\" id=\"" + originsName+ "_Index\" type=\"hidden\" value=\"" + i + "\">";
-                    var hiddenInputOrigin = "<input name=\"" + originsName + "[" + i + "]\" id=\"" + originsName + "_" + i + "_\" type=\"hidden\" value=\"" + tuple[0] + "\">";
-                    var hiddenInputServerIndex = "<input name=\"" + serversName + ".Index\" id=\"" + serversName + "_Index\" type=\"hidden\" value=\"" + i + "\">";
-                    var hiddenInputServer = "<input name=\"" + serversName + "[" + i + "]\" id=\"" + serversName + "_" + i + "_\" type=\"hidden\" value=\""+ tuple[1] +"\">";
-
-                    $("form").append(hiddenInputOriginIndex).append(hiddenInputOrigin).append(hiddenInputServerIndex).append(hiddenInputServer);
-                }
-                $("form").unbind('submit');
-                $("form").submit();
-            }
-
-            function onReset() {
-                $("#txtBuiltTuples").siblings(".token").fadeOut("fast", function() { $(this).remove(); tokenRemoved(); });
-            }
-
-            function blockKeydownEvent(event) {
-                event = event || window.event;
-                event.preventDefault();
-                return false;
-            }
-
-            function tokenRemoved() {
-                var numtokens = $("#txtBuiltTuples").tokenfield('getTokens').length;
-                if (numtokens === 0)
-                    $("#btnSubmit").attr("disabled", "disabled");
-            }
-
             $("#txtOrigins").tokenfield({ createTokensOnBlur: true });
             $("#txtServers").tokenfield({ createTokensOnBlur: true });
             $("#txtBuiltTuples").tokenfield();
             $("#txtBuiltTuples-tokenfield").keydown(blockKeydownEvent);
             $("#txtBuiltTuples").on('tokenfield:removedtoken', tokenRemoved);
             $("#btnBuild").click(onBuild);
-            $("form").submit(onSubmit);
             $("#btnReset").click(onReset);
+            $("form").submit(onSubmit);
         });
+
+        function onBuild() {
+            var originPropertyName = "txtOrigins";
+            var serverPropertyName = "txtServers";
+
+            if (!validateUserInput(originPropertyName, serverPropertyName))
+                return;
+
+            var origins = grabTokensFromInput(originPropertyName);
+            var servers = grabTokensFromInput(serverPropertyName);
+            var tuples = makeTupleList(origins, servers);
+
+            insertTokens(tuples);
+
+            if ($("#txtBuiltTuples-tokenfield").tokenfield('getTokens').length > 0)
+                $("#btnSubmit").removeAttr("disabled");
+        }
+
+        function validateUserInput(originPropertyName, serverPropertyName) {
+            //bypass short-circuit evaluation
+            var bValid = setInputFieldFeedback(originPropertyName, "Origins");
+            bValid &= setInputFieldFeedback(serverPropertyName, "Servers");
+            return bValid;
+        }
+
+        function setInputFieldFeedback(propertyName, fieldname) {
+            var $validationElement = $(".text-danger[data-valmsg-for='" + propertyName + "']");
+            var $inputField = $("#" + propertyName);
+
+            if ($inputField.val().length === 0) {
+                $validationElement
+                    .removeClass("field-validation-valid")
+                    .addClass("field-validation-error")
+                    .html("<span for=\"" + propertyName + "\">The " + fieldname + " field is required.</span>");
+                $inputField.closest("dd").removeClass("has-success").addClass("has-error");
+                return false;
+            }
+
+            $validationElement
+                .removeClass("field-validation-error")
+                .addClass("field-validation-valid")
+                .html("");
+            $inputField.closest("dd").removeClass("has-error").addClass("has-success");
+            return true;
+        }
+
+        function grabTokensFromInput(propertyName) {
+            var $inputField = $("#" + propertyName);
+            $inputField.siblings(".token").fadeOut("fast", function () { $(this).remove(); });
+            return $inputField.val();
+        }
+
+        function makeTupleList(origins, servers) {
+            var originTokens = $.map(origins.split(","), $.trim);
+            var serverTokens = $.map(servers.split(","), $.trim);
+
+            var tuples = [];
+            for (var i = 0; i < originTokens.length; i++)
+                for (var j = 0; j < serverTokens.length; j++)
+                    tuples.push(originTokens[i] + ", " + serverTokens[j]);
+            return tuples;
+        }
+
+        //only insert unique tuples/tokens
+        function insertTokens(strArr) {
+            var $tokens = getTokensArray();
+            var uniqueTokens = [];
+
+            for (var i = 0; i < strArr.length; i++)
+                if ($.inArray(strArr[i], uniqueTokens) === -1 &&
+                    $.inArray(strArr[i], $tokens) === -1)
+                    uniqueTokens.push(strArr[i]);
+
+            for (var token in uniqueTokens){
+                if (!uniqueTokens.hasOwnProperty(token))
+                    continue;
+                $("#txtBuiltTuples").tokenfield('createToken', uniqueTokens[token]);
+            }
+        }
+
+        function getTokensArray() {
+            return $.map($("#txtBuiltTuples")
+                    .tokenfield('getTokens'),
+                    function (value) {
+                        return value.value;
+                    });
+        }
+
+        //manually create a list to be bound to the ViewModel by IIS
+        function onSubmit(event) {
+            event.preventDefault();
+
+            var tokens = getTokensArray();
+            for (var i = 0; i < tokens.length; i++) {
+                var tuple = $.map(tokens[i].split(','), $.trim);
+                var originsName = '@Html.NameFor(m => m.Origins)';
+                var serversName = '@Html.NameFor(m => m.Servers)';
+
+                var hiddenInputOriginIndex = "<input name=\"" + originsName + ".Index\" id=\"" + originsName + "_Index\" type=\"hidden\" value=\"" + i + "\">";
+                var hiddenInputOrigin = "<input name=\"" + originsName + "[" + i + "]\" id=\"" + originsName + "_" + i + "_\" type=\"hidden\" value=\"" + tuple[0] + "\">";
+                var hiddenInputServerIndex = "<input name=\"" + serversName + ".Index\" id=\"" + serversName + "_Index\" type=\"hidden\" value=\"" + i + "\">";
+                var hiddenInputServer = "<input name=\"" + serversName + "[" + i + "]\" id=\"" + serversName + "_" + i + "_\" type=\"hidden\" value=\"" + tuple[1] + "\">";
+
+                $("form").append(hiddenInputOriginIndex).append(hiddenInputOrigin).append(hiddenInputServerIndex).append(hiddenInputServer);
+            }
+            $("form").unbind('submit');
+            $("form").submit();
+        }
+
+        function onReset() {
+            $("#txtBuiltTuples").siblings(".token").fadeOut("fast", function () { $(this).remove(); tokenRemoved(); });
+        }
+
+        function blockKeydownEvent(event) {
+            event = event || window.event;
+            event.preventDefault();
+            return false;
+        }
+
+        function tokenRemoved() {
+            var numtokens = $("#txtBuiltTuples").tokenfield('getTokens').length;
+            if (numtokens === 0)
+                $("#btnSubmit").attr("disabled", "disabled");
+        }
     </script>
 }

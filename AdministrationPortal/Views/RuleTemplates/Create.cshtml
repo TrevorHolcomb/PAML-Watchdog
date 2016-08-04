@@ -1,5 +1,4 @@
-﻿@using WatchdogDatabaseAccessLayer.Models
-@model AdministrationPortal.ViewModels.RuleTemplates.CreateRuleTemplateViewModel
+﻿@model AdministrationPortal.ViewModels.RuleTemplates.CreateRuleTemplateViewModel
 
 @{
     ViewBag.Title = "Create";
@@ -83,7 +82,7 @@
                         <td> @Html.DisplayFor(model => model.Rules[r].AlertType.Name) </td>
                         <td> @Html.DisplayFor(model => model.Rules[r].MessageType.Name) </td>
                         <td> @Html.DisplayFor(model => model.Rules[r].SupportCategory.Name) </td>
-                        <td> @Html.CheckBoxFor(model => model.RulesIncluded[r], htmlAttributes: new { @class = "checkbox", @id="checkbox-" + r }) </td>
+                        <td> @Html.CheckBoxFor(model => model.RulesIncluded[r], htmlAttributes: new { @class = "checkbox", id="checkbox-" + r }) </td>
                         @Html.HiddenFor(model => model.Rules[r].Engine, htmlAttributes: new { @class = "engineName" })
                         @Html.HiddenFor(model => model.Rules[r].Origin, htmlAttributes: new { @class = "originName" })
                         @Html.HiddenFor(model => model.Rules[r].Server, htmlAttributes: new { @class = "serverName" })
@@ -114,7 +113,6 @@
         var searchfieldIds = ["searchEngines", "searchOrigins", "searchServers"];
 
         function setHandlersForSearchboxes() {
-            console.log("sHFS()");
             for (var id in searchfieldIds) {
                 if (!searchfieldIds.hasOwnProperty(id))
                     continue;
@@ -124,29 +122,30 @@
 
                 searchfield.autocomplete({
                     source: datasource,
-                    change: function(event, ui) { onAutocomplete(event, ui, this) },
-                    search: function(event, ui) { onAutocomplete(event, ui, this) },
-                    select: function(event, ui) { onAutocomplete(event, ui, this) }
+                    change: onAutocomplete,
+                    search: onAutocomplete,
+                    select: onAutocomplete
                 });
+                searchfield.blur(onAutocomplete);
             }
         }
 
         function onAutocomplete() {
-
             var nonmatchingRows = {};
+            var numEmptyFields = 0;
 
             //check all fields for matches
-            for (var id in searchfieldIds) {
-                if (!searchfieldIds.hasOwnProperty(id))
-                    continue;
+            for (var i = 0; i < searchfieldIds.length; i++) {
 
-                var $searchfield = $("#" + searchfieldIds[id]);
+                var $searchfield = $("#" + searchfieldIds[i]);
                 var rulePropertyName = $searchfield.data("search-for");
                 var searchQuery = $searchfield.val().toLowerCase();
-                if (searchQuery === "")
+                if (searchQuery === "") {
+                    if (++numEmptyFields === searchfieldIds.length)
+                        $("#tblRules tr").fadeIn();
                     continue;
+                }
 
-                console.log(searchQuery);
                 var $matchingRules = $("#tblRules ." + rulePropertyName)
                     .filter(function() {
                         return $(this).val().toLowerCase().indexOf(searchQuery) > -1;
@@ -163,9 +162,9 @@
         }
 
         function fadeRows(nonmatchingRows) {
-            $("#tblRules tr").not("#tblHeader")
-                .each(function (index, element) {
-                    console.log(element);
+            $("#tblRules tr")
+                .not("#tblHeader")
+                .each(function(index, element) {
                     if (nonmatchingRows[element.id])
                         $(element).fadeOut();
                     else {

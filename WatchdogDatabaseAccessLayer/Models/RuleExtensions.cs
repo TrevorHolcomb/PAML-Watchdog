@@ -13,8 +13,7 @@
                 Expression = rule.Expression,
                 MessageTypeName = rule.MessageTypeName,
                 SupportCategoryId = rule.SupportCategoryId,
-                RuleCategories = rule.RuleCategories,
-                RuleCreator = "template; TODO: replace me"
+                RuleCategories = rule.RuleCategories
             };
         }
 
