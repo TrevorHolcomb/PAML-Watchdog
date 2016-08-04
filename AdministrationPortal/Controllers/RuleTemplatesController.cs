@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Routing;
 using AdministrationPortal.ViewModels.RuleTemplates;
 using Ninject;
+using NLog;
 using AdministrationPortal.Extensions;
-using WatchdogDatabaseAccessLayer;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using WebGrease.Css.Extensions;
@@ -28,18 +28,36 @@ namespace AdministrationPortal.Controllers
         [Inject]
         public Repository<Engine> EngineRepository { get; set; }
 
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         // GET: RuleTemplates
-        [HttpGet]
         public ActionResult Index(int id = 0, string engine="", string origins="", string servers="", string timestamp="")
         {
+
             var viewModel = new ViewRuleTemplateViewModel()
             {
                 RuleTemplates = RuleTemplateRepository.Get()
             };
 
-            if (id > 0)
+            if(id < 0 )
+                throw new ArgumentException($"Invalid id: {id}");
+
+            if (id != 0)
             {
+
                 var ruleTemplateUsed = RuleTemplateRepository.GetById(id);
+                if (ruleTemplateUsed == null)
+                    throw new ArgumentException($"No RuleTemplate found with Id: {id}");
+
+                if (engine == "")
+                    throw new ArgumentNullException(nameof(engine));
+                if (origins == "")
+                    throw new ArgumentNullException(nameof(origins));
+                if (servers == "")
+                    throw new ArgumentNullException(nameof(servers));
+                if (timestamp == "")
+                    throw new ArgumentNullException(nameof(timestamp));
+
                 var numRulesUsed = RuleRepository.Get()
                     .Count(r => ConcatTimeEquals(ConcatTime(r.Timestamp), timestamp));
 
@@ -51,19 +69,16 @@ namespace AdministrationPortal.Controllers
                 viewModel.ServersUsed = servers;
                 viewModel.Timestamp = timestamp;
             }
+
             return View(viewModel);
         }
 
         // GET: RuleTemplates/Details/5
-        [HttpGet]
         public ActionResult Details(int id)
         {
-            if (id <= 0)
-                RedirectToAction("Index");
-
             var ruleTemplate = RuleTemplateRepository.GetById(id);
             if (ruleTemplate == null)
-                return HttpNotFound("No RuleTemplate found with id " + id);
+                throw new ArgumentException($"No RuleTemplate found with Id: {id}");
 
             var viewModel = BuildDetailsViewModel(ruleTemplate);
             return View(viewModel);
@@ -78,7 +93,7 @@ namespace AdministrationPortal.Controllers
                 Rules = GetUniqueRules(rules).ToList(),
                 Engines = rules.Select(r => r.Engine).GetUnique().ToCSV(),
                 Origins = rules.Select(r => r.Origin).GetUnique().ToCSV(),
-                Servers = rules.Select(r => r.Server).GetUnique().ToCSV()               
+                Servers = rules.Select(r => r.Server).GetUnique().ToCSV()
             };
 
             return View(viewModel);
@@ -89,10 +104,12 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreateRuleTemplateViewModel viewModel)
         {
-            if (viewModel.RulesIncluded == null)
-                return RedirectToAction("Create");
-            var ruleIdsToAdd = viewModel.Rules.Where((r, index) => viewModel.RulesIncluded.ElementAt(index)).Select(r => r.Id);
-            var templatedRulesToAdd = ruleIdsToAdd.Select(id => RuleRepository.GetById(id).ToTemplate());
+            var ruleIdsToAdd = viewModel.Rules
+                .Where((r, index) => viewModel.RulesIncluded.ElementAt(index))
+                .Select(r => r.Id);
+
+            var templatedRulesToAdd = ruleIdsToAdd
+                .Select(id => RuleRepository.GetById(id).ToTemplate());
 
             var ruleTemplate = new RuleTemplate()
             {
@@ -103,14 +120,7 @@ namespace AdministrationPortal.Controllers
             };
 
             RuleTemplateRepository.Insert(ruleTemplate);
-            try
-            {
-                RuleTemplateRepository.Save();
-            }
-            catch (DbEntityValidationException deve)
-            {
-                throw new FormattedDbEntityValidationException(deve);
-            }
+            RuleTemplateRepository.Save();
 
             var ruleTemplateInDb = RuleTemplateRepository.Get()
                 .First(rt => rt.LastUsedOn == ruleTemplate.LastUsedOn
@@ -122,14 +132,15 @@ namespace AdministrationPortal.Controllers
         }
 
         // GET: RuleTemplates/Edit/5
-        [HttpGet]
         public ActionResult Edit(int id)
         {           
-            if (id <= 0)
-                RedirectToAction("Index");
-
             var ruleTemplate = RuleTemplateRepository.GetById(id);
+
+            if (ruleTemplate == null)
+                throw new ArgumentException($"No RuleTemplate found with Id: {id}");
+
             var templatedRules = ruleTemplate.TemplatedRules.ToList();
+
             var rules = GetUniqueRules(RuleRepository.Get())
                 .Where(r => !templatedRules.Any(r.EqualsTemplatedRule)).ToList();
 
@@ -146,29 +157,30 @@ namespace AdministrationPortal.Controllers
             };
 
             rules.ForEach(r => viewModel.RulesIncluded.Add(false));
-            ruleTemplate.TemplatedRules.ForEach(tr => viewModel.TemplatedRulesIncluded.Add(true));
+            ruleTemplate.TemplatedRules
+                .ForEach(tr => viewModel.TemplatedRulesIncluded.Add(true));
 
             return View(viewModel);
         }
 
         // POST: RuleTemplates/Edit/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(EditRuleTemplateViewModel viewModel) 
         {
-            
             //Get the selected TemplatedRules
             var ruleTemplateInDb = RuleTemplateRepository.GetById(viewModel.Id);
-            var templatedRulesToInclude = new List<TemplatedRule>();
-            var templatedRulesToExclude = new List<TemplatedRule>();
-            if (viewModel.TemplatedRules != null && viewModel.TemplatedRulesIncluded != null)
-            {
-                templatedRulesToInclude = viewModel.TemplatedRules
-                    .Where((tr, index) => viewModel.TemplatedRulesIncluded.ElementAt(index))
-                    .Select(tr => TemplatedRuleRepository.GetById(tr.Id)).ToList();
-                templatedRulesToExclude = viewModel.TemplatedRules
-                    .Where((tr, index) => !viewModel.TemplatedRulesIncluded.ElementAt(index))
-                    .Select(tr => TemplatedRuleRepository.GetById(tr.Id)).ToList();
-            }
+
+            if (ruleTemplateInDb == null)
+                throw new ArgumentException($"No RuleTemplate found with Id: {viewModel.Id}");
+
+            var templatedRulesToInclude = viewModel.TemplatedRules
+                .Where((tr, index) => viewModel.TemplatedRulesIncluded.ElementAt(index))
+                .Select(tr => TemplatedRuleRepository.GetById(tr.Id)).ToList();
+
+            var templatedRulesToExclude = viewModel.TemplatedRules
+                .Where((tr, index) => !viewModel.TemplatedRulesIncluded.ElementAt(index))
+                .Select(tr => TemplatedRuleRepository.GetById(tr.Id)).ToList();
 
             //Get the selected Rules
             var rulesToInclude = new List<Rule>();
@@ -199,13 +211,10 @@ namespace AdministrationPortal.Controllers
         [HttpGet]
         public ActionResult Delete(int id)
         {
-            if (id <= 0)
-                return HttpNotFound("No RuleTemplate found with id " + id);
-
             var ruleTemplate = RuleTemplateRepository.GetById(id);
 
             if (ruleTemplate == null)
-                return HttpNotFound("No RuleTemplate found with id " + id);
+                throw new ArgumentException($"No RuleTemplate found with Id: {id}");
 
             var viewModel = BuildDetailsViewModel(ruleTemplate);
             return View(viewModel);
@@ -213,15 +222,13 @@ namespace AdministrationPortal.Controllers
 
         // POST: RuleTemplates/Delete/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            if (id <= 0)
-                return HttpNotFound("No RuleTemplate found with id " + id);
-
             var ruleTemplate = RuleTemplateRepository.GetById(id);
 
             if (ruleTemplate == null)
-                return HttpNotFound("No RuleTemplate found with id " + id);
+                throw new ArgumentException($"No RuleTemplate found with Id: {id}");
 
             var templatedRulesIds = ruleTemplate.TemplatedRules.Select(tr => tr.Id);
 
@@ -232,19 +239,17 @@ namespace AdministrationPortal.Controllers
             TemplatedRuleRepository.Save();
             RuleTemplateRepository.Delete(ruleTemplate);
             RuleTemplateRepository.Save();
+
             return RedirectToAction("Index");
         }
 
         // GET: RuleTemplates/Use/5
-        [HttpGet]
         public ActionResult Use(int id)
         {
-            if (id <= 0)
-                RedirectToAction("Index");
-
             var ruleTemplate = RuleTemplateRepository.GetById(id);
+
             if (ruleTemplate == null)
-                return HttpNotFound("No RuleTemplate found with id " + id);
+                throw new ArgumentException($"No RuleTemplate found with Id: {id}");
 
             var viewModel = BuildDetailsViewModel(ruleTemplate);
             viewModel.RegisteredEngines = new SelectList(EngineRepository.Get().Select(e => e.Name).ToList());
@@ -256,6 +261,7 @@ namespace AdministrationPortal.Controllers
 
         // POST: RuleTemplates/Use/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Use(UseRuleTemplateViewModel viewModel)
         {
             viewModel.RegisteredEngines = new SelectList(EngineRepository.Get().Select(e => e.Name).ToList());
@@ -274,7 +280,6 @@ namespace AdministrationPortal.Controllers
             RuleTemplateRepository.Save();
 
             var lastOrigins = viewModel.OriginServerTuples.Select(kvp => kvp.Key).ToCSV();
-
             var lastServers = viewModel.OriginServerTuples.Select(kvp => kvp.Value).ToCSV();
 
             var dictionary = new
@@ -310,6 +315,23 @@ namespace AdministrationPortal.Controllers
             RuleRepository.DeleteRange(rulesToDelete);
             RuleRepository.Save();
             return "" + rulesToDelete.Count() + " Rules were deleted.";
+        }
+
+
+        /// <summary>
+        /// Called when an unhandled exception occurs in the action.
+        /// </summary>
+        /// <param name="filterContext">Information about the current request and action.</param>
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+                return;
+
+            Logger.Error(filterContext.Exception);
+
+            filterContext.ExceptionHandled = true;
+                       
+            filterContext.Result = RedirectToAction("Index", new { id=0 });
         }
 
         #region private helper methods

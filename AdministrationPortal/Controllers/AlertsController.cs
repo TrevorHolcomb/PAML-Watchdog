@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-using System.Data;
-using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using AdministrationPortal.ViewModels.Alerts;
 using Ninject;
+using NLog;
 using PagedList;
 
 namespace AdministrationPortal.Controllers
@@ -26,10 +23,12 @@ namespace AdministrationPortal.Controllers
         [Inject]
         public Repository<AlertGroup> AlertGroupRepository { private get; set; }
 
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         // GET: Alerts
-        public ActionResult Index(string ActiveOrArchived, int? Page_No, String sortSelect, String searchString)
+        public ActionResult Index(string ActiveOrArchived, int? Page_No, string sortSelect, string searchString)
         {
-            int Size_Of_Page = 10;
+            const int Size_Of_Page = 10;
             int No_Of_Page = (Page_No ?? 1);
             var alerts = AlertRepository.Get();
             string status;
@@ -46,7 +45,7 @@ namespace AdministrationPortal.Controllers
                     break;
             }
 
-            var searchStringExists = !String.IsNullOrEmpty(searchString);
+            var searchStringExists = !string.IsNullOrEmpty(searchString);
             switch (sortSelect)
             {
                 case "0":
@@ -83,14 +82,15 @@ namespace AdministrationPortal.Controllers
                     alerts = alerts.OrderByDescending(a => a.AlertStatus.Timestamp).ThenByDescending(a => a.Severity);
                     break;
             }
-            Hashtable checkGroup = new Hashtable();
-            List<Alert> groupedAlerts = new List<Alert>();
-            foreach (Alert a in alerts)
+
+            var checkGroup = new Hashtable();
+            var groupedAlerts = new List<Alert>();
+            foreach (var alert in alerts)
             {
-                if(!checkGroup.Contains(a.AlertGroupId))
+                if(!checkGroup.Contains(alert.AlertGroupId))
                 {
-                    groupedAlerts.Add(a);
-                    checkGroup.Add(a.AlertGroupId, a.AlertGroupId);
+                    groupedAlerts.Add(alert);
+                    checkGroup.Add(alert.AlertGroupId, alert.AlertGroupId);
                 }
             }
             
@@ -102,22 +102,18 @@ namespace AdministrationPortal.Controllers
         {
             var viewModel = new AlertDetailsViewModel(AlertRepository.GetById(id), PageNo, sortOrder);
             var groupedAlerts = AlertRepository.Get();
+
             viewModel.Alert = AlertRepository.GetById(id);
-            groupedAlerts = groupedAlerts.Where(a => a.AlertGroupId == viewModel.Alert.AlertGroupId && a.Id != viewModel.Alert.Id);
             if (viewModel.Alert == null)
-            {
-                return HttpNotFound();
-            }
+                throw new ArgumentNullException(nameof(viewModel.Alert));
+
+            groupedAlerts = groupedAlerts.Where(a => a.AlertGroupId == viewModel.Alert.AlertGroupId && a.Id != viewModel.Alert.Id);
+            
             viewModel.sortOrder = sortOrder;
             viewModel.PageNo = PageNo;
             viewModel.groupedAlerts = groupedAlerts.ToList();
-            return View(viewModel);
-        }
 
-        // GET: Alerts/Create
-        public ActionResult Create()
-        {
-            return View();
+            return View(viewModel);
         }
 
         // POST: Alerts/Create
@@ -131,9 +127,8 @@ namespace AdministrationPortal.Controllers
             {
                 AlertRepository.Insert(alert);
                 AlertRepository.Save();
-                return RedirectToAction("Index");
             }
-            return View(alert);
+            return RedirectToAction("Index");
         }
 
         // GET: Alerts/Edit/5
@@ -141,9 +136,8 @@ namespace AdministrationPortal.Controllers
         {
             var alert = AlertRepository.GetById(id);
             if (alert == null)
-            {
-                return HttpNotFound();
-            }
+                throw new ArgumentException($"No Alert found with Id: {id}");
+
             var viewModel = new AlertDetailsViewModel(alert, PageNo, sortOrder);
             return View(viewModel);
         }
@@ -160,6 +154,7 @@ namespace AdministrationPortal.Controllers
                 var editedAlert = alertViewModel.Alert;
                 var groupedAlerts = AlertRepository.Get();
                 groupedAlerts = groupedAlerts.Where(a => a.AlertGroupId == editedAlert.AlertGroupId);
+
                 foreach (var alert in groupedAlerts)
                 {
                     var alertInDb = AlertRepository.GetById(alert.Id);
@@ -167,11 +162,14 @@ namespace AdministrationPortal.Controllers
                     if (alertInDb != null)
                     {
                         // create and insert a new AlertStatus
-                        var newStatus = new AlertStatus();
-                        newStatus.ModifiedBy = "N/A";
-                        newStatus.StatusCode = editedAlert.AlertStatus.StatusCode;
-                        newStatus.Prev = AlertStatusRepository.GetById(alertInDb.AlertStatus.Id);
-                        newStatus.Timestamp = DateTime.Now;
+                        var newStatus = new AlertStatus()
+                        {
+                            ModifiedBy = "N/A",
+                            StatusCode = editedAlert.AlertStatus.StatusCode,
+                            Prev = AlertStatusRepository.GetById(alertInDb.AlertStatus.Id),
+                            Timestamp = DateTime.Now
+                        };
+
                         AlertStatusRepository.Insert(newStatus);
                         AlertStatusRepository.Save();
 
@@ -182,23 +180,24 @@ namespace AdministrationPortal.Controllers
                         tailAlertStatus.Alert = null;
                         alertInDb.AlertStatus = newStatus;
                         newStatus.Alert = alertInDb;
+
                         AlertStatusRepository.Update(newStatus);
                         AlertStatusRepository.Save();
 
                         AlertStatusRepository.Update(tailAlertStatus);
                         AlertStatusRepository.Save();
 
-
-
                         if (alertInDb.Id == editedAlert.Id)
                         {
                             alertInDb.Severity = editedAlert.Severity;
                             alertInDb.Notes = editedAlert.Notes;
                         }
+
                         AlertRepository.Update(alertInDb);
                         AlertRepository.Save();
                     }
                 }
+
                 var group = AlertGroupRepository.GetById(editedAlert.AlertGroupId);
                 if (editedAlert.AlertStatus.StatusCode.ToString().CompareTo("Resolved") == 0)
                 {
@@ -206,42 +205,35 @@ namespace AdministrationPortal.Controllers
                 }
                 else
                     group.Resolved = false;
+
                 AlertGroupRepository.Update(group);
                 AlertGroupRepository.Save();
+
                 return RedirectToAction("Index", new {ActiveOrArchived = editedAlert.AlertStatus.StatusCode.ToString() });
             }
 
             return View(alertViewModel);
         }
 
+
+        //TODO: remove unused method
         private Alert mapNewAlertOntoDbAlert(Alert newAlert)
         {
-            Alert dbAlert = AlertRepository.GetById(newAlert.Id);
+            var dbAlert = AlertRepository.GetById(newAlert.Id);
+            if (dbAlert == null)
+                throw new ArgumentException($"No Alert found with Id: {newAlert.Id}");
             
-            if (dbAlert != null)
-            {
-                AlertStatus newStatus = new AlertStatus();
-                newStatus.ModifiedBy = "N/A";
-                
-                
-                //dbAlert.AlertStatus = newAlert.AlertStatus;
-                dbAlert.Severity = newAlert.Severity;
-                dbAlert.Notes = newAlert.Notes;
-            }
+            var newStatus = new AlertStatus();
+            newStatus.ModifiedBy = "N/A";
+                    
+            //dbAlert.AlertStatus = newAlert.AlertStatus;
+            dbAlert.Severity = newAlert.Severity;
+            dbAlert.Notes = newAlert.Notes;
+            
             return dbAlert;
         }
 
-        // GET: Alerts/Delete/5
-        public ActionResult Delete(int id)
-        {
-            var alert = AlertRepository.GetById(id);
-            if (alert == null)
-            {
-                return HttpNotFound();
-            }
-            return View(alert);
-        }
-
+        //TODO: remove unused method
         // POST: Alerts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -251,6 +243,23 @@ namespace AdministrationPortal.Controllers
             AlertRepository.Delete(alert);
             AlertRepository.Save();
             return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Called when an unhandled exception occurs in the action.
+        /// </summary>
+        /// <param name="filterContext">Information about the current request and action.</param>
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+                return;
+
+            Logger.Error(filterContext.Exception);
+
+            filterContext.ExceptionHandled = true;
+
+            // Redirect on error:
+            filterContext.Result = RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

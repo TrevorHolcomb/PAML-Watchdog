@@ -1,9 +1,11 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using Ninject;
 using AdministrationPortal.ViewModels.Rules;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using System.Linq;
+using NLog;
 
 namespace AdministrationPortal.Controllers
 {
@@ -24,6 +26,8 @@ namespace AdministrationPortal.Controllers
         [Inject]
         public Repository<DefaultNote> DefaultNoteRepository { get; set; }
 
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         // GET: Rules
         public ActionResult Index()
         {
@@ -36,9 +40,8 @@ namespace AdministrationPortal.Controllers
         {
             var rule = RuleRepository.GetById(id);
             if (rule == null)
-            {
-                return HttpNotFound("No Rule found with id " + id);
-            }
+                throw new ArgumentException("No Rule found with id " + id);
+
             return View(rule);
         }
 
@@ -56,7 +59,6 @@ namespace AdministrationPortal.Controllers
                     SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
                     EngineList = new SelectList(EngineRepository.Get(), "Name", "Name"),
                     DefaultNotes = new SelectList(DefaultNoteRepository.Get(), "Id", "Text")
-
                 }
             };
             
@@ -72,15 +74,13 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(RuleCreateViewModel ruleViewModel)
         {   
-                    
-
             //build rule
             var ruleToCreate = ruleViewModel.BuildRule(RuleCategoryRepository.Get());
 
             //insert new notes
-            foreach (string newNote in ruleViewModel.NewDefualtNotes)
+            foreach (string newNote in ruleViewModel.NewDefaultNotes)
             {
-                if (newNote != "")
+                if (newNote.Trim() != "")
                 {
                     ruleToCreate.DefaultNotes.Add(new DefaultNote { Text = newNote });
                 }
@@ -106,10 +106,7 @@ namespace AdministrationPortal.Controllers
         {
             var rule = RuleRepository.GetById(id);
             if (rule == null)
-            {
-                return HttpNotFound("No Rule found with Id " + id);
-            }
-
+                throw new ArgumentException("No Rule found with id " + id);
 
             var viewModel = new RuleEditViewModel
             {
@@ -132,10 +129,8 @@ namespace AdministrationPortal.Controllers
                 Server = rule.Server,
                 DefaultSeverity = rule.DefaultSeverity,
                 Id = id,
-                DefaultNotes = rule.DefaultNotes.ToList<DefaultNote>()
+                DefaultNotes = rule.DefaultNotes.ToList()
             };
-
-            
 
             return View(viewModel);
         }
@@ -205,13 +200,12 @@ namespace AdministrationPortal.Controllers
         }
 
         // GET: Rules/Delete/5
+        [HttpGet]
         public ActionResult Delete(int id)
         {
             var rule = RuleRepository.GetById(id);
             if (rule == null)
-            {
-                return HttpNotFound("No Rule found with Id " + id);
-            }
+                throw new ArgumentException("No Rule found with id " + id);
             return View(rule);
         }
 
@@ -222,11 +216,9 @@ namespace AdministrationPortal.Controllers
         {
             var rule = RuleRepository.GetById(id);
             if (rule == null)
-            {
-                return HttpNotFound("No Rule found with Id " + id);
-            }
+                throw new ArgumentException("No Rule found with id " + id);
 
-            foreach(DefaultNote note in rule.DefaultNotes)
+            foreach (DefaultNote note in rule.DefaultNotes)
             {
                 note.Rules.Remove(rule);
             }
@@ -234,6 +226,23 @@ namespace AdministrationPortal.Controllers
             RuleRepository.Delete(rule);
             RuleRepository.Save();
             return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Called when an unhandled exception occurs in the action.
+        /// </summary>
+        /// <param name="filterContext">Information about the current request and action.</param>
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+                return;
+
+            Logger.Error(filterContext.Exception);
+
+            filterContext.ExceptionHandled = true;
+
+            // Redirect on error:
+            filterContext.Result = RedirectToAction("Index");
         }
 
 

@@ -7,7 +7,7 @@ namespace AdministrationPortal.ViewModels.RuleCategories
         public DeleteRuleCategoryViewModel(RuleCategory toDelete, bool safeToDelete)
         {
             RuleCategory = toDelete;
-            canDeleteThisModel(safeToDelete);
+            CanDeleteThisModel(safeToDelete);
         }
         public override string ModelTypeName { get { return "Rule Category"; } }
         public RuleCategory RuleCategory { get; set; }

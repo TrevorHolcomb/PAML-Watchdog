@@ -1,6 +1,8 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using AdministrationPortal.ViewModels.SupportCategories;
 using Ninject;
+using NLog;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 
@@ -11,21 +13,12 @@ namespace AdministrationPortal.Controllers
         [Inject]
         public Repository<SupportCategory> SupportCategoryRepository { private get; set; }
 
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         // GET: SupportCategories
         public ActionResult Index()
         {
             return View(SupportCategoryRepository.Get());
-        }
-
-        // GET: SupportCategories/Details/5
-        public ActionResult Details(int id)
-        {
-            var supportCategory = SupportCategoryRepository.GetById(id);
-            if (supportCategory == null)
-            {
-                return HttpNotFound("No SupportCategory found with Id " + id);
-            }
-            return View(supportCategory);
         }
 
         // GET: SupportCategories/Create
@@ -56,9 +49,8 @@ namespace AdministrationPortal.Controllers
         {
             var supportCategory = SupportCategoryRepository.GetById(id);
             if (supportCategory == null)
-            {
-                return HttpNotFound("No SupportCategory found with Id " + id);
-            }
+                throw new ArgumentException($"No SupportCategory found with Id: {id}");
+
             return View(supportCategory);
         }
 
@@ -69,11 +61,9 @@ namespace AdministrationPortal.Controllers
         {
             if (ModelState.IsValid)
             {
-                SupportCategory supportCategoryInDb = SupportCategoryRepository.GetById(supportCategory.Id);
+                var supportCategoryInDb = SupportCategoryRepository.GetById(supportCategory.Id);
                 if(supportCategoryInDb == null)
-                {
-                    return HttpNotFound("No SupportCategory found with Id " + supportCategory.Id);
-                }
+                    throw new ArgumentException($"No SupportCategory found with Id: {supportCategory.Id}");
 
                 supportCategoryInDb.Description = supportCategory.Description;
                 SupportCategoryRepository.Update(supportCategoryInDb);
@@ -89,9 +79,7 @@ namespace AdministrationPortal.Controllers
         {
             var supportCategory = SupportCategoryRepository.GetById(id);              
             if (supportCategory == null)
-            {
-                return HttpNotFound("No SupportCategory found with Id " + id);
-            }
+                throw new ArgumentException($"No SupportCategory found with Id: {id}");
 
             bool safeToDelete = (supportCategory.Rules.Count == 0);
             var viewModel = new DeleteSupportCategoryViewModel(supportCategory, safeToDelete);
@@ -105,20 +93,35 @@ namespace AdministrationPortal.Controllers
         {
             var supportCategory = SupportCategoryRepository.GetById(id);
             if (supportCategory == null)
-            {
-                return HttpNotFound("No SupportCategory found with Id " + id);
-            }
+                throw new ArgumentException($"No SupportCategory found with id: {id}");
 
             bool safeToDelete = (supportCategory.Rules.Count == 0);
             if (!safeToDelete)
             {
-                var viewModel = new DeleteSupportCategoryViewModel(supportCategory, safeToDelete);
+                var viewModel = new DeleteSupportCategoryViewModel(supportCategory, false);
                 return View(viewModel);
             }
 
             SupportCategoryRepository.Delete(supportCategory);
             SupportCategoryRepository.Save();
             return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Called when an unhandled exception occurs in the action.
+        /// </summary>
+        /// <param name="filterContext">Information about the current request and action.</param>
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+                return;
+
+            Logger.Error(filterContext.Exception);
+
+            filterContext.ExceptionHandled = true;
+
+            // Redirect on error:
+            filterContext.Result = RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

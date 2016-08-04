@@ -1,8 +1,10 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using AdministrationPortal.ViewModels.RegisteredEngines;
+using NLog;
 
 namespace AdministrationPortal.Controllers
 {
@@ -10,6 +12,8 @@ namespace AdministrationPortal.Controllers
     {
         [Inject]
         public Repository<Engine> EngineRepository { private get; set; }
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: RegisteredEngines
         public ActionResult Index()
@@ -35,17 +39,18 @@ namespace AdministrationPortal.Controllers
                 return View(engine);
             }
 
+            //Make sure it doesn't already exist before creating it
             try
             {
                 EngineRepository.GetByName(engine.Name);
+                //TODO: add warning message saying engine already exists
             }
-            catch (System.InvalidOperationException)
+            catch (InvalidOperationException)
             { 
                 EngineRepository.Insert(engine);
                 EngineRepository.Save();
             }
             return RedirectToAction("Index");
-
         }
 
         // GET: RegisteredEngines/Delete/5
@@ -56,9 +61,9 @@ namespace AdministrationPortal.Controllers
             {
                 engine = EngineRepository.GetByName(id);
             }
-            catch (System.InvalidOperationException)
+            catch (InvalidOperationException)
             {
-                return HttpNotFound("No Engine found with Name: " + id);
+                throw new ArgumentException($"No Engine found with name: {id}");
             }
 
             bool safeToDelete = (engine.Alerts.Count == 0 && engine.Messages.Count == 0);
@@ -76,21 +81,39 @@ namespace AdministrationPortal.Controllers
             {
                 engineToDelete = EngineRepository.GetByName(id);
             }
-            catch (System.InvalidOperationException)
+            catch (InvalidOperationException)
             {
-                return HttpNotFound("No Engine found with Name: " + id);
+                throw new ArgumentException($"No Engine found with name: {id}");
             }
 
             bool safeToDelete = (engineToDelete.Alerts.Count == 0 && engineToDelete.Messages.Count == 0);
             if (!safeToDelete)
             {
-                var viewModel = new DeleteRegisteredEngineViewModel(engineToDelete, safeToDelete);
+                var viewModel = new DeleteRegisteredEngineViewModel(engineToDelete, false);
+                return View(viewModel);
             }
 
             EngineRepository.Delete(engineToDelete);
             EngineRepository.Save();
 
             return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Called when an unhandled exception occurs in the action.
+        /// </summary>
+        /// <param name="filterContext">Information about the current request and action.</param>
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+                return;
+
+            Logger.Error(filterContext.Exception);
+
+            filterContext.ExceptionHandled = true;
+
+            // Redirect on error:
+            filterContext.Result = RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

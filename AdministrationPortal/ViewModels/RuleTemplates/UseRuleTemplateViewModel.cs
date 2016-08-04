@@ -31,8 +31,10 @@ namespace AdministrationPortal.ViewModels.RuleTemplates
                     foreach (var kvp in Servers.Where(s => s.Trim() != "").Select(s => s.Trim()).Select(s => new KeyValuePair<string,string>(o,s)))
                         if (!OriginServerTuples.Contains(kvp))
                             OriginServerTuples.Add(kvp);
+
             if (TemplateInstantiator == null || TemplateInstantiator.Trim() == "")
                 TemplateInstantiator = "n/a";
+
             return results;
         }
         

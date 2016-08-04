@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web.Mvc;
 using WatchdogDatabaseAccessLayer.Models;
 
 namespace AdministrationPortal.ViewModels.Rules
@@ -42,7 +41,7 @@ namespace AdministrationPortal.ViewModels.Rules
         public List<bool> SelectedNotesEnabled { get; set; }
         public List<int> SelectedNoteIds { get; set; }
         public List<bool> NewNotesEnabled { get; set; }
-        public List<string> NewDefualtNotes { get; set; }
+        public List<string> NewDefaultNotes { get; set; }
         public RuleOptionsViewModel RuleOptions { get; internal set; }
 
 
@@ -52,7 +51,7 @@ namespace AdministrationPortal.ViewModels.Rules
             SelectedNotesEnabled = new List<bool>();
             SelectedNoteIds = new List<int>();
             NewNotesEnabled = new List<bool>();
-            NewDefualtNotes = new List<string>();
+            NewDefaultNotes = new List<string>();
 
             PrepopulateLists();
         }
@@ -61,7 +60,7 @@ namespace AdministrationPortal.ViewModels.Rules
         {
             for (int note = 0; note < MAX_DEFAULTNOTES; note++)
             {
-                NewDefualtNotes.Add("");
+                NewDefaultNotes.Add("");
                 SelectedNoteIds.Add(0);
                 NewNotesEnabled.Add(false);
                 SelectedNotesEnabled.Add(false);

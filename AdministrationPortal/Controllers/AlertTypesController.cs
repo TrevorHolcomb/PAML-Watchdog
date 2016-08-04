@@ -1,8 +1,10 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using AdministrationPortal.ViewModels.AlertTypes;
+using NLog;
 
 namespace AdministrationPortal.Controllers
 {
@@ -11,21 +13,12 @@ namespace AdministrationPortal.Controllers
         [Inject]
         public Repository<AlertType> AlertTypeRepository { private get; set; }
 
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         // GET: AlertTypes
         public ActionResult Index()
         {
             return View(AlertTypeRepository.Get());
-        }
-
-        // GET: AlertTypes/Details/5
-        public ActionResult Details(int id)
-        {
-            var alertType = AlertTypeRepository.GetById(id);
-            if (alertType == null)
-            {
-                return HttpNotFound("No AlertType found with Id " + id);
-            }
-            return View(alertType);
         }
 
         // GET: AlertTypes/Create
@@ -82,6 +75,7 @@ namespace AdministrationPortal.Controllers
             alertTypeInDb.Description = alertType.Description;
             AlertTypeRepository.Update(alertTypeInDb);
             AlertTypeRepository.Save();
+
             return RedirectToAction("Index");
         }
 
@@ -114,7 +108,7 @@ namespace AdministrationPortal.Controllers
             bool safeToDelete = (alertType.Alerts.Count == 0 && alertType.Rules.Count == 0);
             if (!safeToDelete)
             {
-                var viewModel = new DeleteAlertTypeViewModel(alertType, safeToDelete);
+                var viewModel = new DeleteAlertTypeViewModel(alertType, false);
                 return View(viewModel);
             }
 
@@ -122,6 +116,23 @@ namespace AdministrationPortal.Controllers
             AlertTypeRepository.Save();
 
             return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Called when an unhandled exception occurs in the action.
+        /// </summary>
+        /// <param name="filterContext">Information about the current request and action.</param>
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+                return;
+
+            Logger.Error(filterContext.Exception);
+
+            filterContext.ExceptionHandled = true;
+
+            // Redirect on error:
+            filterContext.Result = RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using AdministrationPortal.ViewModels.MessageTypes;
 using Ninject;
+using NLog;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 
@@ -14,6 +16,8 @@ namespace AdministrationPortal.Controllers
         public Repository<MessageType> MessageTypeRepository { get; set; }
         [Inject]
         public Repository<MessageTypeParameterType> MessageTypeParameterTypeRepository { get; set; }
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: MessageTypes
         public ActionResult Index()
@@ -29,9 +33,9 @@ namespace AdministrationPortal.Controllers
             {
                 messageType = MessageTypeRepository.GetByName(id);
             }
-            catch (System.InvalidOperationException)
+            catch (InvalidOperationException)
             {
-                return HttpNotFound("No MessageType found with Name: " + id);
+                throw new ArgumentException($"No MessageType found with Name: {id}");
             }
             
             return View(messageType);
@@ -63,33 +67,13 @@ namespace AdministrationPortal.Controllers
             };
 
             var messageTypeParameterTypes = GetParameterTypes(viewModel);
-
             messageType.MessageTypeParameterTypes = messageTypeParameterTypes;
             MessageTypeParameterTypeRepository.InsertRange(messageTypeParameterTypes);
             MessageTypeRepository.Insert(messageType);
             MessageTypeRepository.Save();
             MessageTypeParameterTypeRepository.Save();
+
             return RedirectToAction("Index");
-        }
-
-        private List<MessageTypeParameterType> GetParameterTypes(CreateMessageTypeViewModel viewModel)
-        {
-            List<MessageTypeParameterType> messageTypeParameterTypes = new List<MessageTypeParameterType>();
-
-            for (int i = 0; i < viewModel.ParameterNames.Count; i++)
-            {
-                if (!viewModel.ParametersEnabled[i])
-                    continue;
-
-                messageTypeParameterTypes.Add(new MessageTypeParameterType
-                {
-                    Name = viewModel.ParameterNames[i],
-                    Type = viewModel.ParameterTypes[i],
-                    Required = viewModel.ParametersRequired[i]
-                });
-            }
-
-            return messageTypeParameterTypes;
         }
 
         // GET: MessageTypes/Delete/1
@@ -100,8 +84,8 @@ namespace AdministrationPortal.Controllers
             {
                 messageType = MessageTypeRepository.GetByName(id);
             }
-            catch (System.InvalidOperationException) {
-                return HttpNotFound("No MessageType found with Name: " + id);
+            catch (InvalidOperationException) {
+                throw new ArgumentException($"No MessageType found with Name: {id}");
             }
 
             bool safeToDelete = (messageType.Alerts.Count == 0 && messageType.Rules.Count == 0 && messageType.Messages.Count == 0);
@@ -119,26 +103,27 @@ namespace AdministrationPortal.Controllers
             {
                 messageType = MessageTypeRepository.GetByName(id);
             }
-            catch (System.InvalidOperationException)
+            catch (InvalidOperationException)
             { 
-                return HttpNotFound("No MessageType found with Name: " + id);
+                throw new ArgumentException($"No MessageType found with Name: {id}");
             }
 
             bool safeToDelete = (messageType.Alerts.Count == 0 && messageType.Rules.Count == 0 && messageType.Messages.Count == 0);
             if (!safeToDelete)
             {
-                var viewModel = new DeleteMessageTypeViewModel(messageType, safeToDelete);
+                var viewModel = new DeleteMessageTypeViewModel(messageType, false);
                 return View(viewModel);
             }
 
-            var messageTypeParameterTypes =
-                MessageTypeParameterTypeRepository.Get().Where(parameter => parameter.MessageTypeName == messageType.Name);
+            var messageTypeParameterTypes = MessageTypeParameterTypeRepository.Get()
+                .Where(parameter => parameter.MessageTypeName == messageType.Name);
 
             MessageTypeParameterTypeRepository.DeleteRange(messageTypeParameterTypes);
             MessageTypeParameterTypeRepository.Save();
 
             MessageTypeRepository.Delete(messageType);
             MessageTypeRepository.Save();
+
             return RedirectToAction("Index");
         }
 
@@ -150,9 +135,9 @@ namespace AdministrationPortal.Controllers
             {
                 messageType = MessageTypeRepository.GetByName(id);
             }
-            catch (System.InvalidOperationException)
+            catch (InvalidOperationException)
             {
-                return HttpNotFound("No MessageType found with Name: " + id);
+                throw new ArgumentException($"No MessageType found with Name: {id}");
             }
 
             return View(messageType);
@@ -175,15 +160,53 @@ namespace AdministrationPortal.Controllers
             {
                 messageTypeInDb = MessageTypeRepository.GetByName(messageType.Name);
             }
-            catch (System.InvalidOperationException)
+            catch (InvalidOperationException)
             { 
-                return HttpNotFound("No MessageType found with Name: " + messageType.Name);
+                throw new ArgumentException($"No MessageType found with Name: {messageType.Name}");
             }
 
             messageTypeInDb.Description = messageType.Description;
             MessageTypeRepository.Update(messageTypeInDb);
             MessageTypeRepository.Save();
+
             return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Called when an unhandled exception occurs in the action.
+        /// </summary>
+        /// <param name="filterContext">Information about the current request and action.</param>
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+                return;
+
+            Logger.Error(filterContext.Exception);
+
+            filterContext.ExceptionHandled = true;
+
+            // Redirect on error:
+            filterContext.Result = RedirectToAction("Index");
+        }
+
+        private static List<MessageTypeParameterType> GetParameterTypes(CreateMessageTypeViewModel viewModel)
+        {
+            var messageTypeParameterTypes = new List<MessageTypeParameterType>();
+
+            for (int i = 0; i < viewModel.ParameterNames.Count; i++)
+            {
+                if (!viewModel.ParametersEnabled[i])
+                    continue;
+
+                messageTypeParameterTypes.Add(new MessageTypeParameterType
+                {
+                    Name = viewModel.ParameterNames[i],
+                    Type = viewModel.ParameterTypes[i],
+                    Required = viewModel.ParametersRequired[i]
+                });
+            }
+
+            return messageTypeParameterTypes;
         }
 
         protected override void Dispose(bool disposing)

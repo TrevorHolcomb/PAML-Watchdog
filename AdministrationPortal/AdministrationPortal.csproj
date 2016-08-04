@@ -116,7 +116,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.3.5\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.3.6\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
@@ -227,6 +227,7 @@
     <Compile Include="ViewModels\Alerts\AlertPagingCreateView.cs" />
     <Compile Include="ViewModels\AbstractDeleteViewModel.cs" />
     <Compile Include="ViewModels\AlertTypes\DeleteAlertTypeViewModel.cs" />
+    <Compile Include="ViewModels\Home\HomeViewModel.cs" />
     <Compile Include="ViewModels\MessageTypes\CreateMessageTypeViewModel.cs" />
     <Compile Include="ViewModels\MessageTypes\DeleteMessageTypeViewModel.cs" />
     <Compile Include="ViewModels\RegisteredEngines\DeleteRegisteredEngineViewModel.cs" />
@@ -262,8 +263,6 @@
   <ItemGroup>
     <Content Include="Content\bootstrap-tokenfield\bootstrap-tokenfield.css" />
     <Content Include="Content\bootstrap-tokenfield\tokenfield-typeahead.css" />
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\font-awesome\css\font-awesome.css" />
     <Content Include="Content\font-awesome\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.svg" />
@@ -280,7 +279,6 @@
     <Content Include="Content\img\help\setup-db\step-8.PNG" />
     <Content Include="Content\img\help\setup-db\step-9.PNG" />
     <Content Include="Content\PagedList.css" />
-    <Content Include="Content\Site.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -317,6 +315,12 @@
     <Content Include="Scripts\bootstrap-multiselect.js" />
     <Content Include="Content\bootstrap-tokenfield\tokenfield-typeahead.less" />
     <Content Include="Content\bootstrap-tokenfield\bootstrap-tokenfield.less" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\bootstrap-tokenfield.js" />
     <None Include="Scripts\jquery-1.10.2-vsdoc.js" />
@@ -411,7 +415,6 @@
     <Content Include="Views\Rules\Index.cshtml" />
     <Content Include="Views\AlertTypes\Create.cshtml" />
     <Content Include="Views\AlertTypes\Delete.cshtml" />
-    <Content Include="Views\AlertTypes\Details.cshtml" />
     <Content Include="Views\AlertTypes\Edit.cshtml" />
     <Content Include="Views\AlertTypes\Index.cshtml" />
     <Content Include="Styles\scss\mixins\_position.scss" />
@@ -443,7 +446,6 @@
     <Content Include="Views\RuleCategories\Edit.cshtml" />
     <Content Include="Views\RuleCategories\Delete.cshtml" />
     <Content Include="Views\SupportCategories\Create.cshtml" />
-    <Content Include="Views\SupportCategories\Details.cshtml" />
     <Content Include="Views\SupportCategories\Delete.cshtml" />
     <Content Include="Views\SupportCategories\Edit.cshtml" />
     <Content Include="Views\Rules\Create.cshtml" />
