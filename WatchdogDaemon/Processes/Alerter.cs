@@ -127,6 +127,16 @@ namespace WatchdogDaemon.Processes
             {
                 Value = messageParameter.Value, MessageTypeParameterType = messageParameter.MessageTypeParameterType,
             }).ToList();
+
+            string notes = "";
+
+            if(rule.DefaultNotes != null)
+            {
+                foreach(DefaultNote note in rule.DefaultNotes)
+                {
+                    notes += note.Text + " ";
+                }
+            }
             
             return new Alert
             {
@@ -134,7 +144,7 @@ namespace WatchdogDaemon.Processes
                 AlertType = rule.AlertType,
                 AlertTypeId = rule.AlertTypeId,
                 Engine = message.Engine,
-                Notes = " ",
+                Notes = notes,
                 Origin = message.Origin,
                 Rule = rule,
                 RuleId = rule.Id,
