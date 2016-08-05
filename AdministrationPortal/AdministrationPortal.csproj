@@ -224,7 +224,9 @@
     <Compile Include="Controllers\RuleTemplatesController.cs" />
     <Compile Include="Controllers\SupportCategoriesController.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="ViewModels\AlertCategories\AlertCategoryDetailsViewModel.cs" />
     <Compile Include="ViewModels\AlertCategories\AlertCategoryCreateViewModel.cs" />
+    <Compile Include="ViewModels\AlertCategories\AlertCategoryEditViewModel.cs" />
     <Compile Include="ViewModels\Alerts\AlertDetailsViewModel.cs" />
     <Compile Include="ViewModels\Alerts\AlertPagingCreateView.cs" />
     <Compile Include="ViewModels\AbstractDeleteViewModel.cs" />

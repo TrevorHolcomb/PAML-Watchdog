@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AdministrationPortal.ViewModels.AlertCategories
 {
-    public class AlertCategoryCreateViewModel
+    public class AlertCategoryEditViewModel
     {
         public SelectList AlertTypes { get; set; }
         public List<int> SelectedAlertTypes { get; set; }
@@ -20,9 +20,9 @@ namespace AdministrationPortal.ViewModels.AlertCategories
         public String Origin { get; set; }
         [Required]
         public String Engine { get; set; }
-        
+        public AlertCategory AlertCategory { get; set; }
 
-        public AlertCategoryCreateViewModel()
+        public AlertCategoryEditViewModel()
         {
             this.SelectedAlertTypes = new List<int>();
         }

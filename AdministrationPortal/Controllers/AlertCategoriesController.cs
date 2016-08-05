@@ -38,7 +38,24 @@ namespace AdministrationPortal
             var alertCategory = AlertCategoryRepository.GetById(id);
             if (alertCategory == null)
                 throw new ArgumentNullException(nameof(alertCategory));
-            return View(alertCategory);
+            var alertCategoryItem = AlertCategoryItemRepository.Get().Where(a => a.AlertCategoryId == alertCategory.Id).First();
+            List<AlertType> alertCategoryAlertTypes = new List<AlertType>();
+            var alertCategoryItems = AlertCategoryItemRepository.Get().Where(a => a.AlertCategoryId == alertCategory.Id).ToList();
+            foreach(var categoryItem in alertCategoryItems)
+            {
+                var alertType = AlertTypeRepository.GetById(categoryItem.AlertTypeId);
+                alertCategoryAlertTypes.Add(alertType);
+            }
+            var viewModel = new AlertCategoryDetailsViewModel()
+            {
+                AlertCategory = alertCategory,
+                AlertTypes = alertCategoryAlertTypes,
+                Server = alertCategoryItem.Server,
+                Engine = alertCategoryItem.Engine,
+                Origin = alertCategoryItem.Origin
+            };
+            
+            return View(viewModel);
         }
 
         // GET: AlertCategories/Create
@@ -55,26 +72,57 @@ namespace AdministrationPortal
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CategoryName")] AlertCategory alertCategory)
+        public ActionResult Create(AlertCategoryCreateViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                AlertCategoryRepository.Insert(alertCategory);
+                var newCategory = new AlertCategory()
+                {
+                    CategoryName = viewModel.CategoryName
+                };
+
+                AlertCategoryRepository.Insert(newCategory);
                 AlertCategoryRepository.Save();
+                newCategory = AlertCategoryRepository.Get().Last();
+                foreach(var id in viewModel.SelectedAlertTypes)
+                {
+                    var newCategoryItem = new AlertCategoryItem()
+                    {
+                        Server = viewModel.Server,
+                        Engine = viewModel.Engine,
+                        Origin = viewModel.Origin,
+                        AlertTypeId = id,
+                        AlertCategoryId = newCategory.Id
+
+                    };
+                    AlertCategoryItemRepository.Insert(newCategoryItem);
+                    AlertCategoryItemRepository.Save();
+                }
                 return RedirectToAction("Index");
             }
-
-            return View(alertCategory);
+            viewModel.AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name");
+            viewModel.EngineList = new SelectList(EngineRepository.Get(), "Name", "Name");
+            return View(viewModel);
         }
 
         // GET: AlertCategories/Edit/5
         public ActionResult Edit(int id)
         {
-            
             var alertCategory = AlertCategoryRepository.GetById(id);
             if (alertCategory == null)
-                throw new ArgumentException($"No AlertCategory found with Id: {id}");
-            return View(alertCategory);
+                throw new ArgumentNullException(nameof(alertCategory));
+            var alertCategoryItem = AlertCategoryItemRepository.Get().Where(a => a.AlertCategoryId == alertCategory.Id).First();
+            var viewModel = new AlertCategoryEditViewModel()
+            {
+                AlertCategory = alertCategory,
+                AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
+                EngineList = new SelectList(EngineRepository.Get(), "Name", "Name"),
+                Server = alertCategoryItem.Server,
+                Origin = alertCategoryItem.Origin,
+                Engine = alertCategoryItem.Engine
+            };
+            
+            return View(viewModel);
         }
 
         // POST: AlertCategories/Edit/5
@@ -82,25 +130,65 @@ namespace AdministrationPortal
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,CategoryName")] AlertCategory alertCategory)
+        public ActionResult Edit(AlertCategoryEditViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                var alertCategory = AlertCategoryRepository.GetById(viewModel.AlertCategory.Id);
+                alertCategory.CategoryName = viewModel.AlertCategory.CategoryName;
+                var alertCategoryItems = AlertCategoryItemRepository.Get().Where(cat => cat.AlertCategoryId == viewModel.AlertCategory.Id);
+                foreach(var categoryItem in alertCategoryItems)
+                {
+                    AlertCategoryItemRepository.Delete(categoryItem);
+                    AlertCategoryItemRepository.Save();
+                }
+                foreach (var id in viewModel.SelectedAlertTypes)
+                {
+                    var newCategoryItem = new AlertCategoryItem()
+                    {
+                        Server = viewModel.Server,
+                        Engine = viewModel.Engine,
+                        Origin = viewModel.Origin,
+                        AlertTypeId = id,
+                        AlertCategoryId = alertCategory.Id
+
+                    };
+                    AlertCategoryItemRepository.Insert(newCategoryItem);
+                    AlertCategoryItemRepository.Save();
+                }
                 AlertCategoryRepository.Update(alertCategory);
                 AlertCategoryRepository.Save();
+
                 return RedirectToAction("Index");
             }
-            return View(alertCategory);
+            viewModel.AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name");
+            viewModel.EngineList = new SelectList(EngineRepository.Get(), "Name", "Name");
+            return View(viewModel);
         }
 
         // GET: AlertCategories/Delete/5
         public ActionResult Delete(int id)
-        {
-            
+        { 
             var alertCategory = AlertCategoryRepository.GetById(id);
             if (alertCategory == null)
-                throw new ArgumentException($"No AlertCategory found with Id: {id}");
-            return View(alertCategory);
+                throw new ArgumentNullException(nameof(alertCategory));
+            var alertCategoryItem = AlertCategoryItemRepository.Get().Where(a => a.AlertCategoryId == alertCategory.Id).First();
+            List<AlertType> alertCategoryAlertTypes = new List<AlertType>();
+            var alertCategoryItems = AlertCategoryItemRepository.Get().Where(a => a.AlertCategoryId == alertCategory.Id).ToList();
+            foreach (var categoryItem in alertCategoryItems)
+            {
+                var alertType = AlertTypeRepository.GetById(categoryItem.AlertTypeId);
+                alertCategoryAlertTypes.Add(alertType);
+            }
+            var viewModel = new AlertCategoryDetailsViewModel()
+            {
+                AlertCategory = alertCategory,
+                AlertTypes = alertCategoryAlertTypes,
+                Server = alertCategoryItem.Server,
+                Engine = alertCategoryItem.Engine,
+                Origin = alertCategoryItem.Origin
+            };
+            return View(viewModel);
         }
 
         // POST: AlertCategories/Delete/5
@@ -109,6 +197,12 @@ namespace AdministrationPortal
         public ActionResult DeleteConfirmed(int id)
         {
             var alertCategory = AlertCategoryRepository.GetById(id);
+            var alertCategoryItems = AlertCategoryItemRepository.Get().Where(cat => cat.AlertCategoryId == alertCategory.Id);
+            foreach(var categoryItem in alertCategoryItems)
+            {
+                AlertCategoryItemRepository.Delete(categoryItem);
+                AlertCategoryItemRepository.Save();
+            }
             AlertCategoryRepository.Delete(alertCategory);
             AlertCategoryRepository.Save();
             return RedirectToAction("Index");
