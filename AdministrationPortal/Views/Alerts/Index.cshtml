@@ -52,7 +52,7 @@
             }
 
 
-            <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id, Model.PageNo}))'">
+            <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id, StatusCode = item.AlertStatus.StatusCode.ToString(), lastModified = item.AlertStatus.MostRecent().Timestamp, Model.PageNo, sortOrder = Model.sortSelect}))'">
 
                 <td class="@cssClass ">
                     @Html.DisplayFor(modelItem => item.Severity)

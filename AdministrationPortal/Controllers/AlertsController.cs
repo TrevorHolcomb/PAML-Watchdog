@@ -84,30 +84,55 @@ namespace AdministrationPortal.Controllers
             }
 
             var checkGroup = new Hashtable();
+            var checkCategory = new Hashtable();
             var groupedAlerts = new List<Alert>();
-            foreach (var alert in alerts)
+
+            // checks to see if you are in the archived section
+            // Uses last modified to keep the category grouping once resolved
+            foreach(var alert in alerts)
             {
-                if(!checkGroup.Contains(alert.AlertGroupId))
+                if (alert.AlertGroup.AlertCategoryId != null && !checkGroup.Contains(alert.AlertGroupId))
+                {
+                    var alertCategory = alerts.Where(a => a.AlertGroup.AlertCategoryId == alert.AlertGroup.AlertCategoryId);
+                    if (ActiveOrArchived == "Resolved")
+                        alertCategory = alertCategory.Where(a => a.AlertStatus.MostRecent().Timestamp.ToString("MM/dd/yy H:mm").CompareTo(alert.AlertStatus.MostRecent().Timestamp.ToString("MM/dd/yy H:mm")) == 0);
+                    foreach (var alertInCategory in alertCategory)
+                    {
+                        if (!checkGroup.Contains(alertInCategory.AlertGroupId))
+                            checkGroup.Add(alertInCategory.AlertGroupId, alertInCategory.AlertGroupId);
+                    }
+                    groupedAlerts.Add(alert);
+                }
+                else if (alert.AlertGroup.AlertCategoryId == null && !checkGroup.Contains(alert.AlertGroupId))
                 {
                     groupedAlerts.Add(alert);
                     checkGroup.Add(alert.AlertGroupId, alert.AlertGroupId);
                 }
+                
             }
             
             return View(new AlertPagingCreateView(groupedAlerts.ToPagedList(No_Of_Page, Size_Of_Page), status, No_Of_Page));
         }
 
         // GET: Alerts/Details/5
-        public ActionResult Details(int id, int PageNo, String sortOrder)
+        public ActionResult Details(int id, String StatusCode, DateTime lastModified, int PageNo, String sortOrder)
         {
             var viewModel = new AlertDetailsViewModel(AlertRepository.GetById(id), PageNo, sortOrder);
             var groupedAlerts = AlertRepository.Get();
-
-            viewModel.Alert = AlertRepository.GetById(id);
+            
+            
             if (viewModel.Alert == null)
                 throw new ArgumentNullException(nameof(viewModel.Alert));
-
-            groupedAlerts = groupedAlerts.Where(a => a.AlertGroupId == viewModel.Alert.AlertGroupId && a.Id != viewModel.Alert.Id);
+            if (viewModel.Alert.AlertGroup.AlertCategoryId != null)
+            {
+                String myTempTime = lastModified.ToString("MM/dd/yy H:mm");
+                if (StatusCode == "Resolved")
+                    groupedAlerts = groupedAlerts.Where(a => a.AlertGroup.AlertCategoryId == viewModel.Alert.AlertGroup.AlertCategoryId && a.Id != viewModel.Alert.Id && a.AlertStatus.Timestamp.ToString("MM/dd/yy H:mm").CompareTo(lastModified.ToString("MM/dd/yy H:mm")) == 0);
+                else
+                    groupedAlerts = groupedAlerts.Where(a => a.AlertGroup.AlertCategoryId == viewModel.Alert.AlertGroup.AlertCategoryId && a.Id != viewModel.Alert.Id && a.AlertStatus.StatusCode.ToString() != "Resolved");
+            }
+            else
+                groupedAlerts = groupedAlerts.Where(a => a.AlertGroupId == viewModel.Alert.AlertGroupId && a.Id != viewModel.Alert.Id);
             
             viewModel.sortOrder = sortOrder;
             viewModel.PageNo = PageNo;
@@ -116,20 +141,7 @@ namespace AdministrationPortal.Controllers
             return View(viewModel);
         }
 
-        // POST: Alerts/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Payload,Timestamp,AlertTypeId,RuleId,Notes,Status")] Alert alert)
-        {
-            if (ModelState.IsValid)
-            {
-                AlertRepository.Insert(alert);
-                AlertRepository.Save();
-            }
-            return RedirectToAction("Index");
-        }
+       
 
         // GET: Alerts/Edit/5
         public ActionResult Edit(int id, int PageNo, String sortOrder)
@@ -153,8 +165,11 @@ namespace AdministrationPortal.Controllers
             {
                 var editedAlert = alertViewModel.Alert;
                 var groupedAlerts = AlertRepository.Get();
-                groupedAlerts = groupedAlerts.Where(a => a.AlertGroupId == editedAlert.AlertGroupId);
-
+                var oldAlertStatusHelper = AlertRepository.GetById(editedAlert.Id);
+                if(oldAlertStatusHelper.AlertStatus.StatusCode.ToString() == "Resolved")
+                    groupedAlerts = groupedAlerts.Where(a => a.AlertGroupId == editedAlert.AlertGroupId || (a.AlertGroup.AlertCategoryId != null && a.AlertGroup.AlertCategoryId == editedAlert.AlertGroup.AlertCategoryId && a.AlertStatus.MostRecent().Timestamp.ToString("MM/dd/yy H:mm").CompareTo(editedAlert.AlertStatus.MostRecent().Timestamp.ToString("MM/dd/yy H:mm")) == 0));
+                else
+                    groupedAlerts = groupedAlerts.Where(a => a.AlertGroupId == editedAlert.AlertGroupId || (a.AlertGroup.AlertCategoryId != null && a.AlertGroup.AlertCategoryId == editedAlert.AlertGroup.AlertCategoryId && a.AlertStatus.StatusCode.ToString() != "Resolved"));
                 foreach (var alert in groupedAlerts)
                 {
                     var alertInDb = AlertRepository.GetById(alert.Id);
@@ -195,55 +210,24 @@ namespace AdministrationPortal.Controllers
 
                         AlertRepository.Update(alertInDb);
                         AlertRepository.Save();
+                        var group = AlertGroupRepository.GetById(alert.AlertGroupId);
+                        if (editedAlert.AlertStatus.StatusCode.ToString().CompareTo("Resolved") == 0)
+                        {
+                            group.Resolved = true;
+                        }
+                        else
+                            group.Resolved = false;
+                        AlertGroupRepository.Update(group);
+                        AlertGroupRepository.Save();
                     }
                 }
 
-                var group = AlertGroupRepository.GetById(editedAlert.AlertGroupId);
-                if (editedAlert.AlertStatus.StatusCode.ToString().CompareTo("Resolved") == 0)
-                {
-                    group.Resolved = true;
-                }
-                else
-                    group.Resolved = false;
-
-                AlertGroupRepository.Update(group);
-                AlertGroupRepository.Save();
-
                 return RedirectToAction("Index", new {ActiveOrArchived = editedAlert.AlertStatus.StatusCode.ToString() });
             }
-
+            
             return View(alertViewModel);
         }
 
-
-        //TODO: remove unused method
-        private Alert mapNewAlertOntoDbAlert(Alert newAlert)
-        {
-            var dbAlert = AlertRepository.GetById(newAlert.Id);
-            if (dbAlert == null)
-                throw new ArgumentException($"No Alert found with Id: {newAlert.Id}");
-            
-            var newStatus = new AlertStatus();
-            newStatus.ModifiedBy = "N/A";
-                    
-            //dbAlert.AlertStatus = newAlert.AlertStatus;
-            dbAlert.Severity = newAlert.Severity;
-            dbAlert.Notes = newAlert.Notes;
-            
-            return dbAlert;
-        }
-
-        //TODO: remove unused method
-        // POST: Alerts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            var alert = AlertRepository.GetById(id);
-            AlertRepository.Delete(alert);
-            AlertRepository.Save();
-            return RedirectToAction("Index");
-        }
 
         /// <summary>
         /// Called when an unhandled exception occurs in the action.

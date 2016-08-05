@@ -210,6 +210,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AlertCategoriesController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\NinjectWebCommon.cs" />
@@ -223,6 +224,7 @@
     <Compile Include="Controllers\RuleTemplatesController.cs" />
     <Compile Include="Controllers\SupportCategoriesController.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="ViewModels\AlertCategories\AlertCategoryCreateViewModel.cs" />
     <Compile Include="ViewModels\Alerts\AlertDetailsViewModel.cs" />
     <Compile Include="ViewModels\Alerts\AlertPagingCreateView.cs" />
     <Compile Include="ViewModels\AbstractDeleteViewModel.cs" />
@@ -472,6 +474,11 @@
     <Content Include="Views\RuleTemplates\PartialDetails.cshtml" />
     <Content Include="Views\RuleTemplates\Edit.cshtml" />
     <Content Include="Views\RuleTemplates\Delete.cshtml" />
+    <Content Include="Views\AlertCategories\Create.cshtml" />
+    <Content Include="Views\AlertCategories\Delete.cshtml" />
+    <Content Include="Views\AlertCategories\Details.cshtml" />
+    <Content Include="Views\AlertCategories\Edit.cshtml" />
+    <Content Include="Views\AlertCategories\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

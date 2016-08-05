@@ -125,7 +125,7 @@
     </dl>
 </div>
 <div class="col-md-offset-1">
-    @Html.ActionLink("Edit Alert", "Edit", new { id = (int)Model.Alert.Id, Model.PageNo, Model.sortOrder }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Edit Alert", "Edit", new { id = (int)Model.Alert.Id, PageNo = Model.PageNo, Model.sortOrder }, new { @class = "btn btn-default" })
     @Html.ActionLink("Back to List", "Index", new { ActiveOrArchived = Model.Alert.AlertStatus.MostRecent().StatusCode.ToString(), Page_No = Model.PageNo, sortOrder = Model.sortOrder }, new { @class = "btn btn-default" })
 </div>
 <br />
@@ -155,7 +155,7 @@
                 }
 
 
-                <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id, Model.PageNo}))'">
+                <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id,StatusCode = item.AlertStatus.StatusCode.ToString(), lastModified = item.AlertStatus.MostRecent().Timestamp, Model.PageNo, sortOrder = Model.sortOrder}))'">
 
                     <td class="@cssClass ">
                         @Html.DisplayFor(modelItem => item.Severity)
