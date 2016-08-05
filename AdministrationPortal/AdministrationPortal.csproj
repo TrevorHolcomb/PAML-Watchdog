@@ -217,7 +217,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AlertsController.cs" />
     <Compile Include="Controllers\AlertTypesController.cs" />
-    <Compile Include="Controllers\ExpressionBuilderAPIController.cs" />
+    <Compile Include="Controllers\MessageTypeParameterTypeAPIController.cs" />
     <Compile Include="Controllers\RegisteredEnginesController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\RuleCategoriesController.cs" />

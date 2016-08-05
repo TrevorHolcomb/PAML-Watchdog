@@ -83,7 +83,13 @@
   <ItemGroup>
     <Compile Include="Exceptions\InvalidParameterException.cs" />
     <Compile Include="Processes\IProcess.cs" />
-    <Compile Include="RuleEngine\ExpressionEvaluatorEngine\ExpressionCompiler.cs" />
+    <Compile Include="RuleEngine\ExpressionCompiler\Compiler.cs" />
+    <Compile Include="RuleEngine\ExpressionCompiler\InternalNode.cs" />
+    <Compile Include="RuleEngine\ExpressionCompiler\Leaf.cs" />
+    <Compile Include="RuleEngine\ExpressionCompiler\LeafTypeHelpers\ITypeHandler.cs" />
+    <Compile Include="RuleEngine\ExpressionCompiler\LeafTypeHelpers\StringTypeHandler.cs" />
+    <Compile Include="RuleEngine\ExpressionCompiler\LeafTypeHelpers\TypeHandlerList.cs" />
+    <Compile Include="RuleEngine\ExpressionCompiler\Node.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\BooleanTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\DateTimeTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\DecimalTypeHandler.cs" />
@@ -92,7 +98,6 @@
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\ExceptionTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\IntegerTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypeHandlers\TypeHandlerList.cs" />
-    <Compile Include="RuleEngine\ExpressionEvaluatorEngine\TypesSupported.cs" />
     <Compile Include="RuleEngine\IRuleEngine.cs" />
     <Compile Include="Processes\Alerter.cs" />
     <Compile Include="Program.cs" />

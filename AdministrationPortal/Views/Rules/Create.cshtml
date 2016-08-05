@@ -84,7 +84,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Expression, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <div id="builder-basic"></div>
+                <div id="builder"></div>
             </div>
 
         </div>
@@ -288,15 +288,15 @@
             }
         }
 
-        var url = "@Url.HttpRouteUrl("DefaultApi", new {controller = "ExpressionBuilderAPI"})";
+        var url = "@Url.HttpRouteUrl("DefaultApi", new {controller = "MessageTypeParameterTypeAPI"})";
         function onMessageTypeChange(controller) {
-            $("#builder-basic").empty();
+            $("#builder").empty();
 
             $.get(url + "/" + controller.value,
             function(ret) {
                 var filters = filtersFromParameterList(ret);
 
-                $('#builder-basic').queryBuilder({
+                $('#builder').queryBuilder({
                     plugins: ['bt-tooltip-errors'],
                     filters: filters
                 });
@@ -305,7 +305,7 @@
 
         $("input[type='submit']")
             .click(function() {
-                $("input[name='Expression']").val(JSON.stringify($('#builder-basic').queryBuilder('getRules')));
+                $("input[name='Expression']").val(JSON.stringify($('#builder').queryBuilder('getRules')));
             });
 
     </script>

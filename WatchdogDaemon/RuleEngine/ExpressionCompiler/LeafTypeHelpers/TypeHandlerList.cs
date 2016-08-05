@@ -1,0 +1,44 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace WatchdogDaemon.RuleEngine.ExpressionCompiler.LeafTypeHelpers
+{
+    /// <summary>
+    /// The TypeHandlerList acts as a centralized list of all supported TypeHandlers for expression tree conversion, and allows for the building of string expressions.
+    /// </summary>
+    public class TypeHandlerList
+    {
+        public static ICollection<ITypeHandler> Types = new List<ITypeHandler>
+        {
+            new StringTypeHandler()
+        };
+
+        /// <summary>
+        /// BuildExpression delegates the act of building the expression to a TypeHandler in its registry. It delegates to the TypeHandler whose Name is the same as the parameter type.
+        /// </summary>
+        /// <param name="type">The name of the TypeHandler to be called.</param>
+        /// <param name="name">The name of the parameter</param>
+        /// <param name="operatorString">The name of the operator being used.</param>
+        /// <param name="value">The constant value being compared.</param>
+        /// <returns>Returns the Built expression</returns>
+        public static string BuildExpression(string type, string name, string operatorString, string value)
+        {
+            return Types.Single(e => e.GetName().Equals(type)).BuildExpression(name, operatorString, value);
+        }
+
+
+        /// <summary>
+        /// BuildExpression delegates the act of building the expression to a TypeHandler in its registry. It delegates to the TypeHandler whose Name is the same as the parameter type.
+        /// </summary>
+        /// <param name="type">The name of the TypeHandler to be called.</param>
+        /// <param name="name">The name of the parameter</param>
+        /// <param name="operatorString">The name of the operator being used.</param>
+        /// <param name="valueOne">The first constant value being compared.</param>
+        /// <param name="valueTwo">The second constant value being compared.</param>
+        /// <returns>Returns the Built expression</returns>
+        public static string BuildExpression(string type, string name, string operatorString, string valueOne, string valueTwo)
+        {
+            return Types.Single(e => e.GetName().Equals(type)).BuildExpression(name, operatorString, valueOne, valueTwo);
+        }
+    }
+}

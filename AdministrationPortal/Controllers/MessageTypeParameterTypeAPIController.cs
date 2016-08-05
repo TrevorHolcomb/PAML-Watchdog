@@ -13,7 +13,7 @@ using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace AdministrationPortal.Controllers
 {
-    public class ExpressionBuilderAPIController : ApiController
+    public class MessageTypeParameterTypeAPIController : ApiController
     {
         public class MessageTypeParameterTypeExchange
         {
@@ -36,21 +36,6 @@ namespace AdministrationPortal.Controllers
         {
             var collection = MessageTypeRepository.GetByName(id).MessageTypeParameterTypes.Select(e => new MessageTypeParameterTypeExchange(e.Name, e.Type));
             return Json(collection);
-        }
-
-        // POST: api/MessageTypesAPI
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT: api/MessageTypesAPI/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/MessageTypesAPI/5
-        public void Delete(int id)
-        {
         }
     }
 }
