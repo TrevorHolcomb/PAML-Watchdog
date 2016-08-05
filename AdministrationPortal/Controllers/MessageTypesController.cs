@@ -74,7 +74,7 @@ namespace AdministrationPortal.Controllers
 
         private List<MessageTypeParameterType> GetParameterTypes(CreateMessageTypeViewModel viewModel)
         {
-            List<MessageTypeParameterType> messageTypeParameterTypes = new List<MessageTypeParameterType>();
+            var messageTypeParameterTypes = new List<MessageTypeParameterType>();
 
             for (int i = 0; i < viewModel.ParameterNames.Count; i++)
             {

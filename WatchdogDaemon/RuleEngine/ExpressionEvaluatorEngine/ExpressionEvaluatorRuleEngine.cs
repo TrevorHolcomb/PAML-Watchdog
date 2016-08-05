@@ -86,11 +86,13 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
         {
             if (_compiledExpressions.ContainsKey(expression))
             {
-                var ce = _compiledExpressions[expression] as CompiledExpression;
-                _compiledExpressions.Add(expression, ce);
+                return _compiledExpressions[expression] as CompiledExpression;
             }
 
-            return new CompiledExpression(expression);
+            var ce = new CompiledExpression(expression);
+            _compiledExpressions.Add(expression, ce);
+
+            return ce;
         }
     }
 }
