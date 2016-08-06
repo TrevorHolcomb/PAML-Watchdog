@@ -218,6 +218,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AlertsController.cs" />
     <Compile Include="Controllers\AlertTypesController.cs" />
+    <Compile Include="Controllers\MessageTypeParameterTypeAPIController.cs" />
     <Compile Include="Controllers\RegisteredEnginesController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\RuleCategoriesController.cs" />
@@ -270,7 +271,6 @@
     <Content Include="Content\font-awesome\css\font-awesome.css" />
     <Content Include="Content\font-awesome\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.svg" />
-    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\img\help\setup-db\step-10.PNG" />
     <Content Include="Content\img\help\setup-db\step-11.PNG" />
     <Content Include="Content\img\help\setup-db\step-12.PNG" />
@@ -339,6 +339,8 @@
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\query-builder-adapter.js" />
+    <Content Include="Scripts\query-builder.standalone.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
@@ -387,14 +389,11 @@
     <Content Include="Content\font-awesome\scss\_spinning.scss" />
     <Content Include="Content\font-awesome\scss\_stacked.scss" />
     <Content Include="Content\font-awesome\scss\_variables.scss" />
-    <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Styles\css\query-builder.css" />
     <Content Include="Styles\css\site.css" />
     <Content Include="Styles\css\site.min.css" />
     <Content Include="Web.config" />
@@ -482,6 +481,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\fonts\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

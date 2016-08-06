@@ -72,8 +72,27 @@ namespace AdministrationPortal.Controllers
             MessageTypeRepository.Insert(messageType);
             MessageTypeRepository.Save();
             MessageTypeParameterTypeRepository.Save();
-
             return RedirectToAction("Index");
+        }
+
+        private List<MessageTypeParameterType> GetParameterTypes(CreateMessageTypeViewModel viewModel)
+        {
+            var messageTypeParameterTypes = new List<MessageTypeParameterType>();
+
+            for (int i = 0; i < viewModel.ParameterNames.Count; i++)
+            {
+                if (!viewModel.ParametersEnabled[i])
+                    continue;
+
+                messageTypeParameterTypes.Add(new MessageTypeParameterType
+                {
+                    Name = viewModel.ParameterNames[i],
+                    Type = viewModel.ParameterTypes[i],
+                    Required = viewModel.ParametersRequired[i]
+                });
+            }
+
+            return messageTypeParameterTypes;
         }
 
         // GET: MessageTypes/Delete/1
@@ -187,26 +206,6 @@ namespace AdministrationPortal.Controllers
 
             // Redirect on error:
             filterContext.Result = RedirectToAction("Index");
-        }
-
-        private static List<MessageTypeParameterType> GetParameterTypes(CreateMessageTypeViewModel viewModel)
-        {
-            var messageTypeParameterTypes = new List<MessageTypeParameterType>();
-
-            for (int i = 0; i < viewModel.ParameterNames.Count; i++)
-            {
-                if (!viewModel.ParametersEnabled[i])
-                    continue;
-
-                messageTypeParameterTypes.Add(new MessageTypeParameterType
-                {
-                    Name = viewModel.ParameterNames[i],
-                    Type = viewModel.ParameterTypes[i],
-                    Required = viewModel.ParametersRequired[i]
-                });
-            }
-
-            return messageTypeParameterTypes;
         }
 
         protected override void Dispose(bool disposing)

@@ -16,8 +16,9 @@
     <div class="form-horizontal">
         <h4>Rule</h4>
         <hr/>
-        
+
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <!-- Rule Name -->
         <div class="form-group">
             @Html.LabelFor(model => model.Name, "Rule Name", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -26,6 +27,7 @@
             </div>
         </div>
 
+        <!-- Description -->
         <div class="form-group">
             @Html.LabelFor(model => model.Description, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
@@ -34,6 +36,7 @@
             </div>
         </div>
 
+        <!-- Engine -->
         <div class="form-group">
             @Html.LabelFor(model => model.Engine, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
@@ -42,6 +45,7 @@
             </div>
         </div>
 
+        <!-- Origin -->
         <div class="form-group">
             @Html.LabelFor(model => model.Origin, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
@@ -50,6 +54,7 @@
             </div>
         </div>
 
+        <!-- Server -->
         <div class="form-group">
             @Html.LabelFor(model => model.Server, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -58,6 +63,7 @@
             </div>
         </div>
 
+        <!-- Created By -->
         <div class="form-group">
             @Html.LabelFor(model => model.RuleCreator, "Created by", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -66,14 +72,22 @@
             </div>
         </div>
 
+        <!-- Expression -->
+        <div class="form-group hidden">
+            @Html.LabelFor(model => model.Expression, htmlAttributes: new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Expression, new {htmlAttributes = new {@class = "form-control", id = "Expression"}})
+                @Html.ValidationMessageFor(model => model.Expression, "", new {@class = "text-danger"})
+            </div>
+        </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Expression, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Expression, new { htmlAttributes = new { @class = "form-control", id = "Expression" } })
-                @Html.ValidationMessageFor(model => model.Expression, "", new { @class = "text-danger" })
+                <div id="builder"></div>
             </div>
         </div>
 
+        <!-- Default Severity -->
         <div class="form-group">
             @Html.LabelFor(model => model.DefaultSeverity, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -105,6 +119,7 @@
             </div>
         </div>
 
+        <!-- Note Body -->
         <div class="form-group">
             <div class="control-label col-md-2">
                 @Html.Label("", "Add New Default Notes", htmlAttributes: new { @class = "label-defaultNotes" })
@@ -116,7 +131,7 @@
                     <div class="multiple-form-group-new" style="margin-bottom: 15px; @style">
                         @Html.HiddenFor(model => model.NewNotesEnabled[p], htmlAttributes: new { @class = "parameter-enabled" })
                         <div class="input-group">
-                            @Html.EditorFor(model => model.NewDefaultNotes[p], new { htmlAttributes = new { @class = "text-box form-control", type = "text", @placeholder = "Enter New Notes Here" } })
+                            @Html.EditorFor(model => model.NewDefaultNotes[p], new { htmlAttributes = new { @class = "text-box form-control", type = "text", placeholder = "Enter New Notes Here" } })
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-danger btn-remove-new">-</button>
                             </span>
@@ -127,6 +142,7 @@
         </div>
         <!--END MULTIPLE NOTES-->
 
+        <!-- Alert Type -->
         <div class="form-group">
             @Html.LabelFor(model => model.AlertTypeId, "Alert Type", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -135,14 +151,16 @@
             </div>
         </div>
 
+        <!-- Message Type -->
         <div class="form-group">
             @Html.LabelFor(model => model.MessageTypeName, "Message Type", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.MessageTypeName, Model.RuleOptions.MessageTypes, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.MessageTypeName, Model.RuleOptions.MessageTypes, htmlAttributes: new { @class = "form-control", onchange="onMessageTypeChange(this)", id="message-type" })
                 @Html.ValidationMessageFor(model => model.MessageTypeName, "", new { @class = "text-danger" })
             </div>
         </div>
 
+        <!-- Rule Category -->
         <div class="form-group">
             @Html.LabelFor(model => model.RuleCategoryIds, "RuleCategoryIds", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -158,6 +176,7 @@
             </div>
         </div>
 
+        <!-- Support Category -->
         <div class="form-group">
             @Html.LabelFor(model => model.SupportCategoryId, "Support Category", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -172,7 +191,6 @@
             </div>
         </div>
     </div>
-
 }
 
 <div>
@@ -183,26 +201,9 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/Scripts/bootstrap-multiselect.js")
 
-    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/codemirror.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/mode/javascript/javascript.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/codemirror.css">
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/addon/lint/json-lint.js"></script>
-    <script src="//ajax.aspnetcdn.com/ajax/jshint/r07/jshint.js"></script>
-    <script src="https://rawgithub.com/zaach/jsonlint/79b553fb65c192add9066da64043458981b3972b/lib/jsonlint.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/addon/lint/lint.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.2/addon/lint/lint.css">-->
-
-    <!--<script type="text/javascript">
-        $(document).ready(function () {
-            CodeMirror.fromTextArea($('#Expression')[0], {
-                lineNumbers: true,
-                mode: "application/json",
-                gutters: ["CodeMirror-lint-markers"],
-                lineNumbers: true,
-                lint: true
-            });
-        });
-    </script>-->
+    @Scripts.Render("~/Scripts/query-builder.standalone.js")
+    @Styles.Render("~/Styles/css/query-builder.css")
+    @Scripts.Render("~/Scripts/query-builder-adapter.js")
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -233,10 +234,16 @@
 
             makeLastVisibleButtonGreenNewNotes();
             makeLastVisibleButtonGreenSelectedNotes();
+
+            // When the page loads bind the form submit onClick to evaluate the queryBuilder and replace the input named Expression with the expression from the queryBuilder.
+            onMessageTypeChange($('#message-type')[0]);
+            $("input[type='submit']").click(function () {
+                $("input[name='Expression']").val(JSON.stringify($('#builder').queryBuilder('getRules')));
+            });
         });
 
         //Toggle last visible button for added notes
-        var makeLastVisibleButtonGreenNewNotes = function () {
+        function makeLastVisibleButtonGreenNewNotes() {
             var $lastEnabled = $('.addedNotes').find('.parameter-enabled').filter("[value='True']").last();
             var $lastButton = $lastEnabled.next('.input-group').find('.btn');
             $lastButton.removeClass('btn-danger btn-remove-new');
@@ -244,7 +251,7 @@
         };
 
         //Toggle last visible button for selected notes
-        var makeLastVisibleButtonGreenSelectedNotes = function () {
+        function makeLastVisibleButtonGreenSelectedNotes() {
             var $lastEnabled = $('.selectedNotes').find('.parameter-enabled').filter("[value='True']").last();
             var $lastButton = $lastEnabled.next('.input-group').find('.btn');
             $lastButton.removeClass('btn-danger btn-remove-selected');
@@ -252,7 +259,7 @@
         };
 
         //add selected note group
-        var addSelectedFormGroup = function (event) {
+        function addSelectedFormGroup(event) {
             event.preventDefault();
 
             var $multipleFormGroupSelected = $(this).closest('.multiple-form-group-selected');
@@ -273,7 +280,7 @@
         };
 
         //remove selected note group
-        var removeSelectedFormGroup = function (event) {
+        function removeSelectedFormGroup(event) {
             event.preventDefault();
 
             var $multipleFormGroupSelected = $(this).closest('.multiple-form-group-selected');
@@ -292,7 +299,7 @@
         };
 
         //add new note group
-        var addNewFormGroup = function (event) {
+        function addNewFormGroup(event) {
             event.preventDefault();
 
             var $multipleFormGroupNew = $(this).closest('.multiple-form-group-new');
@@ -313,7 +320,7 @@
         };
 
         //remove new note group
-        var removeNewFormGroup = function (event) {
+        function removeNewFormGroup(event) {
             event.preventDefault();
 
             var $multipleFormGroupNew = $(this).closest('.multiple-form-group-new');
@@ -330,6 +337,24 @@
             });
             makeLastVisibleButtonGreenNewNotes();
         };
-        
+
+        function onMessageTypeChange(controller) {
+            renderQueryBuilder(controller.value);
+        }
+
+        // Deletes the queryBuilder and places a new one in its place with the specified messageType.
+        function renderQueryBuilder(messageType) {
+            var url = "@Url.HttpRouteUrl("DefaultApi", new {controller = "MessageTypeParameterTypeAPI"})";
+            $.get(url + "/" + messageType,
+            function (ret) {
+                $("#builder").empty();
+                $("#builder").queryBuilder('destroy');
+
+                $('#builder').queryBuilder({
+                    plugins: ['bt-tooltip-errors'],
+                    filters: filtersFromParameterList(ret)
+                });
+            });
+        }
     </script>
 }
