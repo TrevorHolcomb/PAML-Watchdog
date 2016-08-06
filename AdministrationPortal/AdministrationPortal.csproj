@@ -397,7 +397,6 @@
     <Content Include="Scripts\_references.js" />
     <Content Include="Styles\css\site.css" />
     <Content Include="Styles\css\site.min.css" />
-    <Content Include="Styles\css\UserPortalSite.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
