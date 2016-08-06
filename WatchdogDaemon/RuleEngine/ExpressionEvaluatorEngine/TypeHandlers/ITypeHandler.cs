@@ -5,7 +5,7 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers
     /// <summary>
     /// An ITypeHandler binds a message parameter to the scope for a CompileExpression.
     /// </summary>
-    internal interface ITypeHandler
+    public interface ITypeHandler
     {
         /// <summary>
         /// Returns the name of the TypeHandler. This is used to match a TypeHandler to a message parameter.

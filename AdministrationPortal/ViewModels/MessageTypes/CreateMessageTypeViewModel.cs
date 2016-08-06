@@ -4,7 +4,7 @@ using System.Web.Mvc;
 using System.Linq;
 using WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine;
 using System;
-
+using WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers;
 
 namespace AdministrationPortal.ViewModels.MessageTypes
 {
@@ -34,7 +34,7 @@ namespace AdministrationPortal.ViewModels.MessageTypes
         {
             Name = name;
             Description = description;
-            SupportedParameterTypes = new SelectList(TypesSupported.Types);
+            SupportedParameterTypes = new SelectList(TypeHandlerList.TypeHandlers.Select(e => e.GetTypeName()));
             ParameterTypes = new List<ParameterType>();
             ParameterNames = new List<ParameterName>();
             ParametersRequired = new List<bool>();
@@ -75,8 +75,8 @@ namespace AdministrationPortal.ViewModels.MessageTypes
             if (duplicateKeys.Count() != 0)
                 results.Add(new ValidationResult("Parameter Names must be unique."));
 
-            foreach (ParameterType parameterType in ParameterTypes)
-                if (!TypesSupported.Types.Contains(parameterType))
+            foreach (var parameterType in ParameterTypes)
+                if (!TypeHandlerList.TypeHandlers.Select(e => e.GetTypeName()).Contains(parameterType.Value))
                     results.Add(new ValidationResult("Unsupported parameter Type: " + parameterType.Value));
 
             return results;

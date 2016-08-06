@@ -15,7 +15,18 @@ namespace WatchdogDaemon.Tests
                 new StandardRuleEngine(),
                 new Rule
                 {
-                    Expression = "queueSize > 1000"
+                    Expression = 
+@"{
+    condition:""AND"",
+    rules:[
+        {
+            ""id"":""queueSize"",
+            ""operator"":""greater"",
+            ""value"":""100"",
+            ""type"":""integer""
+        }
+    ]
+}"
                 },
                 new List<Message> {
                     new Message
@@ -56,7 +67,18 @@ namespace WatchdogDaemon.Tests
                 new StandardRuleEngine(),
                 new Rule
                 {
-                    Expression = "queueSize > 1000"
+                    Expression = 
+@"{
+    condition:""AND"",
+    rules:[
+        {
+            ""id"":""queueSize"",
+            ""operator"":""greater"",
+            ""value"":""1000"",
+            ""type"":""integer""
+        }
+    ]
+}"
                 },
                 new List<Message> {
                     new Message
