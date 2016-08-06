@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web.Mvc;
-using System.Web.WebPages;
+using System.Web.Routing;
 using AdministrationPortal.ViewModels.RuleTemplates;
 using Ninject;
-using WatchdogDatabaseAccessLayer;
+using NLog;
+using AdministrationPortal.Extensions;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using WebGrease.Css.Extensions;
@@ -28,35 +28,57 @@ namespace AdministrationPortal.Controllers
         [Inject]
         public Repository<Engine> EngineRepository { get; set; }
 
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         // GET: RuleTemplates
-        [HttpGet]
-        public ActionResult Index(int id = 0)
+        public ActionResult Index(int id = 0, string engine="", string origins="", string servers="", string timestamp="")
         {
+
             var viewModel = new ViewRuleTemplateViewModel()
             {
                 RuleTemplates = RuleTemplateRepository.Get()
             };
 
-            var ruleTemplateUsed = RuleTemplateRepository.GetById(id);
-            if (id > 0 && ruleTemplateUsed != null)
+            if(id < 0 )
+                throw new ArgumentException($"Invalid id: {id}");
+
+            if (id != 0)
             {
+
+                var ruleTemplateUsed = RuleTemplateRepository.GetById(id);
+                if (ruleTemplateUsed == null)
+                    throw new ArgumentException($"No RuleTemplate found with Id: {id}");
+
+                if (engine == "")
+                    throw new ArgumentNullException(nameof(engine));
+                if (origins == "")
+                    throw new ArgumentNullException(nameof(origins));
+                if (servers == "")
+                    throw new ArgumentNullException(nameof(servers));
+                if (timestamp == "")
+                    throw new ArgumentNullException(nameof(timestamp));
+
+                var numRulesUsed = RuleRepository.Get()
+                    .Count(r => ConcatTimeEquals(ConcatTime(r.Timestamp), timestamp));
+
                 viewModel.RuleTemplateInstantiated = ruleTemplateUsed;
                 viewModel.InfoMessageHidden = false;
-                viewModel.NumberOfRulesInstantiated = GetLastInstantiatedRules(ruleTemplateUsed).Count();
+                viewModel.NumberOfRulesInstantiated = numRulesUsed;
+                viewModel.EngineUsed = engine;
+                viewModel.OriginsUsed = origins;
+                viewModel.ServersUsed = servers;
+                viewModel.Timestamp = timestamp;
             }
+
             return View(viewModel);
         }
 
         // GET: RuleTemplates/Details/5
-        [HttpGet]
         public ActionResult Details(int id)
         {
-            if (id <= 0)
-                RedirectToAction("Index");
-
             var ruleTemplate = RuleTemplateRepository.GetById(id);
             if (ruleTemplate == null)
-                return HttpNotFound("No RuleTemplate found with id " + id);
+                throw new ArgumentException($"No RuleTemplate found with Id: {id}");
 
             var viewModel = BuildDetailsViewModel(ruleTemplate);
             return View(viewModel);
@@ -65,9 +87,14 @@ namespace AdministrationPortal.Controllers
         // GET: RuleTemplates/Create
         public ActionResult Create()
         {
-            var viewModel = new CreateRuleTemplateViewModel();
             var rules = RuleRepository.Get().ToList();
-            viewModel.Rules = GetUniqueRules(rules).ToList();
+            var viewModel = new CreateRuleTemplateViewModel()
+            {
+                Rules = GetUniqueRules(rules).ToList(),
+                Engines = rules.Select(r => r.Engine).GetUnique().ToCSV(),
+                Origins = rules.Select(r => r.Origin).GetUnique().ToCSV(),
+                Servers = rules.Select(r => r.Server).GetUnique().ToCSV()
+            };
 
             return View(viewModel);
         }
@@ -77,8 +104,12 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreateRuleTemplateViewModel viewModel)
         {
-            var ruleIdsToAdd = viewModel.Rules.Where((r, index) => viewModel.RulesIncluded.ElementAt(index)).Select(r => r.Id);
-            var templatedRulesToAdd = ruleIdsToAdd.Select(id => RuleRepository.GetById(id).ToTemplate());
+            var ruleIdsToAdd = viewModel.Rules
+                .Where((r, index) => viewModel.RulesIncluded.ElementAt(index))
+                .Select(r => r.Id);
+
+            var templatedRulesToAdd = ruleIdsToAdd
+                .Select(id => RuleRepository.GetById(id).ToTemplate());
 
             var ruleTemplate = new RuleTemplate()
             {
@@ -89,14 +120,7 @@ namespace AdministrationPortal.Controllers
             };
 
             RuleTemplateRepository.Insert(ruleTemplate);
-            try
-            {
-                RuleTemplateRepository.Save();
-            }
-            catch (DbEntityValidationException deve)
-            {
-                throw new FormattedDbEntityValidationException(deve);
-            }
+            RuleTemplateRepository.Save();
 
             var ruleTemplateInDb = RuleTemplateRepository.Get()
                 .First(rt => rt.LastUsedOn == ruleTemplate.LastUsedOn
@@ -108,14 +132,15 @@ namespace AdministrationPortal.Controllers
         }
 
         // GET: RuleTemplates/Edit/5
-        [HttpGet]
         public ActionResult Edit(int id)
         {           
-            if (id <= 0)
-                RedirectToAction("Index");
-
             var ruleTemplate = RuleTemplateRepository.GetById(id);
+
+            if (ruleTemplate == null)
+                throw new ArgumentException($"No RuleTemplate found with Id: {id}");
+
             var templatedRules = ruleTemplate.TemplatedRules.ToList();
+
             var rules = GetUniqueRules(RuleRepository.Get())
                 .Where(r => !templatedRules.Any(r.EqualsTemplatedRule)).ToList();
 
@@ -132,62 +157,64 @@ namespace AdministrationPortal.Controllers
             };
 
             rules.ForEach(r => viewModel.RulesIncluded.Add(false));
-            ruleTemplate.TemplatedRules.ForEach(tr => viewModel.TemplatedRulesIncluded.Add(true));
+            ruleTemplate.TemplatedRules
+                .ForEach(tr => viewModel.TemplatedRulesIncluded.Add(true));
 
             return View(viewModel);
         }
 
         // POST: RuleTemplates/Edit/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(EditRuleTemplateViewModel viewModel) 
         {
-            try
-            {
-                //Get the selected TemplatedRules
-                var ruleTemplateInDb = RuleTemplateRepository.GetById(viewModel.Id);
-                var templatedRulesToInclude = new List<TemplatedRule>();
-                if (viewModel.TemplatedRules != null && viewModel.TemplatedRulesIncluded != null)
-                    templatedRulesToInclude = viewModel.TemplatedRules
-                        .Where((tr, index) => viewModel.TemplatedRulesIncluded.ElementAt(index))
-                        .Select(tr => TemplatedRuleRepository.GetById(tr.Id)).ToList();
+            //Get the selected TemplatedRules
+            var ruleTemplateInDb = RuleTemplateRepository.GetById(viewModel.Id);
 
-                //Get the selected Rules
-                var rulesToInclude = new List<Rule>();
-                if (viewModel.Rules != null && viewModel.RulesIncluded != null)
-                    rulesToInclude = viewModel.Rules
-                        .Where((r, index) => viewModel.RulesIncluded.ElementAt(index))
-                        .Select(r => RuleRepository.GetById(r.Id)).ToList();
+            if (ruleTemplateInDb == null)
+                throw new ArgumentException($"No RuleTemplate found with Id: {viewModel.Id}");
 
-                //Convert selected rules into TemplatedRules
-                templatedRulesToInclude.AddRange(rulesToInclude.Select(r => r.ToTemplate()));
+            var templatedRulesToInclude = viewModel.TemplatedRules
+                .Where((tr, index) => viewModel.TemplatedRulesIncluded.ElementAt(index))
+                .Select(tr => TemplatedRuleRepository.GetById(tr.Id)).ToList();
 
-                ruleTemplateInDb.Name = viewModel.Name;
-                ruleTemplateInDb.Description = viewModel.Description;
-                ruleTemplateInDb.TemplatedRules.Clear();
-                ruleTemplateInDb.TemplatedRules = templatedRulesToInclude;
+            var templatedRulesToExclude = viewModel.TemplatedRules
+                .Where((tr, index) => !viewModel.TemplatedRulesIncluded.ElementAt(index))
+                .Select(tr => TemplatedRuleRepository.GetById(tr.Id)).ToList();
+
+            //Get the selected Rules
+            var rulesToInclude = new List<Rule>();
+            if (viewModel.Rules != null && viewModel.RulesIncluded != null)
+                rulesToInclude = viewModel.Rules
+                    .Where((r, index) => viewModel.RulesIncluded.ElementAt(index))
+                    .Select(r => RuleRepository.GetById(r.Id)).ToList();
+
+            //Convert selected rules into TemplatedRules
+            templatedRulesToInclude.AddRange(rulesToInclude.Select(r => r.ToTemplate()));
+
+            ruleTemplateInDb.Name = viewModel.Name;
+            ruleTemplateInDb.Description = viewModel.Description;
+            ruleTemplateInDb.TemplatedRules.Clear();
+            ruleTemplateInDb.TemplatedRules = templatedRulesToInclude;
+
+            TemplatedRuleRepository.DeleteRange(templatedRulesToExclude);
+            TemplatedRuleRepository.Save();
                 
-                RuleTemplateRepository.Update(ruleTemplateInDb);
-                RuleTemplateRepository.Save();
+            RuleTemplateRepository.Update(ruleTemplateInDb);
+            RuleTemplateRepository.Save();
 
-                return RedirectToAction("Index");
-            }
-            catch 
-            {
-                return RedirectToAction("Index");
-            }
+            return RedirectToAction("Index");
+            
         }
 
         // GET: RuleTemplates/Delete/5
         [HttpGet]
         public ActionResult Delete(int id)
         {
-            if (id <= 0)
-                return HttpNotFound("No RuleTemplate found with id " + id);
-
             var ruleTemplate = RuleTemplateRepository.GetById(id);
 
             if (ruleTemplate == null)
-                return HttpNotFound("No RuleTemplate found with id " + id);
+                throw new ArgumentException($"No RuleTemplate found with Id: {id}");
 
             var viewModel = BuildDetailsViewModel(ruleTemplate);
             return View(viewModel);
@@ -195,15 +222,13 @@ namespace AdministrationPortal.Controllers
 
         // POST: RuleTemplates/Delete/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            if (id <= 0)
-                return HttpNotFound("No RuleTemplate found with id " + id);
-
             var ruleTemplate = RuleTemplateRepository.GetById(id);
 
             if (ruleTemplate == null)
-                return HttpNotFound("No RuleTemplate found with id " + id);
+                throw new ArgumentException($"No RuleTemplate found with Id: {id}");
 
             var templatedRulesIds = ruleTemplate.TemplatedRules.Select(tr => tr.Id);
 
@@ -214,29 +239,30 @@ namespace AdministrationPortal.Controllers
             TemplatedRuleRepository.Save();
             RuleTemplateRepository.Delete(ruleTemplate);
             RuleTemplateRepository.Save();
+
             return RedirectToAction("Index");
         }
 
         // GET: RuleTemplates/Use/5
-        [HttpGet]
         public ActionResult Use(int id)
         {
-            if (id <= 0)
-                RedirectToAction("Index");
-
             var ruleTemplate = RuleTemplateRepository.GetById(id);
+
             if (ruleTemplate == null)
-                return HttpNotFound("No RuleTemplate found with id " + id);
+                throw new ArgumentException($"No RuleTemplate found with Id: {id}");
 
             var viewModel = BuildDetailsViewModel(ruleTemplate);
             viewModel.RegisteredEngines = new SelectList(EngineRepository.Get().Select(e => e.Name).ToList());
+            viewModel.OriginServerTuples = new List<KeyValuePair<string, string>>();
+            viewModel.TemplateInstantiator = viewModel.RuleTemplate.Name;
 
             return View(viewModel);
         }
 
         // POST: RuleTemplates/Use/5
         [HttpPost]
-        public ActionResult Use(DetailsRuleTemplateViewModel viewModel)
+        [ValidateAntiForgeryToken]
+        public ActionResult Use(UseRuleTemplateViewModel viewModel)
         {
             viewModel.RegisteredEngines = new SelectList(EngineRepository.Get().Select(e => e.Name).ToList());
             viewModel.RuleTemplate = RuleTemplateRepository.GetById(viewModel.RuleTemplateId);
@@ -244,25 +270,33 @@ namespace AdministrationPortal.Controllers
             if (!ModelState.IsValid)
                 return View(viewModel);
 
-            var originServerTuples = BuildTuples(viewModel.Origins, viewModel.Servers);
             var ruleTemplate = viewModel.RuleTemplate;
-            var rules = BuildRulesFromTemplate(ref ruleTemplate, viewModel.Engine, originServerTuples);
+            var rules = BuildRulesFromTemplate(ref ruleTemplate, viewModel.Engine, viewModel.OriginServerTuples, viewModel.TemplateInstantiator);
 
             RuleRepository.InsertRange(rules);
             RuleRepository.Save();
 
-            ruleTemplate.LastEngine = viewModel.Engine;
-            ruleTemplate.LastOrigins = viewModel.OriginsString;
-            ruleTemplate.LastServers = viewModel.ServersString;
             RuleTemplateRepository.Update(ruleTemplate);
             RuleTemplateRepository.Save();
 
-            return RedirectToAction("Index", new { id = ruleTemplate.Id });
+            var lastOrigins = viewModel.OriginServerTuples.Select(kvp => kvp.Key).ToCSV();
+            var lastServers = viewModel.OriginServerTuples.Select(kvp => kvp.Value).ToCSV();
+
+            var dictionary = new
+            {
+                id = ruleTemplate.Id,
+                engine = viewModel.Engine,
+                origins = lastOrigins,
+                servers = lastServers,
+                timestamp = ConcatTime(ruleTemplate.LastUsedOn)
+            };
+
+            return RedirectToAction("Index", dictionary);
         }
 
         //AJAX method
         [HttpPost]
-        public string Undo(int id)
+        public string Undo(int id, string timestamp)
         {
             if (id <= 0)
                 return "Invalid RuleTemplate Id";
@@ -271,41 +305,46 @@ namespace AdministrationPortal.Controllers
             if (ruleTemplateToUndo == null)
                 return "RuleTemplate not found";
 
-            var rulesToDelete = GetLastInstantiatedRules(ruleTemplateToUndo).ToList();
+            var rulesToDelete = RuleRepository.Get()
+                .Where(r => ConcatTimeEquals(ConcatTime(r.Timestamp), timestamp))
+                .ToList();
+
+            if (!rulesToDelete.Any())
+                return "Undo was unsuccessful";
 
             RuleRepository.DeleteRange(rulesToDelete);
             RuleRepository.Save();
-            return "" + rulesToDelete.Count + " Rules were deleted.";
+            return "" + rulesToDelete.Count() + " Rules were deleted.";
+        }
+
+
+        /// <summary>
+        /// Called when an unhandled exception occurs in the action.
+        /// </summary>
+        /// <param name="filterContext">Information about the current request and action.</param>
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+                return;
+
+            Logger.Error(filterContext.Exception);
+
+            filterContext.ExceptionHandled = true;
+                       
+            filterContext.Result = RedirectToAction("Index", new { id=0 });
         }
 
         #region private helper methods
 
         /// <summary>
-        /// Interprets the forms.
-        /// </summary>
-        private static IEnumerable<Tuple<string, string>> BuildTuples(
-            IEnumerable<string> origins, IEnumerable<string> servers)
-        {
-            var originsList = origins.ToList();     //to prevent multiple traversal
-            var serversList = servers.ToList();
-            var tuples = new List<Tuple<string, string>>();
-
-            if (originsList.Count() == 1)
-                tuples.AddRange(serversList.Select(s => Tuple.Create(originsList.First(), s)));
-            else if (serversList.Count() == 1)
-                tuples.AddRange(originsList.Select(o => Tuple.Create(o, serversList.First())));
-            else if (originsList.Count() == serversList.Count())
-                for (var i = 0; i < originsList.Count(); i++)
-                    tuples.Add(Tuple.Create(originsList.ElementAt(i), serversList.ElementAt(i)));
-
-            return tuples;
-        }
-
-        /// <summary>
         /// Builds a set of rules from all TemplatedRules in a RuleTemplate, and a collection of origin/server tuples
         /// </summary>
-        private static IEnumerable<Rule> BuildRulesFromTemplate(ref RuleTemplate template,
-            string engine, IEnumerable<Tuple<string, string>> originServerTuples)
+        private static IEnumerable<Rule> BuildRulesFromTemplate(
+            ref RuleTemplate template,
+            string engine, 
+            IEnumerable<KeyValuePair<string, string>> originServerTuples,
+            string ruleCreator
+            )
         {
             var timestamp = DateTime.Now;
             template.LastUsedOn = timestamp;
@@ -313,7 +352,7 @@ namespace AdministrationPortal.Controllers
             var rules = new List<Rule>();
             originServerTuples = originServerTuples.ToList();
             foreach (var rule in template.TemplatedRules)
-                rules.AddRange(BuildRuleFromTemplate(rule, engine, originServerTuples, timestamp));
+                rules.AddRange(BuildRuleFromTemplate(rule, engine, originServerTuples, timestamp, ruleCreator));
 
             return rules;
         }
@@ -321,63 +360,76 @@ namespace AdministrationPortal.Controllers
         /// <summary>
         /// Build a set of Rules from a single TemplatedRule and collection of origin/server tuples
         /// </summary>
-        private static IEnumerable<Rule> BuildRuleFromTemplate(TemplatedRule template,
-            string engine, IEnumerable<Tuple<string, string>> originServerTuples, DateTime timestamp)
+        private static IEnumerable<Rule> BuildRuleFromTemplate(
+            TemplatedRule template,
+            string engine, 
+            IEnumerable<KeyValuePair<string, string>> originServerTuples, 
+            DateTime timestamp,
+            string ruleCreator)
         {
             var rules = new List<Rule>();
             foreach (var tuple in originServerTuples)
                 rules.Add(new Rule
                 {
                     Engine = engine,
-                    Origin = tuple.Item1,
-                    Server = tuple.Item2,
+                    Origin = tuple.Key,
+                    Server = tuple.Value,
                     AlertTypeId = template.AlertTypeId,
                     DefaultSeverity = template.DefaultSeverity,
                     Description = template.Description,
                     Expression = template.Expression,
                     MessageTypeName = template.MessageTypeName,
                     Name = template.Name,
-                    RuleCreator = template.RuleCreator,                         //TODO: set to creator of template?
+                    RuleCreator = ruleCreator.Trim(),
                     SupportCategoryId = template.SupportCategoryId,
                     Timestamp = timestamp
                 });
             return rules;
         }
 
-        private DetailsRuleTemplateViewModel BuildDetailsViewModel(RuleTemplate ruleTemplate)
+        private UseRuleTemplateViewModel BuildDetailsViewModel(RuleTemplate ruleTemplate)
         {
-            var orderedTemplatedRules = ruleTemplate.TemplatedRules.OrderBy(rt => rt.Id);
-            var viewModel = new DetailsRuleTemplateViewModel()
+            var alertIdNameMap = new Dictionary<int, string>();
+            ruleTemplate.TemplatedRules.ForEach(tr => alertIdNameMap[tr.AlertTypeId] = AlertTypeRepository.GetById(tr.AlertTypeId).Name);
+
+            var ruleIdToRuleCategoryNames = ruleTemplate.TemplatedRules.ToDictionary(
+                tr => tr.Id,
+                tr => tr.RuleCategories.Select(rc => RuleCategoryRepository.GetById(rc.Id).Name).ToCSV()
+                );
+
+            var viewModel = new UseRuleTemplateViewModel()
             {
                 RuleTemplate = ruleTemplate,
                 RuleTemplateId = ruleTemplate.Id,
-                RuleAlertTypeNames = orderedTemplatedRules
-                    .Select(tr => AlertTypeRepository.GetById(tr.AlertTypeId).Name),
-                RuleRuleCategoryNames = orderedTemplatedRules.Select(tr => tr.Name)
+                AlertTypeIdToName = alertIdNameMap,
+                RuleIdToRuleCategoryNames = ruleIdToRuleCategoryNames
             };
             return viewModel;
         }
 
         /// <summary>
-        /// Finds all rules with the same timestamp and last engine, origins, and servers used by the template
+        /// for passing datetimes as strings
         /// </summary>
-        private IEnumerable<Rule> GetLastInstantiatedRules(RuleTemplate toMatch)
+        private static string ConcatTime(DateTime dateTime)
         {
-            var origins = toMatch.LastOrigins.Split(',')
-                .Select(o => o.Trim()).Where(o => !o.IsEmpty());
-            var servers = toMatch.LastServers.Split(',')
-                .Select(s => s.Trim()).Where(s => !s.IsEmpty());
-
-            var originServerTuples = BuildTuples(origins, servers);
-
-            return RuleRepository.Get()
-                .Where(r => r.Timestamp == toMatch.LastUsedOn)
-                .Where(r => r.Engine == toMatch.LastEngine)
-                .Where(r => originServerTuples.First(ost => ost.Item1 == r.Origin && ost.Item2 == r.Server) != null);
+            return "" + dateTime.Day + dateTime.Hour + dateTime.Minute + dateTime.Second + dateTime.Millisecond;
         }
 
         /// <summary>
-        /// TODO: O(n^2), improve with hashmap
+        /// for comparing products of ConcatTime
+        /// </summary>
+        private static bool ConcatTimeEquals(string a, string b)
+        {
+            var timeA = Int64.Parse(a);
+            var timeB = Int64.Parse(b);
+            int fiveMilliseconds = 5;
+
+            return Math.Abs(timeA - timeB) < fiveMilliseconds;
+        }
+
+        /// <summary>
+        /// Used to filter Rules of an arbitrary "sameness" defined by the Rule 
+        /// extension method EqualsRule
         /// </summary>
         private static IEnumerable<Rule> GetUniqueRules(IEnumerable<Rule> rules)
         {

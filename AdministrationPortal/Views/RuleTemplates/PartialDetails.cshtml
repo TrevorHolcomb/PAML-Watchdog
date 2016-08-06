@@ -24,7 +24,7 @@
                 <td><b>Expression</b></td>
                 <td><b>MessageType</b></td>
                 <td><b>AlertType</b></td>
-                <td><b>RuleCategory</b></td>
+                <td><b>RuleCategories</b></td>
             </tr>
 
             @for (var i = 0; i < Model.RuleTemplate.TemplatedRules.Count; i++)
@@ -36,8 +36,8 @@
                     <td>@templatedRule.Description</td>
                     <td>@templatedRule.Expression</td>
                     <td>@templatedRule.MessageTypeName</td>
-                    <td>@Model.RuleAlertTypeNames.ElementAt(i)</td>
-                    <td>@Model.RuleRuleCategoryNames.ElementAt(i)</td>
+                    <td>@Model.AlertTypeIdToName[templatedRule.AlertTypeId]</td>
+                    <td>@Model.RuleIdToRuleCategoryNames[templatedRule.Id]</td>
                 </tr>
             }
         </table>

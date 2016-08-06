@@ -17,7 +17,7 @@
             @Html.DisplayFor(model => model.Alert.Severity)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.AlertGroupId)
+            @Html.DisplayNameFor(model => model.Alert.AlertGroup)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Alert.AlertGroupId)
@@ -31,7 +31,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.AlertStatus.FirstStatus().Timestamp)
+            Time Created
         </dt>
 
         <dd>
@@ -39,7 +39,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Alert.AlertStatus.Timestamp)
+            Last Modified
         </dt>
 
         <dd>
@@ -93,12 +93,17 @@
         <dd>
             @Html.DisplayFor(model => model.Alert.MessageType.Name)
         </dd>
-
+        <dt>
+            Alert Parameters
+        </dt>
+        <dd>
+            
+        </dd>
 
         @foreach (var item in Model.Alert.AlertParameters)
         {
             <dt>
-                @Html.DisplayNameFor(model => model.Alert.AlertParameters)
+                
             </dt>
             <dd>
                 @Html.DisplayFor(model => item.Value)
@@ -125,7 +130,7 @@
     </dl>
 </div>
 <div class="col-md-offset-1">
-    @Html.ActionLink("Edit Alert", "Edit", new { id = (int)Model.Alert.Id, Model.PageNo, Model.sortOrder }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Edit Alert", "Edit", new { id = (int)Model.Alert.Id, PageNo = Model.PageNo, Model.sortOrder }, new { @class = "btn btn-default" })
     @Html.ActionLink("Back to List", "Index", new { ActiveOrArchived = Model.Alert.AlertStatus.MostRecent().StatusCode.ToString(), Page_No = Model.PageNo, sortOrder = Model.sortOrder }, new { @class = "btn btn-default" })
 </div>
 <br />
@@ -155,7 +160,7 @@
                 }
 
 
-                <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id, Model.PageNo}))'">
+                <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id,StatusCode = item.AlertStatus.StatusCode.ToString(), lastModified = item.AlertStatus.MostRecent().Timestamp, Model.PageNo, sortOrder = Model.sortOrder}))'">
 
                     <td class="@cssClass ">
                         @Html.DisplayFor(modelItem => item.Severity)
@@ -167,7 +172,7 @@
 
                     <td>
                         @Html.DisplayFor(modelItem => item.AlertType.Name)<br />
-                        @Html.DisplayFor(modelItem => item.AlertStatus.TimeStamp)
+                        @Html.DisplayFor(modelItem => item.AlertStatus.Timestamp)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Origin)

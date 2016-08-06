@@ -18,9 +18,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         public RuleTemplate()
         {
             this.LastUsedOn = new DateTime(621355968000000000, DateTimeKind.Unspecified);
-            this.LastEngine = "n/a";
-            this.LastOrigins = "n/a";
-            this.LastServers = "n/a";
             this.TemplatedRules = new HashSet<TemplatedRule>();
         }
     
@@ -28,9 +25,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public System.DateTime LastUsedOn { get; set; }
-        public string LastEngine { get; set; }
-        public string LastOrigins { get; set; }
-        public string LastServers { get; set; }
         public int RuleTemplateId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

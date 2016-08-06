@@ -28,9 +28,12 @@
     <EntitySet Name="TemplatedRules" EntityType="WatchdogDatabase.Store.TemplatedRules" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="RuleTemplates" EntityType="WatchdogDatabase.Store.RuleTemplates" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="DefaultNotes" EntityType="WatchdogDatabase.Store.DefaultNotes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AlertCategoryItems" EntityType="WatchdogDatabase.Store.AlertCategoryItems" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AlertCategories" EntityType="WatchdogDatabase.Store.AlertCategories" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="NotifyeeNotifyeeGroup" EntityType="WatchdogDatabase.Store.NotifyeeNotifyeeGroup" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="RuleRuleCategory" EntityType="WatchdogDatabase.Store.RuleRuleCategory" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="TemplatedRuleRuleCategory" EntityType="WatchdogDatabase.Store.TemplatedRuleRuleCategory" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RuleDefaultNote" EntityType="WatchdogDatabase.Store.RuleDefaultNote" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="MessageMessageType" Association="WatchdogDatabase.Store.MessageMessageType">
       <End Role="Message" EntitySet="Messages" />
       <End Role="MessageType" EntitySet="MessageTypes" />
@@ -147,9 +150,25 @@
       <End Role="RuleTemplate" EntitySet="RuleTemplates" />
       <End Role="TemplatedRule" EntitySet="TemplatedRules" />
     </AssociationSet>
-    <AssociationSet Name="DefaultNoteRule" Association="WatchdogDatabase.Store.DefaultNoteRule">
+    <AssociationSet Name="AlertCategoryAlertType" Association="WatchdogDatabase.Store.AlertCategoryAlertType">
+      <End Role="AlertCategory" EntitySet="AlertCategoryItems" />
+      <End Role="AlertType" EntitySet="AlertTypes" />
+    </AssociationSet>
+    <AssociationSet Name="AlertCategoryItemAlertCategory" Association="WatchdogDatabase.Store.AlertCategoryItemAlertCategory">
+      <End Role="AlertCategoryItem" EntitySet="AlertCategoryItems" />
+      <End Role="AlertCategory" EntitySet="AlertCategories" />
+    </AssociationSet>
+    <AssociationSet Name="AlertCategoryAlertGroup" Association="WatchdogDatabase.Store.AlertCategoryAlertGroup">
+      <End Role="AlertCategory" EntitySet="AlertCategories" />
+      <End Role="AlertGroup" EntitySet="AlertGroups" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RuleDefaultNote_Rule" Association="WatchdogDatabase.Store.FK_RuleDefaultNote_Rule">
       <End Role="Rule" EntitySet="Rules" />
+      <End Role="RuleDefaultNote" EntitySet="RuleDefaultNote" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RuleDefaultNote_DefaultNote" Association="WatchdogDatabase.Store.FK_RuleDefaultNote_DefaultNote">
       <End Role="DefaultNote" EntitySet="DefaultNotes" />
+      <End Role="RuleDefaultNote" EntitySet="RuleDefaultNote" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Messages">
@@ -223,6 +242,7 @@
     <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Timestamp" Type="datetime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
     <Property Name="DefaultNoteId" Type="int" Nullable="true" />
+    <Property Name="TemplatedRuleId" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="AlertTypes">
     <Key>
@@ -339,6 +359,7 @@
     <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Resolved" Type="bit" Nullable="false" DefaultValue="false" />
     <Property Name="AlertTypeId" Type="int" Nullable="false" />
+    <Property Name="AlertCategoryId" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="TemplatedRules">
     <Key>
@@ -347,7 +368,6 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
-    <Property Name="RuleCreator" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Expression" Type="nvarchar(max)" Nullable="false" />
     <Property Name="DefaultSeverity" Type="int" Nullable="false" DefaultValue="1" />
     <Property Name="AlertTypeId" Type="int" Nullable="false" />
@@ -363,9 +383,6 @@
     <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="1000" />
     <Property Name="Description" Type="nvarchar" Nullable="false" MaxLength="1000" />
     <Property Name="LastUsedOn" Type="datetime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
-    <Property Name="LastEngine" Type="nvarchar(max)" Nullable="false" DefaultValue="n/a" />
-    <Property Name="LastOrigins" Type="nvarchar(max)" Nullable="false" DefaultValue="n/a" />
-    <Property Name="LastServers" Type="nvarchar(max)" Nullable="false" DefaultValue="n/a" />
     <Property Name="RuleTemplateId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="DefaultNotes">
@@ -374,6 +391,24 @@
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Text" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AlertCategoryItems">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Engine" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="AlertTypeId" Type="int" Nullable="false" />
+    <Property Name="AlertCategoryId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AlertCategories">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CategoryName" Type="nvarchar(max)" Nullable="true" />
   </EntityType>
   <EntityType Name="NotifyeeNotifyeeGroup">
     <Key>
@@ -398,6 +433,14 @@
     </Key>
     <Property Name="TemplatedRules_Id" Type="int" Nullable="false" />
     <Property Name="RuleCategories_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RuleDefaultNote">
+    <Key>
+      <PropertyRef Name="Rules_Id" />
+      <PropertyRef Name="DefaultNotes_Id" />
+    </Key>
+    <Property Name="Rules_Id" Type="int" Nullable="false" />
+    <Property Name="DefaultNotes_Id" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="MessageMessageType">
     <End Role="Message" Type="WatchdogDatabase.Store.Messages" Multiplicity="*" />
@@ -675,15 +718,39 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="DefaultNoteRule">
-    <End Role="Rule" Type="WatchdogDatabase.Store.Rules" Multiplicity="*" />
-    <End Role="DefaultNote" Type="WatchdogDatabase.Store.DefaultNotes" Multiplicity="0..1" />
+  <Association Name="AlertCategoryAlertType">
+    <End Role="AlertCategory" Type="WatchdogDatabase.Store.AlertCategoryItems" Multiplicity="*" />
+    <End Role="AlertType" Type="WatchdogDatabase.Store.AlertTypes" Multiplicity="1" />
     <ReferentialConstraint>
-      <Principal Role="DefaultNote">
+      <Principal Role="AlertType">
         <PropertyRef Name="Id" />
       </Principal>
-      <Dependent Role="Rule">
-        <PropertyRef Name="DefaultNoteId" />
+      <Dependent Role="AlertCategory">
+        <PropertyRef Name="AlertTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AlertCategoryItemAlertCategory">
+    <End Role="AlertCategoryItem" Type="WatchdogDatabase.Store.AlertCategoryItems" Multiplicity="*" />
+    <End Role="AlertCategory" Type="WatchdogDatabase.Store.AlertCategories" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="AlertCategory">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AlertCategoryItem">
+        <PropertyRef Name="AlertCategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AlertCategoryAlertGroup">
+    <End Role="AlertCategory" Type="WatchdogDatabase.Store.AlertCategories" Multiplicity="0..1" />
+    <End Role="AlertGroup" Type="WatchdogDatabase.Store.AlertGroups" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AlertCategory">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AlertGroup">
+        <PropertyRef Name="AlertCategoryId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -759,6 +826,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_RuleDefaultNote_Rule">
+    <End Role="Rule" Type="WatchdogDatabase.Store.Rules" Multiplicity="1" />
+    <End Role="RuleDefaultNote" Type="WatchdogDatabase.Store.RuleDefaultNote" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Rule">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RuleDefaultNote">
+        <PropertyRef Name="Rules_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_RuleDefaultNote_DefaultNote">
+    <End Role="RuleDefaultNote" Type="WatchdogDatabase.Store.RuleDefaultNote" Multiplicity="*" />
+    <End Role="DefaultNote" Type="WatchdogDatabase.Store.DefaultNotes" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="DefaultNote">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RuleDefaultNote">
+        <PropertyRef Name="DefaultNotes_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -798,8 +889,8 @@
           </AssociationSet>
           <EntitySet Name="Alerts" EntityType="WatchdogDatabase.Alert" />
           <AssociationSet Name="AlertAlertType" Association="WatchdogDatabase.AlertAlertType">
-            <End Role="Alert" EntitySet="Alerts" />
-            <End Role="AlertType" EntitySet="AlertTypes" />
+            <End EntitySet="Alerts" Role="Alert" />
+            <End EntitySet="AlertTypes" Role="AlertType" />
           </AssociationSet>
           <AssociationSet Name="AlertTypeRule" Association="WatchdogDatabase.AlertTypeRule">
             <End Role="AlertType" EntitySet="AlertTypes" />
@@ -890,7 +981,21 @@
             <End Role="TemplatedRule" EntitySet="TemplatedRules" />
           </AssociationSet>
           <EntitySet Name="DefaultNotes" EntityType="WatchdogDatabase.DefaultNote" />
-          <AssociationSet Name="DefaultNoteRule" Association="WatchdogDatabase.DefaultNoteRule">
+          <EntitySet Name="AlertCategoryItems" EntityType="WatchdogDatabase.AlertCategoryItem" />
+          <AssociationSet Name="AlertCategoryAlertType" Association="WatchdogDatabase.AlertCategoryAlertType">
+            <End Role="AlertCategory" EntitySet="AlertCategoryItems" />
+            <End Role="AlertType" EntitySet="AlertTypes" />
+          </AssociationSet>
+          <EntitySet Name="AlertCategories" EntityType="WatchdogDatabase.AlertCategory" />
+          <AssociationSet Name="AlertCategoryItemAlertCategory" Association="WatchdogDatabase.AlertCategoryItemAlertCategory">
+            <End Role="AlertCategoryItem" EntitySet="AlertCategoryItems" />
+            <End Role="AlertCategory" EntitySet="AlertCategories" />
+          </AssociationSet>
+          <AssociationSet Name="AlertCategoryAlertGroup" Association="WatchdogDatabase.AlertCategoryAlertGroup">
+            <End Role="AlertCategory" EntitySet="AlertCategories" />
+            <End Role="AlertGroup" EntitySet="AlertGroups" />
+          </AssociationSet>
+          <AssociationSet Name="RuleDefaultNote" Association="WatchdogDatabase.RuleDefaultNote">
             <End Role="Rule" EntitySet="Rules" />
             <End Role="DefaultNote" EntitySet="DefaultNotes" />
           </AssociationSet>
@@ -1015,8 +1120,9 @@
               <LongDescription>Primarily for use when undoing Template instantiation</LongDescription>
             </Documentation>
           </Property>
-          <NavigationProperty Name="DefaultNote" Relationship="WatchdogDatabase.DefaultNoteRule" FromRole="Rule" ToRole="DefaultNote" />
           <Property Name="DefaultNoteId" Type="Int32" Nullable="true" />
+          <Property Name="TemplatedRuleId" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="DefaultNotes" Relationship="WatchdogDatabase.RuleDefaultNote" FromRole="Rule" ToRole="DefaultNote" />
         </EntityType>
         <EntityType Name="AlertType">
           <Key>
@@ -1070,8 +1176,8 @@
           <Property Name="AlertGroupId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="AlertAlertType">
-          <End Type="WatchdogDatabase.Alert" Role="Alert" Multiplicity="*" />
-          <End Type="WatchdogDatabase.AlertType" Role="AlertType" Multiplicity="1" />
+          <End Type="WatchdogDatabase.Alert" Multiplicity="*" Role="Alert" />
+          <End Type="WatchdogDatabase.AlertType" Multiplicity="1" Role="AlertType" />
           <ReferentialConstraint>
             <Principal Role="AlertType">
               <PropertyRef Name="Id" />
@@ -1351,6 +1457,8 @@
           <NavigationProperty Name="Alerts" Relationship="WatchdogDatabase.AlertGroupAlert" FromRole="AlertGroup" ToRole="Alert" />
           <NavigationProperty Name="AlertType" Relationship="WatchdogDatabase.AlertGroupAlertType" FromRole="AlertGroup" ToRole="AlertType" />
           <Property Name="AlertTypeId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AlertCategory" Relationship="WatchdogDatabase.AlertCategoryAlertGroup" FromRole="AlertGroup" ToRole="AlertCategory" />
+          <Property Name="AlertCategoryId" Type="Int32" Nullable="true" />
         </EntityType>
         <Association Name="AlertGroupAlert">
           <End Type="WatchdogDatabase.AlertGroup" Role="AlertGroup" Multiplicity="1" />
@@ -1383,7 +1491,6 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="Description" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="RuleCreator" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="Expression" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="DefaultSeverity" Type="Int32" Nullable="false" DefaultValue="1" annotation:StoreGeneratedPattern="None" />
           <Property Name="AlertTypeId" Type="Int32" Nullable="false" />
@@ -1403,24 +1510,6 @@
           <Property Name="LastUsedOn" Type="DateTime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" Precision="3" >
             <Documentation>
               <Summary>When the RuleTemplate was last used to instantiate rules.</Summary>
-            </Documentation>
-          </Property>
-          <Property Name="LastEngine" Type="String" Nullable="false" DefaultValue="n/a" MaxLength="Max" Unicode="true" FixedLength="false" >
-            <Documentation>
-              <Summary>The last input used in RuleTemplatesController.Create to instantiate this template</Summary>
-              <LongDescription>Used for implementing Undo</LongDescription>
-            </Documentation>
-          </Property>
-          <Property Name="LastOrigins" Type="String" Nullable="false" DefaultValue="n/a" MaxLength="Max" Unicode="true" FixedLength="false" >
-            <Documentation>
-              <Summary>The last input used in RuleTemplatesController.Create to instantiate this template</Summary>
-              <LongDescription>Used for implementing Undo</LongDescription>
-            </Documentation>
-          </Property>
-          <Property Name="LastServers" Type="String" Nullable="false" DefaultValue="n/a" MaxLength="Max" Unicode="true" FixedLength="false" >
-            <Documentation>
-              <Summary>The last input used in RuleTemplatesController.Create to instantiate this template</Summary>
-              <LongDescription>Used for implementing Undo</LongDescription>
             </Documentation>
           </Property>
           <NavigationProperty Name="TemplatedRules" Relationship="WatchdogDatabase.RuleTemplateTemplatedRule" FromRole="RuleTemplate" ToRole="TemplatedRule" />
@@ -1448,19 +1537,67 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Text" Type="String" Nullable="false" />
-          <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.DefaultNoteRule" FromRole="DefaultNote" ToRole="Rule" />
+          <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.RuleDefaultNote" FromRole="DefaultNote" ToRole="Rule" />
         </EntityType>
-        <Association Name="DefaultNoteRule">
-          <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="*" />
-          <End Type="WatchdogDatabase.DefaultNote" Role="DefaultNote" Multiplicity="0..1" />
+        <EntityType Name="AlertCategoryItem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Server" Type="String" Nullable="false" FixedLength="false" MaxLength="Max" Unicode="true" />
+          <Property Name="Engine" Type="String" Nullable="false" FixedLength="false" MaxLength="Max" Unicode="true" />
+          <Property Name="Origin" Type="String" Nullable="false" FixedLength="false" MaxLength="Max" Unicode="true" />
+          <NavigationProperty Name="AlertType" Relationship="WatchdogDatabase.AlertCategoryAlertType" FromRole="AlertCategory" ToRole="AlertType" />
+          <Property Name="AlertTypeId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AlertCategory" Relationship="WatchdogDatabase.AlertCategoryItemAlertCategory" FromRole="AlertCategoryItem" ToRole="AlertCategory" />
+          <Property Name="AlertCategoryId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="AlertCategoryAlertType">
+          <End Type="WatchdogDatabase.AlertCategoryItem" Role="AlertCategory" Multiplicity="*" />
+          <End Type="WatchdogDatabase.AlertType" Role="AlertType" Multiplicity="1" />
           <ReferentialConstraint>
-            <Principal Role="DefaultNote">
+            <Principal Role="AlertType">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Rule">
-              <PropertyRef Name="DefaultNoteId" />
+            <Dependent Role="AlertCategory">
+              <PropertyRef Name="AlertTypeId" />
             </Dependent>
           </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AlertCategory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryName" Type="String" Nullable="true" FixedLength="false" MaxLength="Max" Unicode="true" />
+        </EntityType>
+        <Association Name="AlertCategoryItemAlertCategory">
+          <End Type="WatchdogDatabase.AlertCategoryItem" Role="AlertCategoryItem" Multiplicity="*" />
+          <End Type="WatchdogDatabase.AlertCategory" Role="AlertCategory" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="AlertCategory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AlertCategoryItem">
+              <PropertyRef Name="AlertCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AlertCategoryAlertGroup">
+          <End Type="WatchdogDatabase.AlertCategory" Role="AlertCategory" Multiplicity="0..1" />
+          <End Type="WatchdogDatabase.AlertGroup" Role="AlertGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AlertCategory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AlertGroup">
+              <PropertyRef Name="AlertCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RuleDefaultNote">
+          <End Type="WatchdogDatabase.Rule" Role="Rule" Multiplicity="*" />
+          <End Type="WatchdogDatabase.DefaultNote" Role="DefaultNote" Multiplicity="*" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -1541,6 +1678,7 @@
           <ScalarProperty Name="Server" ColumnName="Server" />
           <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
           <ScalarProperty Name="DefaultNoteId" ColumnName="DefaultNoteId" />
+          <ScalarProperty Name="TemplatedRuleId" ColumnName="TemplatedRuleId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1667,6 +1805,7 @@
           <ScalarProperty Name="Origin" ColumnName="Origin" />
           <ScalarProperty Name="Resolved" ColumnName="Resolved" />
           <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />
+          <ScalarProperty Name="AlertCategoryId" ColumnName="AlertCategoryId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1676,7 +1815,6 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
-          <ScalarProperty Name="RuleCreator" ColumnName="RuleCreator" />
           <ScalarProperty Name="Expression" ColumnName="Expression" />
           <ScalarProperty Name="DefaultSeverity" ColumnName="DefaultSeverity" />
           <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />
@@ -1693,9 +1831,6 @@
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="LastUsedOn" ColumnName="LastUsedOn" />
-          <ScalarProperty Name="LastEngine" ColumnName="LastEngine" />
-          <ScalarProperty Name="LastOrigins" ColumnName="LastOrigins" />
-          <ScalarProperty Name="LastServers" ColumnName="LastServers" />
           <ScalarProperty Name="RuleTemplateId" ColumnName="RuleTemplateId" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -1705,6 +1840,26 @@
         <MappingFragment StoreEntitySet="DefaultNotes">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Text" ColumnName="Text" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AlertCategoryItems">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.AlertCategoryItem)">
+        <MappingFragment StoreEntitySet="AlertCategoryItems">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Server" ColumnName="Server" />
+          <ScalarProperty Name="Engine" ColumnName="Engine" />
+          <ScalarProperty Name="Origin" ColumnName="Origin" />
+          <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />
+          <ScalarProperty Name="AlertCategoryId" ColumnName="AlertCategoryId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AlertCategories">
+      <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.AlertCategory)">
+        <MappingFragment StoreEntitySet="AlertCategories">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1773,6 +1928,14 @@
       </EndProperty>
       <EndProperty Name="RuleCategory">
         <ScalarProperty Name="Id" ColumnName="RuleCategories_Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="RuleDefaultNote" TypeName="WatchdogDatabase.RuleDefaultNote" StoreEntitySet="RuleDefaultNote">
+      <EndProperty Name="Rule">
+        <ScalarProperty Name="Id" ColumnName="Rules_Id" />
+      </EndProperty>
+      <EndProperty Name="DefaultNote">
+        <ScalarProperty Name="Id" ColumnName="DefaultNotes_Id" />
       </EndProperty>
     </AssociationSetMapping>
   </EntityContainerMapping>

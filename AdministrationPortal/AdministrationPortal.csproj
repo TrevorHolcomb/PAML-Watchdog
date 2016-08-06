@@ -116,7 +116,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.3.5\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.3.6\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
@@ -210,6 +210,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AlertCategoriesController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\NinjectWebCommon.cs" />
@@ -223,10 +224,15 @@
     <Compile Include="Controllers\RuleCategoriesController.cs" />
     <Compile Include="Controllers\RuleTemplatesController.cs" />
     <Compile Include="Controllers\SupportCategoriesController.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="ViewModels\AlertCategories\AlertCategoryDetailsViewModel.cs" />
+    <Compile Include="ViewModels\AlertCategories\AlertCategoryCreateViewModel.cs" />
+    <Compile Include="ViewModels\AlertCategories\AlertCategoryEditViewModel.cs" />
     <Compile Include="ViewModels\Alerts\AlertDetailsViewModel.cs" />
     <Compile Include="ViewModels\Alerts\AlertPagingCreateView.cs" />
     <Compile Include="ViewModels\AbstractDeleteViewModel.cs" />
     <Compile Include="ViewModels\AlertTypes\DeleteAlertTypeViewModel.cs" />
+    <Compile Include="ViewModels\Home\HomeViewModel.cs" />
     <Compile Include="ViewModels\MessageTypes\CreateMessageTypeViewModel.cs" />
     <Compile Include="ViewModels\MessageTypes\DeleteMessageTypeViewModel.cs" />
     <Compile Include="ViewModels\RegisteredEngines\DeleteRegisteredEngineViewModel.cs" />
@@ -255,10 +261,13 @@
     <Compile Include="ViewModels\RuleTemplates\CreateRuleTemplateViewModel.cs" />
     <Compile Include="ViewModels\RuleTemplates\DetailsRuleTemplateViewModel.cs" />
     <Compile Include="ViewModels\RuleTemplates\EditRuleTemplateViewModel.cs" />
+    <Compile Include="ViewModels\RuleTemplates\UseRuleTemplateViewModel.cs" />
     <Compile Include="ViewModels\RuleTemplates\ViewRuleTemplateViewModel.cs" />
     <Compile Include="ViewModels\SupportCategories\DeleteSupportCategoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-tokenfield\bootstrap-tokenfield.css" />
+    <Content Include="Content\bootstrap-tokenfield\tokenfield-typeahead.css" />
     <Content Include="Content\font-awesome\css\font-awesome.css" />
     <Content Include="Content\font-awesome\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.svg" />
@@ -274,10 +283,55 @@
     <Content Include="Content\img\help\setup-db\step-8.PNG" />
     <Content Include="Content\img\help\setup-db\step-9.PNG" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\themes\base\accordion.css" />
+    <Content Include="Content\themes\base\all.css" />
+    <Content Include="Content\themes\base\autocomplete.css" />
+    <Content Include="Content\themes\base\base.css" />
+    <Content Include="Content\themes\base\button.css" />
+    <Content Include="Content\themes\base\core.css" />
+    <Content Include="Content\themes\base\datepicker.css" />
+    <Content Include="Content\themes\base\dialog.css" />
+    <Content Include="Content\themes\base\draggable.css" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\menu.css" />
+    <Content Include="Content\themes\base\progressbar.css" />
+    <Content Include="Content\themes\base\resizable.css" />
+    <Content Include="Content\themes\base\selectable.css" />
+    <Content Include="Content\themes\base\selectmenu.css" />
+    <Content Include="Content\themes\base\slider.css" />
+    <Content Include="Content\themes\base\sortable.css" />
+    <Content Include="Content\themes\base\spinner.css" />
+    <Content Include="Content\themes\base\tabs.css" />
+    <Content Include="Content\themes\base\theme.css" />
+    <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="Scripts\bootstrap-multiselect.js" />
+    <Content Include="Content\bootstrap-tokenfield\tokenfield-typeahead.less" />
+    <Content Include="Content\bootstrap-tokenfield\bootstrap-tokenfield.less" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\bootstrap-tokenfield.js" />
+    <None Include="Scripts\jquery-1.10.2-vsdoc.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\jquery-ui-1.11.4.js" />
+    <Content Include="Scripts\jquery-ui-1.11.4.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
@@ -342,7 +396,6 @@
     <Content Include="Styles\css\query-builder.css" />
     <Content Include="Styles\css\site.css" />
     <Content Include="Styles\css\site.min.css" />
-    <Content Include="Styles\css\UserPortalSite.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -364,7 +417,6 @@
     <Content Include="Views\Rules\Index.cshtml" />
     <Content Include="Views\AlertTypes\Create.cshtml" />
     <Content Include="Views\AlertTypes\Delete.cshtml" />
-    <Content Include="Views\AlertTypes\Details.cshtml" />
     <Content Include="Views\AlertTypes\Edit.cshtml" />
     <Content Include="Views\AlertTypes\Index.cshtml" />
     <Content Include="Styles\scss\mixins\_position.scss" />
@@ -396,7 +448,6 @@
     <Content Include="Views\RuleCategories\Edit.cshtml" />
     <Content Include="Views\RuleCategories\Delete.cshtml" />
     <Content Include="Views\SupportCategories\Create.cshtml" />
-    <Content Include="Views\SupportCategories\Details.cshtml" />
     <Content Include="Views\SupportCategories\Delete.cshtml" />
     <Content Include="Views\SupportCategories\Edit.cshtml" />
     <Content Include="Views\Rules\Create.cshtml" />
@@ -423,6 +474,11 @@
     <Content Include="Views\RuleTemplates\PartialDetails.cshtml" />
     <Content Include="Views\RuleTemplates\Edit.cshtml" />
     <Content Include="Views\RuleTemplates\Delete.cshtml" />
+    <Content Include="Views\AlertCategories\Create.cshtml" />
+    <Content Include="Views\AlertCategories\Delete.cshtml" />
+    <Content Include="Views\AlertCategories\Details.cshtml" />
+    <Content Include="Views\AlertCategories\Edit.cshtml" />
+    <Content Include="Views\AlertCategories\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

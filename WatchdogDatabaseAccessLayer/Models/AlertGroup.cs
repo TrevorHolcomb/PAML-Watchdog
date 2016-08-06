@@ -27,9 +27,11 @@ namespace WatchdogDatabaseAccessLayer.Models
         public string Origin { get; set; }
         public bool Resolved { get; set; }
         public int AlertTypeId { get; set; }
+        public Nullable<int> AlertCategoryId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Alert> Alerts { get; set; }
         public virtual AlertType AlertType { get; set; }
+        public virtual AlertCategory AlertCategory { get; set; }
     }
 }
