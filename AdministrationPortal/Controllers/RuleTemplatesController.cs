@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
 using AdministrationPortal.ViewModels.RuleTemplates;
@@ -140,8 +141,10 @@ namespace AdministrationPortal.Controllers
                     && rt.Description == ruleTemplate.Description
                     && rt.TemplatedRules.Count == ruleTemplate.TemplatedRules.Count);
 
-            return RedirectToAction("Index", 
-                new {actionPerformed = IndexViewModel.ActionType.Create, id = ruleTemplateInDb.Id});
+            return RedirectToAction("Index", new {
+                actionPerformed = IndexViewModel.ActionType.Create,
+                id = ruleTemplateInDb.Id
+            });
         }
 
         // GET: RuleTemplates/Edit/5
@@ -216,7 +219,11 @@ namespace AdministrationPortal.Controllers
             RuleTemplateRepository.Update(ruleTemplateInDb);
             RuleTemplateRepository.Save();
 
-            return RedirectToAction("Index", new {actionPerformed=IndexViewModel.ActionType.Edit, id=ruleTemplateInDb.Id});
+            return RedirectToAction("Index", new
+            {
+                actionPerformed=IndexViewModel.ActionType.Edit,
+                id =ruleTemplateInDb.Id
+            });
             
         }
 
@@ -253,7 +260,11 @@ namespace AdministrationPortal.Controllers
             RuleTemplateRepository.Delete(ruleTemplate);
             RuleTemplateRepository.Save();
 
-            return RedirectToAction("Index", new {actionPerformed=IndexViewModel.ActionType.Delete, id=ruleTemplate.Id});
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Delete,
+                id = ruleTemplate.Id
+            });
         }
 
         // GET: RuleTemplates/Use/5
@@ -344,10 +355,19 @@ namespace AdministrationPortal.Controllers
             Logger.Error(filterContext.Exception);
 
             filterContext.ExceptionHandled = true;
-                       
-            filterContext.Result = RedirectToAction("Index", 
-                new { actionPerformed=IndexViewModel.ActionType.Error, id=0,
-                    message =filterContext.Exception.Message });
+
+            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
+            {
+                filterContext.ExceptionHandled = true;
+
+                // Redirect on error:
+                filterContext.Result = RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Error,
+                    id = 0,
+                    message = filterContext.Exception.Message
+                });
+            }
         }
 
         #region private helper methods

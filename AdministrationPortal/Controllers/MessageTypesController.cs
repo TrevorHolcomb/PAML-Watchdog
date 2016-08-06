@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
+using AdministrationPortal.ViewModels;
 using AdministrationPortal.ViewModels.MessageTypes;
 using Ninject;
 using NLog;
@@ -20,9 +22,12 @@ namespace AdministrationPortal.Controllers
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: MessageTypes
-        public ActionResult Index()
+        public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string messageTypeName = "", string message = "")
         {
-            return View(MessageTypeRepository.Get());
+            return View(new IndexMessageTypesViewModel(actionPerformed, messageTypeName, message)
+            {
+                MessageTypes = MessageTypeRepository.Get()
+            });
         }
 
         // GET: MessageTypes/Details/5
@@ -72,7 +77,12 @@ namespace AdministrationPortal.Controllers
             MessageTypeRepository.Insert(messageType);
             MessageTypeRepository.Save();
             MessageTypeParameterTypeRepository.Save();
-            return RedirectToAction("Index");
+
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Create,
+                messageTypeName = messageType.Name
+            });
         }
 
         private List<MessageTypeParameterType> GetParameterTypes(CreateMessageTypeViewModel viewModel)
@@ -130,8 +140,13 @@ namespace AdministrationPortal.Controllers
             bool safeToDelete = (messageType.Alerts.Count == 0 && messageType.Rules.Count == 0 && messageType.Messages.Count == 0);
             if (!safeToDelete)
             {
-                var viewModel = new DeleteMessageTypeViewModel(messageType, false);
-                return View(viewModel);
+                //var viewModel = new DeleteMessageTypeViewModel(messageType, false);
+                //return View(viewModel);
+                return RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Warning,
+                    message = $"Unable to delete Message Type in use: {messageType.Name}"
+                });
             }
 
             var messageTypeParameterTypes = MessageTypeParameterTypeRepository.Get()
@@ -143,7 +158,11 @@ namespace AdministrationPortal.Controllers
             MessageTypeRepository.Delete(messageType);
             MessageTypeRepository.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Delete,
+                messageTypeName = messageType.Name
+            });
         }
 
         // GET: Rules/Edit/5
@@ -188,7 +207,11 @@ namespace AdministrationPortal.Controllers
             MessageTypeRepository.Update(messageTypeInDb);
             MessageTypeRepository.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Edit,
+                messageTypeName = messageType.Name
+            });
         }
 
         /// <summary>
@@ -202,10 +225,18 @@ namespace AdministrationPortal.Controllers
 
             Logger.Error(filterContext.Exception);
 
-            filterContext.ExceptionHandled = true;
+            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
+            {
+                filterContext.ExceptionHandled = true;
 
-            // Redirect on error:
-            filterContext.Result = RedirectToAction("Index");
+                // Redirect on error:
+                filterContext.Result = RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Error,
+                    id = 0,
+                    message = filterContext.Exception.Message
+                });
+            }
         }
 
         protected override void Dispose(bool disposing)

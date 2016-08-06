@@ -18,9 +18,9 @@ namespace AdministrationPortal.Controllers
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: SupportCategories
-        public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string entityName = "", string message = "")
+        public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string supportCategoryName = "", string message = "")
         {
-            return View(new IndexSupportCategoryViewModel(actionPerformed, entityName, message)
+            return View(new IndexSupportCategoryViewModel(actionPerformed, supportCategoryName, message)
             {
                 SupportCategories = SupportCategoryRepository.Get()
             });
@@ -134,9 +134,12 @@ namespace AdministrationPortal.Controllers
                 filterContext.ExceptionHandled = true;
 
                 // Redirect on error:
-                filterContext.Result = RedirectToAction("Index", new { message =
-                    $"An error has occurred and your request could not be completed. Error: {filterContext.Exception.Message}", 
-                    actionPerformed = IndexViewModel.ActionType.Error});
+                filterContext.Result = RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Error,
+                    id = 0,
+                    message = filterContext.Exception.Message
+                });
             }
         }
 

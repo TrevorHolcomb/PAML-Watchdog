@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Configuration;
 using System.Web.Mvc;
+using AdministrationPortal.ViewModels;
 using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
@@ -16,9 +18,12 @@ namespace AdministrationPortal.Controllers
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: RegisteredEngines
-        public ActionResult Index()
+        public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string engineName = "", string message = "")
         {
-            return View(EngineRepository.Get());
+            return View(new IndexRegisteredEnginesViewModel(actionPerformed, engineName, message)
+            {
+                Engines = EngineRepository.Get()
+            });
         }
 
         // GET: RegisteredEngines/Create
@@ -43,14 +48,22 @@ namespace AdministrationPortal.Controllers
             try
             {
                 EngineRepository.GetByName(engine.Name);
-                //TODO: add warning message saying engine already exists
+                return RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Warning,
+                    message = $"Engine {engine} already exists"
+                });
             }
             catch (InvalidOperationException)
             { 
                 EngineRepository.Insert(engine);
                 EngineRepository.Save();
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Create,
+                engineName = engine
+            });
         }
 
         // GET: RegisteredEngines/Delete/5
@@ -89,14 +102,21 @@ namespace AdministrationPortal.Controllers
             bool safeToDelete = (engineToDelete.Alerts.Count == 0 && engineToDelete.Messages.Count == 0);
             if (!safeToDelete)
             {
-                var viewModel = new DeleteRegisteredEngineViewModel(engineToDelete, false);
-                return View(viewModel);
+                return RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Warning,
+                    message = $"Unable to delete engine in use: {id}"
+                });
             }
 
             EngineRepository.Delete(engineToDelete);
             EngineRepository.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Delete,
+                engineName = id
+            });
         }
 
         /// <summary>
@@ -110,10 +130,18 @@ namespace AdministrationPortal.Controllers
 
             Logger.Error(filterContext.Exception);
 
-            filterContext.ExceptionHandled = true;
+            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
+            {
+                filterContext.ExceptionHandled = true;
 
-            // Redirect on error:
-            filterContext.Result = RedirectToAction("Index");
+                // Redirect on error:
+                filterContext.Result = RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Error,
+                    id = 0,
+                    message = filterContext.Exception.Message
+                });
+            }
         }
 
         protected override void Dispose(bool disposing)

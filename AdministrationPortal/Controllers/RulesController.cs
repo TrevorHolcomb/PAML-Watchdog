@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Configuration;
 using System.Web.Mvc;
 using Ninject;
 using AdministrationPortal.ViewModels.Rules;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using System.Linq;
+using AdministrationPortal.ViewModels;
 using NLog;
 
 namespace AdministrationPortal.Controllers
@@ -30,10 +31,12 @@ namespace AdministrationPortal.Controllers
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: Rules
-        public ActionResult Index()
+        public ActionResult Index(IndexRulesViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string ruleName = "", string message = "")
         {
-            var rules = RuleRepository.Get();
-            return View(rules);
+            return View(new IndexRulesViewModel(actionPerformed, ruleName, message)
+            {
+                Rules = RuleRepository.Get()
+            });
         }
 
         // GET: Rules/Details/5
@@ -67,7 +70,6 @@ namespace AdministrationPortal.Controllers
         }
 
         
-        
         // POST: Rules/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -99,7 +101,11 @@ namespace AdministrationPortal.Controllers
             RuleRepository.Insert(ruleToCreate);
             RuleRepository.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Create,
+                ruleName = ruleToCreate.Name
+            });
         }
 
         // GET: Rules/Edit/5
@@ -190,7 +196,11 @@ namespace AdministrationPortal.Controllers
                 RuleRepository.Update(rule);
                 RuleRepository.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Edit,
+                    ruleName = rule.Name
+                });
             }
 
             ruleViewModel.RuleOptions = new RuleOptionsViewModel
@@ -232,7 +242,11 @@ namespace AdministrationPortal.Controllers
 
             RuleRepository.Delete(rule);
             RuleRepository.Save();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Delete,
+                ruleName = rule.Name
+            });
         }
 
         /// <summary>
@@ -246,10 +260,18 @@ namespace AdministrationPortal.Controllers
 
             Logger.Error(filterContext.Exception);
 
-            filterContext.ExceptionHandled = true;
+            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
+            {
+                filterContext.ExceptionHandled = true;
 
-            // Redirect on error:
-            filterContext.Result = RedirectToAction("Index");
+                // Redirect on error:
+                filterContext.Result = RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Error,
+                    id = 0,
+                    message = filterContext.Exception.Message
+                });
+            }
         }
 
 

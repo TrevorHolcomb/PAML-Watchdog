@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Configuration;
 using System.Web.Mvc;
+using AdministrationPortal.ViewModels;
 using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
@@ -16,11 +18,14 @@ namespace AdministrationPortal.Controllers
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: RuleCategories
-        public ActionResult Index()
+        public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string ruleCategoryName = "", string message = "")
         {
-            return View(RuleCategoryRepository.Get());
+            return View(new IndexRuleCategoriesViewModel(actionPerformed, ruleCategoryName, message)
+            {
+                RuleCategories = RuleCategoryRepository.Get()
+            });
         }
-       
+
         // GET: RuleCategories/Create
         public ActionResult Create()
         {
@@ -38,7 +43,11 @@ namespace AdministrationPortal.Controllers
             {
                 RuleCategoryRepository.Insert(ruleCategory);
                 RuleCategoryRepository.Save();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Create,
+                    ruleCategoryName = ruleCategory.Name
+                });
             }
 
             return View(ruleCategory);
@@ -71,7 +80,12 @@ namespace AdministrationPortal.Controllers
             ruleCategoryInDb.Description = ruleCategory.Description;
             RuleCategoryRepository.Update(ruleCategoryInDb);
             RuleCategoryRepository.Save();
-            return RedirectToAction("Index");
+
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Edit,
+                ruleCategoryName = ruleCategoryInDb.Name
+            });
         }
 
         // GET: RuleCategories/Delete/5
@@ -105,7 +119,11 @@ namespace AdministrationPortal.Controllers
             RuleCategoryRepository.Delete(ruleCategory);
             RuleCategoryRepository.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Delete,
+                ruleCategoryName = ruleCategory.Name
+            });
         }
 
         /// <summary>
@@ -119,10 +137,19 @@ namespace AdministrationPortal.Controllers
 
             Logger.Error(filterContext.Exception);
 
-            filterContext.ExceptionHandled = true;
 
-            // Redirect on error:
-            filterContext.Result = RedirectToAction("Index");
+            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
+            {
+                filterContext.ExceptionHandled = true;
+
+                // Redirect on error:
+                filterContext.Result = RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Error,
+                    id = 0,
+                    message = filterContext.Exception.Message
+                });
+            }
         }
 
         protected override void Dispose(bool disposing)

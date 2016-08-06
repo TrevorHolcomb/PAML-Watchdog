@@ -1,4 +1,5 @@
-﻿@model IEnumerable<WatchdogDatabaseAccessLayer.Models.AlertType>
+﻿@using WatchdogDatabaseAccessLayer.Models
+@model AdministrationPortal.ViewModels.AlertTypes.IndexAlertTypesViewModel
 
 @{
     ViewBag.Title = "Alert Types";
@@ -9,18 +10,21 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+
+@Model.GetMessage()
+
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => new AlertType().Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => new AlertType().Description)
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model.AlertTypes) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Name)
