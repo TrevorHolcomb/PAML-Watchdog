@@ -27,6 +27,7 @@
             </div>
         </div>
 
+        <!-- Description -->
         <div class="form-group">
             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -35,6 +36,7 @@
             </div>
         </div>
 
+        <!-- Rule Creator -->
         <div class="form-group">
             @Html.LabelFor(model => model.RuleCreator, "Created by", htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
@@ -43,6 +45,7 @@
             </div>
         </div>
 
+        <!-- Engine -->
         <div class="form-group">
             @Html.LabelFor(model => model.Engine, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -51,6 +54,7 @@
             </div>
         </div>
 
+        <!-- Origin -->
         <div class="form-group">
             @Html.LabelFor(model => model.Origin, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -59,6 +63,7 @@
             </div>
         </div>
 
+        <!-- Server -->
         <div class="form-group">
             @Html.LabelFor(model => model.Server, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -67,14 +72,22 @@
             </div>
         </div>
 
+        <!-- Expression -->
+        <div class="form-group hidden">
+            @Html.LabelFor(model => model.Expression, htmlAttributes: new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Expression, new {htmlAttributes = new {@class = "form-control", @id = "Expression"}})
+                @Html.ValidationMessageFor(model => model.Expression, "", new {@class = "text-danger"})
+            </div>
+        </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Expression, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Expression, new { htmlAttributes = new { @class = "form-control", @id = "Expression" } })
-                @Html.ValidationMessageFor(model => model.Expression, "", new { @class = "text-danger" })
+                <div id="builder"></div>
             </div>
         </div>
 
+        <!-- Default Severity -->
         <div class="form-group">
             @Html.LabelFor(model => model.DefaultSeverity, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -109,6 +122,7 @@
             </div>
         </div>
 
+        <!-- Alert Type -->
         <div class="form-group">
             @Html.LabelFor(model => model.AlertTypeId, "Alert Type", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -117,6 +131,7 @@
             </div>
         </div>
 
+        <!-- Message Type -->
         <div class="form-group">
             @Html.LabelFor(model => model.MessageTypeName, "Message Type", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -125,6 +140,7 @@
             </div>
         </div>
 
+        <!-- Rule Category Ids-->
         <div class="form-group">
             @Html.LabelFor(model => model.RuleCategoryIds, "RuleCategoryIds", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -134,6 +150,7 @@
             </div>
         </div>
 
+        <!-- Support Categories -->
         <div class="form-group">
             @Html.LabelFor(model => model.SupportCategoryId, "Support Category", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -183,34 +200,57 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 
+    @Scripts.Render("~/Scripts/query-builder.standalone.js")
+    @Styles.Render("~/Styles/css/query-builder.css")
+    @Scripts.Render("~/Scripts/query-builder-adapter.js")
+
     <script type="text/javascript">
 
         $(document).ready(function () {
-                $("#addNotePanel").collapse({ toggle: false });
-                $("#selectNote").click(function(){
-                    $("#addNotePanel").collapse('hide');
-                    $("#selectNoteModal").modal();
-                });
-                $("#editNote").click(function () {
-                    
-                });
-                $("#addNote").click(function () {
+            $("#addNotePanel").collapse({ toggle: false });
+            $("#selectNote").click(function(){
+                $("#addNotePanel").collapse('hide');
+                $("#selectNoteModal").modal();
+            });
+            $("#editNote").click(function () {
 
-                });
-                $("#btnSelectNote").click(function () {
-                    $("#selectNoteModal").modal('hide');
-                    $("#noteText").text($("#selectNoteText").find("option:selected").text());
-                    $("#addNoteText").val("");
-                });
-                $("#btnSaveNewNote").click(function () {
-                    $("#noteText").text($("#addNoteText").val());
-                    $("#addNotePanel").collapse('hide');
-                });
-                $("#btnCancelNewNote").click(function () {
-                    $("#noteText").text("");
-                    $("#addNoteText").val("");
-                    $("#addNotePanel").collapse('hide');
+            });
+            $("#addNote").click(function () {
+
+            });
+            $("#btnSelectNote").click(function () {
+                $("#selectNoteModal").modal('hide');
+                $("#noteText").text($("#selectNoteText").find("option:selected").text());
+                $("#addNoteText").val("");
+            });
+            $("#btnSaveNewNote").click(function () {
+                $("#noteText").text($("#addNoteText").val());
+                $("#addNotePanel").collapse('hide');
+            });
+            $("#btnCancelNewNote").click(function () {
+                $("#noteText").text("");
+                $("#addNoteText").val("");
+                $("#addNotePanel").collapse('hide');
+            });
+
+            renderQueryBuilder("@Model.MessageTypeName");
+            $("input[type='submit']").click(function () {
+                $("input[name='Expression']").val(JSON.stringify($('#builder').queryBuilder('getRules')));
+            });
+        });
+
+        function renderQueryBuilder(messageType) {
+            var url = "@Url.HttpRouteUrl("DefaultApi", new {controller = "MessageTypeParameterTypeAPI"})";
+            $.get(url + "/" + messageType,
+            function (ret) {
+                $("#builder").empty();
+                $("#builder").queryBuilder('destroy');
+
+                $('#builder').queryBuilder({
+                    plugins: ['bt-tooltip-errors'],
+                    filters: filtersFromParameterList(ret)
                 });
             });
+        }
     </script>
 }

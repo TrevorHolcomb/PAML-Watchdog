@@ -73,20 +73,18 @@
         </div>
 
         <!-- Expression -->
-        <div class="form-group">
+        <div class="form-group hidden">
             @Html.LabelFor(model => model.Expression, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Expression, new {htmlAttributes = new {@class = "form-control", @id = "Expression"}})
                 @Html.ValidationMessageFor(model => model.Expression, "", new {@class = "text-danger"})
             </div>
         </div>
-
         <div class="form-group">
             @Html.LabelFor(model => model.Expression, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <div id="builder"></div>
             </div>
-
         </div>
 
         <!-- Default Severity -->
@@ -206,8 +204,10 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/Scripts/bootstrap-multiselect.js")
+
     @Scripts.Render("~/Scripts/query-builder.standalone.js")
     @Styles.Render("~/Styles/css/query-builder.css")
+    @Scripts.Render("~/Scripts/query-builder-adapter.js")
 
     <script type="text/javascript">
         $(document)
@@ -244,51 +244,16 @@
                     });
 
                 onMessageTypeChange($('#message-type')[0]);
+                $("input[type='submit']").click(function () {
+                    $("input[name='Expression']").val(JSON.stringify($('#builder').queryBuilder('getRules')));
+                });
             });
-
-
-
-        function filtersFromParameterList(parameterList) {
-            return parameterList.map(function (parameter) {
-                return filterFromParameter(parameter);
-            });
-        }
-
-        function filterFromParameter(parameter) {
-            if (parameter.Type.toLowerCase() === "exception") {
-                return exceptionFilterFromParameter(parameter);
-            } else if (parameter.Type.toLowerCase() === "string") {
-                return stringFilterFromParameter(parameter);
-            } else if (parameter.Type.toLowerCase() === "integer") {
-                return integerFilterFromParameter(parameter);
-            } else {
-                throw "Parameter Type Not Matched: " + parameter.Type;
-            }
-        }
-
-        function exceptionFilterFromParameter(parameter) {
-            return {
-                "type": "string",
-                "id": parameter.Name
-            };
-        }
-
-        function stringFilterFromParameter(parameter) {
-            return {
-                "type": "string",
-                "id":parameter.Name
-            }
-        }
-
-        function integerFilterFromParameter(parameter) {
-            return {
-                "type": "integer",
-                "id": parameter.Name
-            }
+        
+        function onMessageTypeChange(controller) {
+            renderQueryBuilder(controller.value);
         }
 
         function renderQueryBuilder(messageType) {
-            
             var url = "@Url.HttpRouteUrl("DefaultApi", new {controller = "MessageTypeParameterTypeAPI"})";
             $.get(url + "/" + messageType,
             function (ret) {
@@ -301,18 +266,5 @@
                 });
             });
         }
-
-
-        function onMessageTypeChange(controller) {
-            var messageType = controller.value;
-
-            renderQueryBuilder(messageType);
-        }
-
-        $("input[type='submit']")
-            .click(function() {
-                $("input[name='Expression']").val(JSON.stringify($('#builder').queryBuilder('getRules')));
-            });
-
     </script>
 }
