@@ -10,7 +10,7 @@ namespace AdministrationPortal.ViewModels.SupportCategories
             CanDeleteThisModel(safeToDelete);
         }
 
-        public override string ModelTypeName { get { return "SupportCategory"; } }
+        public override string ModelTypeName => "SupportCategory";
         public SupportCategory SupportCategory{ get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace AdministrationPortal.ViewModels.MessageTypes
             CanDeleteThisModel(safeToDelete);
         }
 
-        public override string ModelTypeName { get { return "Message Type"; } }
+        public override string ModelTypeName => "Message Type";
         public MessageType MessageType { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Configuration;
 using System.Web.Mvc;
+using AdministrationPortal.ViewModels;
 using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
@@ -16,9 +18,12 @@ namespace AdministrationPortal.Controllers
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: AlertTypes
-        public ActionResult Index()
+        public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string alertTypeName = "", string message = "")
         {
-            return View(AlertTypeRepository.Get());
+            return View(new IndexAlertTypesViewModel(actionPerformed, alertTypeName, message)
+            {
+                AlertTypes = AlertTypeRepository.Get()
+            });
         }
 
         // GET: AlertTypes/Create
@@ -38,7 +43,11 @@ namespace AdministrationPortal.Controllers
             {
                 AlertTypeRepository.Insert(alertType);
                 AlertTypeRepository.Save();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Create,
+                    alertTypeName = alertType.Name
+                });
             }
 
             return View(alertType);
@@ -50,7 +59,7 @@ namespace AdministrationPortal.Controllers
             var alertType = AlertTypeRepository.GetById(id);
             if (alertType == null)
             {
-                return HttpNotFound("No AlertType found with Id " + id);
+                throw new ArgumentException($"No AlertType found with Id {id}");
             }
 
             return View(alertType);
@@ -69,14 +78,18 @@ namespace AdministrationPortal.Controllers
             AlertType alertTypeInDb = AlertTypeRepository.GetById(alertType.Id);
             if (alertTypeInDb == null)
             {
-                return HttpNotFound("No AlertType found with Id " + alertType.Id);
+                throw new ArgumentException($"No AlertType found with Id {alertType.Id}");
             }
 
             alertTypeInDb.Description = alertType.Description;
             AlertTypeRepository.Update(alertTypeInDb);
             AlertTypeRepository.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Edit,
+                alertTypeName = alertTypeInDb.Name
+            });
         }
 
         // GET: AlertTypes/Delete/5
@@ -85,11 +98,11 @@ namespace AdministrationPortal.Controllers
             var alertType = AlertTypeRepository.GetById(id);
             if (alertType == null)
             {
-                return HttpNotFound();
+                throw new ArgumentException($"No AlertType found with Id {id}");
             }
 
             bool safeToDelete = (alertType.Alerts.Count == 0 && alertType.Rules.Count == 0);
-            var viewModel = new DeleteAlertTypeViewModel(alertType, safeToDelete);
+            var viewModel = new DeleteAlertTypesViewModel(alertType, safeToDelete);
 
             return View(viewModel);
         }
@@ -102,20 +115,29 @@ namespace AdministrationPortal.Controllers
             var alertType = AlertTypeRepository.GetById(id);
             if (alertType == null )
             {
-                return HttpNotFound("No AlertType found with ID " + id);
+                throw new ArgumentException($"No AlertType found with Id {id}");
             }
 
             bool safeToDelete = (alertType.Alerts.Count == 0 && alertType.Rules.Count == 0);
             if (!safeToDelete)
             {
-                var viewModel = new DeleteAlertTypeViewModel(alertType, false);
-                return View(viewModel);
+                //var viewModel = new DeleteAlertTypesViewModel(alertType, false);
+                //return View(viewModel);
+                return RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Warning,
+                    message = $"Unable to delete AlertType in use: {alertType}"
+                });
             }
 
             AlertTypeRepository.Delete(alertType);
             AlertTypeRepository.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Delete,
+                alertTypeName = alertType.Name
+            });
         }
 
         /// <summary>
@@ -129,10 +151,18 @@ namespace AdministrationPortal.Controllers
 
             Logger.Error(filterContext.Exception);
 
-            filterContext.ExceptionHandled = true;
+            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
+            {
+                filterContext.ExceptionHandled = true;
 
-            // Redirect on error:
-            filterContext.Result = RedirectToAction("Index");
+                // Redirect on error:
+                filterContext.Result = RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Error,
+                    id = 0,
+                    message = filterContext.Exception.Message
+                });
+            }
         }
 
         protected override void Dispose(bool disposing)

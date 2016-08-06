@@ -2,15 +2,15 @@
 
 namespace AdministrationPortal.ViewModels.AlertTypes
 {
-    public class DeleteAlertTypeViewModel : AbstractDeleteViewModel
+    public class DeleteAlertTypesViewModel : AbstractDeleteViewModel
     {
-        public DeleteAlertTypeViewModel(AlertType alertTypeToDelete, bool safeToDelete)
+        public DeleteAlertTypesViewModel(AlertType alertTypeToDelete, bool safeToDelete)
         {
             AlertType = alertTypeToDelete;
             CanDeleteThisModel(safeToDelete);
         }
 
-        public override string ModelTypeName { get { return "Alert Type"; } }
+        public override string ModelTypeName => "Alert Type";
         public AlertType AlertType { get; set; }
     }
 }

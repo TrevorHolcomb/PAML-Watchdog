@@ -167,7 +167,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.AlertTypeId, "Alert Type", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.AlertTypeId, Model.RuleOptions.AlertTypes, htmlAttributes: new { @class = "form-control", disabled = true, @readonly = "readonly" })
+                @Html.DropDownListFor(model => model.AlertTypeId, Model.RuleOptions.AlertTypes, htmlAttributes: new { @class = "form-control", @readonly = "readonly" })
                 @Html.ValidationMessageFor(model => model.AlertTypeId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -176,7 +176,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.MessageTypeName, "Message Type", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.MessageTypeName, Model.RuleOptions.MessageTypes, htmlAttributes: new { @class = "form-control", disabled = true, @readonly = "readonly" })
+                @Html.DropDownListFor(model => model.MessageTypeName, Model.RuleOptions.MessageTypes, htmlAttributes: new { @class = "form-control", @readonly = "readonly" })
                 @Html.ValidationMessageFor(model => model.MessageTypeName, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -195,7 +195,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.SupportCategoryId, "Support Category", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.SupportCategoryId, Model.RuleOptions.SupportCategories, htmlAttributes: new { @class = "form-control", disabled = true, @readonly = "readonly" })
+                @Html.DropDownListFor(model => model.SupportCategoryId, Model.RuleOptions.SupportCategories, htmlAttributes: new { @class = "form-control", @readonly = "readonly" })
                 @Html.ValidationMessageFor(model => model.SupportCategoryId, "", new { @class = "text-danger" })
             </div>
         </div>

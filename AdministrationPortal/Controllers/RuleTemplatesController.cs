@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
-using System.Web.Routing;
 using AdministrationPortal.ViewModels.RuleTemplates;
 using Ninject;
 using NLog;
 using AdministrationPortal.Extensions;
+using AdministrationPortal.ViewModels;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using WebGrease.Css.Extensions;
@@ -31,18 +32,14 @@ namespace AdministrationPortal.Controllers
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: RuleTemplates
-        public ActionResult Index(int id = 0, string engine="", string origins="", string servers="", string timestamp="")
+        public ActionResult Index(int id = 0, 
+            IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None,
+            string engine="", string origins="", string servers="", 
+            string timestamp="", string message = "")
         {
+            IndexRuleTemplateViewModel viewModel;
 
-            var viewModel = new ViewRuleTemplateViewModel()
-            {
-                RuleTemplates = RuleTemplateRepository.Get()
-            };
-
-            if(id < 0 )
-                throw new ArgumentException($"Invalid id: {id}");
-
-            if (id != 0)
+            if (id != 0 && actionPerformed == IndexViewModel.ActionType.Use)
             {
 
                 var ruleTemplateUsed = RuleTemplateRepository.GetById(id);
@@ -58,16 +55,30 @@ namespace AdministrationPortal.Controllers
                 if (timestamp == "")
                     throw new ArgumentNullException(nameof(timestamp));
 
-                var numRulesUsed = RuleRepository.Get()
+                int numRulesUsed = RuleRepository.Get()
                     .Count(r => ConcatTimeEquals(ConcatTime(r.Timestamp), timestamp));
 
-                viewModel.RuleTemplateInstantiated = ruleTemplateUsed;
-                viewModel.InfoMessageHidden = false;
-                viewModel.NumberOfRulesInstantiated = numRulesUsed;
-                viewModel.EngineUsed = engine;
-                viewModel.OriginsUsed = origins;
-                viewModel.ServersUsed = servers;
-                viewModel.Timestamp = timestamp;
+                viewModel = new IndexRuleTemplateViewModel(actionPerformed, 
+                    ruleTemplateUsed.Name, numRulesUsed, engine, origins, servers, timestamp, message)
+                {
+                    RuleTemplateInstantiated = ruleTemplateUsed,
+                    RuleTemplates = RuleTemplateRepository.Get(),
+                    Timestamp = timestamp
+                };
+            }
+            else if (actionPerformed != IndexViewModel.ActionType.None)
+            {
+                viewModel = new IndexRuleTemplateViewModel(actionPerformed)
+                {
+                    RuleTemplates = RuleTemplateRepository.Get()
+                };
+            }
+            else
+            {
+                viewModel = new IndexRuleTemplateViewModel(IndexViewModel.ActionType.None)
+                {
+                    RuleTemplates = RuleTemplateRepository.Get()
+                };
             }
 
             return View(viewModel);
@@ -111,9 +122,11 @@ namespace AdministrationPortal.Controllers
             var templatedRulesToAdd = ruleIdsToAdd
                 .Select(id => RuleRepository.GetById(id).ToTemplate());
 
+            var timestamp = DateTime.Now;
+
             var ruleTemplate = new RuleTemplate()
             {
-                LastUsedOn = DateTime.Now,
+                LastUsedOn = timestamp,
                 Name = viewModel.Name,
                 Description = viewModel.Description,
                 TemplatedRules = templatedRulesToAdd.ToList()
@@ -123,12 +136,15 @@ namespace AdministrationPortal.Controllers
             RuleTemplateRepository.Save();
 
             var ruleTemplateInDb = RuleTemplateRepository.Get()
-                .First(rt => rt.LastUsedOn == ruleTemplate.LastUsedOn
+                .First(rt => ConcatTimeEquals(ConcatTime(rt.LastUsedOn), ConcatTime(timestamp))
                     && rt.Name == ruleTemplate.Name
                     && rt.Description == ruleTemplate.Description
                     && rt.TemplatedRules.Count == ruleTemplate.TemplatedRules.Count);
 
-            return RedirectToAction("Index", ruleTemplateInDb.Id);
+            return RedirectToAction("Index", new {
+                actionPerformed = IndexViewModel.ActionType.Create,
+                id = ruleTemplateInDb.Id
+            });
         }
 
         // GET: RuleTemplates/Edit/5
@@ -203,7 +219,11 @@ namespace AdministrationPortal.Controllers
             RuleTemplateRepository.Update(ruleTemplateInDb);
             RuleTemplateRepository.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new
+            {
+                actionPerformed=IndexViewModel.ActionType.Edit,
+                id =ruleTemplateInDb.Id
+            });
             
         }
 
@@ -240,7 +260,11 @@ namespace AdministrationPortal.Controllers
             RuleTemplateRepository.Delete(ruleTemplate);
             RuleTemplateRepository.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Delete,
+                id = ruleTemplate.Id
+            });
         }
 
         // GET: RuleTemplates/Use/5
@@ -284,6 +308,7 @@ namespace AdministrationPortal.Controllers
 
             var dictionary = new
             {
+                actionPerformed = IndexViewModel.ActionType.Use,
                 id = ruleTemplate.Id,
                 engine = viewModel.Engine,
                 origins = lastOrigins,
@@ -330,8 +355,19 @@ namespace AdministrationPortal.Controllers
             Logger.Error(filterContext.Exception);
 
             filterContext.ExceptionHandled = true;
-                       
-            filterContext.Result = RedirectToAction("Index", new { id=0 });
+
+            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
+            {
+                filterContext.ExceptionHandled = true;
+
+                // Redirect on error:
+                filterContext.Result = RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Error,
+                    id = 0,
+                    message = filterContext.Exception.Message
+                });
+            }
         }
 
         #region private helper methods

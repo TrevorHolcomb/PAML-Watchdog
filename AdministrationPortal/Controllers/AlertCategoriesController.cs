@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+using System.Configuration;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
+using AdministrationPortal.ViewModels;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using AdministrationPortal.ViewModels.AlertCategories;
+using AdministrationPortal.ViewModels.AlertTypes;
 using Ninject;
 using NLog;
 
-namespace AdministrationPortal
+namespace AdministrationPortal.Controllers
 {
     public class AlertCategoriesController : Controller
     {
@@ -25,27 +24,35 @@ namespace AdministrationPortal
         [Inject]
         public Repository<Engine> EngineRepository { private get; set; }
 
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
 
         // GET: AlertCategories
-        public ActionResult Index()
+        public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string alertCategoryName = "", string message = "")
         {
-            return View(AlertCategoryRepository.Get().ToList());
+            return View(new IndexAlertCategoriesViewModel(actionPerformed, alertCategoryName, message)
+            {
+                AlertCategories = AlertCategoryRepository.Get()
+            });
         }
-
         // GET: AlertCategories/Details/5
         public ActionResult Details(int id)
         {
             var alertCategory = AlertCategoryRepository.GetById(id);
+
             if (alertCategory == null)
                 throw new ArgumentNullException(nameof(alertCategory));
-            var alertCategoryItem = AlertCategoryItemRepository.Get().Where(a => a.AlertCategoryId == alertCategory.Id).First();
-            List<AlertType> alertCategoryAlertTypes = new List<AlertType>();
+
+            var alertCategoryItem = AlertCategoryItemRepository.Get().First(a => a.AlertCategoryId == alertCategory.Id);
+            var alertCategoryAlertTypes = new List<AlertType>();
             var alertCategoryItems = AlertCategoryItemRepository.Get().Where(a => a.AlertCategoryId == alertCategory.Id).ToList();
+
             foreach(var categoryItem in alertCategoryItems)
             {
                 var alertType = AlertTypeRepository.GetById(categoryItem.AlertTypeId);
                 alertCategoryAlertTypes.Add(alertType);
             }
+
             var viewModel = new AlertCategoryDetailsViewModel()
             {
                 AlertCategory = alertCategory,
@@ -98,8 +105,13 @@ namespace AdministrationPortal
                     AlertCategoryItemRepository.Insert(newCategoryItem);
                     AlertCategoryItemRepository.Save();
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Create,
+                    alertCategoryName = newCategory.CategoryName
+                });
             }
+
             viewModel.AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name");
             viewModel.EngineList = new SelectList(EngineRepository.Get(), "Name", "Name");
             return View(viewModel);
@@ -111,7 +123,8 @@ namespace AdministrationPortal
             var alertCategory = AlertCategoryRepository.GetById(id);
             if (alertCategory == null)
                 throw new ArgumentNullException(nameof(alertCategory));
-            var alertCategoryItem = AlertCategoryItemRepository.Get().Where(a => a.AlertCategoryId == alertCategory.Id).First();
+
+            var alertCategoryItem = AlertCategoryItemRepository.Get().First(a => a.AlertCategoryId == alertCategory.Id);
             var viewModel = new AlertCategoryEditViewModel()
             {
                 AlertCategory = alertCategory,
@@ -137,11 +150,13 @@ namespace AdministrationPortal
                 var alertCategory = AlertCategoryRepository.GetById(viewModel.AlertCategory.Id);
                 alertCategory.CategoryName = viewModel.AlertCategory.CategoryName;
                 var alertCategoryItems = AlertCategoryItemRepository.Get().Where(cat => cat.AlertCategoryId == viewModel.AlertCategory.Id);
-                foreach(var categoryItem in alertCategoryItems)
+
+                foreach (var categoryItem in alertCategoryItems)
                 {
                     AlertCategoryItemRepository.Delete(categoryItem);
                     AlertCategoryItemRepository.Save();
                 }
+
                 foreach (var id in viewModel.SelectedAlertTypes)
                 {
                     var newCategoryItem = new AlertCategoryItem()
@@ -159,8 +174,13 @@ namespace AdministrationPortal
                 AlertCategoryRepository.Update(alertCategory);
                 AlertCategoryRepository.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Edit,
+                    alertCategoryName = alertCategory.CategoryName
+                });
             }
+
             viewModel.AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name");
             viewModel.EngineList = new SelectList(EngineRepository.Get(), "Name", "Name");
             return View(viewModel);
@@ -172,14 +192,17 @@ namespace AdministrationPortal
             var alertCategory = AlertCategoryRepository.GetById(id);
             if (alertCategory == null)
                 throw new ArgumentNullException(nameof(alertCategory));
-            var alertCategoryItem = AlertCategoryItemRepository.Get().Where(a => a.AlertCategoryId == alertCategory.Id).First();
-            List<AlertType> alertCategoryAlertTypes = new List<AlertType>();
+
+            var alertCategoryItem = AlertCategoryItemRepository.Get().First(a => a.AlertCategoryId == alertCategory.Id);
+            var alertCategoryAlertTypes = new List<AlertType>();
             var alertCategoryItems = AlertCategoryItemRepository.Get().Where(a => a.AlertCategoryId == alertCategory.Id).ToList();
+
             foreach (var categoryItem in alertCategoryItems)
             {
                 var alertType = AlertTypeRepository.GetById(categoryItem.AlertTypeId);
                 alertCategoryAlertTypes.Add(alertType);
             }
+
             var viewModel = new AlertCategoryDetailsViewModel()
             {
                 AlertCategory = alertCategory,
@@ -188,6 +211,7 @@ namespace AdministrationPortal
                 Engine = alertCategoryItem.Engine,
                 Origin = alertCategoryItem.Origin
             };
+
             return View(viewModel);
         }
 
@@ -198,14 +222,45 @@ namespace AdministrationPortal
         {
             var alertCategory = AlertCategoryRepository.GetById(id);
             var alertCategoryItems = AlertCategoryItemRepository.Get().Where(cat => cat.AlertCategoryId == alertCategory.Id);
+
             foreach(var categoryItem in alertCategoryItems)
             {
                 AlertCategoryItemRepository.Delete(categoryItem);
                 AlertCategoryItemRepository.Save();
             }
+
             AlertCategoryRepository.Delete(alertCategory);
             AlertCategoryRepository.Save();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new
+            {
+                actionPerformed = IndexViewModel.ActionType.Delete,
+                alertCategoryName = alertCategory.CategoryName
+            });
+        }
+
+        /// <summary>
+        /// Called when an unhandled exception occurs in the action.
+        /// </summary>
+        /// <param name="filterContext">Information about the current request and action.</param>
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+                return;
+
+            Logger.Error(filterContext.Exception);
+
+            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
+            {
+                filterContext.ExceptionHandled = true;
+
+                // Redirect on error:
+                filterContext.Result = RedirectToAction("Index", new
+                {
+                    actionPerformed = IndexViewModel.ActionType.Error,
+                    id = 0,
+                    message = filterContext.Exception.Message
+                });
+            }
         }
 
         protected override void Dispose(bool disposing)

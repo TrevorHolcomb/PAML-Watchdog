@@ -1,4 +1,5 @@
-﻿@model IEnumerable<WatchdogDatabaseAccessLayer.Models.Rule>
+﻿@using WatchdogDatabaseAccessLayer.Models
+@model AdministrationPortal.ViewModels.Rules.IndexRulesViewModel
 
 @{
     ViewBag.Title = "Rules";
@@ -9,10 +10,13 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+
+@Model.GetMessage()
+
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => new Rule().Name)
         </th>
         <th>
             @Html.DisplayName("Message Type")
@@ -24,12 +28,12 @@
             @Html.DisplayName("Support Category")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AlertType.Name)
+            @Html.DisplayNameFor(model => new AlertType().Name)
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model.Rules) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Name)
