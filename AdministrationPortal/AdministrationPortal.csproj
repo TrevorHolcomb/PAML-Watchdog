@@ -225,6 +225,7 @@
     <Compile Include="Controllers\RuleTemplatesController.cs" />
     <Compile Include="Controllers\SupportCategoriesController.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Helpers\NavbarLinkHelper.cs" />
     <Compile Include="ViewModels\AlertCategories\AlertCategoryDetailsViewModel.cs" />
     <Compile Include="ViewModels\AlertCategories\AlertCategoryCreateViewModel.cs" />
     <Compile Include="ViewModels\AlertCategories\AlertCategoryEditViewModel.cs" />

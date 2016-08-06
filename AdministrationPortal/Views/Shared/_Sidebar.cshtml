@@ -8,7 +8,7 @@
 <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav side-nav">
         <li class="@Html.HighlightIfActive("Home")">
-            <a href="@Url.Action("Index", "Home")"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+            <a href="@Url.Action("Dashboard", "Home")"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
         </li>
         <li class="@Html.HighlightIfActive("Reports")">
             <a href="@Url.Action("Index","Reports")"><i class="fa fa-file-text"></i> Reports</a>
@@ -22,7 +22,7 @@
         <li class="@Html.HighlightIfActive("Rules")">
             <a href="@Url.Action("Index", "Rules")"><i class="fa fa-fw fa-cogs"></i> Rules</a>
         </li>
-        <li class="@Html.HighlightIfActive("MessageTypes") @Html.HighlightIfActive("AlertTypes") @Html.HighlightIfActive("RuleCategories") @Html.HighlightIfActive("SupportCategories")">
+        <li class="@Html.HighlightIfActive("MessageTypes") @Html.HighlightIfActive("AlertTypes") @Html.HighlightIfActive("AlertCategories") @Html.HighlightIfActive("MessageTypes") @Html.HighlightIfActive("RegisteredEngines")  @Html.HighlightIfActive("RuleCategories") @Html.HighlightIfActive("RuleTemplates") @Html.HighlightIfActive("SupportCategories")">
             <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-wrench"></i> Tweaks <i class="fa fa-fw fa-caret-down"></i></a>
             <ul id="demo" class="collapse">
                 <li class="@Html.HighlightIfActive("AlertTypes")">
@@ -34,7 +34,7 @@
                 <li class="@Html.HighlightIfActive("MessageTypes")">
                     <a href="@Url.Action("Index","MessageTypes")"><i class="fa fa-fw fa-book"></i> Message Types</a>
                 </li>
-                <li class="@Html.HighlightIfActive("SupportCategories")">
+                <li class="@Html.HighlightIfActive("RegisteredEngines")">
                     <a href="@Url.Action("Index","RegisteredEngines")"><i class="fa fa-fw fa-cog"></i> Registered Engines</a>
                 </li>
                 <li class="@Html.HighlightIfActive("RuleCategories")">

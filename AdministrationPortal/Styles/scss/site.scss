@@ -49,7 +49,8 @@
 //----------------------------------*/
 
 $navbar-background: #373A64;
-$navbar-color: #FFF;
+$navbar-active-background: #333;
+$navbar-color: #FFF
 $sidebar-background: #FFF;
 $sidebar-color: #333;
 $sidebar-active-background: #373A64;
@@ -126,8 +127,8 @@ body {
     }*/
 
     .navbar-nav > .active > a {
-        background-color: $sidebar-active-background;
-        color: $sidebar-active-color;
+        background-color: $navbar-active-background;
+        color: $navbar-color;
     }
 }
 
