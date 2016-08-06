@@ -1,4 +1,5 @@
-﻿@model IEnumerable<WatchdogDatabaseAccessLayer.Models.SupportCategory>
+﻿@using WatchdogDatabaseAccessLayer.Models
+@model AdministrationPortal.ViewModels.SupportCategories.IndexSupportCategoryViewModel
 
 @{
     ViewBag.Title = "Support Categories";
@@ -10,18 +11,21 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+
+@Model.GetMessage()
+
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => new SupportCategory().Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => new SupportCategory().Description)
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model.SupportCategories) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Name)

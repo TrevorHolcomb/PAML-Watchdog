@@ -116,7 +116,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.3.6\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.3.5\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
@@ -234,6 +234,7 @@
     <Compile Include="ViewModels\AbstractDeleteViewModel.cs" />
     <Compile Include="ViewModels\AlertTypes\DeleteAlertTypeViewModel.cs" />
     <Compile Include="ViewModels\Home\HomeViewModel.cs" />
+    <Compile Include="ViewModels\IndexViewModel.cs" />
     <Compile Include="ViewModels\MessageTypes\CreateMessageTypeViewModel.cs" />
     <Compile Include="ViewModels\MessageTypes\DeleteMessageTypeViewModel.cs" />
     <Compile Include="ViewModels\RegisteredEngines\DeleteRegisteredEngineViewModel.cs" />
@@ -263,8 +264,9 @@
     <Compile Include="ViewModels\RuleTemplates\DetailsRuleTemplateViewModel.cs" />
     <Compile Include="ViewModels\RuleTemplates\EditRuleTemplateViewModel.cs" />
     <Compile Include="ViewModels\RuleTemplates\UseRuleTemplateViewModel.cs" />
-    <Compile Include="ViewModels\RuleTemplates\ViewRuleTemplateViewModel.cs" />
+    <Compile Include="ViewModels\RuleTemplates\IndexRuleTemplateViewModel.cs" />
     <Compile Include="ViewModels\SupportCategories\DeleteSupportCategoryViewModel.cs" />
+    <Compile Include="ViewModels\SupportCategories\IndexSupportCategoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-tokenfield\bootstrap-tokenfield.css" />

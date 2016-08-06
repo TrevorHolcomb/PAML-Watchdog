@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Configuration;
 using System.Web.Mvc;
+using AdministrationPortal.ViewModels;
 using AdministrationPortal.ViewModels.SupportCategories;
 using Ninject;
 using NLog;
@@ -16,9 +18,12 @@ namespace AdministrationPortal.Controllers
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: SupportCategories
-        public ActionResult Index()
+        public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string entityName = "", string message = "")
         {
-            return View(SupportCategoryRepository.Get());
+            return View(new IndexSupportCategoryViewModel(actionPerformed, entityName, message)
+            {
+                SupportCategories = SupportCategoryRepository.Get()
+            });
         }
 
         // GET: SupportCategories/Create
@@ -34,14 +39,20 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id, Name, Description")] SupportCategory supportCategory)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return RedirectToAction("Index", new {actionPerformed = IndexViewModel.ActionType.Warning, message="Could not create Support Category"});
+
+            try
+            {
+                SupportCategoryRepository.GetByName(supportCategory.Name);
+            }
+            catch (InvalidOperationException)
             {
                 SupportCategoryRepository.Insert(supportCategory);
                 SupportCategoryRepository.Save();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { actionPerformed = IndexViewModel.ActionType.Create, entityName = supportCategory.Name});
             }
-
-            return View(supportCategory);
+            return RedirectToAction("Index", new {message = $"Support Category {supportCategory.Name} already exists", actionPerformed = IndexViewModel.ActionType.Warning});
         }
 
         // GET: SupportCategories/Edit/5
@@ -68,7 +79,7 @@ namespace AdministrationPortal.Controllers
                 supportCategoryInDb.Description = supportCategory.Description;
                 SupportCategoryRepository.Update(supportCategoryInDb);
                 SupportCategoryRepository.Save();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { actionPerformed = IndexViewModel.ActionType.Edit, entityName = supportCategoryInDb.Name });
             }
 
             return View(supportCategory);
@@ -104,7 +115,7 @@ namespace AdministrationPortal.Controllers
 
             SupportCategoryRepository.Delete(supportCategory);
             SupportCategoryRepository.Save();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { entityName = supportCategory.Name, actionPerformed = IndexViewModel.ActionType.Delete});
         }
 
         /// <summary>
@@ -118,10 +129,15 @@ namespace AdministrationPortal.Controllers
 
             Logger.Error(filterContext.Exception);
 
-            filterContext.ExceptionHandled = true;
+            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
+            {
+                filterContext.ExceptionHandled = true;
 
-            // Redirect on error:
-            filterContext.Result = RedirectToAction("Index");
+                // Redirect on error:
+                filterContext.Result = RedirectToAction("Index", new { message =
+                    $"An error has occurred and your request could not be completed. Error: {filterContext.Exception.Message}", 
+                    actionPerformed = IndexViewModel.ActionType.Error});
+            }
         }
 
         protected override void Dispose(bool disposing)
