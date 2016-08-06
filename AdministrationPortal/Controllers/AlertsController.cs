@@ -71,7 +71,7 @@ namespace AdministrationPortal.Controllers
                 case "4":
                     if(searchStringExists)
                         alerts = alerts.Where(a => a.AlertStatus.Timestamp.ToString().Contains(searchString));
-                    alerts = alerts.OrderByDescending(a => a.AlertStatus.Timestamp);
+                    alerts = alerts.OrderByDescending(a => a.AlertStatus.Timestamp).ThenByDescending(a => a.Severity);
                     break;
                 case "5":
                     if(searchStringExists)

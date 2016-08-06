@@ -377,9 +377,7 @@ span.hide-native-select > div > ul > li a label {
     cursor:pointer;
 }
 
-.navbar-inverse{
-    background-color: #373A64;
-}
+
 
 /* Disabled hoverering over table header*/
 .table-hover > tbody > tr:hover > th{
@@ -413,6 +411,11 @@ textarea {
             color: #fff;
         }
     }
+}
+
+.table-striped > tbody > tr {
+  border-bottom: 1px solid #f2f2f2;
+  border-right: 1px solid #f2f2f2;
 }
 
 
