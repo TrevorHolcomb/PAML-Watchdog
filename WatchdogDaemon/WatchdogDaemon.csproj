@@ -83,9 +83,12 @@
   <ItemGroup>
     <Compile Include="Exceptions\InvalidParameterException.cs" />
     <Compile Include="Processes\IProcess.cs" />
+    <Compile Include="RuleEngine\ExpressionCompiler\NullaryLeaf.cs" />
+    <Compile Include="RuleEngine\ExpressionCompiler\PolyadicLeaf.cs" />
     <Compile Include="RuleEngine\ExpressionCompiler\Compiler.cs" />
     <Compile Include="RuleEngine\ExpressionCompiler\InternalNode.cs" />
-    <Compile Include="RuleEngine\ExpressionCompiler\Leaf.cs" />
+    <Compile Include="RuleEngine\ExpressionCompiler\LeafTypeHelpers\IntegerTypeHandler.cs" />
+    <Compile Include="RuleEngine\ExpressionCompiler\UnaryLeaf.cs" />
     <Compile Include="RuleEngine\ExpressionCompiler\LeafTypeHelpers\ITypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionCompiler\LeafTypeHelpers\StringTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionCompiler\LeafTypeHelpers\TypeHandlerList.cs" />

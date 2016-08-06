@@ -209,7 +209,6 @@
     @Scripts.Render("~/Scripts/query-builder.standalone.js")
     @Styles.Render("~/Styles/css/query-builder.css")
 
-
     <script type="text/javascript">
         $(document)
             .ready(function() {
@@ -288,19 +287,26 @@
             }
         }
 
-        var url = "@Url.HttpRouteUrl("DefaultApi", new {controller = "MessageTypeParameterTypeAPI"})";
-        function onMessageTypeChange(controller) {
-            $("#builder").empty();
-
-            $.get(url + "/" + controller.value,
-            function(ret) {
-                var filters = filtersFromParameterList(ret);
+        function renderQueryBuilder(messageType) {
+            
+            var url = "@Url.HttpRouteUrl("DefaultApi", new {controller = "MessageTypeParameterTypeAPI"})";
+            $.get(url + "/" + messageType,
+            function (ret) {
+                $("#builder").empty();
+                $("#builder").queryBuilder('destroy');
 
                 $('#builder').queryBuilder({
                     plugins: ['bt-tooltip-errors'],
-                    filters: filters
+                    filters: filtersFromParameterList(ret)
                 });
             });
+        }
+
+
+        function onMessageTypeChange(controller) {
+            var messageType = controller.value;
+
+            renderQueryBuilder(messageType);
         }
 
         $("input[type='submit']")

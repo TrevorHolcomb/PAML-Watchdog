@@ -5,62 +5,62 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler.LeafTypeHelpers
 {
     internal class StringTypeHandler : ITypeHandler
     {
-        private string Equals(string name, string value)
+        private static string Equals(string name, string value)
         {
-            return @"(" + name + @".Equals(""" + value + @"""))";
+            return $"({name}.Equals(\"{value}\"))";
         }
-        private string NotEquals(string name, string value)
+        private static string NotEquals(string name, string value)
         {
-            return @"(!" + name + @".Equals(""" + value + @"""))";
+            return $"(!{name}.Equals(\"{value}\"))";
         }
-        private string Contains(string name, string value)
+        private static string Contains(string name, string value)
         {
-            return @"(" + name + @".Contains(""" + value + @"""))";
+            return $"({name}.Contains(\"{value}\"))";
         }
-        private string NotContains(string name, string value)
+        private static string NotContains(string name, string value)
         {
-            return @"(!" + name + @".Contains(""" + value + @"""))";
+            return $"(!{name}.Contains(\"{value}\"))";
         }
-        private string BeginsWith(string name, string value)
+        private static string BeginsWith(string name, string value)
         {
-            return @"(" + name + @".StartsWith(""" + value +  @"""))";
+            return $"({name}.StartsWith(\"{value}\"))";
         }
-        private string NotBeginsWith(string name, string value)
+        private static string NotBeginsWith(string name, string value)
         {
-            return @"(!" + name + @".StartsWith(""" + value + @"""))";
+            return $"(!{name}.StartsWith(\"{value}\"))";
 
         }
-        private string In(string name, string value)
+        private static string In(string name, string value)
         {
-            return @"(""" + value + @""".Contains(" + name + @"))";
+            return $"(\"{value}\".Contains({name}))";
         }
-        private string NotIn(string name, string value)
+        private static string NotIn(string name, string value)
         {
-            return @"(!""" + value + @""".Contains(" + name + @"))";
+            return $"(!\"{value}\".Contains({name}))";
         }
-        private string EndWith(string name, string value)
+        private static string EndWith(string name, string value)
         {
-            return @"(" + name + @".EndsWith(""" + value + @"""))";
+            return $"({name}.EndsWith(\"{value}\"))";
         }
-        private string NotEndWith(string name, string value)
+        private static string NotEndWith(string name, string value)
         {
-            return @"(!" + name + @".EndsWith(""" + value + @"""))";
+            return $"(!{name}.EndsWith(\"{value}\"))";
         }
-        private string IsEmpty(string name)
+        private static string IsEmpty(string name)
         {
-            return @"(" + name + @".Count() == 0)";
+            return $"({name}.Count() == 0)";
         }
-        private string IsNotEmpty(string name)
+        private static string IsNotEmpty(string name)
         {
-            return @"(!" + name + @".Count() == 0)";
+            return $"(!{name}.Count() == 0)";
         }
-        private string IsNull(string name)
+        private static string IsNull(string name)
         {
-            return @"(" + name + " == null)";
+            return $"({name} == null)";
         }
-        private string IsNotNull(string name)
+        private static string IsNotNull(string name)
         {
-            return @"(" + name + " != null)";
+            return $"({name} != null)";
         }
         public string GetName()
         {
@@ -91,22 +91,31 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler.LeafTypeHelpers
                     return EndWith(name, value);
                 case "not_ends_with":
                     return NotEndWith(name, value);
-                case "is_empty":
-                    return IsEmpty(name);
-                case "is_not_empty":
-                    return IsNotEmpty(name);
-                case "is_null":
-                    return IsNull(name);
-                case "is_not_null":
-                    return IsNotNull(name);
                 default:
                     throw new InvalidParameterException("Invalid Operator: " + operatorString);
             }
         }
 
-        public string BuildExpression(string id, string operatorString, string valueOne, string valueTwo)
+        public string BuildExpression(string id, string operatorString, string[] values)
         {
             throw new NotImplementedException();
+        }
+
+        public string BuildExpression(string id, string operatorString)
+        {
+            switch (operatorString)
+            {
+                case "is_empty":
+                    return IsEmpty(id);
+                case "is_not_empty":
+                    return IsNotEmpty(id);
+                case "is_null":
+                    return IsNull(id);
+                case "is_not_null":
+                    return IsNotNull(id);
+                default:
+                    throw new InvalidParameterException("Invalid Operator: " + operatorString);
+            }
         }
     }
 }

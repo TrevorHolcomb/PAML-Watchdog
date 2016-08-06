@@ -7,7 +7,9 @@
         /// </summary>
         /// <returns>The name type handler's name</returns>
         string GetName();
+
+        string BuildExpression(string id, string operatorString);
         string BuildExpression(string id, string operatorString, string value);
-        string BuildExpression(string id, string operatorString, string valueOne, string valueTwo);
+        string BuildExpression(string id, string operatorString, string []values);
     }
 }

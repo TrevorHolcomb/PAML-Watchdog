@@ -89,7 +89,8 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
                 return _compiledExpressions[expression] as CompiledExpression;
             }
 
-            var ce = new CompiledExpression(expression);
+            var compiledExpression = RuleEngine.ExpressionCompiler.Compiler.Convert(expression);
+            var ce = new CompiledExpression(compiledExpression);
             _compiledExpressions.Add(expression, ce);
 
             return ce;

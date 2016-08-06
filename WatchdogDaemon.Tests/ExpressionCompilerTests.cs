@@ -9,8 +9,8 @@ namespace WatchdogDaemon.Tests
     {
         public static TheoryData<string> ShouldntThrowError = new TheoryData<string>
         {
-            {
-                @"{
+            @"
+{
   ""condition"": ""OR"",
   ""rules"": [
     {
@@ -126,8 +126,116 @@ namespace WatchdogDaemon.Tests
       ""value"": null
     }
   ]
-}"
-            }
+}",
+            @"
+{
+  ""condition"": ""OR"",
+  ""rules"": [
+    {
+      ""id"": ""queue_size"",
+      ""field"": ""queue_size"",
+      ""type"": ""integer"",
+      ""input"": ""text"",
+      ""operator"": ""equal"",
+      ""value"": ""1""
+    },
+    {
+      ""id"": ""queue_size"",
+      ""field"": ""queue_size"",
+      ""type"": ""integer"",
+      ""input"": ""text"",
+      ""operator"": ""not_equal"",
+      ""value"": ""1""
+    },
+    {
+      ""id"": ""queue_size"",
+      ""field"": ""queue_size"",
+      ""type"": ""integer"",
+      ""input"": ""text"",
+      ""operator"": ""in"",
+      ""value"": ""1""
+    },
+    {
+      ""id"": ""queue_size"",
+      ""field"": ""queue_size"",
+      ""type"": ""integer"",
+      ""input"": ""text"",
+      ""operator"": ""not_in"",
+      ""value"": ""1""
+    },
+    {
+      ""id"": ""queue_size"",
+      ""field"": ""queue_size"",
+      ""type"": ""integer"",
+      ""input"": ""text"",
+      ""operator"": ""less"",
+      ""value"": ""1""
+    },
+    {
+      ""id"": ""queue_size"",
+      ""field"": ""queue_size"",
+      ""type"": ""integer"",
+      ""input"": ""text"",
+      ""operator"": ""less_or_equal"",
+      ""value"": ""1""
+    },
+    {
+      ""id"": ""queue_size"",
+      ""field"": ""queue_size"",
+      ""type"": ""integer"",
+      ""input"": ""text"",
+      ""operator"": ""greater"",
+      ""value"": ""1""
+    },
+    {
+      ""id"": ""queue_size"",
+      ""field"": ""queue_size"",
+      ""type"": ""integer"",
+      ""input"": ""text"",
+      ""operator"": ""greater_or_equal"",
+      ""value"": ""1""
+    },
+    {
+      ""id"": ""queue_size"",
+      ""field"": ""queue_size"",
+      ""type"": ""integer"",
+      ""input"": ""text"",
+      ""operator"": ""between"",
+      ""value"": [
+        ""1"",
+        ""2""
+      ]
+    },
+    {
+      ""id"": ""queue_size"",
+      ""field"": ""queue_size"",
+      ""type"": ""integer"",
+      ""input"": ""text"",
+      ""operator"": ""not_between"",
+      ""value"": [
+        ""1"",
+        ""2""
+      ]
+    },
+    {
+      ""id"": ""queue_size"",
+      ""field"": ""queue_size"",
+      ""type"": ""integer"",
+      ""input"": ""text"",
+      ""operator"": ""is_null"",
+      ""value"": null
+    },
+    {
+      ""id"": ""queue_size"",
+      ""field"": ""queue_size"",
+      ""type"": ""integer"",
+      ""input"": ""text"",
+      ""operator"": ""is_not_null"",
+      ""value"": null
+    }
+  ]
+}
+"
         };
 
         public static TheoryData<string, string> TestData =

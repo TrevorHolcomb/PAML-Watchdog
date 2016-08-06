@@ -47,9 +47,21 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler
                 {
                     Nodes.Add(new InternalNode(rule));
                 }
+                else if (IsLeafNullary(rule))
+                {
+                    Nodes.Add(rule.ToObject<NullaryLeaf>());
+                }
+                else if (IsLeafUnary(rule))
+                {
+                    Nodes.Add(rule.ToObject<UnaryLeaf>());
+                }
+                else if (IsLeafPolyadic(rule))
+                {
+                    Nodes.Add(rule.ToObject<PolyadicLeaf>());
+                }
                 else
                 {
-                    Nodes.Add(rule.ToObject<Leaf>());
+                    throw new Exception("Invalid Leaf Value");
                 }
             }
         }
@@ -77,6 +89,38 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler
 
             return rules.Type == JTokenType.Array;
 
+        }
+
+        /// <summary>
+        /// Returns true if the current node is a nulllary node. ( if the value property is null )
+        /// </summary>
+        /// <param name="token">The token representing the node being checked.</param>
+        /// <returns>True if the node's value property is null.</returns>
+        private static bool IsLeafNullary(JToken token)
+        {
+            return token.SelectToken("value") == null;
+        }
+
+        /// <summary>
+        /// Returns true if the current node is a unary leaf node. ( if the value property is a string )
+        /// </summary>
+        /// <param name="token">The token representing the node being checked.</param>
+        /// <returns>True if node's value property is a string.</returns>
+        private static bool IsLeafUnary(JToken token)
+        {
+            var values = token.SelectToken("value");
+            return values.Type == JTokenType.String;
+        }
+
+        /// <summary>
+        /// Returns true if the current node is a polyadic leaf node. ( if the value property is an array )
+        /// </summary>
+        /// <param name="token">The token representing the node being checked.</param>
+        /// <returns>True if node's value property is an array.</returns>
+        private static bool IsLeafPolyadic(JToken token)
+        {
+            var values = token.SelectToken("value");
+            return values.Type == JTokenType.Array;
         }
     }
 }

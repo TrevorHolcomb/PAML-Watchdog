@@ -3,17 +3,16 @@
 namespace WatchdogDaemon.RuleEngine.ExpressionCompiler
 {
     /// <summary>
-    /// The leafnode in the expression tree.
+    /// A leaf in the expression tree that has a single value.
     /// </summary>
-    public class Leaf : INode
+    public class PolyadicLeaf : INode
     {
-
         public string Id { get; set; }
         public string Field { get; set; }
         public string Type { get; set; }
         public string Input { get; set; }
         public string Operator { get; set; }
-        public string Value { get; set; }
+        public string[] Value { get; set; }
         public string Evaluate()
         {
             return TypeHandlerList.BuildExpression(Type, Id, Operator, Value);
