@@ -24,7 +24,6 @@ namespace WatchdogDatabaseAccessLayer.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string RuleCreator { get; set; }
         public string Expression { get; set; }
         public int DefaultSeverity { get; set; }
         public int AlertTypeId { get; set; }

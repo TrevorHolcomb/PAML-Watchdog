@@ -6,7 +6,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
+<h2>Details</h2>
 
 
 <div class="form-horizontal">
@@ -85,9 +85,16 @@
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.DefaultNote, "Default Note", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.DefaultNotes, "Default Notes", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.DisplayFor(model => model.DefaultNote.Text)
+            <ul>
+                @foreach (WatchdogDatabaseAccessLayer.Models.DefaultNote note in Model.DefaultNotes)
+                {
+                    <li>
+                        @note.Text
+                    </li>
+                }
+            </ul>
         </div>
     </div>
 </div>

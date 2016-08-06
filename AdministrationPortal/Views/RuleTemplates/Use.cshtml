@@ -1,4 +1,4 @@
-﻿@model AdministrationPortal.ViewModels.RuleTemplates.DetailsRuleTemplateViewModel
+﻿@model AdministrationPortal.ViewModels.RuleTemplates.UseRuleTemplateViewModel
 
 @{
     ViewBag.Title = "Use RuleTemplate";
@@ -8,40 +8,252 @@
 <h2>Instantiate a RuleTemplate</h2>
 
 <div>
-    <hr/>
+    <hr />
     <h4>RuleTemplate</h4>
     @Html.Partial("PartialDetails", Model)
-    <hr/>
 
-    <div class="alert alert-info">
-        Enter comma-separated lists of Origins and Servers. You can instantiate <b>N</b> Rules by specifying <b>1</b> Origin and <b>N</b> Servers, or <b>N</b> Origins and <b>1</b> Server, or <b>N</b> Origins with <b>N</b> Servers. This last case will match Origins with Servers by index.
-    </div>
+    <hr />
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-warning">
+            @Html.ValidationSummary();
+        </div>
+    }
 
-    @using (Html.BeginForm(null, null, FormMethod.Post))
+    @using (Html.BeginForm("Use", "RuleTemplates", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
-
         @Html.ValidationSummary(true)
-
         @Html.HiddenFor(model => model.RuleTemplateId)
 
-        <dl class="dl-horizontal">
-            
-            <dt>@Html.LabelFor(model => model.Engine)</dt> <dd>@Html.DropDownListFor(model => model.Engine, Model.RegisteredEngines, htmlAttributes: new { @class="btn btn-default dropdown-toggle", @title = "Select an engine"})</dd>
-            <dt>@Html.LabelFor(model => model.OriginsString)</dt> <dd>@Html.EditorFor(model => model.OriginsString, new {htmlAttributes = new {@class = "form-control", @title = "Enter a comma-separated list of origins", placeholder = "O1, O2, O3", required = "required"}})</dd>
-            <dt></dt> <dd>@Html.ValidationMessageFor(model => model.OriginsString, "", new { @class = "text-danger" })</dd>
-            
-            <dt>@Html.LabelFor(model => model.ServersString)</dt> <dd>@Html.EditorFor(model => model.ServersString, new {htmlAttributes = new {@class = "form-control", @title = "Enter a comma-separated list of servers", placeholder = "S1, S2, S3", required = "required"}})</dd>
-            <dt></dt> <dd>@Html.ValidationMessageFor(model => model.ServersString, "", new { @class = "text-danger" })</dd>
-            
-        </dl>
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Instantiate" class="btn btn-default" />
+        foreach (var key in Model.AlertTypeIdToName.Keys)
+        {
+            @Html.Hidden(Html.NameFor(m => m.AlertTypeIdToName) + ".Index", key)
+            @Html.Hidden(Html.NameFor(m => m.AlertTypeIdToName) + "[" + key + "].Key", key)
+            @Html.Hidden(Html.NameFor(m => m.AlertTypeIdToName) + "[" + key + "].Value", Model.AlertTypeIdToName[key])
+        }
+
+        foreach (var key in Model.RuleIdToRuleCategoryNames.Keys)
+        {
+            @Html.Hidden(Html.NameFor(m => m.RuleIdToRuleCategoryNames) + ".Index", key)
+            @Html.Hidden(Html.NameFor(m => m.RuleIdToRuleCategoryNames) + "[" + key + "].Key", key)
+            @Html.Hidden(Html.NameFor(m => m.RuleIdToRuleCategoryNames) + "[" + key + "].Value", Model.RuleIdToRuleCategoryNames[key])
+        }
+
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-10 col-sm-10 col-xs-10" style="padding-right: 0;">
+                    <div class="row">
+                        <div class="col-md-2 col-md-offset-1">
+                            @Html.LabelFor(model => model.TemplateInstantiator)
+                        </div>
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.TemplateInstantiator, new { htmlAttributes = new { @class = "form-control", title = "Enter your name (optional)", placeholder="Enter your name (optional)", value='\"'+@Model.RuleTemplate.Name+'\"'}})
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-10 col-sm-10 col-xs-10" style="padding-right: 0;">
+                    <div class="row">
+                        <div class="col-md-2 col-md-offset-1">
+                            @Html.LabelFor(model => model.Engine)
+                        </div>
+                        <div class="col-md-4">
+                            @Html.DropDownListFor(model => model.Engine, Model.RegisteredEngines, new {@class = "btn btn-default dropdown-toggle", title = "Select an engine"})
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-10" style="padding-right: 0;">
+                    <div class="row">
+                        <div class="col-md-2 col-md-offset-1">
+                            <label for="txtOrigins">Origins</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" id="txtOrigins" class="form-control" placeholder="Enter Origin names"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 col-md-offset-1">
+                            <label for="txtServers">Servers</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" id="txtServers" class="form-control" placeholder="Enter Server names"/>
+                        </div>
+                    </div>
+                </div>
+                <input type="button" value="Build" class="btn btn-primary" id="btnBuild" style="min-height: 5em;"/>
+            </div>
+            <br/>
+
+            <div class="row">
+                <div class="input-group col-md-offset-0 col-md-12">
+                    <span class="input-group-addon">Server-Origin Tuples:</span>
+                    <span class="input-group-btn well" style="padding: inherit;">
+                        <button class="btn btn-danger" type="reset" id="btnReset">Clear</button>
+                    </span>
+                    <input type="text" class="form-control" id="txtBuiltTuples"/>
+                    <span class="input-group-btn well" style="padding: inherit;">
+                        <button class="btn btn-success" type="submit" id="btnSubmit" disabled="disabled">Instantiate Rules</button>
+                    </span>
+                </div>
+            </div>
+
         </div>
+        <br />
     }
 </div>
 
+
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.RuleTemplate.Id }) |
+    @Html.ActionLink("Edit", "Edit", new {id = Model.RuleTemplate.Id}) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap-tokenfield")
+    @Styles.Render("~/Content/css/bootstrap-tokenfield")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#txtOrigins").tokenfield({ createTokensOnBlur: true });
+            $("#txtServers").tokenfield({ createTokensOnBlur: true });
+            $("#txtBuiltTuples").tokenfield();
+            $("#txtBuiltTuples-tokenfield").keydown(blockKeydownEvent);
+            $("#txtBuiltTuples").on('tokenfield:removedtoken', tokenRemoved);
+            $("#btnBuild").click(onBuild);
+            $("#btnReset").click(onReset);
+            $("form").submit(onSubmit);
+        });
+
+        function onBuild() {
+            var originPropertyName = "txtOrigins";
+            var serverPropertyName = "txtServers";
+
+            if (!validateUserInput(originPropertyName, serverPropertyName))
+                return;
+
+            var origins = grabTokensFromInput(originPropertyName);
+            var servers = grabTokensFromInput(serverPropertyName);
+            var tuples = makeTupleList(origins, servers);
+
+            insertTokens(tuples);
+
+            if ($("#txtBuiltTuples-tokenfield").tokenfield('getTokens').length > 0)
+                $("#btnSubmit").removeAttr("disabled");
+        }
+
+        function validateUserInput(originPropertyName, serverPropertyName) {
+            //bypass short-circuit evaluation
+            var bValid = setInputFieldFeedback(originPropertyName, "Origins");
+            bValid &= setInputFieldFeedback(serverPropertyName, "Servers");
+            return bValid;
+        }
+
+        function setInputFieldFeedback(propertyName, fieldname) {
+            var $validationElement = $(".text-danger[data-valmsg-for='" + propertyName + "']");
+            var $inputField = $("#" + propertyName);
+
+            if ($inputField.val().length === 0) {
+                $validationElement
+                    .removeClass("field-validation-valid")
+                    .addClass("field-validation-error")
+                    .html("<span for=\"" + propertyName + "\">The " + fieldname + " field is required.</span>");
+                $inputField.closest("dd").removeClass("has-success").addClass("has-error");
+                return false;
+            }
+
+            $validationElement
+                .removeClass("field-validation-error")
+                .addClass("field-validation-valid")
+                .html("");
+            $inputField.closest("dd").removeClass("has-error").addClass("has-success");
+            return true;
+        }
+
+        function grabTokensFromInput(propertyName) {
+            var $inputField = $("#" + propertyName);
+            $inputField.siblings(".token").fadeOut("fast", function () { $(this).remove(); });
+            return $inputField.val();
+        }
+
+        function makeTupleList(origins, servers) {
+            var originTokens = $.map(origins.split(","), $.trim);
+            var serverTokens = $.map(servers.split(","), $.trim);
+
+            var tuples = [];
+            for (var i = 0; i < originTokens.length; i++)
+                for (var j = 0; j < serverTokens.length; j++)
+                    tuples.push(originTokens[i] + ", " + serverTokens[j]);
+            return tuples;
+        }
+
+        //only insert unique tuples/tokens
+        function insertTokens(strArr) {
+            var $tokens = getTokensArray();
+            var uniqueTokens = [];
+
+            for (var i = 0; i < strArr.length; i++)
+                if ($.inArray(strArr[i], uniqueTokens) === -1 &&
+                    $.inArray(strArr[i], $tokens) === -1)
+                    uniqueTokens.push(strArr[i]);
+
+            for (var token in uniqueTokens){
+                if (!uniqueTokens.hasOwnProperty(token))
+                    continue;
+                $("#txtBuiltTuples").tokenfield('createToken', uniqueTokens[token]);
+            }
+        }
+
+        function getTokensArray() {
+            return $.map($("#txtBuiltTuples")
+                    .tokenfield('getTokens'),
+                    function (value) {
+                        return value.value;
+                    });
+        }
+
+        //manually create a list to be bound to the ViewModel by IIS
+        function onSubmit(event) {
+            event.preventDefault();
+
+            var tokens = getTokensArray();
+            for (var i = 0; i < tokens.length; i++) {
+                var tuple = $.map(tokens[i].split(','), $.trim);
+                var originsName = '@Html.NameFor(m => m.Origins)';
+                var serversName = '@Html.NameFor(m => m.Servers)';
+
+                var hiddenInputOriginIndex = "<input name=\"" + originsName + ".Index\" id=\"" + originsName + "_Index\" type=\"hidden\" value=\"" + i + "\">";
+                var hiddenInputOrigin = "<input name=\"" + originsName + "[" + i + "]\" id=\"" + originsName + "_" + i + "_\" type=\"hidden\" value=\"" + tuple[0] + "\">";
+                var hiddenInputServerIndex = "<input name=\"" + serversName + ".Index\" id=\"" + serversName + "_Index\" type=\"hidden\" value=\"" + i + "\">";
+                var hiddenInputServer = "<input name=\"" + serversName + "[" + i + "]\" id=\"" + serversName + "_" + i + "_\" type=\"hidden\" value=\"" + tuple[1] + "\">";
+
+                $("form").append(hiddenInputOriginIndex).append(hiddenInputOrigin).append(hiddenInputServerIndex).append(hiddenInputServer);
+            }
+            $("form").unbind('submit');
+            $("form").submit();
+        }
+
+        function onReset() {
+            $("#txtBuiltTuples").siblings(".token").fadeOut("fast", function () { $(this).remove(); tokenRemoved(); });
+        }
+
+        function blockKeydownEvent(event) {
+            event = event || window.event;
+            event.preventDefault();
+            return false;
+        }
+
+        function tokenRemoved() {
+            var numtokens = $("#txtBuiltTuples").tokenfield('getTokens').length;
+            if (numtokens === 0)
+                $("#btnSubmit").attr("disabled", "disabled");
+        }
+    </script>
+}

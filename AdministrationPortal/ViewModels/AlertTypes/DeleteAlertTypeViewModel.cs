@@ -7,7 +7,7 @@ namespace AdministrationPortal.ViewModels.AlertTypes
         public DeleteAlertTypeViewModel(AlertType alertTypeToDelete, bool safeToDelete)
         {
             AlertType = alertTypeToDelete;
-            canDeleteThisModel(safeToDelete);
+            CanDeleteThisModel(safeToDelete);
         }
 
         public override string ModelTypeName { get { return "Alert Type"; } }

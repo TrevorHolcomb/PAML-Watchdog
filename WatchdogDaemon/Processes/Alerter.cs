@@ -32,6 +32,8 @@ namespace WatchdogDaemon.Processes
         public Repository<AlertGroup> AlertGroupRepository { set; get; }
         [Inject]
         public IRuleEngine RuleEngine { set; get; }
+        [Inject]
+        public Repository<AlertCategoryItem> AlertCategoryItemRepository { set; get; }
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -95,11 +97,12 @@ namespace WatchdogDaemon.Processes
         private AlertGroup GetAlertGroup(Rule rule, Message message)
         {
             var alertGroup =  AlertGroupRepository.Get().FirstOrDefault(ag => ag.Server == message.Server && ag.Engine == message.EngineName && ag.Origin == message.Origin && ag.AlertType == rule.AlertType && ag.Resolved == false);
-
-            if(alertGroup == null)
+            var alertCategory = AlertCategoryItemRepository.Get().FirstOrDefault(ag => ag.Server == message.Server && ag.Engine == message.EngineName && ag.Origin == message.Origin && ag.AlertType == rule.AlertType);
+            if (alertGroup == null)
             {
                 alertGroup = BuildAlertGroup(rule, message);
-
+                if (alertCategory != null)
+                    alertGroup.AlertCategoryId = alertCategory.AlertCategoryId;
                 AlertGroupRepository.Insert(alertGroup);
                 AlertGroupRepository.Save();
             }
@@ -125,13 +128,23 @@ namespace WatchdogDaemon.Processes
                 Value = messageParameter.Value, MessageTypeParameterType = messageParameter.MessageTypeParameterType,
             }).ToList();
 
+            string notes = "";
+
+            if(rule.DefaultNotes != null)
+            {
+                foreach(DefaultNote note in rule.DefaultNotes)
+                {
+                    notes += note.Text + " ";
+                }
+            }
+            
             return new Alert
             {
                 AlertParameters = alertParams,
                 AlertType = rule.AlertType,
                 AlertTypeId = rule.AlertTypeId,
                 Engine = message.Engine,
-                Notes = " ",
+                Notes = notes,
                 Origin = message.Origin,
                 Rule = rule,
                 RuleId = rule.Id,

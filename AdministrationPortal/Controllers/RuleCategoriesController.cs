@@ -1,8 +1,10 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using AdministrationPortal.ViewModels.RuleCategories;
+using NLog;
 
 namespace AdministrationPortal.Controllers
 {
@@ -10,6 +12,8 @@ namespace AdministrationPortal.Controllers
     {
         [Inject]
         public Repository<RuleCategory> RuleCategoryRepository { private get; set; }
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: RuleCategories
         public ActionResult Index()
@@ -22,9 +26,8 @@ namespace AdministrationPortal.Controllers
         {
             var ruleCategory = RuleCategoryRepository.GetById(id);
             if (ruleCategory == null)
-            {
-                return HttpNotFound("No RuleCategory found with Id " + id);
-            }
+                throw new ArgumentException("No Rule found with id " + id);
+
             return View(ruleCategory);
         }
 
@@ -57,9 +60,8 @@ namespace AdministrationPortal.Controllers
         {
             var ruleCategory = RuleCategoryRepository.GetById(id);
             if (ruleCategory == null)
-            {
-                return HttpNotFound("No RuleCategory found with Id " + id);
-            }
+                throw new ArgumentException($"No RuleCategory found with Id: {id}");
+
             return View(ruleCategory);
         }
 
@@ -73,11 +75,9 @@ namespace AdministrationPortal.Controllers
                 return View(ruleCategory);
             }
 
-            RuleCategory ruleCategoryInDb = RuleCategoryRepository.GetById(ruleCategory.Id);
-            if (ruleCategory == null)
-            {
-                return HttpNotFound("No RuleCategory found with Id " + ruleCategory.Id);
-            }
+            var ruleCategoryInDb = RuleCategoryRepository.GetById(ruleCategory.Id);
+            if (ruleCategoryInDb == null)
+                throw new ArgumentException($"No RuleCategory found with Id: {ruleCategory.Id}");
 
             ruleCategoryInDb.Description = ruleCategory.Description;
             RuleCategoryRepository.Update(ruleCategoryInDb);
@@ -90,9 +90,7 @@ namespace AdministrationPortal.Controllers
         {
             var ruleCategory = RuleCategoryRepository.GetById(id);
             if (ruleCategory == null)
-            {
-                return HttpNotFound("No RuleCategory found with Id " + id);
-            }
+                throw new ArgumentException($"No RuleCategory found with Id: {id}");
 
             bool safeToDelete = (ruleCategory.Rules.Count == 0);
             var viewModel = new DeleteRuleCategoryViewModel(ruleCategory, safeToDelete);
@@ -106,14 +104,12 @@ namespace AdministrationPortal.Controllers
         {
             var ruleCategory = RuleCategoryRepository.GetById(id);
             if (ruleCategory == null)
-            {
-                return HttpNotFound("No RuleCategory found with Id " + id);
-            }
+                throw new ArgumentException($"No RuleCategory found with Id: {id}");
 
             bool safeToDelete = (ruleCategory.Rules.Count == 0);
             if (!safeToDelete)
             {
-                var viewModel = new DeleteRuleCategoryViewModel(ruleCategory, safeToDelete);
+                var viewModel = new DeleteRuleCategoryViewModel(ruleCategory, false);
                 return View(viewModel);
             }
 
@@ -121,6 +117,23 @@ namespace AdministrationPortal.Controllers
             RuleCategoryRepository.Save();
 
             return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Called when an unhandled exception occurs in the action.
+        /// </summary>
+        /// <param name="filterContext">Information about the current request and action.</param>
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+                return;
+
+            Logger.Error(filterContext.Exception);
+
+            filterContext.ExceptionHandled = true;
+
+            // Redirect on error:
+            filterContext.Result = RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

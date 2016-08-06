@@ -1,8 +1,11 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using Ninject;
 using AdministrationPortal.ViewModels.Rules;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
+using System.Linq;
+using NLog;
 
 namespace AdministrationPortal.Controllers
 {
@@ -23,6 +26,8 @@ namespace AdministrationPortal.Controllers
         [Inject]
         public Repository<DefaultNote> DefaultNoteRepository { get; set; }
 
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         // GET: Rules
         public ActionResult Index()
         {
@@ -35,9 +40,8 @@ namespace AdministrationPortal.Controllers
         {
             var rule = RuleRepository.GetById(id);
             if (rule == null)
-            {
-                return HttpNotFound("No Rule found with id " + id);
-            }
+                throw new ArgumentException("No Rule found with id " + id);
+
             return View(rule);
         }
 
@@ -55,7 +59,6 @@ namespace AdministrationPortal.Controllers
                     SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
                     EngineList = new SelectList(EngineRepository.Get(), "Name", "Name"),
                     DefaultNotes = new SelectList(DefaultNoteRepository.Get(), "Id", "Text")
-
                 }
             };
             
@@ -70,16 +73,28 @@ namespace AdministrationPortal.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(RuleCreateViewModel ruleViewModel)
-        {
-            if (ruleViewModel.DefaultNoteText != null && ruleViewModel.DefaultNoteText != "")
+        {   
+            //build rule
+            var ruleToCreate = ruleViewModel.BuildRule(RuleCategoryRepository.Get());
+
+            //insert new notes
+            foreach (string newNote in ruleViewModel.NewDefaultNotes)
             {
-                DefaultNoteRepository.Insert(new DefaultNote{ Text = ruleViewModel.DefaultNoteText });
-                DefaultNoteRepository.Save();
-                ruleViewModel.DefaultNoteId = DefaultNoteRepository.GetByName(ruleViewModel.DefaultNoteText).Id;
+                if (newNote.Trim() != "")
+                {
+                    ruleToCreate.DefaultNotes.Add(new DefaultNote { Text = newNote });
+                }
+            }
+            
+            //attatch existing notes
+            foreach(int noteId in ruleViewModel.SelectedNoteIds)
+            {
+                if(noteId != 0)
+                {
+                    ruleToCreate.DefaultNotes.Add(DefaultNoteRepository.GetById(noteId));
+                }
             }
 
-            
-            var ruleToCreate = ruleViewModel.BuildRule(RuleCategoryRepository.Get());
             RuleRepository.Insert(ruleToCreate);
             RuleRepository.Save();
 
@@ -91,66 +106,31 @@ namespace AdministrationPortal.Controllers
         {
             var rule = RuleRepository.GetById(id);
             if (rule == null)
-            {
-                return HttpNotFound("No Rule found with Id " + id);
-            }
+                throw new ArgumentException("No Rule found with id " + id);
 
-            RuleEditViewModel viewModel;
-
-            if(rule.DefaultNote != null)
+            var viewModel = new RuleEditViewModel
             {
-                viewModel = new RuleEditViewModel
+                RuleOptions = new RuleOptionsViewModel
                 {
-                    RuleOptions = new RuleOptionsViewModel
-                    {
-                        AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
-                        MessageTypes = new SelectList(MessageTypeRepository.Get(), "Name", "Name"),
-                        RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
-                        SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
-                        EngineList = new SelectList(EngineRepository.Get(), "Name", "Name"),
-                        DefaultNotes = new SelectList(DefaultNoteRepository.Get(), "Id", "Text")
-                    },
-                    RuleCreator = rule.RuleCreator,
-                    Description = rule.Description,
-                    Expression = rule.Expression,
-                    Name = rule.Name,
-                    MessageTypeName = rule.MessageTypeName,
-                    Engine = rule.Engine,
-                    Origin = rule.Origin,
-                    Server = rule.Server,
-                    DefaultSeverity = rule.DefaultSeverity,
-                    Id = id,
-                    DefaultNoteText = rule.DefaultNote.Text,
-                    DefualtNoteTextEdited = rule.DefaultNote.Text
-                };
-            }
-            else
-            {
-                viewModel = new RuleEditViewModel
-                {
-                    RuleOptions = new RuleOptionsViewModel
-                    {
-                        AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
-                        MessageTypes = new SelectList(MessageTypeRepository.Get(), "Name", "Name"),
-                        RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
-                        SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
-                        EngineList = new SelectList(EngineRepository.Get(), "Name", "Name"),
-                        DefaultNotes = new SelectList(DefaultNoteRepository.Get(), "Id", "Text")
-                    },
-                    RuleCreator = rule.RuleCreator,
-                    Description = rule.Description,
-                    Expression = rule.Expression,
-                    Name = rule.Name,
-                    MessageTypeName = rule.MessageTypeName,
-                    Engine = rule.Engine,
-                    Origin = rule.Origin,
-                    Server = rule.Server,
-                    DefaultSeverity = rule.DefaultSeverity,
-                    Id = id,
-                    DefaultNoteText = "No Note Added"
-                };
-            }
-
+                    AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
+                    MessageTypes = new SelectList(MessageTypeRepository.Get(), "Name", "Name"),
+                    RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
+                    SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
+                    EngineList = new SelectList(EngineRepository.Get(), "Name", "Name"),
+                    DefaultNotes = new SelectList(DefaultNoteRepository.Get(), "Id", "Text")
+                },
+                RuleCreator = rule.RuleCreator,
+                Description = rule.Description,
+                Expression = rule.Expression,
+                Name = rule.Name,
+                MessageTypeName = rule.MessageTypeName,
+                Engine = rule.Engine,
+                Origin = rule.Origin,
+                Server = rule.Server,
+                DefaultSeverity = rule.DefaultSeverity,
+                Id = id,
+                DefaultNotes = rule.DefaultNotes.ToList()
+            };
 
             return View(viewModel);
         }
@@ -167,6 +147,39 @@ namespace AdministrationPortal.Controllers
             {
                 var rule = RuleRepository.GetById(ruleViewModel.Id);
                 ruleViewModel.Map(rule);
+
+                if(ruleViewModel.DefaultNotes != null)
+                {
+                    foreach (DefaultNote note in ruleViewModel.DefaultNotes)
+                    {
+
+                        if (note.Text == null)
+                            rule.DefaultNotes.Remove(DefaultNoteRepository.GetById(note.Id));
+                        else
+                            DefaultNoteRepository.GetById(note.Id).Text = note.Text;
+                    }
+                }
+                
+                
+
+                //insert new notes
+                foreach (string newNote in ruleViewModel.NewDefualtNotes)
+                {
+                    if (newNote != "")
+                    {
+                        rule.DefaultNotes.Add(new DefaultNote { Text = newNote });
+                    }
+                }
+
+                //attatch existing notes
+                foreach (int noteId in ruleViewModel.SelectedNoteIds)
+                {
+                    if (noteId != 0)
+                    {
+                        rule.DefaultNotes.Add(DefaultNoteRepository.GetById(noteId));
+                    }
+                }
+
                 RuleRepository.Update(rule);
                 RuleRepository.Save();
 
@@ -179,20 +192,20 @@ namespace AdministrationPortal.Controllers
                 MessageTypes = new SelectList(MessageTypeRepository.Get(), "Name", "Name"),
                 RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
                 SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
-                EngineList = new SelectList(EngineRepository.Get(), "Name", "Name")
+                EngineList = new SelectList(EngineRepository.Get(), "Name", "Name"),
+                DefaultNotes = new SelectList(DefaultNoteRepository.Get(), "Id", "Text")
             };
 
             return View(ruleViewModel);
         }
 
         // GET: Rules/Delete/5
+        [HttpGet]
         public ActionResult Delete(int id)
         {
             var rule = RuleRepository.GetById(id);
             if (rule == null)
-            {
-                return HttpNotFound("No Rule found with Id " + id);
-            }
+                throw new ArgumentException("No Rule found with id " + id);
             return View(rule);
         }
 
@@ -203,13 +216,33 @@ namespace AdministrationPortal.Controllers
         {
             var rule = RuleRepository.GetById(id);
             if (rule == null)
+                throw new ArgumentException("No Rule found with id " + id);
+
+            foreach (DefaultNote note in rule.DefaultNotes)
             {
-                return HttpNotFound("No Rule found with Id " + id);
+                note.Rules.Remove(rule);
             }
 
             RuleRepository.Delete(rule);
             RuleRepository.Save();
             return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Called when an unhandled exception occurs in the action.
+        /// </summary>
+        /// <param name="filterContext">Information about the current request and action.</param>
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+                return;
+
+            Logger.Error(filterContext.Exception);
+
+            filterContext.ExceptionHandled = true;
+
+            // Redirect on error:
+            filterContext.Result = RedirectToAction("Index");
         }
 
 

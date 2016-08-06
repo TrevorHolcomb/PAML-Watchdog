@@ -33,6 +33,8 @@ namespace WatchdogDatabaseAccessLayer
             Bind<Repository<UnvalidatedMessageParameter>>().To<EFUnvalidatedMessageParameterRepository>();
             Bind<Repository<AlertGroup>>().To<EFAlertGroupRepository>();
             Bind<Repository<DefaultNote>>().To<EFDefaultNoteRepositroy>();
+            Bind<Repository<AlertCategory>>().To<EFAlertCategoryRepository>();
+            Bind<Repository<AlertCategoryItem>>().To<EFAlertCategoryItemRepository>();
         }
     }
 
@@ -64,6 +66,8 @@ namespace WatchdogDatabaseAccessLayer
             Bind<Repository<UnvalidatedMessageParameter>>().To<EFUnvalidatedMessageParameterRepository>().InRequestScope();
             Bind<Repository<AlertGroup>>().To<EFAlertGroupRepository>().InRequestScope();
             Bind<Repository<DefaultNote>>().To<EFDefaultNoteRepositroy>().InRequestScope();
+            Bind<Repository<AlertCategory>>().To<EFAlertCategoryRepository>().InRequestScope();
+            Bind<Repository<AlertCategoryItem>>().To<EFAlertCategoryItemRepository>().InRequestScope();
         }
     }
 }

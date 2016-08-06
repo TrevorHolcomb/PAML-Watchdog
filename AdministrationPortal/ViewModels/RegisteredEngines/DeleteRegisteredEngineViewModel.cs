@@ -7,9 +7,9 @@ namespace AdministrationPortal.ViewModels.RegisteredEngines
         public DeleteRegisteredEngineViewModel(Engine engineToDelete, bool safeToDelete)
         {
             Engine = engineToDelete;
-            canDeleteThisModel(safeToDelete);
+            CanDeleteThisModel(safeToDelete);
         }
-        public override string ModelTypeName { get { return "Engine"; } }
+        public override string ModelTypeName => "Engine";
         public Engine Engine { get; set; }
     }
 }

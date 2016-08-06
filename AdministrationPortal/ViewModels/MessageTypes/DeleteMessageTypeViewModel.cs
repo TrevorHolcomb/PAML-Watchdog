@@ -7,7 +7,7 @@ namespace AdministrationPortal.ViewModels.MessageTypes
         public DeleteMessageTypeViewModel(MessageType messageTypeToDelete, bool safeToDelete)
         {
             MessageType = messageTypeToDelete;
-            canDeleteThisModel(safeToDelete);
+            CanDeleteThisModel(safeToDelete);
         }
 
         public override string ModelTypeName { get { return "Message Type"; } }

@@ -649,3 +649,78 @@ img.help {
 /* MultiSelect */
 span.hide-native-select > div > ul > li a label {
   margin-left: 5px; }
+
+/* Overrides bootstra table-striped class to allow for red bg color in the status td*/
+.redTableCell,
+.table-striped > tbody > tr:nth-child(odd) > .redTableCell {
+  background-color: #FF0000; }
+
+/* Overrides table-hover to change hover color of the status td*/
+.table-hover > tbody > tr:hover > .redTableCell {
+  background-color: #ED1515; }
+
+/* Overrides bootstra table-striped class to allow for yellow bg color in the status td*/
+.yellowTableCell,
+.table-striped > tbody > tr:nth-child(odd) > .yellowTableCell {
+  background-color: #FFFB00; }
+
+/* Overrides table-hover to change hover color of the status td*/
+.table-hover > tbody > tr:hover > .yellowTableCell {
+  background-color: #E3DF07; }
+
+/* Overrides bootstra table-striped class to allow for yellow bg color in the status td*/
+.greenTableCell,
+.table-striped > tbody > tr:nth-child(odd) > .greenTableCell {
+  background-color: #09FF00; }
+
+/* Overrides table-hover to change hover color of the status td*/
+.table-hover > tbody > tr:hover > .greenTableCell {
+  background-color: #0FED07; }
+
+.orangeTableCell,
+.table-striped > tbody > tr:nth-child(odd) > .orangeTableCell {
+  background-color: #FFA600; }
+
+/* Overrides table-hover to change hover color of the status td*/
+.table-hover > tbody > tr:hover > .orangeTableCell {
+  background-color: #F09E07; }
+
+.blueTableCell,
+.table-striped > tbody > tr:nth-child(odd) > .blueTableCell {
+  background-color: #87D2FA; }
+
+/* Overrides table-hover to change hover color of the status td*/
+.table-hover > tbody > tr:hover > .blueTableCell {
+  background-color: #58BEF5; }
+
+/* Change cursor to pointer when hovering over table row*/
+.table-hover > tbody > tr:hover > td {
+  cursor: pointer; }
+
+.navbar-inverse {
+  background-color: #373A64; }
+
+/* Disabled hoverering over table header*/
+.table-hover > tbody > tr:hover > th {
+  background-color: #f9f9f9; }
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+  white-space: normal; }
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+  max-width: 280px; }
+
+.userPortalContainer {
+  background-color: #fff; }
+
+.navbar-collapse .navbar-nav .changeColor a {
+  color: #cccccc; }
+
+.navbar-collapse .navbar-nav .changeColor a:hover {
+  color: #fff; }

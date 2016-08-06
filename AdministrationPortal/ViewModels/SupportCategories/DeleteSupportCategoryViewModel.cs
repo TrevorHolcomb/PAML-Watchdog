@@ -7,7 +7,7 @@ namespace AdministrationPortal.ViewModels.SupportCategories
         public DeleteSupportCategoryViewModel(SupportCategory supportCategoryToDelete, bool safeToDelete)
         {
             SupportCategory = supportCategoryToDelete;
-            canDeleteThisModel(safeToDelete);
+            CanDeleteThisModel(safeToDelete);
         }
 
         public override string ModelTypeName { get { return "SupportCategory"; } }
