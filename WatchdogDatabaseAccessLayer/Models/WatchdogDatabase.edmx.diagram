@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e5e3167d3dc04e51a2d12eb062001561" Name="Diagram1" ZoomLevel="59" DisplayType="false" >
+      <Diagram DiagramId="e5e3167d3dc04e51a2d12eb062001561" Name="Diagram1" ZoomLevel="88" DisplayType="false" >
         <EntityTypeShape EntityType="WatchdogDatabase.Message" Width="3.5" PointX="11.75" PointY="0.5" />
         <EntityTypeShape EntityType="WatchdogDatabase.MessageType" Width="2.375" PointX="11.875" PointY="3.875" />
         <AssociationConnector Association="WatchdogDatabase.MessageMessageType" />
@@ -26,8 +26,8 @@
           <ConnectorPoint PointX="12.6874975" PointY="13.625" />
         </AssociationConnector>
         <AssociationConnector Association="WatchdogDatabase.AlertTypeRule" ManuallyRouted="true" >
-          <ConnectorPoint PointX="12.003624314261984" PointY="13.625" />
-          <ConnectorPoint PointX="12.003624314261984" PointY="12.066712239583332" />
+          <ConnectorPoint PointX="11.9375" PointY="13.625" />
+          <ConnectorPoint PointX="11.9375" PointY="11.682109375" />
         </AssociationConnector>
         <AssociationConnector Association="WatchdogDatabase.AlertRule" ></AssociationConnector>
         <EntityTypeShape EntityType="WatchdogDatabase.RuleCategory" Width="1.5" PointX="8.5" PointY="11.375" FillColor="0, 204, 133" />

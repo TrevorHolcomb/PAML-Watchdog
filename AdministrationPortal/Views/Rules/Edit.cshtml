@@ -70,7 +70,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Expression, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Expression, new { htmlAttributes = new { @class = "form-control", @id = "Expression" } })
+                @Html.EditorFor(model => model.Expression, new { htmlAttributes = new { @class = "form-control", id = "Expression" } })
                 @Html.ValidationMessageFor(model => model.Expression, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -89,7 +89,7 @@
                 @Html.Label("", "Current Default Notes", htmlAttributes: new { @class = "label-defaultNotes" })
             </div>
             <div class="col-md-10">
-                @for (var p = 0; p < Model.DefaultNotes.Count(); p++)
+                @for (var p = 0; p < Model.DefaultNotes.Count; p++)
                 {
                     var style = (Model.SelectedNotesEnabled[p]) ? "" : "display:none";
                     <div class="current-form-group" style="margin-bottom: 10px" >
@@ -139,7 +139,7 @@
                     <div class="multiple-form-group-new" style="margin-bottom: 15px; @style">
                         @Html.HiddenFor(model => model.NewNotesEnabled[p], htmlAttributes: new { @class = "parameter-enabled" })
                         <div class="input-group">
-                            @Html.EditorFor(model => model.NewDefualtNotes[p], new { htmlAttributes = new { @class = "text-box form-control", @type = "text", @placeholder = "Enter New Notes Here" } })
+                            @Html.EditorFor(model => model.NewDefaultNotes[p], new { htmlAttributes = new { @class = "text-box form-control", type = "text", placeholder = "Enter New Notes Here" } })
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-danger btn-remove-new">-</button>
                             </span>
@@ -153,7 +153,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.AlertTypeId, "Alert Type", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.AlertTypeId, Model.RuleOptions.AlertTypes, htmlAttributes: new { @class = "form-control", @disabled = true })
+                @Html.DropDownListFor(model => model.AlertTypeId, Model.RuleOptions.AlertTypes, htmlAttributes: new { @class = "form-control", disabled = true, @readonly = "readonly" })
                 @Html.ValidationMessageFor(model => model.AlertTypeId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -161,24 +161,25 @@
         <div class="form-group">
             @Html.LabelFor(model => model.MessageTypeName, "Message Type", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.MessageTypeName, Model.RuleOptions.MessageTypes, htmlAttributes: new { @class = "form-control", @readonly = "readonly" })
+                @Html.DropDownListFor(model => model.MessageTypeName, Model.RuleOptions.MessageTypes, htmlAttributes: new { @class = "form-control", disabled = true, @readonly = "readonly" })
                 @Html.ValidationMessageFor(model => model.MessageTypeName, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.RuleCategoryIds, "RuleCategoryIds", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label(nameof(Model.RuleOptions) + "." + nameof(Model.RuleOptions.RuleCategories), "Rule Categories", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.MultiSelectDropDown("RuleCategoryIds", Model.RuleOptions.RuleCategories, Model.RuleOptions.RuleCategories.Select(e => e.Value.AsInt()), "form-control")
+                @Html.MultiSelectDropDown(nameof(Model.SelectedRuleCategoryIds), Model.RuleOptions.RuleCategories, Model.SelectedRuleCategoryIds, "form-control")
 
                 @Html.ValidationMessageFor(model => model.RuleOptions.RuleCategories, "", new { @class = "text-danger" })
             </div>
         </div>
 
+
         <div class="form-group">
             @Html.LabelFor(model => model.SupportCategoryId, "Support Category", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.SupportCategoryId, Model.RuleOptions.SupportCategories, htmlAttributes: new { @class = "form-control", @readonly = "readonly" })
+                @Html.DropDownListFor(model => model.SupportCategoryId, Model.RuleOptions.SupportCategories, htmlAttributes: new { @class = "form-control", disabled = true, @readonly = "readonly" })
                 @Html.ValidationMessageFor(model => model.SupportCategoryId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -217,118 +218,6 @@
                 }
             });
 
-            //Toggle last visible button for added notes
-            var makeLastVisibleButtonGreenNewNotes = function () {
-                var $lastEnabled = $('.addedNotes').find('.parameter-enabled').filter("[value='True']").last();
-                var $lastButton = $lastEnabled.next('.input-group').find('.btn');
-                $lastButton.removeClass('btn-danger btn-remove-new');
-                $lastButton.addClass('btn-success btn-add-new').html('+');
-            };
-
-            //Toggle last visible button for selected notes
-            var makeLastVisibleButtonGreenSelectedNotes = function () {
-                var $lastEnabled = $('.selectedNotes').find('.parameter-enabled').filter("[value='True']").last();
-                var $lastButton = $lastEnabled.next('.input-group').find('.btn');
-                $lastButton.removeClass('btn-danger btn-remove-selected');
-                $lastButton.addClass('btn-success btn-add-selected').html('+');
-            };
-
-            //add selected note group
-            var addSelectedFormGroup = function (event) {
-                event.preventDefault();
-
-                var $multipleFormGroupSelected = $(this).closest('.multiple-form-group-selected');
-
-                //Toggle this button state
-                $(this).toggleClass('btn-success btn-add-selected btn-danger btn-remove-selected').html('–');
-
-                //Enable the next group
-                var $nextGroup = $multipleFormGroupSelected.next('.multiple-form-group-selected');
-                $nextGroup.find('.parameter-enabled').attr('value', 'True');
-                $nextGroup.find('.btn').toggleClass('btn-success btn-add-selected btn-danger btn-remove-selected').html('+');
-                $nextGroup.fadeIn(300);
-
-                //Always disable the last button
-                var $lastFormGroup = $multipleFormGroupSelected.siblings('.multiple-form-group-selected:last');
-                $lastFormGroup.find('.btn').attr('disabled', true);
-                makeLastVisibleButtonGreenSelectedNotes();
-            };
-
-            //remove selected note group
-            var removeSelectedFormGroup = function (event) {
-                event.preventDefault();
-
-                var $multipleFormGroupSelected = $(this).closest('.multiple-form-group-selected');
-
-                //Always reenable the last button before replacing it
-                var $lastFormGroup = $multipleFormGroupSelected.siblings('.multiple-form-group-selected:last');
-                $lastFormGroup.find('.btn').attr('disabled', false);
-
-                //Disable this group and move it to the bottom
-                $multipleFormGroupSelected.fadeOut(300);
-                $multipleFormGroupSelected.find(".selectNoteText").val("0");
-                $multipleFormGroupSelected.find('.parameter-enabled').attr('value', 'False');
-                $multipleFormGroupSelected.insertAfter($lastFormGroup);
-                makeLastVisibleButtonGreenSelectedNotes();
-            };
-
-            //add new note group
-            var addNewFormGroup = function (event) {
-                event.preventDefault();
-
-                var $multipleFormGroupNew = $(this).closest('.multiple-form-group-new');
-
-                //Toggle this button state
-                $(this).toggleClass('btn-success btn-add-new btn-danger btn-remove-new').html('–');
-
-                //Enable the next group
-                var $nextGroup = $multipleFormGroupNew.next('.multiple-form-group-new');
-                $nextGroup.find('.parameter-enabled').attr('value', 'True');
-                $nextGroup.find('.btn').toggleClass('btn-success btn-add-new btn-danger btn-remove-new').html('+');
-                $nextGroup.fadeIn(300);
-
-                //Always disable the last button
-                var $lastFormGroup = $multipleFormGroupNew.siblings('.multiple-form-group-new:last');
-                $lastFormGroup.find('.btn').attr('disabled', true);
-                makeLastVisibleButtonGreenNewNotes();
-            };
-
-            //remove new note group
-            var removeNewFormGroup = function (event) {
-                event.preventDefault();
-
-                var $multipleFormGroupNew = $(this).closest('.multiple-form-group-new');
-
-                //Always reenable the last button before replacing it
-                var $lastFormGroup = $multipleFormGroupNew.siblings('.multiple-form-group-new:last');
-                $lastFormGroup.find('.btn').attr('disabled', false);
-
-                //Disable this group and move it to the bottom
-                $multipleFormGroupNew.fadeOut(300);
-                $multipleFormGroupNew.find('.text-box').val("");
-                $multipleFormGroupNew.find('.parameter-enabled').attr('value', 'False');
-                $multipleFormGroupNew.insertAfter($lastFormGroup);
-                makeLastVisibleButtonGreenNewNotes();
-            };
-
-
-            var removeCurrentNote = function (event) {
-                event.preventDefault();
-
-                var $currentFormGroup = $(this).closest('.current-form-group');
-
-                $currentFormGroup.find('.current-text').val("");
-                $currentFormGroup.hide();
-
-            };
-
-            var promptEdit = function (event) {
-                if (confirm('Editing this note will affect all other rules which use the same note(changes made here will be seen elsewhere), are you sure you would like to do this?')) {
-                    var $currentFormGroup = $(this).closest('.current-form-group');
-                    $currentFormGroup.find('.current-text').prop("readonly", false);
-                }
-            };
-
             $(document).on('click', '.btn-add-selected', addSelectedFormGroup);
             $(document).on('click', '.btn-remove-selected', removeSelectedFormGroup);
             $(document).on('click', '.btn-add-new', addNewFormGroup);
@@ -338,7 +227,121 @@
 
             makeLastVisibleButtonGreenNewNotes();
             makeLastVisibleButtonGreenSelectedNotes();
-                
         });
+
+        //Toggle last visible button for added notes
+        var makeLastVisibleButtonGreenNewNotes = function () {
+            var $lastEnabled = $('.addedNotes').find('.parameter-enabled').filter("[value='True']").last();
+            var $lastButton = $lastEnabled.next('.input-group').find('.btn');
+            $lastButton.removeClass('btn-danger btn-remove-new');
+            $lastButton.addClass('btn-success btn-add-new').html('+');
+        };
+
+        //Toggle last visible button for selected notes
+        var makeLastVisibleButtonGreenSelectedNotes = function () {
+            var $lastEnabled = $('.selectedNotes').find('.parameter-enabled').filter("[value='True']").last();
+            var $lastButton = $lastEnabled.next('.input-group').find('.btn');
+            $lastButton.removeClass('btn-danger btn-remove-selected');
+            $lastButton.addClass('btn-success btn-add-selected').html('+');
+        };
+
+        //add selected note group
+        var addSelectedFormGroup = function (event) {
+            event.preventDefault();
+
+            var $multipleFormGroupSelected = $(this).closest('.multiple-form-group-selected');
+
+            //Toggle this button state
+            $(this).toggleClass('btn-success btn-add-selected btn-danger btn-remove-selected').html('–');
+
+            //Enable the next group
+            var $nextGroup = $multipleFormGroupSelected.next('.multiple-form-group-selected');
+            $nextGroup.find('.parameter-enabled').attr('value', 'True');
+            $nextGroup.find('.btn').toggleClass('btn-success btn-add-selected btn-danger btn-remove-selected').html('+');
+            $nextGroup.fadeIn(300);
+
+            //Always disable the last button
+            var $lastFormGroup = $multipleFormGroupSelected.siblings('.multiple-form-group-selected:last');
+            $lastFormGroup.find('.btn').attr('disabled', true);
+            makeLastVisibleButtonGreenSelectedNotes();
+        };
+
+        //remove selected note group
+        var removeSelectedFormGroup = function (event) {
+            event.preventDefault();
+
+            var $multipleFormGroupSelected = $(this).closest('.multiple-form-group-selected');
+
+            //Always reenable the last button before replacing it
+            var $lastFormGroup = $multipleFormGroupSelected.siblings('.multiple-form-group-selected:last');
+            $lastFormGroup.find('.btn').attr('disabled', false);
+
+            //Disable this group and move it to the bottom
+            $multipleFormGroupSelected.fadeOut(300, function () {
+                $multipleFormGroupSelected.find('.text-box').val('');
+                $multipleFormGroupSelected.find('.parameter-enabled').attr('value', 'False');
+                $multipleFormGroupSelected.insertAfter($lastFormGroup);
+            });
+            makeLastVisibleButtonGreenSelectedNotes();
+        };
+
+        //add new note group
+        var addNewFormGroup = function (event) {
+            event.preventDefault();
+
+            var $multipleFormGroupNew = $(this).closest('.multiple-form-group-new');
+
+            //Toggle this button state
+            $(this).toggleClass('btn-success btn-add-new btn-danger btn-remove-new').html('–');
+
+            //Enable the next group
+            var $nextGroup = $multipleFormGroupNew.next('.multiple-form-group-new');
+            $nextGroup.find('.parameter-enabled').attr('value', 'True');
+            $nextGroup.find('.btn').toggleClass('btn-success btn-add-new btn-danger btn-remove-new').html('+');
+            $nextGroup.fadeIn(300);
+
+            //Always disable the last button
+            var $lastFormGroup = $multipleFormGroupNew.siblings('.multiple-form-group-new:last');
+            $lastFormGroup.find('.btn').attr('disabled', true);
+            makeLastVisibleButtonGreenNewNotes();
+        };
+
+        //remove new note group
+        var removeNewFormGroup = function (event) {
+            event.preventDefault();
+
+            var $multipleFormGroupNew = $(this).closest('.multiple-form-group-new');
+
+            //Always reenable the last button before replacing it
+            var $lastFormGroup = $multipleFormGroupNew.siblings('.multiple-form-group-new:last');
+            $lastFormGroup.find('.btn').attr('disabled', false);
+
+            //Disable this group and move it to the bottom
+            $multipleFormGroupNew.fadeOut(300, function () {
+                $multipleFormGroupNew.find('.text-box').val('');
+                $multipleFormGroupNew.find('.parameter-enabled').attr('value', 'False');
+                $multipleFormGroupNew.insertAfter($lastFormGroup);
+            });
+            makeLastVisibleButtonGreenNewNotes();
+        };
+
+
+        var removeCurrentNote = function (event) {
+            event.preventDefault();
+
+            var $currentFormGroup = $(this).closest('.current-form-group');
+
+            $currentFormGroup.find('.current-text').val("");
+            $currentFormGroup.hide();
+
+        };
+
+        var promptEdit = function (event) {
+            if (confirm('Editing this note will affect all other rules which use the same note(changes made here will be seen elsewhere), are you sure you would like to do this?')) {
+                var $currentFormGroup = $(this).closest('.current-form-group');
+                $currentFormGroup.find('.current-text').prop("readonly", false);
+            }
+        };
+
     </script>
 }

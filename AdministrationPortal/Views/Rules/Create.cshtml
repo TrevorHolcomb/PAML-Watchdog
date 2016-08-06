@@ -69,7 +69,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Expression, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Expression, new { htmlAttributes = new { @class = "form-control", @id = "Expression" } })
+                @Html.EditorFor(model => model.Expression, new { htmlAttributes = new { @class = "form-control", id = "Expression" } })
                 @Html.ValidationMessageFor(model => model.Expression, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -116,7 +116,7 @@
                     <div class="multiple-form-group-new" style="margin-bottom: 15px; @style">
                         @Html.HiddenFor(model => model.NewNotesEnabled[p], htmlAttributes: new { @class = "parameter-enabled" })
                         <div class="input-group">
-                            @Html.EditorFor(model => model.NewDefaultNotes[p], new { htmlAttributes = new { @class = "text-box form-control", @type = "text", @placeholder = "Enter New Notes Here" } })
+                            @Html.EditorFor(model => model.NewDefaultNotes[p], new { htmlAttributes = new { @class = "text-box form-control", type = "text", @placeholder = "Enter New Notes Here" } })
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-danger btn-remove-new">-</button>
                             </span>
@@ -283,10 +283,11 @@
             $lastFormGroup.find('.btn').attr('disabled', false);
 
             //Disable this group and move it to the bottom
-            $multipleFormGroupSelected.fadeOut(300);
-            $multipleFormGroupSelected.find(".selectNoteText").val("0");
-            $multipleFormGroupSelected.find('.parameter-enabled').attr('value', 'False');
-            $multipleFormGroupSelected.insertAfter($lastFormGroup);
+            $multipleFormGroupSelected.fadeOut(300, function () {
+                $multipleFormGroupSelected.find('.text-box').val('');
+                $multipleFormGroupSelected.find('.parameter-enabled').attr('value', 'False');
+                $multipleFormGroupSelected.insertAfter($lastFormGroup);
+            });
             makeLastVisibleButtonGreenSelectedNotes();
         };
 
@@ -322,10 +323,11 @@
             $lastFormGroup.find('.btn').attr('disabled', false);
 
             //Disable this group and move it to the bottom
-            $multipleFormGroupNew.fadeOut(300);
-            $multipleFormGroupNew.find('.text-box').val("");
-            $multipleFormGroupNew.find('.parameter-enabled').attr('value', 'False');
-            $multipleFormGroupNew.insertAfter($lastFormGroup);
+            $multipleFormGroupNew.fadeOut(300, function () {
+                $multipleFormGroupNew.find('.text-box').val('');
+                $multipleFormGroupNew.find('.parameter-enabled').attr('value', 'False');
+                $multipleFormGroupNew.insertAfter($lastFormGroup);
+            });
             makeLastVisibleButtonGreenNewNotes();
         };
         

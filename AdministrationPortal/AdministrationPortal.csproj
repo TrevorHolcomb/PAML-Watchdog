@@ -445,7 +445,6 @@
     <Content Include="Views\RuleCategories\Index.cshtml" />
     <Content Include="Views\SupportCategories\Index.cshtml" />
     <Content Include="Views\RuleCategories\Create.cshtml" />
-    <Content Include="Views\RuleCategories\Details.cshtml" />
     <Content Include="Views\RuleCategories\Edit.cshtml" />
     <Content Include="Views\RuleCategories\Delete.cshtml" />
     <Content Include="Views\SupportCategories\Create.cshtml" />

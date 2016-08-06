@@ -57,7 +57,7 @@
                             <td> @Html.DisplayFor(model => model.TemplatedRules.ElementAt(tr).AlertTypeId) </td>
                             <td> @Html.DisplayFor(model => model.TemplatedRules.ElementAt(tr).MessageTypeName) </td>
                             <td> @Html.DisplayFor(model => model.TemplatedRules.ElementAt(tr).SupportCategoryId) </td>
-                            <td> @Html.CheckBoxFor(model => model.TemplatedRulesIncluded[tr], htmlAttributes: new { @class = "checkbox", @id = "checkbox-" + tr }) </td>
+                            <td> @Html.CheckBoxFor(model => model.TemplatedRulesIncluded[tr], htmlAttributes: new { @class = "checkbox", id = "checkbox-" + tr }) </td>
                         </tr>
                     }
 
@@ -71,7 +71,7 @@
                             <td> @Html.DisplayFor(model => model.Rules[r].AlertType.Name) </td>
                             <td> @Html.DisplayFor(model => model.Rules[r].MessageType.Name) </td>
                             <td> @Html.DisplayFor(model => model.Rules[r].SupportCategory.Name) </td>
-                            <td> @Html.CheckBoxFor(model => model.RulesIncluded[r], htmlAttributes: new { @class = "checkbox", @id = "checkbox-" + r }) </td>
+                            <td> @Html.CheckBoxFor(model => model.RulesIncluded[r], htmlAttributes: new { @class = "checkbox", id = "checkbox-" + r }) </td>
                         </tr>
                     }
                 </table>

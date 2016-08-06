@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using Ninject;
 using AdministrationPortal.ViewModels.Rules;
@@ -129,7 +130,8 @@ namespace AdministrationPortal.Controllers
                 Server = rule.Server,
                 DefaultSeverity = rule.DefaultSeverity,
                 Id = id,
-                DefaultNotes = rule.DefaultNotes.ToList()
+                DefaultNotes = rule.DefaultNotes.ToList(),
+                SelectedRuleCategoryIds = rule.RuleCategories.Select(rc => rc.Id).ToList()
             };
 
             return View(viewModel);
@@ -159,11 +161,16 @@ namespace AdministrationPortal.Controllers
                             DefaultNoteRepository.GetById(note.Id).Text = note.Text;
                     }
                 }
-                
-                
+
+                //update Rule Categories
+                var selectedRuleCategories = ruleViewModel.SelectedRuleCategoryIds
+                    .Select(id => RuleCategoryRepository.GetById(id));
+
+                rule.RuleCategories.Clear();
+                rule.RuleCategories = selectedRuleCategories.ToList();
 
                 //insert new notes
-                foreach (string newNote in ruleViewModel.NewDefualtNotes)
+                foreach (string newNote in ruleViewModel.NewDefaultNotes)
                 {
                     if (newNote != "")
                     {
@@ -171,7 +178,7 @@ namespace AdministrationPortal.Controllers
                     }
                 }
 
-                //attatch existing notes
+                //attach existing notes
                 foreach (int noteId in ruleViewModel.SelectedNoteIds)
                 {
                     if (noteId != 0)

@@ -20,18 +20,7 @@ namespace AdministrationPortal.Controllers
         {
             return View(RuleCategoryRepository.Get());
         }
-
-        // GET: RuleCategories/Details/5
-        public ActionResult Details(int id)
-        {
-            var ruleCategory = RuleCategoryRepository.GetById(id);
-            if (ruleCategory == null)
-                throw new ArgumentException("No Rule found with id " + id);
-
-            return View(ruleCategory);
-        }
-
-        
+       
         // GET: RuleCategories/Create
         public ActionResult Create()
         {

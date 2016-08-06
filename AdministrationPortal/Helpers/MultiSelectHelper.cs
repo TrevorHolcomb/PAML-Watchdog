@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace AdministrationPortal.Helpers
 {
-    public static  class MultiSelectHelper
+    public static class MultiSelectHelper
     {
         public static MvcHtmlString MultiSelectDropDown(this HtmlHelper helper, string formInputId, MultiSelectList options, IEnumerable<int> selectedOptionsIds, string classes)
         {

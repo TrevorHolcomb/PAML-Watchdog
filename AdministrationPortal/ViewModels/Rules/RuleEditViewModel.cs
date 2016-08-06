@@ -30,16 +30,17 @@ namespace AdministrationPortal.ViewModels.Rules
         [Required]
         public string RuleCreator { get; set; }
         [Required]
-        public int[] RuleCategoryIds { get; set; }
-        [Required]
         public int SupportCategoryId { get; set; }
+        [Required]
+        public List<int> SelectedRuleCategoryIds { get; set; }
 
         //multiple note support
         public List<bool> SelectedNotesEnabled { get; set; }
         public List<int> SelectedNoteIds { get; set; }
         public List<bool> NewNotesEnabled { get; set; }
-        public List<string> NewDefualtNotes { get; set; }
+        public List<string> NewDefaultNotes { get; set; }
         public RuleOptionsViewModel RuleOptions { get; internal set; }
+
 
         //default note edit support
         public List<DefaultNote> DefaultNotes { get; set; }
@@ -49,7 +50,7 @@ namespace AdministrationPortal.ViewModels.Rules
             SelectedNotesEnabled = new List<bool>();
             SelectedNoteIds = new List<int>();
             NewNotesEnabled = new List<bool>();
-            NewDefualtNotes = new List<string>();
+            NewDefaultNotes = new List<string>();
 
             PrepopulateLists();
         }
@@ -58,7 +59,7 @@ namespace AdministrationPortal.ViewModels.Rules
         {
             for (int note = 0; note < MAX_DEFAULTNOTES; note++)
             {
-                NewDefualtNotes.Add("");
+                NewDefaultNotes.Add("");
                 SelectedNoteIds.Add(0);
                 NewNotesEnabled.Add(false);
                 SelectedNotesEnabled.Add(false);
@@ -73,6 +74,9 @@ namespace AdministrationPortal.ViewModels.Rules
             rule.Name = Name;
             rule.Description = Description;
             rule.Expression = Expression;
+            rule.Server = Server;
+            rule.Origin = Origin;
+            rule.DefaultSeverity = DefaultSeverity;
         }
     }
 
