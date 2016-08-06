@@ -27,23 +27,28 @@
         </dd>
 
         <dt>
-            Parameters
+
         </dt>
-
-        <!--TODO: make it look better-->
-
-        <dd>Type, Name, Required</dd>
-        <dd>
-            <ul>
-                @foreach (var parameter in Model.MessageTypeParameterTypes)
-                {
-                    <li>
-                        @parameter.Type, @parameter.Name, @parameter.Required
-                    </li>
-                }
-            </ul>
-        </dd>
     </dl>
+
+    <table class="table">
+        Parameters:
+        <tr>
+            <th><b>Type</b></th>
+            <th><b>Name</b></th>
+            <th><b>>Required</b></th>
+        </tr>
+
+        @foreach (var parameter in Model.MessageTypeParameterTypes)
+            {
+            <tr>
+                <th>@parameter.Type</th>
+                <th>@parameter.Name</th>
+                <th>@parameter.Required</th>
+            </tr>
+        }
+    </table>
+
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Name }) |

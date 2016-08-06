@@ -40,10 +40,10 @@
             @Html.DisplayFor(model => model.Origin)
         </dd>
         <dt>
-            Alert Types
+            @Html.DisplayFor(model => model.AlertTypes.Count) Alert Types:
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.AlertTypes.Count)
+            
         </dd>
         @foreach (var alertType in Model.AlertTypes)
         {
@@ -52,7 +52,7 @@
             </dt>
 
             <dd>
-                @Html.DisplayFor(model => alertType.Name)
+                • @Html.DisplayFor(model => alertType.Name)
             </dd>
         }
 

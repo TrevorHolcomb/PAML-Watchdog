@@ -11,35 +11,35 @@
     <dd> @Html.DisplayFor(model => model.RuleTemplate.LastUsedOn) </dd>
 
     <!--alt+0160 in tags for fake <br//>-->
-    <dt> </dt>
-    <dd> </dd>
+    <dt> </dt>
+    <dd> </dd>
 
-    <dt>Templated Rules</dt>
-    <dd>
-        <table class="table">
-            <tr>
-                <td><b>#</b></td>
-                <td><b>Name</b></td>
-                <td><b>Description</b></td>
-                <td><b>Expression</b></td>
-                <td><b>MessageType</b></td>
-                <td><b>AlertType</b></td>
-                <td><b>RuleCategories</b></td>
-            </tr>
-
-            @for (var i = 0; i < Model.RuleTemplate.TemplatedRules.Count; i++)
-            {
-                var templatedRule = Model.RuleTemplate.TemplatedRules.ElementAt(i);
-                <tr>
-                    <td>@(i + 1)</td>
-                    <td>@templatedRule.Name</td>
-                    <td>@templatedRule.Description</td>
-                    <td>@templatedRule.Expression</td>
-                    <td>@templatedRule.MessageTypeName</td>
-                    <td>@Model.AlertTypeIdToName[templatedRule.AlertTypeId]</td>
-                    <td>@Model.RuleIdToRuleCategoryNames[templatedRule.Id]</td>
-                </tr>
-            }
-        </table>
-    </dd>
+    
 </dl>
+
+<table class="table">
+    Templated Rules
+    <tr>
+        <td><b>#</b></td>
+        <td><b>Name</b></td>
+        <td><b>Description</b></td>
+        <td><b>Expression</b></td>
+        <td><b>MessageType</b></td>
+        <td><b>AlertType</b></td>
+        <td><b>RuleCategories</b></td>
+    </tr>
+
+    @for (var i = 0; i < Model.RuleTemplate.TemplatedRules.Count; i++)
+    {
+        var templatedRule = Model.RuleTemplate.TemplatedRules.ElementAt(i);
+        <tr>
+            <td>@(i + 1)</td>
+            <td>@templatedRule.Name</td>
+            <td>@templatedRule.Description</td>
+            <td>@templatedRule.Expression</td>
+            <td>@templatedRule.MessageTypeName</td>
+            <td>@Model.AlertTypeIdToName[templatedRule.AlertTypeId]</td>
+            <td>@Model.RuleIdToRuleCategoryNames[templatedRule.Id]</td>
+        </tr>
+    }
+</table>
