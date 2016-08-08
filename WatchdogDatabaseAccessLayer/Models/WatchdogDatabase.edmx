@@ -176,17 +176,17 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="MessageTypeName" Type="nvarchar" Nullable="false" MaxLength="1000" />
+    <Property Name="MessageTypeName" Type="nvarchar" Nullable="false" MaxLength="450" />
     <Property Name="Server" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="EngineName" Type="nvarchar" Nullable="false" MaxLength="1000" />
+    <Property Name="EngineName" Type="nvarchar" Nullable="false" MaxLength="450" />
     <Property Name="RuleTemplateId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="MessageTypes">
     <Key>
       <PropertyRef Name="Name" />
     </Key>
-    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="1000" />
+    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="450" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
   </EntityType>
   <EntityType Name="EscalationChains">
@@ -234,7 +234,7 @@
     <Property Name="Expression" Type="nvarchar(max)" Nullable="false" />
     <Property Name="DefaultSeverity" Type="int" Nullable="false" DefaultValue="1" />
     <Property Name="AlertTypeId" Type="int" Nullable="false" />
-    <Property Name="MessageTypeName" Type="nvarchar" Nullable="false" MaxLength="1000" />
+    <Property Name="MessageTypeName" Type="nvarchar" Nullable="false" MaxLength="450" />
     <Property Name="SupportCategoryId" Type="int" Nullable="false" />
     <Property Name="Engine" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Origin" Type="nvarchar(max)" Nullable="false" />
@@ -256,10 +256,9 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="AlertParameterId" Type="int" Nullable="false" />
     <Property Name="AlertTypeId" Type="int" Nullable="false" />
-    <Property Name="EngineName" Type="nvarchar" Nullable="false" MaxLength="1000" />
-    <Property Name="MessageTypeName" Type="nvarchar" Nullable="false" MaxLength="1000" />
+    <Property Name="EngineName" Type="nvarchar" Nullable="false" MaxLength="450" />
+    <Property Name="MessageTypeName" Type="nvarchar" Nullable="false" MaxLength="450" />
     <Property Name="RuleId" Type="int" Nullable="false" />
     <Property Name="Assignee" Type="nvarchar(max)" Nullable="false" DefaultValue="N/A" />
     <Property Name="Notes" Type="nvarchar(max)" Nullable="false" />
@@ -284,7 +283,7 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Type" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="MessageTypeName" Type="nvarchar" Nullable="false" MaxLength="1000" />
+    <Property Name="MessageTypeName" Type="nvarchar" Nullable="false" MaxLength="450" />
     <Property Name="Required" Type="bit" Nullable="false" />
   </EntityType>
   <EntityType Name="MessageParameters">
@@ -317,7 +316,7 @@
     <Key>
       <PropertyRef Name="Name" />
     </Key>
-    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="1000" />
+    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="450" />
   </EntityType>
   <EntityType Name="AlertStatuses">
     <Key>
@@ -1005,19 +1004,19 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="MessageType" Relationship="WatchdogDatabase.MessageMessageType" FromRole="Message" ToRole="MessageType" />
-          <Property Name="MessageTypeName" Type="String" Nullable="false" MaxLength="1000" Unicode="true" FixedLength="false" />
+          <Property Name="MessageTypeName" Type="String" Nullable="false" MaxLength="450" Unicode="true" FixedLength="false" />
           <Property Name="Server" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="Origin" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="MessageParameters" Relationship="WatchdogDatabase.MessageMessageColumn" FromRole="Message" ToRole="MessageColumn" />
           <NavigationProperty Name="Engine" Relationship="WatchdogDatabase.EngineMessage" FromRole="Message" ToRole="Engine" />
-          <Property Name="EngineName" Type="String" Nullable="false" MaxLength="1000" Unicode="true" FixedLength="false" />
+          <Property Name="EngineName" Type="String" Nullable="false" MaxLength="450" Unicode="true" FixedLength="false" />
           <Property Name="RuleTemplateId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="MessageType">
           <Key>
             <PropertyRef Name="Name" />
           </Key>
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="1000" Unicode="true" FixedLength="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="450" Unicode="true" FixedLength="false" />
           <Property Name="Description" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="Messages" Relationship="WatchdogDatabase.MessageMessageType" FromRole="MessageType" ToRole="Message" />
           <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.RuleMessageType" FromRole="MessageType" ToRole="Rule" />
@@ -1107,7 +1106,7 @@
           <NavigationProperty Name="SupportCategory" Relationship="WatchdogDatabase.RuleSupportCategory" FromRole="Rule" ToRole="SupportCategory" />
           <Property Name="DefaultSeverity" Type="Int32" Nullable="false" DefaultValue="1" annotation:StoreGeneratedPattern="None" xmlns="http://schemas.microsoft.com/ado/2009/11/edm" />
           <Property Name="AlertTypeId" Type="Int32" Nullable="false" />
-          <Property Name="MessageTypeName" Type="String" Nullable="false" MaxLength="1000" Unicode="true" FixedLength="false" />
+          <Property Name="MessageTypeName" Type="String" Nullable="false" MaxLength="450" Unicode="true" FixedLength="false" />
           <Property Name="SupportCategoryId" Type="Int32" Nullable="false" />
           <Property Name="Engine" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="Origin" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
@@ -1154,10 +1153,9 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AlertParameterId" Nullable="false" Type="Int32" />
           <Property Name="AlertTypeId" Type="Int32" Nullable="false" />
-          <Property Name="EngineName" Type="String" Nullable="false" MaxLength="1000" Unicode="true" FixedLength="false" />
-          <Property Name="MessageTypeName" Type="String" Nullable="false" MaxLength="1000" Unicode="true" FixedLength="false" />
+          <Property Name="EngineName" Type="String" Nullable="false" MaxLength="450" Unicode="true" FixedLength="false" />
+          <Property Name="MessageTypeName" Type="String" Nullable="false" MaxLength="450" Unicode="true" FixedLength="false" />
           <Property Name="RuleId" Type="Int32" Nullable="false" />
           <Property Name="Assignee" Type="String" Nullable="false" DefaultValue="N/A" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="Notes" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
@@ -1237,7 +1235,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="Type" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="MessageTypeName" Type="String" Nullable="false" MaxLength="1000" Unicode="true" FixedLength="false" />
+          <Property Name="MessageTypeName" Type="String" Nullable="false" MaxLength="450" Unicode="true" FixedLength="false" />
           <Property Name="Required" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="AlertParameters" Relationship="WatchdogDatabase.AlertParameterMessageTypeParameterType" FromRole="MessageTypeParameterType" ToRole="AlertParameter" />
           <NavigationProperty Name="MessageType" Relationship="WatchdogDatabase.MessageTypeParameterTypeMessageType" FromRole="MessageTypeParameterType" ToRole="MessageType" />
@@ -1350,7 +1348,7 @@
           <Key>
             <PropertyRef Name="Name" />
           </Key>
-          <Property Name="Name" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="1000" Unicode="true" FixedLength="false" />
+          <Property Name="Name" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="450" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="Messages" Relationship="WatchdogDatabase.EngineMessage" FromRole="Engine" ToRole="Message" />
           <NavigationProperty Name="Alerts" Relationship="WatchdogDatabase.EngineAlert" FromRole="Engine" ToRole="Alert" />
         </EntityType>
@@ -1692,7 +1690,6 @@
       <EntityTypeMapping TypeName="IsTypeOf(WatchdogDatabase.Alert)">
         <MappingFragment StoreEntitySet="Alerts">
           <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="AlertParameterId" ColumnName="AlertParameterId" />
           <ScalarProperty Name="AlertTypeId" ColumnName="AlertTypeId" />
           <ScalarProperty Name="EngineName" ColumnName="EngineName" />
           <ScalarProperty Name="MessageTypeName" ColumnName="MessageTypeName" />

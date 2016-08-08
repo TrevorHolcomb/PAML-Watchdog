@@ -21,9 +21,11 @@
         <AssociationConnector Association="WatchdogDatabase.RuleMessageType" />
         <EntityTypeShape EntityType="WatchdogDatabase.Alert" Width="2.75" PointX="16.25" PointY="9" FillColor="31, 0, 204" />
         <AssociationConnector ManuallyRouted="true" Association="WatchdogDatabase.AlertAlertType">
-          <ConnectorPoint PointX="16.25" PointY="13.214854329427077" />
-          <ConnectorPoint PointX="12.6874975" PointY="13.214854329427077" />
-          <ConnectorPoint PointX="12.6874975" PointY="13.625" />
+          <ConnectorPoint PointX="16.25" PointY="12.373588876354365" />
+          <ConnectorPoint PointX="13.567708333333334" PointY="12.373588876354365" />
+          <ConnectorPoint PointX="13.401041666666666" PointY="12.373588876354365" />
+          <ConnectorPoint PointX="12.71875" PointY="12.373588876354365" />
+          <ConnectorPoint PointX="12.71875" PointY="13.625" />
         </AssociationConnector>
         <AssociationConnector Association="WatchdogDatabase.AlertTypeRule" ManuallyRouted="true" >
           <ConnectorPoint PointX="11.9375" PointY="13.625" />
