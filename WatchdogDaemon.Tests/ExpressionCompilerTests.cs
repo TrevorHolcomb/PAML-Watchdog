@@ -9,7 +9,7 @@ namespace WatchdogDaemon.Tests
     {
         public static TheoryData<string> ShouldntThrowError = new TheoryData<string>
         {
-            @"
+            /*@"
 {
   ""condition"": ""OR"",
   ""rules"": [
@@ -126,8 +126,8 @@ namespace WatchdogDaemon.Tests
       ""value"": null
     }
   ]
-}",
-            @"
+}",*/
+            /*@"
 {
   ""condition"": ""OR"",
   ""rules"": [
@@ -232,6 +232,21 @@ namespace WatchdogDaemon.Tests
       ""input"": ""text"",
       ""operator"": ""is_not_null"",
       ""value"": null
+    }
+  ]
+}
+",*/
+            @"
+{
+  ""condition"": ""AND"",
+  ""rules"": [
+    {
+      ""id"": ""queue_size"",
+      ""field"": ""queue_size"",
+      ""type"": ""integer"",
+      ""input"": ""text"",
+      ""operator"": ""greater"",
+      ""value"": ""10""
     }
   ]
 }

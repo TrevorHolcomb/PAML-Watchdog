@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ExpressionEvaluator;
 using WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers;
 using WatchdogDatabaseAccessLayer.Models;
+using NLog;
 
 namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
 {
@@ -11,11 +12,11 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
     /// </summary>
     public class StandardRuleEngine : IRuleEngine
     {
-        private readonly Hashtable _compiledExpressions;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public StandardRuleEngine()
         {
-            _compiledExpressions = new Hashtable();
+
         }
 
         private static TypeRegistry RegisterVariables(Message message)
@@ -71,29 +72,13 @@ namespace WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine
         public bool DoesGenerateAlert(Rule rule, Message message)
         {
             //TODO: check if rule.Server, Origin, and Engine are set to 'all', or a specific target
-            var registry = RegisterVariables(message);
-            var ce = GetCompiledExpression(rule.Expression);
-            ce.TypeRegistry = registry;
-            return ce.Eval() is bool && (bool)ce.Eval();
-        }
-
-        /// <summary>
-        /// Returns the CompiledExpression pertaining to an Expression. Stores the CompiledExpression in a hashmap for performance.
-        /// </summary>
-        /// <param name="expression">The string representation of the CompiledExpression being retrieved</param>
-        /// <returns>Returns the CompiledExpression for a given string expression.</returns>
-        public CompiledExpression GetCompiledExpression(string expression)
-        {
-            if (_compiledExpressions.ContainsKey(expression))
-            {
-                return _compiledExpressions[expression] as CompiledExpression;
-            }
-
-            var compiledExpression = RuleEngine.ExpressionCompiler.Compiler.Convert(expression);
+            var expression = rule.Expression;
+            var compiledExpression = ExpressionCompiler.Compiler.Convert(expression);
             var ce = new CompiledExpression(compiledExpression);
-            _compiledExpressions.Add(expression, ce);
+            ce.TypeRegistry = RegisterVariables(message);
+            Logger.Log(LogLevel.Info, $"Built {expression} Into {compiledExpression}");
 
-            return ce;
+            return (bool)ce.Eval();
         }
     }
 }
