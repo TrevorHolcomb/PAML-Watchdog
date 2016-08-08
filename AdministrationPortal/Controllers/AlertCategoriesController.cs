@@ -35,6 +35,7 @@ namespace AdministrationPortal.Controllers
                 AlertCategories = AlertCategoryRepository.Get()
             });
         }
+
         // GET: AlertCategories/Details/5
         public ActionResult Details(int id)
         {
@@ -125,14 +126,18 @@ namespace AdministrationPortal.Controllers
                 throw new ArgumentNullException(nameof(alertCategory));
 
             var alertCategoryItem = AlertCategoryItemRepository.Get().First(a => a.AlertCategoryId == alertCategory.Id);
+            var selectedAlertTypeIds = AlertCategoryItemRepository.Get()
+                    .Where(ac => ac.AlertCategoryId == alertCategory.Id)
+                    .Select(ac => ac.AlertTypeId).ToList();
             var viewModel = new AlertCategoryEditViewModel()
             {
-                AlertCategory = alertCategory,
                 AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
                 EngineList = new SelectList(EngineRepository.Get(), "Name", "Name"),
+                CategoryName = alertCategory.CategoryName,
                 Server = alertCategoryItem.Server,
                 Origin = alertCategoryItem.Origin,
-                Engine = alertCategoryItem.Engine
+                Engine = alertCategoryItem.Engine,
+                SelectedAlertTypes = selectedAlertTypeIds
             };
             
             return View(viewModel);
@@ -147,15 +152,14 @@ namespace AdministrationPortal.Controllers
         {
             if (ModelState.IsValid)
             {
-                var alertCategory = AlertCategoryRepository.GetById(viewModel.AlertCategory.Id);
-                alertCategory.CategoryName = viewModel.AlertCategory.CategoryName;
-                var alertCategoryItems = AlertCategoryItemRepository.Get().Where(cat => cat.AlertCategoryId == viewModel.AlertCategory.Id);
-
+                var alertCategory = AlertCategoryRepository.GetById(viewModel.Id);
+                alertCategory.CategoryName = viewModel.CategoryName;
+                var alertCategoryItems = AlertCategoryItemRepository.Get().Where(cat => cat.AlertCategoryId == viewModel.Id);
                 foreach (var categoryItem in alertCategoryItems)
                 {
                     AlertCategoryItemRepository.Delete(categoryItem);
-                    AlertCategoryItemRepository.Save();
                 }
+                AlertCategoryItemRepository.Save();
 
                 foreach (var id in viewModel.SelectedAlertTypes)
                 {
@@ -166,7 +170,6 @@ namespace AdministrationPortal.Controllers
                         Origin = viewModel.Origin,
                         AlertTypeId = id,
                         AlertCategoryId = alertCategory.Id
-
                     };
                     AlertCategoryItemRepository.Insert(newCategoryItem);
                     AlertCategoryItemRepository.Save();

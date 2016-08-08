@@ -37,8 +37,8 @@
                 @Html.Label("", "Parameters", htmlAttributes: new {@class = "label-parameters"})
             </div>
 
-            <div class="parameters col-md-10" data-max=@Model.MAX_PARAMETERS>
-                @for (var p = 0; p < Model.MAX_PARAMETERS; p++)
+            <div class="parameters col-md-10" data-max=@Model.MaxParameters>
+                @for (var p = 0; p < Model.MaxParameters; p++)
                 {
                     var style = (Model.ParametersEnabled[p]) ? "" : "display:none";
                     <div class="multiple-form-group" style="margin-bottom: 15px; @style">

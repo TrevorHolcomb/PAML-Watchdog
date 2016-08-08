@@ -8,18 +8,18 @@ namespace AdministrationPortal.ViewModels.Alerts
 {
     public class AlertDetailsViewModel
     {
-        public String sortOrder { get; set; }
+        public String SortOrder { get; set; }
         public int? PageNo { get; set; }
         public Alert Alert { get; set; }
-        public List<Alert> groupedAlerts { get; set; }
+        public List<Alert> GroupedAlerts { get; set; }
 
         public AlertDetailsViewModel() : this(null, null, null) { }
 
-        public AlertDetailsViewModel(Alert Alert, int? PageNo, String sortOrder)
+        public AlertDetailsViewModel(Alert alert, int? pageNo, String sortOrder)
         {
-            this.Alert = Alert;
-            this.PageNo = PageNo;
-            this.sortOrder = sortOrder;
+            this.Alert = alert;
+            this.PageNo = pageNo;
+            this.SortOrder = sortOrder;
         }
     }
 }

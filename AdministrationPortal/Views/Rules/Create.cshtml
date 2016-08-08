@@ -77,13 +77,13 @@
             @Html.LabelFor(model => model.Expression, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Expression, new {htmlAttributes = new {@class = "form-control", id = "Expression"}})
-                @Html.ValidationMessageFor(model => model.Expression, "", new {@class = "text-danger"})
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Expression, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <div id="builder"></div>
+                @Html.ValidationMessageFor(model => model.Expression, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -91,7 +91,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.DefaultSeverity, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.DefaultSeverity, Model.RuleOptions.DefaultSeverityList, new { @class = "form-control", style="width:4em;"})
+                @Html.DropDownListFor(model => model.DefaultSeverity, Model.RuleOptions.DefaultSeverityList, new { @class = "form-control", style="width:4em;", title="higher is more severe"})
                 @Html.ValidationMessageFor(model => model.DefaultSeverity, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -162,17 +162,10 @@
 
         <!-- Rule Category -->
         <div class="form-group">
-            @Html.LabelFor(model => model.RuleCategoryIds, "RuleCategoryIds", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.SelectedRuleCategoryIds, "Rule Categories", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @if (Model != null)
-                {
-                    @Html.MultiSelectDropDown("RuleCategoryIds", Model.RuleOptions.RuleCategories, Model.RuleOptions.RuleCategories.Select(e => e.Value.AsInt()), "form-control hidden")
-                }
-                else
-                {
-                    @Html.ListBox("RuleCategoryIds", Model.RuleOptions.RuleCategories, htmlAttributes: new { @class = "form-control hidden" })
-                }
-                @Html.ValidationMessageFor(model => model.RuleOptions.RuleCategories, "", new { @class = "text-danger" })
+                @Html.MultiSelectDropDown("SelectedRuleCategoryIds", Model.RuleOptions.RuleCategories, Model.SelectedRuleCategoryIds, "form-control hidden")
+                @Html.ValidationMessageFor(model => model.SelectedRuleCategoryIds, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -220,7 +213,7 @@
                 }
             });
             
-            $('#RuleCategoryIds').multiselect({
+            $('#SelectedRuleCategoryIds').multiselect({
                 buttonWidth: '100%',
                 enableCaseInsensitiveFiltering: true,
                 disableIfEmpty: true

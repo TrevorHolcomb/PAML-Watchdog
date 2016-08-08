@@ -11,15 +11,15 @@ namespace AdministrationPortal.ViewModels.Alerts
     {
         public SelectList AlertTypeIds { get; set; }
         public SelectList RuleIds { get; set; }
-        public String sortOrder { get; set; }
+        public String SortOrder { get; set; }
         public int PageNo { get; set; }
         public Alert Alert { get; set; }
         
 
-        public AlertCreateViewModel(SelectList AlertTypeIds, SelectList RuleIds)
+        public AlertCreateViewModel(SelectList alertTypeIds, SelectList ruleIds)
         {
-            this.AlertTypeIds = AlertTypeIds;
-            this.RuleIds = RuleIds;
+            this.AlertTypeIds = alertTypeIds;
+            this.RuleIds = ruleIds;
         }
     }
 }

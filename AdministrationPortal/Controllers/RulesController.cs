@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Web.Mvc;
 using Ninject;
@@ -31,7 +32,7 @@ namespace AdministrationPortal.Controllers
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: Rules
-        public ActionResult Index(IndexRulesViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string ruleName = "", string message = "")
+        public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string ruleName = "", string message = "")
         {
             return View(new IndexRulesViewModel(actionPerformed, ruleName, message)
             {
@@ -63,7 +64,8 @@ namespace AdministrationPortal.Controllers
                     SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
                     EngineList = new SelectList(EngineRepository.Get(), "Name", "Name"),
                     DefaultNotes = new SelectList(DefaultNoteRepository.Get(), "Id", "Text")
-                }
+                },
+                SelectedRuleCategoryIds = new List<int>()
             };
             
             return View(viewModel);
@@ -76,9 +78,26 @@ namespace AdministrationPortal.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(RuleCreateViewModel ruleViewModel)
-        {   
+        {
+            if (!ModelState.IsValid)
+            {
+                ruleViewModel.RuleOptions = new RuleOptionsViewModel()
+                {
+                    AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
+                    MessageTypes = new SelectList(MessageTypeRepository.Get(), "Name", "Name"),
+                    RuleCategories = new SelectList(RuleCategoryRepository.Get(), "Id", "Name"),
+                    SupportCategories = new SelectList(SupportCategoryRepository.Get(), "Id", "Name"),
+                    EngineList = new SelectList(EngineRepository.Get(), "Name", "Name"),
+                    DefaultNotes = new SelectList(DefaultNoteRepository.Get(), "Id", "Text")
+                };
+                ruleViewModel.SelectedRuleCategoryIds = new List<int>();
+                return View(ruleViewModel);
+            }
+
             //build rule
-            var ruleToCreate = ruleViewModel.BuildRule(RuleCategoryRepository.Get());
+            var selectedRuleCategories = RuleCategoryRepository.Get()
+                .Where(rc => ruleViewModel.SelectedRuleCategoryIds.Contains(rc.Id)).ToList();
+            var ruleToCreate = ruleViewModel.BuildRule(selectedRuleCategories);
 
             //insert new notes
             foreach (string newNote in ruleViewModel.NewDefaultNotes)

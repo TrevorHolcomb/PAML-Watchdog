@@ -10,7 +10,7 @@ namespace AdministrationPortal.ViewModels.MessageTypes
 {
     public class CreateMessageTypeViewModel : IValidatableObject
     {
-        public readonly int MAX_PARAMETERS = 5;
+        public readonly int MaxParameters = 5;
 
         [Required, StringLength(1000), Key]
         public string Name { get; set; }
@@ -45,7 +45,7 @@ namespace AdministrationPortal.ViewModels.MessageTypes
 
         private void PrepopulateLists()
         {
-            for (int param = 0; param < MAX_PARAMETERS; param++)
+            for (int param = 0; param < MaxParameters; param++)
             {
                 ParameterNames.Add("");
                 ParametersRequired.Add(true);

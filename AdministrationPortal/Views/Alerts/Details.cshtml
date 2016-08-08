@@ -130,14 +130,14 @@
     </dl>
 </div>
 <div class="col-md-offset-1">
-    @Html.ActionLink("Edit Alert", "Edit", new { id = (int)Model.Alert.Id, PageNo = Model.PageNo, Model.sortOrder }, new { @class = "btn btn-default" })
-    @Html.ActionLink("Back to List", "Index", new { ActiveOrArchived = Model.Alert.AlertStatus.MostRecent().StatusCode.ToString(), Page_No = Model.PageNo, sortOrder = Model.sortOrder }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Edit Alert", "Edit", new { id = (int)Model.Alert.Id, PageNo = Model.PageNo, sortOrder = Model.SortOrder }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Back to List", "Index", new { ActiveOrArchived = Model.Alert.AlertStatus.MostRecent().StatusCode.ToString(), Page_No = Model.PageNo, sortOrder = Model.SortOrder }, new { @class = "btn btn-default" })
 </div>
 <br />
 <div class="row">
     <div class="col-xs-12 col-md-8">
         <table class="table table-striped table-hover table-responsive">
-            @foreach (var item in Model.groupedAlerts)
+            @foreach (var item in Model.GroupedAlerts)
             {
                 string cssClass = "";
                 switch (item.Severity)
@@ -160,7 +160,7 @@
                 }
 
 
-                <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id,StatusCode = item.AlertStatus.StatusCode.ToString(), lastModified = item.AlertStatus.MostRecent().Timestamp, Model.PageNo, sortOrder = Model.sortOrder}))'">
+                <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id,StatusCode = item.AlertStatus.StatusCode.ToString(), lastModified = item.AlertStatus.MostRecent().Timestamp, Model.PageNo, sortOrder = Model.SortOrder}))'">
 
                     <td class="@cssClass ">
                         @Html.DisplayFor(modelItem => item.Severity)

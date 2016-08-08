@@ -265,6 +265,7 @@
     <Compile Include="ViewModels\EscalationChains\EscalationChainCreateViewModel.cs" />
     <Compile Include="ViewModels\EscalationChains\EscalationChainLinksCreateViewModel.cs" />
     <Compile Include="ViewModels\NotifyeesIndexViewModel.cs" />
+    <Compile Include="ViewModels\Rules\RuleModifyViewModel.cs" />
     <Compile Include="ViewModels\Rules\RuleOptionsViewModel.cs" />
     <Compile Include="ViewModels\RuleTemplates\CreateRuleTemplateViewModel.cs" />
     <Compile Include="ViewModels\RuleTemplates\DetailsRuleTemplateViewModel.cs" />

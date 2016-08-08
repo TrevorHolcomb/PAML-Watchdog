@@ -13,13 +13,14 @@ namespace AdministrationPortal.ViewModels.AlertCategories
         public SelectList AlertTypes { get; set; }
         public List<int> SelectedAlertTypes { get; set; }
         public SelectList EngineList { get; set; }
-        public String CategoryName { get; set; }
         [Required]
-        public String Server { get; set; }
+        public string CategoryName { get; set; }
         [Required]
-        public String Origin { get; set; }
+        public string Server { get; set; }
         [Required]
-        public String Engine { get; set; }
+        public string Origin { get; set; }
+        [Required]
+        public string Engine { get; set; }
         
 
         public AlertCategoryCreateViewModel()

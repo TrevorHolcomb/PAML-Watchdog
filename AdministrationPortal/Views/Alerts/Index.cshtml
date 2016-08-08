@@ -16,7 +16,7 @@
     {
         <div class="input-group">
             <div class="input-group-addon input-group-select">
-                @Html.DropDownList("sortSelect", Model.sortSelect, new {onchange = @"form.submit();"})
+                @Html.DropDownList("sortSelect", Model.SortSelect, new {onchange = @"form.submit();"})
             </div>
             @Html.TextBox("searchString", null, new { @class = "form-control", style = "max-width: none;", placeholder = "Search for Alerts" })
             <span class="input-group-btn">
@@ -29,7 +29,7 @@
         <table class="table table-striped table-hover table-responsive">
 
 
-            @foreach (var item in Model.pagedList)
+            @foreach (var item in Model.PagedList)
             {
             string cssClass = "";
             switch (item.Severity)
@@ -52,7 +52,7 @@
             }
 
 
-            <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id, StatusCode = item.AlertStatus.StatusCode.ToString(), lastModified = item.AlertStatus.MostRecent().Timestamp, Model.PageNo, sortOrder = Model.sortSelect}))'">
+            <tr onclick="location.href = '@(Url.Action("Details", "Alerts", new { id=(int)item.Id, StatusCode = item.AlertStatus.StatusCode.ToString(), lastModified = item.AlertStatus.MostRecent().Timestamp, Model.PageNo, sortOrder = Model.SortSelect}))'">
 
                 <td class="@cssClass ">
                     @Html.DisplayFor(modelItem => item.Severity)
@@ -76,6 +76,6 @@
         </table>
     </div>
 </div>
-Page @(Model.pagedList.PageCount < Model.pagedList.PageNumber ? 0 : Model.pagedList.PageNumber) of @Model.pagedList.PageCount
-@Html.PagedListPager(Model.pagedList, Page_No => Url.Action("Index",
-    new { ActiveOrArchived = Model.status,  Page_No })) 
+Page @(Model.PagedList.PageCount < Model.PagedList.PageNumber ? 0 : Model.PagedList.PageNumber) of @Model.PagedList.PageCount
+@Html.PagedListPager(Model.PagedList, pageNo => Url.Action("Index",
+    new { ActiveOrArchived = Model.Status,  Page_No = pageNo })) 

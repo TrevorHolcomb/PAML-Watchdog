@@ -91,7 +91,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.DefaultSeverity, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.DefaultSeverity, Model.RuleOptions.DefaultSeverityList, new { @class = "form-control", style = "width:4em;" })
+                @Html.DropDownListFor(model => model.DefaultSeverity, Model.RuleOptions.DefaultSeverityList, new { @class = "form-control", style = "width:4em;", title = "higher is more severe" })
                 @Html.ValidationMessageFor(model => model.DefaultSeverity, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -183,7 +183,7 @@
 
         <!-- Rule Category Ids-->
         <div class="form-group">
-            @Html.Label(nameof(Model.RuleOptions) + "." + nameof(Model.RuleOptions.RuleCategories), "Rule Categories", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label(nameof(Model.SelectedRuleCategoryIds), htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.MultiSelectDropDown(nameof(Model.SelectedRuleCategoryIds), Model.RuleOptions.RuleCategories, Model.SelectedRuleCategoryIds, "form-control")
 
@@ -248,11 +248,19 @@
             makeLastVisibleButtonGreenNewNotes();
             makeLastVisibleButtonGreenSelectedNotes();
 
+
             renderQueryBuilder("@Model.MessageTypeName");
+
             $("input[type='submit']").click(function () {
                 $("input[name='Expression']").val(JSON.stringify($('#builder').queryBuilder('getRules')));
             });
         });
+
+        function decodeHtml(html) {
+            var txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            return txt.value;
+        }
 
         // Renders the queryBuilder for the given Message Type
         function renderQueryBuilder(messageType) {
@@ -266,6 +274,11 @@
                     plugins: ['bt-tooltip-errors'],
                     filters: filtersFromParameterList(ret)
                 });
+
+                var expressionString = decodeHtml('@Model.Expression');
+                var expression = JSON.parse(expressionString);
+
+                $('#builder').queryBuilder('setRules', expression);
             });
         }
 

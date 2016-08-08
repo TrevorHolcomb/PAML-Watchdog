@@ -26,14 +26,14 @@ namespace AdministrationPortal.Controllers
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: Alerts
-        public ActionResult Index(string ActiveOrArchived, int? Page_No, string sortSelect, string searchString)
+        public ActionResult Index(string activeOrArchived, int? pageNo, string sortSelect, string searchString)
         {
-            const int Size_Of_Page = 10;
-            int No_Of_Page = (Page_No ?? 1);
+            const int sizeOfPage = 10;
+            int noOfPage = (pageNo ?? 1);
             var alerts = AlertRepository.Get();
             string status;
 
-            switch (ActiveOrArchived)
+            switch (activeOrArchived)
             {
                 case "Resolved":
                     alerts = alerts.Where(a => a.AlertStatus.StatusCode == StatusCode.Resolved);
@@ -94,7 +94,7 @@ namespace AdministrationPortal.Controllers
                 if (alert.AlertGroup.AlertCategoryId != null && !checkGroup.Contains(alert.AlertGroupId))
                 {
                     var alertCategory = alerts.Where(a => a.AlertGroup.AlertCategoryId == alert.AlertGroup.AlertCategoryId);
-                    if (ActiveOrArchived == "Resolved")
+                    if (activeOrArchived == "Resolved")
                         alertCategory = alertCategory.Where(a => a.AlertStatus.MostRecent().Timestamp.ToString("MM/dd/yy H:mm").CompareTo(alert.AlertStatus.MostRecent().Timestamp.ToString("MM/dd/yy H:mm")) == 0);
                     foreach (var alertInCategory in alertCategory)
                     {
@@ -111,13 +111,13 @@ namespace AdministrationPortal.Controllers
                 
             }
             
-            return View(new AlertPagingCreateView(groupedAlerts.ToPagedList(No_Of_Page, Size_Of_Page), status, No_Of_Page));
+            return View(new AlertPagingCreateView(groupedAlerts.ToPagedList(noOfPage, sizeOfPage), status, noOfPage));
         }
 
         // GET: Alerts/Details/5
-        public ActionResult Details(int id, String StatusCode, DateTime lastModified, int PageNo, String sortOrder)
+        public ActionResult Details(int id, String statusCode, DateTime lastModified, int pageNo, String sortOrder)
         {
-            var viewModel = new AlertDetailsViewModel(AlertRepository.GetById(id), PageNo, sortOrder);
+            var viewModel = new AlertDetailsViewModel(AlertRepository.GetById(id), pageNo, sortOrder);
             var groupedAlerts = AlertRepository.Get();
             
             
@@ -126,7 +126,7 @@ namespace AdministrationPortal.Controllers
             if (viewModel.Alert.AlertGroup.AlertCategoryId != null)
             {
                 String myTempTime = lastModified.ToString("MM/dd/yy H:mm");
-                if (StatusCode == "Resolved")
+                if (statusCode == "Resolved")
                     groupedAlerts = groupedAlerts.Where(a => a.AlertGroup.AlertCategoryId == viewModel.Alert.AlertGroup.AlertCategoryId && a.Id != viewModel.Alert.Id && a.AlertStatus.Timestamp.ToString("MM/dd/yy H:mm").CompareTo(lastModified.ToString("MM/dd/yy H:mm")) == 0);
                 else
                     groupedAlerts = groupedAlerts.Where(a => a.AlertGroup.AlertCategoryId == viewModel.Alert.AlertGroup.AlertCategoryId && a.Id != viewModel.Alert.Id && a.AlertStatus.StatusCode.ToString() != "Resolved");
@@ -134,9 +134,9 @@ namespace AdministrationPortal.Controllers
             else
                 groupedAlerts = groupedAlerts.Where(a => a.AlertGroupId == viewModel.Alert.AlertGroupId && a.Id != viewModel.Alert.Id);
             
-            viewModel.sortOrder = sortOrder;
-            viewModel.PageNo = PageNo;
-            viewModel.groupedAlerts = groupedAlerts.ToList();
+            viewModel.SortOrder = sortOrder;
+            viewModel.PageNo = pageNo;
+            viewModel.GroupedAlerts = groupedAlerts.ToList();
 
             return View(viewModel);
         }
@@ -144,13 +144,13 @@ namespace AdministrationPortal.Controllers
        
 
         // GET: Alerts/Edit/5
-        public ActionResult Edit(int id, int PageNo, String sortOrder)
+        public ActionResult Edit(int id, int pageNo, String sortOrder)
         {
             var alert = AlertRepository.GetById(id);
             if (alert == null)
                 throw new ArgumentException($"No Alert found with Id: {id}");
 
-            var viewModel = new AlertDetailsViewModel(alert, PageNo, sortOrder);
+            var viewModel = new AlertDetailsViewModel(alert, pageNo, sortOrder);
             return View(viewModel);
         }
 

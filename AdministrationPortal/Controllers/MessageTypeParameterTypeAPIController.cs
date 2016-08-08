@@ -13,7 +13,7 @@ using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace AdministrationPortal.Controllers
 {
-    public class MessageTypeParameterTypeAPIController : ApiController
+    public class MessageTypeParameterTypeApiController : ApiController
     {
         public class MessageTypeParameterTypeExchange
         {
