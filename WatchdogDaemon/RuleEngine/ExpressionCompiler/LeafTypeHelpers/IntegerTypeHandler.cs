@@ -2,7 +2,7 @@
 
 namespace WatchdogDaemon.RuleEngine.ExpressionCompiler.LeafTypeHelpers
 {
-    internal class IntegerTypeHandler : ITypeHandler
+    internal class IntegerTypeHandler : AbstractTypeHandler
     {
         private static string Equals(string name, string value)
         {

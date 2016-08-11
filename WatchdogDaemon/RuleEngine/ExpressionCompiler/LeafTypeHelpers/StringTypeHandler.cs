@@ -1,121 +1,136 @@
 ﻿using System;
+using System.Collections.Generic;
 using WatchdogDaemon.Exceptions;
 
 namespace WatchdogDaemon.RuleEngine.ExpressionCompiler.LeafTypeHelpers
 {
-    internal class StringTypeHandler : ITypeHandler
+    internal class StringTypeHandler : AbstractTypeHandler
     {
-        private static string Equals(string name, string value)
+        private static bool Equals(string name, string value)
         {
-            return $"({name}.Equals(\"{value}\"))";
+            return name.Equals(value);
         }
-        private static string NotEquals(string name, string value)
+        private static bool NotEquals(string name, string value)
         {
-            return $"(!{name}.Equals(\"{value}\"))";
+            return !Equals(name, value);
         }
-        private static string Contains(string name, string value)
+        private static bool Contains(string name, string value)
         {
-            return $"({name}.Contains(\"{value}\"))";
+            return name.Contains(value);
         }
-        private static string NotContains(string name, string value)
+        private static bool NotContains(string name, string value)
         {
-            return $"(!{name}.Contains(\"{value}\"))";
+            return !Contains(name, value);
         }
-        private static string BeginsWith(string name, string value)
+        private static bool BeginsWith(string name, string value)
         {
-            return $"({name}.StartsWith(\"{value}\"))";
+            return name.StartsWith(value);
         }
-        private static string NotBeginsWith(string name, string value)
+        private static bool NotBeginsWith(string name, string value)
         {
-            return $"(!{name}.StartsWith(\"{value}\"))";
+            return !BeginsWith(name, value);
 
         }
-        private static string In(string name, string value)
+        private static bool In(string name, string value)
         {
-            return $"(\"{value}\".Contains({name}))";
+            return value.Contains(name);
         }
-        private static string NotIn(string name, string value)
+        private static bool NotIn(string name, string value)
         {
-            return $"(!\"{value}\".Contains({name}))";
+            return !In(name, value);
         }
-        private static string EndWith(string name, string value)
+        private static bool EndWith(string name, string value)
         {
-            return $"({name}.EndsWith(\"{value}\"))";
+            return name.EndsWith(value);
         }
-        private static string NotEndWith(string name, string value)
+        private static bool NotEndWith(string name, string value)
         {
-            return $"(!{name}.EndsWith(\"{value}\"))";
+            return !EndWith(name, value);
         }
-        private static string IsEmpty(string name)
+        private static bool IsEmpty(string name)
         {
-            return $"({name}.Count() == 0)";
+            return name.Length == 0;
         }
-        private static string IsNotEmpty(string name)
+        private static bool IsNotEmpty(string name)
         {
-            return $"(!{name}.Count() == 0)";
+            return !IsEmpty(name);
         }
-        private static string IsNull(string name)
+        private static bool IsNull(string name)
         {
-            return $"({name} == null)";
+            return name == null;
         }
-        private static string IsNotNull(string name)
+        private static bool IsNotNull(string name)
         {
-            return $"({name} != null)";
+            return !IsNull(name);
         }
-        public string GetName()
+        public override string GetName()
         {
             return "string";
         }
 
-        public string BuildExpression(string name, string operatorString, string value)
+
+        public override Dictionary<string, Func<string, string, bool>> BuildUnaryHash()
         {
-            switch (operatorString)
+            return new Dictionary<string, Func<string, string, bool>>
             {
-                case "equal":
-                    return Equals(name, value);
-                case "not_equal":
-                    return NotEquals(name, value);
-                case "in":
-                    return In(name, value);
-                case "not_in":
-                    return NotIn(name, value);
-                case "begins_with":
-                    return BeginsWith(name, value);
-                case "not_begins_with":
-                    return NotBeginsWith(name, value);
-                case "contains":
-                    return Contains(name, value);
-                case "not_contains":
-                    return NotContains(name, value);
-                case "ends_with":
-                    return EndWith(name, value);
-                case "not_ends_with":
-                    return NotEndWith(name, value);
-                default:
-                    throw new InvalidParameterException("Invalid Operator: " + operatorString);
-            }
+                {
+                    "equal", Equals
+                },
+                {
+                    "not_equal", NotEquals
+                },
+                {
+                    "in", In
+                },
+                {
+                    "not_in", NotIn
+                },
+                {
+                    "begins_with", BeginsWith
+                },
+                {
+                    "not_begins_with", NotBeginsWith
+                },
+                {
+                    "contains", Contains
+                },
+                {
+                    "not_contains", NotContains
+                },
+                {
+                    "ends_with", EndWith
+                },
+                {
+                    "not_ends_with", NotEndWith
+                }
+            };
         }
 
-        public string BuildExpression(string id, string operatorString, string[] values)
+        public override Dictionary<string, Func<string, bool>> BuildNullaryHash()
         {
-            throw new NotImplementedException();
+            return new Dictionary<string, Func<string, bool>>
+            {
+                {
+                    "is_empty", IsEmpty
+                },
+                {
+                    "is_not_empty", IsNotEmpty
+                },
+                {
+                    "is_null", IsNull
+                },
+                {
+                    "is_not_null", IsNotNull
+                }
+            };
         }
 
-        public string BuildExpression(string id, string operatorString)
+        public override Dictionary<string, Func<string, string[], bool>> BuildPolyadicHash()
         {
-            switch (operatorString)
+            return new Dictionary<string, Func<string, string[], bool>>
             {
-                case "is_empty":
-                    return IsEmpty(id);
-                case "is_not_empty":
-                    return IsNotEmpty(id);
-                case "is_null":
-                    return IsNull(id);
-                case "is_not_null":
-                    return IsNotNull(id);
-                default:
-                    throw new InvalidParameterException("Invalid Operator: " + operatorString);
-            }
+
+            };
         }
     }
 }

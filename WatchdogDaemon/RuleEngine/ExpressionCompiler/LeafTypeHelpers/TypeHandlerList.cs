@@ -8,7 +8,7 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler.LeafTypeHelpers
     /// </summary>
     public class TypeHandlerList
     {
-        public static ICollection<ITypeHandler> Types = new List<ITypeHandler>
+        public static ICollection<AbstractTypeHandler> Types = new List<AbstractTypeHandler>
         {
             new StringTypeHandler(),
             new IntegerTypeHandler()
@@ -22,9 +22,9 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler.LeafTypeHelpers
         /// <param name="operatorString">The name of the operator being used.</param>
         /// <param name="value">The constant value being compared.</param>
         /// <returns>Returns the Built expression</returns>
-        public static string BuildExpression(string type, string name, string operatorString, string value)
+        public static bool BuildExpression(string type, string name, string operatorString, string value)
         {
-            return Types.Single(e => e.GetName().Equals(type)).BuildExpression(name, operatorString, value);
+            return Types.Single(e => e.GetName().Equals(type)).BuildUnaryExpression(name, operatorString, value);
         }
 
 
@@ -36,9 +36,9 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler.LeafTypeHelpers
         /// <param name="operatorString">The name of the operator being used.</param>
         /// <param name="values">The list of parameters for the operator to use.</param>
         /// <returns>Returns the Built expression</returns>
-        public static string BuildExpression(string type, string name, string operatorString, string[] values)
+        public static bool BuildExpression(string type, string name, string operatorString, string[] values)
         {
-            return Types.Single(e => e.GetName().Equals(type)).BuildExpression(name, operatorString, values);
+            return Types.Single(e => e.GetName().Equals(type)).BuildPolyadicExpression(name, operatorString, values);
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler.LeafTypeHelpers
         /// <param name="name">The name of the parameter</param>
         /// <param name="operatorString">The name of the operator being used.</param>
         /// <returns>Returns the Built expression</returns>
-        public static string BuildExpression(string type, string name, string operatorString)
+        public static bool BuildExpression(string type, string name, string operatorString)
         {
-            return Types.Single(e => e.GetName().Equals(type)).BuildExpression(name, operatorString);
+            return Types.Single(e => e.GetName().Equals(type)).BuildNullaryExpression(name, operatorString);
         }
     }
 }

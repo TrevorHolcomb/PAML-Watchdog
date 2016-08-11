@@ -89,7 +89,7 @@
     <Compile Include="RuleEngine\ExpressionCompiler\InternalNode.cs" />
     <Compile Include="RuleEngine\ExpressionCompiler\LeafTypeHelpers\IntegerTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionCompiler\UnaryLeaf.cs" />
-    <Compile Include="RuleEngine\ExpressionCompiler\LeafTypeHelpers\ITypeHandler.cs" />
+    <Compile Include="RuleEngine\ExpressionCompiler\LeafTypeHelpers\AbstractTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionCompiler\LeafTypeHelpers\StringTypeHandler.cs" />
     <Compile Include="RuleEngine\ExpressionCompiler\LeafTypeHelpers\TypeHandlerList.cs" />
     <Compile Include="RuleEngine\ExpressionCompiler\Node.cs" />
