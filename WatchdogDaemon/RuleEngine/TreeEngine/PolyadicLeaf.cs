@@ -1,6 +1,9 @@
-﻿using WatchdogDaemon.RuleEngine.ExpressionCompiler.LeafTypeHelpers;
+﻿using System.Collections.Generic;
+using WatchdogDaemon.RuleEngine.ExpressionEvaluator;
+using WatchdogDaemon.RuleEngine.TreeEngine.LeafTypeHelpers;
+using WatchdogDatabaseAccessLayer.Models;
 
-namespace WatchdogDaemon.RuleEngine.ExpressionCompiler
+namespace WatchdogDaemon.RuleEngine.TreeEngine
 {
     /// <summary>
     /// A leaf in the expression tree that has a single value.
@@ -13,9 +16,9 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler
         public string Input { get; set; }
         public string Operator { get; set; }
         public string[] Value { get; set; }
-        public string Evaluate()
+        public bool Evaluate(Dictionary<string, MessageParameter> parameters)
         {
-            return TypeHandlerList.BuildExpression(Type, Id, Operator, Value);
+            return TypeHandlerList.BuildExpression(Type, Id, Operator, Value, parameters);
         }
     }
 }

@@ -68,7 +68,7 @@ namespace WatchdogDaemon.Processes
                     if (rule.MessageType != message.MessageType)
                         continue;
 
-                    if (!RuleEngine.DoesGenerateAlert(rule, message))
+                    if (!RuleEngine.Evaluate(rule, message))
                         continue;
 
                     var alertGroup = GetAlertGroup(rule, message);                      

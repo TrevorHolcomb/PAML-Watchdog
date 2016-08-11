@@ -4,7 +4,7 @@ using System.Linq;
 using Ninject;
 using NLog;
 using WatchdogDaemon.Exceptions;
-using WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers;
+using WatchdogDaemon.RuleEngine.TreeEngine.LeafTypeHelpers;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 
@@ -148,9 +148,7 @@ namespace WatchdogDaemon.Processes
 
         private static bool IsValidParameter(UnvalidatedMessageParameter parameterInstance, MessageTypeParameterType parameterType)
         {
-            return TypeHandlerList.TypeHandlers
-                .Single(typeHandler => typeHandler.GetTypeName().Equals(parameterType.Type))
-                .IsValid(parameterInstance.Value);
+            return TypeHandlerList.Types[parameterType.Name].IsValid(parameterInstance.Value);
         }
 
         private void DeleteUnvalidatedEntities(UnvalidatedMessage toValidate)
