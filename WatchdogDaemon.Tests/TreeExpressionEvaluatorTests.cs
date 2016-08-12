@@ -1,15 +1,18 @@
 ﻿using System;
-using WatchdogDaemon.RuleEngine.ExpressionCompiler;
+using System.Collections.Generic;
+using WatchdogDaemon.RuleEngine.ExpressionEvaluator;
+using WatchdogDaemon.RuleEngine.TreeEngine;
+using WatchdogDatabaseAccessLayer.Models;
 using Xunit;
 
 namespace WatchdogDaemon.Tests
 {
 
-    public class ExpressionCompilerTests
+    public class TreeExpressionEvaluatorTests
     {
         public static TheoryData<string> ShouldntThrowError = new TheoryData<string>
         {
-            /*@"
+            @"
 {
   ""condition"": ""OR"",
   ""rules"": [
@@ -126,8 +129,11 @@ namespace WatchdogDaemon.Tests
       ""value"": null
     }
   ]
-}",*/
-            /*@"
+}",
+//////////////////////////////////////////
+// INTEGERS
+//////////////////////////////////////////
+            @"
 {
   ""condition"": ""OR"",
   ""rules"": [
@@ -145,22 +151,6 @@ namespace WatchdogDaemon.Tests
       ""type"": ""integer"",
       ""input"": ""text"",
       ""operator"": ""not_equal"",
-      ""value"": ""1""
-    },
-    {
-      ""id"": ""queue_size"",
-      ""field"": ""queue_size"",
-      ""type"": ""integer"",
-      ""input"": ""text"",
-      ""operator"": ""in"",
-      ""value"": ""1""
-    },
-    {
-      ""id"": ""queue_size"",
-      ""field"": ""queue_size"",
-      ""type"": ""integer"",
-      ""input"": ""text"",
-      ""operator"": ""not_in"",
       ""value"": ""1""
     },
     {
@@ -235,7 +225,7 @@ namespace WatchdogDaemon.Tests
     }
   ]
 }
-",*/
+",
             @"
 {
   ""condition"": ""AND"",
@@ -253,101 +243,41 @@ namespace WatchdogDaemon.Tests
 "
         };
 
-        public static TheoryData<string, string> TestData =
-            new TheoryData<string, string>
-            {
-                {
-                    @"{
-                        ""condition"":""AND"",
-                        ""rules"":[
-                            {
-                                ""id"":""exception"",
-                                ""field"":""exception"",
-                                ""type"":""string"",
-                                ""input"":""text"",
-                                ""operator"":""contains"",
-                                ""value"":""foo""
-                            }
-                        ]
-                    }",
-                    @"((exception.Contains(""foo"")))"
-                },
-                {
-                    @"{
-                        ""condition"":""AND"",
-                        ""rules"":[
-                            {
-                                ""id"":""exception"",
-                                ""field"":""exception"",
-                                ""type"":""string"",
-                                ""input"":""text"",
-                                ""operator"":""contains"",
-                                ""value"":""foo""
-                            },
-                            {
-                                ""id"":""exception"",
-                                ""field"":""exception"",
-                                ""type"":""string"",
-                                ""input"":""text"",
-                                ""operator"":""contains"",
-                                ""value"":""bar""
-                            }
-                        ]
-                    }",
-                    @"((exception.Contains(""foo"")) && (exception.Contains(""bar"")))"
-               },
-
-                {
-                    @"{
-                        ""condition"":""AND"",
-                        ""rules"":[
-                            {
-                                ""id"":""exception"",
-                                ""field"":""exception"",
-                                ""type"":""string"",
-                                ""input"":""text"",
-                                ""operator"":""contains"",
-                                ""value"":""foo""
-                            },
-                            {
-                                ""id"":""exception"",
-                                ""field"":""exception"",
-                                ""type"":""string"",
-                                ""input"":""text"",
-                                ""operator"":""contains"",
-                                ""value"":""bar""
-                            },
-                            {
-                                ""condition"":""AND"",
-                                ""rules"":[
-                                    {
-                                        ""id"":""exception"",
-                                        ""field"":""exception"",
-                                        ""type"":""string"",
-                                        ""input"":""text"",
-                                        ""operator"":""not_equal"",
-                                        ""value"":""foobar""
-                                    }
-                                ]
-                            }
-                        ]
-                    }",
-                    @"((exception.Contains(""foo"")) && (exception.Contains(""bar"")) && ((!exception.Equals(""foobar""))))"
-                }
-            };
-
-        [Theory]
-        [MemberData(nameof(TestData))]
-        public void TestCorrectExpressionBuilt(string expression, string expected)
-        {
-            Assert.Equal(expected, Compiler.Convert(expression));
-        }
-
         [Theory]
         [MemberData(nameof(ShouldntThrowError))]
         public void TestAllString(string expression)
         {
-            Compiler.Convert(expression);
+            var rule = new Rule()
+            {
+                Expression = expression
+            };
+
+            var message = new Message
+            {
+                MessageParameters = new List<MessageParameter>
+                {
+                    new MessageParameter
+                    {
+                        Value = "100",
+                        MessageTypeParameterType = new MessageTypeParameterType
+                        {
+                            Name = "queue_size",
+                            Type = "integer"
+                        }
+                    },new MessageParameter
+                    {
+                        Value = "foo",
+                        MessageTypeParameterType = new MessageTypeParameterType
+                        {
+                            Name = "exception",
+                            Type = "string"
+                        }
+                    }
+                }
+            };
+
+            new TreeExpressionEvaluator().Evaluate(rule, message);
+            
         }
     }
 }

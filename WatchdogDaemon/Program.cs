@@ -4,7 +4,7 @@ using Ninject;
 using NLog;
 using WatchdogDaemon.Processes;
 using WatchdogDaemon.RuleEngine;
-using WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine;
+using WatchdogDaemon.RuleEngine.TreeEngine;
 using WatchdogDatabaseAccessLayer;
 
 namespace WatchdogDaemon
@@ -31,7 +31,7 @@ namespace WatchdogDaemon
 
             _kernel = new StandardKernel();
             _kernel.Load(new EFModule());
-            _kernel.Bind<IRuleEngine>().To<StandardRuleEngine>();
+            _kernel.Bind<IRuleEngine>().To<TreeExpressionEvaluator>();
 
             var preprocessorThread = new Thread(StartPreprocessor);
             var alerterThread = new Thread(StartAlerter);

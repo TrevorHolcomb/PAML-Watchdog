@@ -1,8 +1,12 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using WatchdogDaemon.RuleEngine.ExpressionEvaluator;
+using WatchdogDatabaseAccessLayer.Models;
 
-namespace WatchdogDaemon.RuleEngine.ExpressionCompiler
+namespace WatchdogDaemon.RuleEngine.TreeEngine
 {
     /// <summary>
     /// The compiler is used to compile a valid c# expression from a expression tree stored in a JSON structure.
@@ -24,17 +28,16 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler
     /// TO THIS
     /// ((exception.Contains(""foo"")))
     /// </summary>
-    public class Compiler
+    public class TreeExpressionEvaluator : IRuleEngine
     {
-        /// <summary>
-        /// Converts a given JSON expression tree into a C# expression.
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        public static string Convert(string expression)
+        public bool Evaluate(Rule rule, Message message)
         {
-            var tree = JToken.Parse(expression);
-            return BuildNode(tree).Evaluate();
+            var parameterDictionary = new Dictionary<string, MessageParameter>();
+            foreach (var messageParameter in message.MessageParameters)
+                parameterDictionary[messageParameter.Name] = messageParameter;
+
+            var tree = JToken.Parse(rule.Expression);
+            return BuildNode(tree).Evaluate(parameterDictionary);
         }
 
         /// <summary>
@@ -59,7 +62,7 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler
         /// <returns>True if the node's value property is null.</returns>
         private static bool IsLeafNullary(JToken token)
         {
-            return token.SelectToken("value") == null;
+            return token.SelectToken("value").ToString() == "" && token.SelectToken("operator") != null;
         }
 
         /// <summary>
@@ -70,7 +73,7 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler
         private static bool IsLeafUnary(JToken token)
         {
             var values = token.SelectToken("value");
-            return values.Type == JTokenType.String;
+            return values.Type == JTokenType.String && token.SelectToken("operator") != null;
         }
 
         /// <summary>
@@ -81,7 +84,7 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler
         private static bool IsLeafPolyadic(JToken token)
         {
             var values = token.SelectToken("value");
-            return values.Type == JTokenType.Array;
+            return values.Type == JTokenType.Array && token.SelectToken("operator") != null; ;
         }
 
         public static INode BuildNode(JToken rule)
@@ -90,21 +93,21 @@ namespace WatchdogDaemon.RuleEngine.ExpressionCompiler
             {
                 return (new InternalNode(rule));
             }
-            else if (IsLeafNullary(rule))
+            else if (IsLeafPolyadic(rule))
             {
-                return (rule.ToObject<NullaryLeaf>());
+                return (rule.ToObject<PolyadicLeaf>());
             }
             else if (IsLeafUnary(rule))
             {
                 return (rule.ToObject<UnaryLeaf>());
             }
-            else if (IsLeafPolyadic(rule))
+            else if (IsLeafNullary(rule))
             {
-                return (rule.ToObject<PolyadicLeaf>());
+                return (rule.ToObject<NullaryLeaf>());
             }
             else
             {
-                throw new Exception("Invalid Leaf Value");
+                throw new Exception("Invalid Leaf Value: " + rule + " - ");
             }
         }
     }
