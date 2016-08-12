@@ -16,8 +16,8 @@
     <div class="form-horizontal">
         <h4>Rule</h4>
         <hr/>
-
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
         <!-- Rule Name -->
         <div class="form-group">
             @Html.LabelFor(model => model.Name, "Rule Name", htmlAttributes: new { @class = "control-label col-md-2" })
@@ -29,28 +29,37 @@
 
         <!-- Description -->
         <div class="form-group">
-            @Html.LabelFor(model => model.Description, htmlAttributes: new {@class = "control-label col-md-2"})
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Description, new {htmlAttributes = new {@class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.Description, "", new {@class = "text-danger"})
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Rule Creator -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.RuleCreator, "Created by", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RuleCreator, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RuleCreator, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <!-- Engine -->
         <div class="form-group">
-            @Html.LabelFor(model => model.Engine, htmlAttributes: new {@class = "control-label col-md-2"})
+            @Html.LabelFor(model => model.Engine, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.Engine, Model.RuleOptions.EngineList, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Engine, "", new {@class = "text-danger"})
+                @Html.DropDownListFor(model => model.Engine, Model.RuleOptions.EngineList, new { @class = "form-control"})
+                @Html.ValidationMessageFor(model => model.Engine, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <!-- Origin -->
         <div class="form-group">
-            @Html.LabelFor(model => model.Origin, htmlAttributes: new {@class = "control-label col-md-2"})
+            @Html.LabelFor(model => model.Origin, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Origin, new {htmlAttributes = new {@class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.Origin, "", new {@class = "text-danger"})
+                @Html.EditorFor(model => model.Origin, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Origin, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -60,15 +69,6 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Server, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Server, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <!-- Created By -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.RuleCreator, "Created by", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.RuleCreator, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.RuleCreator, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -91,7 +91,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.DefaultSeverity, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.DefaultSeverity, Model.RuleOptions.DefaultSeverityList, new { @class = "form-control", style="width:4em;", title="higher is more severe"})
+                @Html.DropDownListFor(model => model.DefaultSeverity, Model.RuleOptions.DefaultSeverityList, new { @class = "form-control", style = "width:4em;", title = "higher is more severe" })
                 @Html.ValidationMessageFor(model => model.DefaultSeverity, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -106,14 +106,14 @@
                 {
                     var style = (Model.SelectedNotesEnabled[p]) ? "" : "display:none";
                     <div class="multiple-form-group-selected" style="margin-bottom: 15px; @style">
-                         @Html.HiddenFor(model => model.SelectedNotesEnabled[p], htmlAttributes: new { @class = "parameter-enabled" })
+                        @Html.HiddenFor(model => model.SelectedNotesEnabled[p], htmlAttributes: new { @class = "parameter-enabled" })
                         <div class="input-group">
                             @Html.DropDownListFor(model => model.SelectedNoteIds[p], Model.RuleOptions.DefaultNotes, htmlAttributes: new { @class = "selectNoteText form-control" })
-                       
+
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-danger btn-remove-selected">-</button>
                             </span>
-                         </div>
+                        </div>
                     </div>
                 }
             </div>
@@ -198,11 +198,14 @@
     @Styles.Render("~/Styles/css/query-builder.css")
     @Scripts.Render("~/Scripts/query-builder-adapter.js")
 
+    @Scripts.Render("~/Scripts/custom/noteHandler.js")
+
     <script type="text/javascript">
+
         $(document).ready(function () {
 
             //$("#selectNoteText").prop("selectedIndex", -1);
-            $(".selectNoteText").prepend($('<option>', { value:0, text: 'None' }));
+            $(".selectNoteText").prepend($('<option>', { value: 0, text: 'None' }));
             $(".selectNoteText").val("0");
 
             //strip long note text
@@ -219,14 +222,13 @@
                 disableIfEmpty: true
             });
 
-            $(document).on('click', '.btn-add-selected', addSelectedFormGroup);
-            $(document).on('click', '.btn-remove-selected', removeSelectedFormGroup);
-            $(document).on('click', '.btn-add-new', addNewFormGroup);
-            $(document).on('click', '.btn-remove-new', removeNewFormGroup);
+            $(document).on('click', '.btn-add-selected', noteHandler.addSelectedFormGroup);
+            $(document).on('click', '.btn-remove-selected', noteHandler.removeSelectedFormGroup);
+            $(document).on('click', '.btn-add-new', noteHandler.addNewFormGroup);
+            $(document).on('click', '.btn-remove-new', noteHandler.removeNewFormGroup);
 
-
-            makeLastVisibleButtonGreenNewNotes();
-            makeLastVisibleButtonGreenSelectedNotes();
+            noteHandler.makeLastVisibleButtonGreenNewNotes();
+            noteHandler.makeLastVisibleButtonGreenSelectedNotes();
 
             // When the page loads bind the form submit onClick to evaluate the queryBuilder and replace the input named Expression with the expression from the queryBuilder.
             onMessageTypeChange($('#message-type')[0]);
@@ -234,102 +236,6 @@
                 $("input[name='Expression']").val(JSON.stringify($('#builder').queryBuilder('getRules')));
             });
         });
-
-        //Toggle last visible button for added notes
-        function makeLastVisibleButtonGreenNewNotes() {
-            var $lastEnabled = $('.addedNotes').find('.parameter-enabled').filter("[value='True']").last();
-            var $lastButton = $lastEnabled.next('.input-group').find('.btn');
-            $lastButton.removeClass('btn-danger btn-remove-new');
-            $lastButton.addClass('btn-success btn-add-new').html('+');
-        };
-
-        //Toggle last visible button for selected notes
-        function makeLastVisibleButtonGreenSelectedNotes() {
-            var $lastEnabled = $('.selectedNotes').find('.parameter-enabled').filter("[value='True']").last();
-            var $lastButton = $lastEnabled.next('.input-group').find('.btn');
-            $lastButton.removeClass('btn-danger btn-remove-selected');
-            $lastButton.addClass('btn-success btn-add-selected').html('+');
-        };
-
-        //add selected note group
-        function addSelectedFormGroup(event) {
-            event.preventDefault();
-
-            var $multipleFormGroupSelected = $(this).closest('.multiple-form-group-selected');
-
-            //Toggle this button state
-            $(this).toggleClass('btn-success btn-add-selected btn-danger btn-remove-selected').html('–');
-
-            //Enable the next group
-            var $nextGroup = $multipleFormGroupSelected.next('.multiple-form-group-selected');
-            $nextGroup.find('.parameter-enabled').attr('value', 'True');
-            $nextGroup.find('.btn').toggleClass('btn-success btn-add-selected btn-danger btn-remove-selected').html('+');
-            $nextGroup.fadeIn(300);
-
-            //Always disable the last button
-            var $lastFormGroup = $multipleFormGroupSelected.siblings('.multiple-form-group-selected:last');
-            $lastFormGroup.find('.btn').attr('disabled', true);
-            makeLastVisibleButtonGreenSelectedNotes();
-        };
-
-        //remove selected note group
-        function removeSelectedFormGroup(event) {
-            event.preventDefault();
-
-            var $multipleFormGroupSelected = $(this).closest('.multiple-form-group-selected');
-
-            //Always reenable the last button before replacing it
-            var $lastFormGroup = $multipleFormGroupSelected.siblings('.multiple-form-group-selected:last');
-            $lastFormGroup.find('.btn').attr('disabled', false);
-
-            //Disable this group and move it to the bottom
-            $multipleFormGroupSelected.fadeOut(300, function () {
-                $multipleFormGroupSelected.find('.text-box').val('');
-                $multipleFormGroupSelected.find('.parameter-enabled').attr('value', 'False');
-                $multipleFormGroupSelected.insertAfter($lastFormGroup);
-            });
-            makeLastVisibleButtonGreenSelectedNotes();
-        };
-
-        //add new note group
-        function addNewFormGroup(event) {
-            event.preventDefault();
-
-            var $multipleFormGroupNew = $(this).closest('.multiple-form-group-new');
-
-            //Toggle this button state
-            $(this).toggleClass('btn-success btn-add-new btn-danger btn-remove-new').html('–');
-
-            //Enable the next group
-            var $nextGroup = $multipleFormGroupNew.next('.multiple-form-group-new');
-            $nextGroup.find('.parameter-enabled').attr('value', 'True');
-            $nextGroup.find('.btn').toggleClass('btn-success btn-add-new btn-danger btn-remove-new').html('+');
-            $nextGroup.fadeIn(300);
-
-            //Always disable the last button
-            var $lastFormGroup = $multipleFormGroupNew.siblings('.multiple-form-group-new:last');
-            $lastFormGroup.find('.btn').attr('disabled', true);
-            makeLastVisibleButtonGreenNewNotes();
-        };
-
-        //remove new note group
-        function removeNewFormGroup(event) {
-            event.preventDefault();
-
-            var $multipleFormGroupNew = $(this).closest('.multiple-form-group-new');
-
-            //Always reenable the last button before replacing it
-            var $lastFormGroup = $multipleFormGroupNew.siblings('.multiple-form-group-new:last');
-            $lastFormGroup.find('.btn').attr('disabled', false);
-
-            //Disable this group and move it to the bottom
-            $multipleFormGroupNew.fadeOut(300, function () {
-                $multipleFormGroupNew.find('.text-box').val('');
-                $multipleFormGroupNew.find('.parameter-enabled').attr('value', 'False');
-                $multipleFormGroupNew.insertAfter($lastFormGroup);
-            });
-            makeLastVisibleButtonGreenNewNotes();
-        };
 
         function onMessageTypeChange(controller) {
             renderQueryBuilder(controller.value);

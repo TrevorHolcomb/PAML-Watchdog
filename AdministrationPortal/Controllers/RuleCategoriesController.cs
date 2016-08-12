@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Configuration;
+using System.ComponentModel;
 using System.Web.Mvc;
 using AdministrationPortal.ViewModels;
 using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using AdministrationPortal.ViewModels.RuleCategories;
-using NLog;
 
 namespace AdministrationPortal.Controllers
 {
-    public class RuleCategoriesController : Controller
+    public class RuleCategoriesController : AbstractBaseController
     {
         [Inject]
         public Repository<RuleCategory> RuleCategoryRepository { private get; set; }
-
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: RuleCategories
         public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string ruleCategoryName = "", string message = "")
@@ -39,6 +36,9 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id, Name, Description")] RuleCategory ruleCategory)
         {
+            if (ruleCategory?.Name == null)
+                throw new WarningException("Unable to create Rule Category: name is required.");
+
             if (ModelState.IsValid)
             {
                 RuleCategoryRepository.Insert(ruleCategory);
@@ -124,32 +124,6 @@ namespace AdministrationPortal.Controllers
                 actionPerformed = IndexViewModel.ActionType.Delete,
                 ruleCategoryName = ruleCategory.Name
             });
-        }
-
-        /// <summary>
-        /// Called when an unhandled exception occurs in the action.
-        /// </summary>
-        /// <param name="filterContext">Information about the current request and action.</param>
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            if (filterContext.ExceptionHandled)
-                return;
-
-            Logger.Error(filterContext.Exception);
-
-
-            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
-            {
-                filterContext.ExceptionHandled = true;
-
-                // Redirect on error:
-                filterContext.Result = RedirectToAction("Index", new
-                {
-                    actionPerformed = IndexViewModel.ActionType.Error,
-                    id = 0,
-                    message = filterContext.Exception.Message
-                });
-            }
         }
 
         protected override void Dispose(bool disposing)

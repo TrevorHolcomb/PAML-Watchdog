@@ -1,22 +1,18 @@
 ﻿using System;
-using System.Configuration;
+using System.ComponentModel;
 using System.Web.Mvc;
 using AdministrationPortal.ViewModels;
 using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using AdministrationPortal.ViewModels.RegisteredEngines;
-using NLog;
 
 namespace AdministrationPortal.Controllers
 {
-    public class RegisteredEnginesController : Controller
+    public class RegisteredEnginesController : AbstractBaseController
     {
         [Inject]
         public Repository<Engine> EngineRepository { private get; set; }
-
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         // GET: RegisteredEngines
         public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string engineName = "", string message = "")
         {
@@ -39,6 +35,9 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Name")] Engine engine)
         {
+            if (engine?.Name == null || engine.Name.Trim().Equals(string.Empty))
+                throw new WarningException("Unable to create Engine: name is required.");
+
             if (!ModelState.IsValid)
             {
                 return View(engine);
@@ -117,31 +116,6 @@ namespace AdministrationPortal.Controllers
                 actionPerformed = IndexViewModel.ActionType.Delete,
                 engineName = id
             });
-        }
-
-        /// <summary>
-        /// Called when an unhandled exception occurs in the action.
-        /// </summary>
-        /// <param name="filterContext">Information about the current request and action.</param>
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            if (filterContext.ExceptionHandled)
-                return;
-
-            Logger.Error(filterContext.Exception);
-
-            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
-            {
-                filterContext.ExceptionHandled = true;
-
-                // Redirect on error:
-                filterContext.Result = RedirectToAction("Index", new
-                {
-                    actionPerformed = IndexViewModel.ActionType.Error,
-                    id = 0,
-                    message = filterContext.Exception.Message
-                });
-            }
         }
 
         protected override void Dispose(bool disposing)

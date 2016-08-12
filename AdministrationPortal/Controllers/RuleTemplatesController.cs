@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.ComponentModel;
 using System.Linq;
 using System.Web.Mvc;
 using AdministrationPortal.ViewModels.RuleTemplates;
 using Ninject;
-using NLog;
 using AdministrationPortal.Extensions;
 using AdministrationPortal.ViewModels;
 using WatchdogDatabaseAccessLayer.Models;
@@ -14,7 +13,7 @@ using WebGrease.Css.Extensions;
 
 namespace AdministrationPortal.Controllers
 {
-    public class RuleTemplatesController : Controller
+    public class RuleTemplatesController : AbstractBaseController
     {
         [Inject]
         public Repository<Rule> RuleRepository { get; set; }
@@ -28,8 +27,6 @@ namespace AdministrationPortal.Controllers
         public Repository<AlertType> AlertTypeRepository { get; set; }
         [Inject]
         public Repository<Engine> EngineRepository { get; set; }
-
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: RuleTemplates
         public ActionResult Index(int id = 0, 
@@ -66,18 +63,11 @@ namespace AdministrationPortal.Controllers
                     Timestamp = timestamp
                 };
             }
-            else if (actionPerformed != IndexViewModel.ActionType.None)
-            {
-                viewModel = new IndexRuleTemplateViewModel(actionPerformed)
-                {
-                    RuleTemplates = RuleTemplateRepository.Get()
-                };
-            }
             else
             {
-                viewModel = new IndexRuleTemplateViewModel(IndexViewModel.ActionType.None)
+                viewModel = new IndexRuleTemplateViewModel(actionPerformed, message: message)
                 {
-                    RuleTemplates = RuleTemplateRepository.Get()
+                    RuleTemplates = RuleTemplateRepository.Get(),
                 };
             }
 
@@ -189,6 +179,9 @@ namespace AdministrationPortal.Controllers
 
             if (ruleTemplateInDb == null)
                 throw new ArgumentException($"No RuleTemplate found with Id: {viewModel.Id}");
+
+            if (viewModel.Name == null || viewModel.Name.Trim() == string.Empty)
+                throw new WarningException("Unable to save changes to Rule Template: name is required.");
 
             var templatedRulesToInclude = viewModel.TemplatedRules
                 .Where((tr, index) => viewModel.TemplatedRulesIncluded.ElementAt(index))
@@ -340,34 +333,6 @@ namespace AdministrationPortal.Controllers
             RuleRepository.DeleteRange(rulesToDelete);
             RuleRepository.Save();
             return "" + rulesToDelete.Count() + " Rules were deleted.";
-        }
-
-
-        /// <summary>
-        /// Called when an unhandled exception occurs in the action.
-        /// </summary>
-        /// <param name="filterContext">Information about the current request and action.</param>
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            if (filterContext.ExceptionHandled)
-                return;
-
-            Logger.Error(filterContext.Exception);
-
-            filterContext.ExceptionHandled = true;
-
-            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
-            {
-                filterContext.ExceptionHandled = true;
-
-                // Redirect on error:
-                filterContext.Result = RedirectToAction("Index", new
-                {
-                    actionPerformed = IndexViewModel.ActionType.Error,
-                    id = 0,
-                    message = filterContext.Exception.Message
-                });
-            }
         }
 
         #region private helper methods

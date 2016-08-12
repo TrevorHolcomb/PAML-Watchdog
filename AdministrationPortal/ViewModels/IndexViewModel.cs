@@ -53,16 +53,13 @@ namespace AdministrationPortal.ViewModels
         /// <returns></returns>
         public virtual MvcHtmlString GetMessage()
         {
-            if (ConfigurationManager.AppSettings["InfoMessagesEnabled"] == bool.FalseString ||
+            if (ConfigurationManager.AppSettings["InfoMessagesEnabled"].ToLower() == bool.FalseString.ToLower() ||
                 Action == null || Action == ActionType.None)
                 return new MvcHtmlString("");
 
             string style = ActionToStyle[(ActionType) Action];
             string message = ActionToMessage[(ActionType) Action];
             return new MvcHtmlString($"<div class=\"alert alert-{style}\" role=\"alert\">{message}</div>");
-            
-            //string state = StatusToString[(StatusType) _action];
-            //return new MvcHtmlString($"<div class=\"alert alert-{state}\" role=\"alert\">{_message}</div>");
         }
     }
 }

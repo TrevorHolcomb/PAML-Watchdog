@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Configuration;
+using System.ComponentModel;
 using System.Web.Mvc;
 using AdministrationPortal.ViewModels;
 using AdministrationPortal.ViewModels.SupportCategories;
 using Ninject;
-using NLog;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace AdministrationPortal.Controllers
 {
-    public class SupportCategoriesController : Controller
+    public class SupportCategoriesController : AbstractBaseController
     {
         [Inject]
         public Repository<SupportCategory> SupportCategoryRepository { private get; set; }
-
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: SupportCategories
         public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string supportCategoryName = "", string message = "")
@@ -41,6 +38,9 @@ namespace AdministrationPortal.Controllers
         {
             if (!ModelState.IsValid)
                 return RedirectToAction("Index", new {actionPerformed = IndexViewModel.ActionType.Warning, message="Could not create Support Category"});
+
+            if (supportCategory.Name == null || supportCategory.Name.Trim() == string.Empty)
+                throw new WarningException("Unable to create Support Category: name required.");
 
             try
             {
@@ -116,31 +116,6 @@ namespace AdministrationPortal.Controllers
             SupportCategoryRepository.Delete(supportCategory);
             SupportCategoryRepository.Save();
             return RedirectToAction("Index", new { entityName = supportCategory.Name, actionPerformed = IndexViewModel.ActionType.Delete});
-        }
-
-        /// <summary>
-        /// Called when an unhandled exception occurs in the action.
-        /// </summary>
-        /// <param name="filterContext">Information about the current request and action.</param>
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            if (filterContext.ExceptionHandled)
-                return;
-
-            Logger.Error(filterContext.Exception);
-
-            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
-            {
-                filterContext.ExceptionHandled = true;
-
-                // Redirect on error:
-                filterContext.Result = RedirectToAction("Index", new
-                {
-                    actionPerformed = IndexViewModel.ActionType.Error,
-                    id = 0,
-                    message = filterContext.Exception.Message
-                });
-            }
         }
 
         protected override void Dispose(bool disposing)

@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Configuration;
 using System.Web.Mvc;
 using AdministrationPortal.ViewModels;
 using Ninject;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using AdministrationPortal.ViewModels.AlertTypes;
-using NLog;
 
 namespace AdministrationPortal.Controllers
 {
-    public class AlertTypesController : Controller
+    public class AlertTypesController : AbstractBaseController
     {
         [Inject]
         public Repository<AlertType> AlertTypeRepository { private get; set; }
-
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: AlertTypes
         public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string alertTypeName = "", string message = "")
@@ -41,6 +37,9 @@ namespace AdministrationPortal.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (alertType.Name == null)
+                    throw new ArgumentNullException(nameof(alertType.Name));
+
                 AlertTypeRepository.Insert(alertType);
                 AlertTypeRepository.Save();
                 return RedirectToAction("Index", new
@@ -138,31 +137,6 @@ namespace AdministrationPortal.Controllers
                 actionPerformed = IndexViewModel.ActionType.Delete,
                 alertTypeName = alertType.Name
             });
-        }
-
-        /// <summary>
-        /// Called when an unhandled exception occurs in the action.
-        /// </summary>
-        /// <param name="filterContext">Information about the current request and action.</param>
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            if (filterContext.ExceptionHandled)
-                return;
-
-            Logger.Error(filterContext.Exception);
-
-            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
-            {
-                filterContext.ExceptionHandled = true;
-
-                // Redirect on error:
-                filterContext.Result = RedirectToAction("Index", new
-                {
-                    actionPerformed = IndexViewModel.ActionType.Error,
-                    id = 0,
-                    message = filterContext.Exception.Message
-                });
-            }
         }
 
         protected override void Dispose(bool disposing)

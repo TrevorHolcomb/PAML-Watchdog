@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
 using AdministrationPortal.ViewModels;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using AdministrationPortal.ViewModels.AlertCategories;
-using AdministrationPortal.ViewModels.AlertTypes;
 using Ninject;
-using NLog;
 
 namespace AdministrationPortal.Controllers
 {
-    public class AlertCategoriesController : Controller
+    public class AlertCategoriesController : AbstractBaseController
     {
         [Inject]
         public Repository<AlertCategory> AlertCategoryRepository { private get; set; }
@@ -23,8 +20,6 @@ namespace AdministrationPortal.Controllers
         public Repository<AlertType> AlertTypeRepository  { private get; set; }
         [Inject]
         public Repository<Engine> EngineRepository { private get; set; }
-
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 
         // GET: AlertCategories
@@ -69,9 +64,12 @@ namespace AdministrationPortal.Controllers
         // GET: AlertCategories/Create
         public ActionResult Create()
         {
-            var viewModel = new AlertCategoryCreateViewModel();
-            viewModel.AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name");
-            viewModel.EngineList = new SelectList(EngineRepository.Get(), "Name", "Name");
+            var viewModel = new AlertCategoryCreateViewModel()
+            {
+                AlertTypes = new SelectList(AlertTypeRepository.Get(), "Id", "Name"),
+                EngineList = new SelectList(EngineRepository.Get(), "Name", "Name")
+            };
+
             return View(viewModel);
         }
 
@@ -239,31 +237,6 @@ namespace AdministrationPortal.Controllers
                 actionPerformed = IndexViewModel.ActionType.Delete,
                 alertCategoryName = alertCategory.CategoryName
             });
-        }
-
-        /// <summary>
-        /// Called when an unhandled exception occurs in the action.
-        /// </summary>
-        /// <param name="filterContext">Information about the current request and action.</param>
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            if (filterContext.ExceptionHandled)
-                return;
-
-            Logger.Error(filterContext.Exception);
-
-            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
-            {
-                filterContext.ExceptionHandled = true;
-
-                // Redirect on error:
-                filterContext.Result = RedirectToAction("Index", new
-                {
-                    actionPerformed = IndexViewModel.ActionType.Error,
-                    id = 0,
-                    message = filterContext.Exception.Message
-                });
-            }
         }
 
         protected override void Dispose(bool disposing)

@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using System.Linq;
-using System;
 using WatchdogDaemon.RuleEngine.TreeEngine.LeafTypeHelpers;
 
 namespace AdministrationPortal.ViewModels.MessageTypes
@@ -74,6 +73,9 @@ namespace AdministrationPortal.ViewModels.MessageTypes
             if (duplicateKeys.Count() != 0)
                 results.Add(new ValidationResult("Parameter Names must be unique."));
 
+            if (ParametersEnabled.Count(p => p) == 0)
+                results.Add(new ValidationResult("At least one parameter must be enabled."));
+
             foreach (var parameterType in ParameterTypes)
                 if (!TypeHandlerList.TypeHandlers.Keys.Contains(parameterType.Value))
                     results.Add(new ValidationResult("Unsupported parameter Type: " + parameterType.Value));
@@ -95,7 +97,7 @@ namespace AdministrationPortal.ViewModels.MessageTypes
             [StringLength(1000)]
             public string Value { get; set; }
 
-            public static implicit operator ParameterName(string name) { return new ParameterName { Value = name }; }
+            public static implicit operator ParameterName(string name) { return new ParameterName { Value = name.Trim() }; }
             public static implicit operator string(ParameterName parameterName) { return parameterName.Value; }
         }
     }

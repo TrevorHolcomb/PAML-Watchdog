@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Web.Mvc;
 using Ninject;
 using AdministrationPortal.ViewModels.Rules;
@@ -8,11 +7,10 @@ using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 using System.Linq;
 using AdministrationPortal.ViewModels;
-using NLog;
 
 namespace AdministrationPortal.Controllers
 {
-    public class RulesController : Controller
+    public class RulesController : AbstractBaseController
     {
         [Inject]
         public Repository<Rule> RuleRepository { get; set; }
@@ -28,8 +26,6 @@ namespace AdministrationPortal.Controllers
         public Repository<Engine> EngineRepository { get; set; }
         [Inject]
         public Repository<DefaultNote> DefaultNoteRepository { get; set; }
-
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: Rules
         public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string ruleName = "", string message = "")
@@ -90,7 +86,10 @@ namespace AdministrationPortal.Controllers
                     EngineList = new SelectList(EngineRepository.Get(), "Name", "Name"),
                     DefaultNotes = new SelectList(DefaultNoteRepository.Get(), "Id", "Text")
                 };
-                ruleViewModel.SelectedRuleCategoryIds = new List<int>();
+
+                if (ruleViewModel.SelectedRuleCategoryIds == null)
+                    ruleViewModel.SelectedRuleCategoryIds = new List<int>();
+
                 return View(ruleViewModel);
             }
 
@@ -132,7 +131,7 @@ namespace AdministrationPortal.Controllers
         {
             var rule = RuleRepository.GetById(id);
             if (rule == null)
-                throw new ArgumentException("No Rule found with id " + id);
+                throw new ArgumentException("No Rule found with Id " + id);
 
             var viewModel = new RuleEditViewModel
             {
@@ -169,10 +168,12 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(RuleEditViewModel ruleViewModel)
         {
-            
+            var rule = RuleRepository.GetById(ruleViewModel.Id);
+            if (rule == null)
+                throw new ArgumentException("No Rule found with Id " + ruleViewModel.Id);
+
             if (ModelState.IsValid)
             {
-                var rule = RuleRepository.GetById(ruleViewModel.Id);
                 ruleViewModel.Map(rule);
 
                 if(ruleViewModel.DefaultNotes != null)
@@ -232,6 +233,12 @@ namespace AdministrationPortal.Controllers
                 DefaultNotes = new SelectList(DefaultNoteRepository.Get(), "Id", "Text")
             };
 
+            if (ruleViewModel.DefaultNotes == null)
+                ruleViewModel.DefaultNotes = new List<DefaultNote>();
+
+            if (ruleViewModel.SelectedRuleCategoryIds == null)
+                ruleViewModel.SelectedRuleCategoryIds = new List<int>();
+
             return View(ruleViewModel);
         }
 
@@ -267,32 +274,6 @@ namespace AdministrationPortal.Controllers
                 ruleName = rule.Name
             });
         }
-
-        /// <summary>
-        /// Called when an unhandled exception occurs in the action.
-        /// </summary>
-        /// <param name="filterContext">Information about the current request and action.</param>
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            if (filterContext.ExceptionHandled)
-                return;
-
-            Logger.Error(filterContext.Exception);
-
-            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
-            {
-                filterContext.ExceptionHandled = true;
-
-                // Redirect on error:
-                filterContext.Result = RedirectToAction("Index", new
-                {
-                    actionPerformed = IndexViewModel.ActionType.Error,
-                    id = 0,
-                    message = filterContext.Exception.Message
-                });
-            }
-        }
-
 
         protected override void Dispose(bool disposing)
         {

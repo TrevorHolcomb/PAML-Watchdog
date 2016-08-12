@@ -1,25 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
 using AdministrationPortal.ViewModels;
 using AdministrationPortal.ViewModels.MessageTypes;
 using Ninject;
-using NLog;
 using WatchdogDatabaseAccessLayer.Models;
 using WatchdogDatabaseAccessLayer.Repositories;
 
 namespace AdministrationPortal.Controllers
 {
-    public class MessageTypesController : Controller
+    public class MessageTypesController : AbstractBaseController
     {
         [Inject]
         public Repository<MessageType> MessageTypeRepository { get; set; }
         [Inject]
         public Repository<MessageTypeParameterType> MessageTypeParameterTypeRepository { get; set; }
-
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // GET: MessageTypes
         public ActionResult Index(IndexViewModel.ActionType actionPerformed = IndexViewModel.ActionType.None, string messageTypeName = "", string message = "")
@@ -212,31 +208,6 @@ namespace AdministrationPortal.Controllers
                 actionPerformed = IndexViewModel.ActionType.Edit,
                 messageTypeName = messageType.Name
             });
-        }
-
-        /// <summary>
-        /// Called when an unhandled exception occurs in the action.
-        /// </summary>
-        /// <param name="filterContext">Information about the current request and action.</param>
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            if (filterContext.ExceptionHandled)
-                return;
-
-            Logger.Error(filterContext.Exception);
-
-            if (ConfigurationManager.AppSettings["ExceptionHandlingEnabled"] == bool.TrueString)
-            {
-                filterContext.ExceptionHandled = true;
-
-                // Redirect on error:
-                filterContext.Result = RedirectToAction("Index", new
-                {
-                    actionPerformed = IndexViewModel.ActionType.Error,
-                    id = 0,
-                    message = filterContext.Exception.Message
-                });
-            }
         }
 
         protected override void Dispose(bool disposing)

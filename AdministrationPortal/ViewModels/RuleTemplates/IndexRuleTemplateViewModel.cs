@@ -35,7 +35,7 @@ namespace AdministrationPortal.ViewModels.RuleTemplates
 
         public override MvcHtmlString GetMessage()
         {
-            if (ConfigurationManager.AppSettings["InfoMessagesEnabled"] == bool.FalseString ||
+            if (ConfigurationManager.AppSettings["InfoMessagesEnabled"].ToLower() == bool.FalseString.ToLower() ||
                 Action == null || Action == ActionType.None)
                 return new MvcHtmlString("");
 
