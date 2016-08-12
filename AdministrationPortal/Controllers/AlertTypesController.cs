@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Web.Mvc;
 using AdministrationPortal.ViewModels;
 using Ninject;
@@ -35,11 +36,14 @@ namespace AdministrationPortal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name,Description")] AlertType alertType)
         {
+            if (alertType.Name == null)
+                throw new ArgumentNullException(nameof(alertType.Name));
+
+            if (alertType.Description == null || alertType.Name.Trim() == string.Empty)
+                throw new WarningException("Unable to create Support Category: description requried.");
+
             if (ModelState.IsValid)
             {
-                if (alertType.Name == null)
-                    throw new ArgumentNullException(nameof(alertType.Name));
-
                 AlertTypeRepository.Insert(alertType);
                 AlertTypeRepository.Save();
                 return RedirectToAction("Index", new

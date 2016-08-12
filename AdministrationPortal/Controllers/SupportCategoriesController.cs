@@ -42,6 +42,9 @@ namespace AdministrationPortal.Controllers
             if (supportCategory.Name == null || supportCategory.Name.Trim() == string.Empty)
                 throw new WarningException("Unable to create Support Category: name required.");
 
+            if (supportCategory.Description == null || supportCategory.Name.Trim() == string.Empty)
+                throw new WarningException("Unable to create Support Category: description requried.");
+
             try
             {
                 SupportCategoryRepository.GetByName(supportCategory.Name);

@@ -249,7 +249,7 @@
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="Alerts">
     <Key>
@@ -1127,7 +1127,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="Description" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="Alerts" Relationship="WatchdogDatabase.AlertAlertType" FromRole="AlertType" ToRole="Alert" />
           <NavigationProperty Name="Rules" Relationship="WatchdogDatabase.AlertTypeRule" FromRole="AlertType" ToRole="Rule" />
           <NavigationProperty Name="AlertGroups" Relationship="WatchdogDatabase.AlertGroupAlertType" FromRole="AlertType" ToRole="AlertGroup" />

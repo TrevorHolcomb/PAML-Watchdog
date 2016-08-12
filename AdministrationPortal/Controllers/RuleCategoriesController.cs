@@ -39,6 +39,9 @@ namespace AdministrationPortal.Controllers
             if (ruleCategory?.Name == null)
                 throw new WarningException("Unable to create Rule Category: name is required.");
 
+            if (ruleCategory.Description == null || ruleCategory.Name.Trim() == string.Empty)
+                throw new WarningException("Unable to create Rule Category: description requried.");
+
             if (ModelState.IsValid)
             {
                 RuleCategoryRepository.Insert(ruleCategory);

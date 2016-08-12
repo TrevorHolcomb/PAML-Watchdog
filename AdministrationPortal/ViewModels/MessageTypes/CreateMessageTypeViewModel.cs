@@ -10,9 +10,9 @@ namespace AdministrationPortal.ViewModels.MessageTypes
     {
         public readonly int MaxParameters = 5;
 
-        [Required, StringLength(1000), Key]
+        [Required, StringLength(450), Key]
         public string Name { get; set; }
-        [Required, StringLength(1000)]
+        [Required, StringLength(450)]
         public string Description { get; set; }
         [Required]
         public List<ParameterType> ParameterTypes { get; set; }

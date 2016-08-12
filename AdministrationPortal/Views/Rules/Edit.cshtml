@@ -193,7 +193,7 @@
         <div class="form-group">
             @Html.Label(nameof(Model.SelectedRuleCategoryIds), htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.MultiSelectDropDown(nameof(Model.SelectedRuleCategoryIds), Model.RuleOptions.RuleCategories, Model.SelectedRuleCategoryIds, "form-control")
+                @Html.MultiSelectDropDown(nameof(Model.SelectedRuleCategoryIds), Model.RuleOptions.RuleCategories, Model.SelectedRuleCategoryIds, "form-control hidden")
 
                 @Html.ValidationMessageFor(model => model.RuleOptions.RuleCategories, "", new { @class = "text-danger" })
             </div>

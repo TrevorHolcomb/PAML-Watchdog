@@ -146,7 +146,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.AlertTypeId, "Alert Type", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.AlertTypeId, Model.RuleOptions.AlertTypes, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.AlertTypeId, Model.RuleOptions.AlertTypes, htmlAttributes: new { @class = "form-control hidden" })
                 @Html.ValidationMessageFor(model => model.AlertTypeId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -155,7 +155,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.MessageTypeName, "Message Type", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.MessageTypeName, Model.RuleOptions.MessageTypes, htmlAttributes: new { @class = "form-control", onchange="onMessageTypeChange(this)", id="message-type" })
+                @Html.DropDownListFor(model => model.MessageTypeName, Model.RuleOptions.MessageTypes, htmlAttributes: new { @class = "form-control hidden", onchange="onMessageTypeChange(this)" })
                 @Html.ValidationMessageFor(model => model.MessageTypeName, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -173,7 +173,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.SupportCategoryId, "Support Category", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.SupportCategoryId, Model.RuleOptions.SupportCategories, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.SupportCategoryId, Model.RuleOptions.SupportCategories, htmlAttributes: new { @class = "form-control hidden" })
                 @Html.ValidationMessageFor(model => model.SupportCategoryId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -215,12 +215,17 @@
                     return text.substr(0, maxLength) + '...';
                 }
             });
-            
-            $('#SelectedRuleCategoryIds').multiselect({
+
+            var settings = {
                 buttonWidth: '100%',
                 enableCaseInsensitiveFiltering: true,
                 disableIfEmpty: true
-            });
+            };
+
+            $("#@nameof(Model.AlertTypeId)").multiselect(settings);
+            $('#SelectedRuleCategoryIds').multiselect(settings);
+            $("#@nameof(Model.MessageTypeName)").multiselect(settings);
+            $("#@nameof(Model.SupportCategoryId)").multiselect(settings);
 
             $(document).on('click', '.btn-add-selected', noteHandler.addSelectedFormGroup);
             $(document).on('click', '.btn-remove-selected', noteHandler.removeSelectedFormGroup);
@@ -231,7 +236,7 @@
             noteHandler.makeLastVisibleButtonGreenSelectedNotes();
 
             // When the page loads bind the form submit onClick to evaluate the queryBuilder and replace the input named Expression with the expression from the queryBuilder.
-            onMessageTypeChange($('#message-type')[0]);
+            onMessageTypeChange($('#@nameof(Model.MessageTypeName)')[0]);
             $("input[type='submit']").click(function () {
                 $("input[name='Expression']").val(JSON.stringify($('#builder').queryBuilder('getRules')));
             });
@@ -239,6 +244,12 @@
 
         function onMessageTypeChange(controller) {
             renderQueryBuilder(controller.value);
+        }
+
+        function decodeHtml(html) {
+            var txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            return txt.value;
         }
 
         // Deletes the queryBuilder and places a new one in its place with the specified messageType.
@@ -253,6 +264,13 @@
                     plugins: ['bt-tooltip-errors'],
                     filters: filtersFromParameterList(ret)
                 });
+
+                var expressionString = decodeHtml('@Model.Expression');
+                if (expressionString != null && expressionString.length > 0){
+                    var expression = JSON.parse(expressionString);
+
+                    $('#builder').queryBuilder('setRules', expression);
+                }
             });
         }
     </script>
