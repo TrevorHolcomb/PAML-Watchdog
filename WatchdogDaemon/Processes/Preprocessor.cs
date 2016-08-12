@@ -148,7 +148,7 @@ namespace WatchdogDaemon.Processes
 
         private static bool IsValidParameter(UnvalidatedMessageParameter parameterInstance, MessageTypeParameterType parameterType)
         {
-            return TypeHandlerList.Types[parameterType.Name].IsValid(parameterInstance.Value);
+            return TypeHandlerList.TypeHandlers[parameterType.Name].IsValid(parameterInstance.Value);
         }
 
         private void DeleteUnvalidatedEntities(UnvalidatedMessage toValidate)

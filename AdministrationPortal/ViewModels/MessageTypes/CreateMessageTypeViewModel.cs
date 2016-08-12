@@ -2,9 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using System.Linq;
-using WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine;
 using System;
-using WatchdogDaemon.RuleEngine.ExpressionEvaluatorEngine.TypeHandlers;
+using WatchdogDaemon.RuleEngine.TreeEngine.LeafTypeHelpers;
 
 namespace AdministrationPortal.ViewModels.MessageTypes
 {
@@ -34,7 +33,7 @@ namespace AdministrationPortal.ViewModels.MessageTypes
         {
             Name = name;
             Description = description;
-            SupportedParameterTypes = new SelectList(TypeHandlerList.TypeHandlers.Select(e => e.GetTypeName()));
+            SupportedParameterTypes = new SelectList(TypeHandlerList.TypeHandlers.Keys);
             ParameterTypes = new List<ParameterType>();
             ParameterNames = new List<ParameterName>();
             ParametersRequired = new List<bool>();
@@ -76,7 +75,7 @@ namespace AdministrationPortal.ViewModels.MessageTypes
                 results.Add(new ValidationResult("Parameter Names must be unique."));
 
             foreach (var parameterType in ParameterTypes)
-                if (!TypeHandlerList.TypeHandlers.Select(e => e.GetTypeName()).Contains(parameterType.Value))
+                if (!TypeHandlerList.TypeHandlers.Keys.Contains(parameterType.Value))
                     results.Add(new ValidationResult("Unsupported parameter Type: " + parameterType.Value));
 
             return results;

@@ -8,7 +8,7 @@ namespace WatchdogDaemon.RuleEngine.TreeEngine.LeafTypeHelpers
     /// </summary>
     public class TypeHandlerList
     {
-        public static Dictionary<string, AbstractTypeHandler> Types = new Dictionary<string, AbstractTypeHandler>
+        public static Dictionary<string, AbstractTypeHandler> TypeHandlers = new Dictionary<string, AbstractTypeHandler>
         {
             {
                 "string", new StringTypeHandler()
@@ -28,7 +28,7 @@ namespace WatchdogDaemon.RuleEngine.TreeEngine.LeafTypeHelpers
         /// <returns>Returns the Built expression</returns>
         public static bool BuildExpression(string type, string name, string operatorString, string value, Dictionary<string, MessageParameter> parameters)
         {
-            return Types[type].BuildUnaryExpression(name, operatorString, value, parameters);
+            return TypeHandlers[type].BuildUnaryExpression(name, operatorString, value, parameters);
         }
 
 
@@ -42,7 +42,7 @@ namespace WatchdogDaemon.RuleEngine.TreeEngine.LeafTypeHelpers
         /// <returns>Returns the Built expression</returns>
         public static bool BuildExpression(string type, string name, string operatorString, string[] values, Dictionary<string, MessageParameter>  parameters)
         {
-            return Types[type].BuildPolyadicExpression(name, operatorString, values, parameters);
+            return TypeHandlers[type].BuildPolyadicExpression(name, operatorString, values, parameters);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace WatchdogDaemon.RuleEngine.TreeEngine.LeafTypeHelpers
         /// <returns>Returns the Built expression</returns>
         public static bool BuildExpression(string type, string name, string operatorString, Dictionary<string, MessageParameter> parameters)
         {
-            return Types[type].BuildNullaryExpression(name, operatorString, parameters);
+            return TypeHandlers[type].BuildNullaryExpression(name, operatorString, parameters);
         }
     }
 }

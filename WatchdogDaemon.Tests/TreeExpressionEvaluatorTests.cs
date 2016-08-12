@@ -8,7 +8,7 @@ using Xunit;
 namespace WatchdogDaemon.Tests
 {
 
-    public class ExpressionCompilerTests
+    public class TreeExpressionEvaluatorTests
     {
         public static TheoryData<string> ShouldntThrowError = new TheoryData<string>
         {
