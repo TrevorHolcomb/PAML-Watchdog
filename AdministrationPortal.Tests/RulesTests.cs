@@ -1,6 +1,6 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.IE;
+﻿using Coypu;
+using Coypu.Drivers;
+using Coypu.Drivers.Selenium;
 using Xunit;
 
 namespace AdministrationPortal.Tests
@@ -10,8 +10,17 @@ namespace AdministrationPortal.Tests
         [Fact]
         public void CreateRuleTest()
         {
-            IWebDriver driver = new InternetExplorerDriver();
-            driver.Navigate().GoToUrl("http://www.google.com");
+            using (var browser = new BrowserSession(new SessionConfiguration
+            {
+                AppHost = "http://localhost/",
+                Port = 61061,
+                SSL = false,
+                Driver = typeof(SeleniumWebDriver),
+                Browser = Browser.InternetExplorer
+            }))
+            {
+                browser.Visit("/Rules");
+            }
         }
     }
 }
