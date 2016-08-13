@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using Coypu;
 using Coypu.Drivers;
 using Coypu.Drivers.Selenium;
+using WatchdogDatabaseAccessLayer.Models;
 using Xunit;
 
 namespace AdministrationPortal.Tests
@@ -24,23 +26,10 @@ namespace AdministrationPortal.Tests
         private const string MessageType = "QueueSize";
         private const string SupportCategory = "Standard Support Group";
 
-
-        private bool DoesRuleExist(string rulename, Scope browser)
-        {
-            foreach (var row in browser.FindAllCss(".rule-name"))
-            {
-                if (row.Text == rulename)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         [Fact]
         public void CreateRuleTest()
         {
+            using (var db = new WatchdogDatabaseContainer())
             using (var browser = new BrowserSession(new SessionConfiguration
             {
                 AppHost = "http://localhost/",
@@ -50,22 +39,21 @@ namespace AdministrationPortal.Tests
                 Browser = Browser.Chrome
             }))
             {
-                browser.Visit("/Rules");
+                db.DeleteAll();
+                db.SupportCategories.Add(new SupportCategory {Name = SupportCategory});
+                db.SaveChanges();
 
-                if (DoesRuleExist(RuleName, browser))
-                {
-                    throw new Exception("Rule Already Exists");
-                }
+                browser.Visit("/Rules");
 
                 browser.ClickLink("Create New");
 
-                browser.FillIn("name").With(RuleName);
-                browser.FillIn("description").With(RuleDescription);
-                browser.Select(RuleEngine).From("engine");
-                browser.FillIn("origin").With(Origin);
-                browser.FillIn("server").With(Server);
+                browser.FillIn("Name").With(RuleName);
+                browser.FillIn("Description").With(RuleDescription);
+                browser.Select(RuleEngine).From("Engine");
+                browser.FillIn("Origin").With(Origin);
+                browser.FillIn("Server").With(Server);
                 browser.FillIn("RuleCreator").With(CreatedBy);
-                browser.FillIn("expression").With(Expression);
+                browser.FillIn("Expression").With(Expression);
                 browser.Select(DefaultSeverity).From("DefaultSeverity");
                 browser.Select(AlertType).From("AlertTypeId");
                 browser.Select(MessageType).From("MessageTypeName");

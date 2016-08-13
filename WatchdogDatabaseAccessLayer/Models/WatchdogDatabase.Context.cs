@@ -7,6 +7,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Linq;
+
 namespace WatchdogDatabaseAccessLayer.Models
 {
     using System;
