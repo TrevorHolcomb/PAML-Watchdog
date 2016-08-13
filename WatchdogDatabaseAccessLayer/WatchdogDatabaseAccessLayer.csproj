@@ -90,6 +90,7 @@
       <DependentUpon>WatchdogDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MessageParameterPartial.cs" />
+    <Compile Include="Models\WatchdogDatabaseContainerPartial.cs" />
     <Compile Include="Repositories\Database\EFAlertCategoryItemRepository.cs" />
     <Compile Include="Repositories\Database\EFAlertCategoryRepository.cs" />
     <Compile Include="Repositories\Database\EFDefaultNoteRepositroy.cs" />
